@@ -1,0 +1,1 @@
+java -cp bin;%GROOVY_HOME%\embeddable\groovy-all-2.1.1.jar;%GROOVY_HOME%\lib\junit-3.8.2.jar groovy.util.GroovyTestSuite src/test/OPTParserTest.groovy
