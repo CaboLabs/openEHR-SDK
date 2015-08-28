@@ -26,6 +26,11 @@ class ObjectNode {
    // Calculated path of this node during parsing
    String path
    
+   // TODO: this can be a list on the OPT but since
+   // the Template Designer doesnt allow more than one,
+   // we support just one value.
+   String terminologyRef
+   
    // TODO: constraints by type
    //
    // e.g. C_DV_QUANTITY has:
