@@ -80,6 +80,41 @@ class OPTParserTest extends GroovyTestCase {
       //opt.definition.attributes.each { println it.rmAttributeName }
    }
    
+   void testParserCodedTextConstraint()
+   {
+      def path = "resources"+ PS +"opts"+ PS +"Referral.opt"
+      def opt = loadAndParse(path)
+      
+      assertToString(opt.concept, 'Referral')
+      
+      assertNotNull(opt.definition)
+      
+      
+      // opt.nodes is a map path->ObjectNode
+      def termConstraintsMap = opt.nodes.findAll { it.value.rmTypeName == 'CODE_PHRASE' }
+      
+      assertNotNull(termConstraintsMap)
+      
+      termConstraintsMap.each { tpath, node ->
+         
+         println tpath
+         
+         if (tpath == '/context/participations/function/defining_code')
+         {
+            assert node.xmlNode.code_list.size() == 5
+            
+            node.xmlNode.code_list.each {
+               println it.text() // at00XX
+            }
+         }
+      }
+      
+
+      //assert opt.getTerm('openEHR-EHR-OBSERVATION.terminology_ref.v1', 'at0004') == 'Terminology ref'
+      
+      //opt.definition.attributes.each { println it.rmAttributeName }
+   }
+   
    void testOptManager()
    {
       String PS = File.separator
