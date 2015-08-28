@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="con" path="GROOVY_SUPPORT"/>
+	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
+	<classpathentry kind="lib" path="H:/groovy-2.4.3/lib/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="H:/groovy-2.4.3/lib/xstream-1.4.7.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
