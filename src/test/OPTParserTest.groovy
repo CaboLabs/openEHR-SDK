@@ -77,6 +77,8 @@ class OPTParserTest extends GroovyTestCase {
       
       assert opt.getTerm('openEHR-EHR-OBSERVATION.terminology_ref.v1', 'at0004') == 'Terminology ref'
       
+      assert ['openEHR-EHR-COMPOSITION.terminology_ref_compo.v1', 'openEHR-EHR-OBSERVATION.terminology_ref.v1'] == opt.getReferencedArchetypes().archetypeId
+      
       //opt.definition.attributes.each { println it.rmAttributeName }
    }
    

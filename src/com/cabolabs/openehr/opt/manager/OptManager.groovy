@@ -1,6 +1,7 @@
 package com.cabolabs.openehr.opt.manager
 
 import com.cabolabs.openehr.opt.parser.OperationalTemplateParser
+import com.cabolabs.openehr.opt.model.ObjectNode
 import com.cabolabs.openehr.opt.model.OperationalTemplate
 
 import org.apache.log4j.Logger
@@ -19,6 +20,12 @@ class OptManager {
    // archetypeId => timestamp de cuando fue usado por ultima vez.
    // Sirve para saber si un arquetipo no fue utilizado por mucho tiempo, y bajarlo del cache par optimizar espacio en memoria.
    private static Map<String, Date> timestamps = [:]
+   
+   
+   // Archetype index for all the templates loaded
+   // it allows to reference the archetypes instead of the templates,
+   // e.g. for querying.
+   private static Map<String, ObjectNode> referencedArchetypes = [:]
    
    // SINGLETON
    private static OptManager instance = null

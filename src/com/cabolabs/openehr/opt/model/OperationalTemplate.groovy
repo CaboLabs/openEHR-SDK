@@ -113,4 +113,34 @@ class OperationalTemplate {
       }
       return root
    }
+   
+   public List<ObjectNode> getReferencedArchetypes()
+   {
+      return getReferencedArchetypesRecursive(this.definition)
+   }
+   private List<ObjectNode> getReferencedArchetypesRecursive(ObjectNode obj)
+   {
+      List<ObjectNode> ret = []
+      
+      if (obj.path == '/' || obj.xmlNode.'@xsi:type'.text() == 'C_ARCHETYPE_ROOT')
+      {
+         ret << obj
+      }
+      
+      obj.attributes.each { attr ->
+         ret.addAll( getReferencedArchetypesRecursive(attr) )
+      }
+      
+      return ret
+   }
+   private List<ObjectNode> getReferencedArchetypesRecursive(AttributeNode attr)
+   {
+      List<ObjectNode> ret = []
+
+      attr.children.each { obj ->
+         ret.addAll( getReferencedArchetypesRecursive(obj) )
+      }
+      
+      return ret
+   }
 }
