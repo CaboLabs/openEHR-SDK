@@ -1,7 +1,8 @@
 package com.cabolabs.openehr.opt.model
 
-import java.util.Map;
+import java.util.Map
 
+@groovy.util.logging.Log4j
 class OperationalTemplate {
 
    String uid
@@ -52,25 +53,31 @@ class OperationalTemplate {
       
       if (!root)
       {
-         println "root not found for "+ archetypeId +" "+ code
+         log.info( "root not found for "+ archetypeId +" "+ code )
          return
       }
       else
-         println "root found "+ root.toString()
+      {
+         log.info( "root found "+ root.toString() )
+      }
          
       //println root.termDefinitions
       //root.termDefinitions.each{ println it.code }
          
       // Get the term from the ontology of the root archetype
+      //println "root term definition codes: "+ root.termDefinitions.code
+         
       def codedTerm = root.termDefinitions.find{ it.code == code }
       
       if (!codedTerm)
       {
-         println "codedTerm not found "+ archetypeId +" "+ code
+         log.info( "codedTerm not found "+ archetypeId +" "+ code )
          return
       }
       else
-         println "codedTerm found "+ codedTerm.code +" "+ codedTerm.term.text
+      {
+         log.info( "codedTerm found "+ codedTerm.code +" "+ codedTerm.term.text )
+      }
       
       return codedTerm.term."${part}"
    }
@@ -84,7 +91,7 @@ class OperationalTemplate {
    }
    private ObjectNode findRootRecursive(ObjectNode obj, String archetypeId)
    {
-      println "findRootRecursive aid="+ archetypeId +" o.aid="+ obj.archetypeId
+      log.info( "findRootRecursive aid="+ archetypeId +" o.aid="+ obj.archetypeId )
       if (obj.archetypeId == archetypeId) return obj // Stop recursion
       
       // can use any or find:

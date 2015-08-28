@@ -1,9 +1,10 @@
 package com.cabolabs.openehr.opt.parser
 
 import com.cabolabs.openehr.opt.model.*
-import com.thoughtworks.xstream.XStream
+//import com.thoughtworks.xstream.XStream
 import groovy.util.slurpersupport.GPathResult
 
+@groovy.util.logging.Log4j
 class OperationalTemplateParser {
 
    // Parsed XML
@@ -67,9 +68,6 @@ class OperationalTemplateParser {
          // comienza de nuevo con las paths relativas al root de este arquetipo
          if (!node.archetype_id.value.isEmpty())
          {
-            //println ""
-            //println "archid: "+ node.archetype_id.value
-            //parentPath = '/'
             path += '[archetype_id='+ node.archetype_id.value +']' // slot in the path instead of node_id
          }
          // para tag vacia empty da false pero text es vacio ej. <node_id/>
@@ -79,6 +77,13 @@ class OperationalTemplateParser {
          }
       }
       
+      def terminologyRef
+      if (node.rm_type_name.text() == 'CODE_PHRASE')
+      {
+         def uri = node.referenceSetUri.text()
+         if (uri) terminologyRef = uri
+      }
+      
       
       def obn = new ObjectNode(
          rmTypeName: node.rm_type_name.text(),
@@ -86,7 +91,8 @@ class OperationalTemplateParser {
          type: node.'@xsi:type'.text(),
          archetypeId: node.archetype_id.value.text(), // This is optional, just resolved slots have archId
          path: path,
-         xmlNode: node // Quick fix until having each constraint type modeled
+         xmlNode: node, // Quick fix until having each constraint type modeled
+         terminologyRef: terminologyRef
          // TODO: default_values
       )
       
