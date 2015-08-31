@@ -62,6 +62,7 @@ class OPTParserTest extends GroovyTestCase {
          }
       }
       
+      println "opt nodes "+ opt.nodes
       assert opt.nodes.size() == 10
       
       opt.nodes.each { tpath, node ->
@@ -80,6 +81,15 @@ class OPTParserTest extends GroovyTestCase {
       assert ['openEHR-EHR-COMPOSITION.terminology_ref_compo.v1', 'openEHR-EHR-OBSERVATION.terminology_ref.v1'] == opt.getReferencedArchetypes().archetypeId
       
       //opt.definition.attributes.each { println it.rmAttributeName }
+   }
+   
+   void testFlatNodes()
+   {
+      def path = "resources"+ PS +"opts"+ PS +"Terminology ref.opt"
+      def opt = loadAndParse(path)
+      opt.getNodes().each { tpath, node ->
+         println node.nodes
+      }
    }
    
    void testParserCodedTextConstraint()
@@ -115,6 +125,31 @@ class OPTParserTest extends GroovyTestCase {
       //assert opt.getTerm('openEHR-EHR-OBSERVATION.terminology_ref.v1', 'at0004') == 'Terminology ref'
       
       //opt.definition.attributes.each { println it.rmAttributeName }
+   }
+   
+   void testParserQuantityUnits()
+   {
+      def path = "resources"+ PS +"opts"+ PS +"Encuentro.opt"
+      def opt = loadAndParse(path)
+      def termConstraintsMap = opt.nodes.findAll { it.value.rmTypeName == 'DV_QUANTITY' }
+      
+      termConstraintsMap.each { tpath, node ->
+         
+         println tpath
+         
+         // /content[archetype_id=openEHR-EHR-SECTION.vital_signs.v1]/items[archetype_id=openEHR-EHR-OBSERVATION.blood_pressure.v1]/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value
+         // /content[archetype_id=openEHR-EHR-SECTION.vital_signs.v1]/items[archetype_id=openEHR-EHR-OBSERVATION.blood_pressure.v1]/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value
+         
+         if (tpath == '/content[archetype_id=openEHR-EHR-SECTION.vital_signs.v1]/items[archetype_id=openEHR-EHR-OBSERVATION.blood_pressure.v1]/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value')
+         {
+            assert node.xmlNode.list.size() == 1
+            
+            node.xmlNode.list.each {
+               println it.units.text() // mm[Hg]
+            }
+         }
+      }
+      
    }
    
    void testOptManager()

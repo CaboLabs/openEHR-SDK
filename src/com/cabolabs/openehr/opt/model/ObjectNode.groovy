@@ -1,5 +1,7 @@
 package com.cabolabs.openehr.opt.model
 
+import java.util.Map;
+
 import groovy.util.slurpersupport.GPathResult
 
 class ObjectNode {
@@ -24,12 +26,16 @@ class ObjectNode {
    Interval occurrences
    
    // Calculated path of this node during parsing
-   String path
+   String templatePath // absolute path inside the template
+   String path // relative path to the root archetype node
    
    // TODO: this can be a list on the OPT but since
    // the Template Designer doesnt allow more than one,
    // we support just one value.
    String terminologyRef
+   
+   // Plain structure of subnodes of this ObjectNode
+   Map nodes = [:] // path -> ObjectNode (node) para pedir restricciones
    
    // TODO: constraints by type
    //
@@ -43,4 +49,12 @@ class ObjectNode {
    
    // For now I just save the XML node to extract the constraints
    GPathResult xmlNode
+   
+   /*
+    * gets a node by archetype path
+    */
+   ObjectNode getNode(String path)
+   {
+      return this.nodes[path]
+   }
 }

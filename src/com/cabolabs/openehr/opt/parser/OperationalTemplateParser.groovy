@@ -38,7 +38,7 @@ class OperationalTemplateParser {
          // TODO: add use, misuse, keywords, etc. from RESOURCE_DESCRIPTION_ITEM: https://github.com/openEHR/java-libs/blob/f6ee434226bf926d261c2690016c1d6022b877be/oet-parser/src/main/xsd/Resource.xsd
       )
       
-      this.template.definition = parseObjectNode(tpXML.definition, '/')
+      this.template.definition = parseObjectNode(tpXML.definition, '/', '/')
       
       
       // DEBUG
@@ -59,20 +59,27 @@ class OperationalTemplateParser {
       return node.terminology_id.value.text() +"::"+ node.code_string.text()
    }
    
-   private parseObjectNode(GPathResult node, String parentPath)
+   private parseObjectNode(GPathResult node, String parentPath, String path)
    {
       // Path calculation
-      def path = parentPath
-      if (path != '/')
+      def templatePath = parentPath
+      
+      if (templatePath != '/')
       {
          // comienza de nuevo con las paths relativas al root de este arquetipo
          if (!node.archetype_id.value.isEmpty())
          {
-            path += '[archetype_id='+ node.archetype_id.value +']' // slot in the path instead of node_id
+            templatePath += '[archetype_id='+ node.archetype_id.value +']' // slot in the path instead of node_id
+            
+            if (node.'@xsi:type'.text() == "C_ARCHETYPE_ROOT")
+            {
+               path = '/' // archetype root found
+            }
          }
          // para tag vacia empty da false pero text es vacio ej. <node_id/>
          else if (!node.node_id.isEmpty() && node.node_id.text() != '')
          {
+            templatePath += '['+ node.node_id.text() + ']'
             path += '['+ node.node_id.text() + ']'
          }
       }
@@ -84,12 +91,14 @@ class OperationalTemplateParser {
          if (uri) terminologyRef = uri
       }
       
+      //println "path: "+ path
       
       def obn = new ObjectNode(
          rmTypeName: node.rm_type_name.text(),
          nodeId: node.node_id.text(),
          type: node.'@xsi:type'.text(),
          archetypeId: node.archetype_id.value.text(), // This is optional, just resolved slots have archId
+         templatePath: templatePath,
          path: path,
          xmlNode: node, // Quick fix until having each constraint type modeled
          terminologyRef: terminologyRef
@@ -100,7 +109,7 @@ class OperationalTemplateParser {
       
       node.attributes.each { xatn ->
       
-         obn.attributes << parseAttributeNode(xatn, path)
+         obn.attributes << parseAttributeNode(xatn, templatePath, path)
       }
       
       node.term_definitions.each { tdef ->
@@ -108,30 +117,44 @@ class OperationalTemplateParser {
          obn.termDefinitions << parseCodedTerm(tdef)
       }
       
+      // Traverse all subnodes to get the flat structure for path->node
+      this.setFlatNodes(obn)
+      
       // Used by guigen and binder
-      this.template.nodes[path] = obn
+      this.template.nodes[templatePath] = obn
       
       return obn
    }
    
-   private parseAttributeNode(GPathResult node, String parentPath)
+   private setFlatNodes(ObjectNode parent)
+   {
+      this.template.nodes.each { path, obn ->
+         if (obn.path.startsWith(parent.path))
+            parent.nodes[obn.path] = obn // uses archetype paths not template paths!
+      }
+   }
+   
+   private parseAttributeNode(GPathResult attr, String parentPath, String path)
    {
       // Path calculation
-      def path = parentPath
-      if (path == '/') path += node.rm_attribute_name.text() // Avoids to repeat '/'
-      else path += '/'+ node.rm_attribute_name.text()
+      def templatePath = parentPath
+      if (templatePath == '/') templatePath += attr.rm_attribute_name.text() // Avoids to repeat '/'
+      else templatePath += '/'+ attr.rm_attribute_name.text()
       
+      def nextArchPath
+      if (path == '/') nextArchPath = path + attr.rm_attribute_name.text()
+      else nextArchPath = path +'/'+ attr.rm_attribute_name.text()
       
       def atn = new AttributeNode(
-         rmAttributeName: node.rm_attribute_name.text(),
-         type: node.'@xsi:type'.text()
+         rmAttributeName: attr.rm_attribute_name.text(),
+         type: attr.'@xsi:type'.text()
          // TODO: cardinality
          // TODO: existence
       )
       
-      node.children.each { xobn ->
+      attr.children.each { xobn ->
       
-         atn.children << parseObjectNode(xobn, path)
+         atn.children << parseObjectNode(xobn, templatePath, nextArchPath)
       }
       
       return atn

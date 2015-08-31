@@ -29,6 +29,9 @@ class OperationalTemplate {
    
    Map nodes = [:] // TemplatePath -> ObjectNode (node) para pedir restricciones
    
+   /*
+    * gets a node by template path
+    */
    ObjectNode getNode(String path)
    {
       return this.nodes[path]

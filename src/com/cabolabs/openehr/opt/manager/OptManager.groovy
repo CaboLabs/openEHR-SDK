@@ -52,7 +52,7 @@ class OptManager {
       def text, opt
       def parser = new OperationalTemplateParser()
       
-      root.eachFile(groovy.io.FileType.FILES) { optFile ->
+      root.eachFileMatch groovy.io.FileType.FILES, ~/.*\.opt/, { optFile ->
          
          text = optFile.getText()
          opt = parser.parse( text )
@@ -112,6 +112,11 @@ class OptManager {
    public Map getAllReferencedArchetypes()
    {
       return this.referencedArchetypes.asImmutable()
+   }
+   
+   public ObjectNode getReferencedArchetype(String archetypeId)
+   {
+      return this.referencedArchetypes[archetypeId] // can be null!
    }
    
    @Synchronized
