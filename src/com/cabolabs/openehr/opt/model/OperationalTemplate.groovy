@@ -89,6 +89,7 @@ class OperationalTemplate {
    {
       return findRootRecursive(this.definition, archetypeId)
    }
+   
    private ObjectNode findRootRecursive(ObjectNode obj, String archetypeId)
    {
       log.info( "findRootRecursive aid="+ archetypeId +" o.aid="+ obj.archetypeId )
@@ -98,16 +99,18 @@ class OperationalTemplate {
       // http://stackoverflow.com/questions/3049790/break-from-groovy-each-closure
       def root
       obj.attributes.any { attr ->
+         
          root = findRootRecursive(attr, archetypeId)
          if (root) return true // any break, each does not break
       }
       return root
    }
+   
    private ObjectNode findRootRecursive(AttributeNode attr, String archetypeId)
    {
       def root
       attr.children.any { obj ->
-         println "each obj.aid="+ obj.archetypeId
+         
          root = findRootRecursive(obj, archetypeId)
          if (root) return true // any break, each does not break
       }
@@ -118,6 +121,7 @@ class OperationalTemplate {
    {
       return getReferencedArchetypesRecursive(this.definition)
    }
+   
    private List<ObjectNode> getReferencedArchetypesRecursive(ObjectNode obj)
    {
       List<ObjectNode> ret = []
@@ -133,6 +137,7 @@ class OperationalTemplate {
       
       return ret
    }
+   
    private List<ObjectNode> getReferencedArchetypesRecursive(AttributeNode attr)
    {
       List<ObjectNode> ret = []

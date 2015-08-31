@@ -132,6 +132,8 @@ class OPTParserTest extends GroovyTestCase {
       
       assertNotNull(opt)
       
+      println man.getAllReferencedArchetypes().keySet()
+      
       assert opt.nodes.size() == 10
    }
    

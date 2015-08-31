@@ -5,6 +5,7 @@ import com.cabolabs.openehr.opt.model.ObjectNode
 import com.cabolabs.openehr.opt.model.OperationalTemplate
 
 import org.apache.log4j.Logger
+import groovy.transform.Synchronized
 
 class OptManager {
    
@@ -14,17 +15,17 @@ class OptManager {
    
    private String optRepositoryPath = "opts"+ PS
    
-   // Cache: archetypeId => Archetype
+   // Cache: otpid => OperationalTemplate
    private static Map<String, OperationalTemplate> cache = [:]
    
-   // archetypeId => timestamp de cuando fue usado por ultima vez.
+   // otpid => timestamp de cuando fue usado por ultima vez.
    // Sirve para saber si un arquetipo no fue utilizado por mucho tiempo, y bajarlo del cache par optimizar espacio en memoria.
    private static Map<String, Date> timestamps = [:]
    
    
-   // Archetype index for all the templates loaded
+   // Archetypes referenced by all the templates loaded
    // it allows to reference the archetypes instead of the templates,
-   // e.g. for querying.
+   // e.g. for querying. ObjectNode points to an archetype root.
    private static Map<String, ObjectNode> referencedArchetypes = [:]
    
    // SINGLETON
@@ -53,8 +54,6 @@ class OptManager {
       
       root.eachFile(groovy.io.FileType.FILES) { optFile ->
          
-         log.debug("LOAD: [" + optFile.name + "]")
-
          text = optFile.getText()
          opt = parser.parse( text )
 
@@ -67,6 +66,19 @@ class OptManager {
          else
          {
             //log.error("No se pudo cargar el arquetipo: " + f.name + " de:\n\t " + root.path)
+         }
+      }
+      
+      def refarchs = []
+      this.cache.each { _optid, _opt ->
+         refarchs = _opt.getReferencedArchetypes()
+         refarchs.each { _objectNode ->
+            // if the archertype is referenced twice by different opts, it is overriden,
+            // the objectnode will have the same structure in most cases.
+            // TODO:
+            // For now we dont care about specific constraints, but later we might need to
+            // merge the different constraints or just store all the different ones here.
+            this.referencedArchetypes[_objectNode.archetypeId] = _objectNode
          }
       }
    }
@@ -94,12 +106,17 @@ class OptManager {
    
    public Map getLoadedOpts()
    {
-      return this.cache
+      return this.cache.asImmutable()
    }
    
+   public Map getAllReferencedArchetypes()
+   {
+      return this.referencedArchetypes.asImmutable()
+   }
+   
+   @Synchronized
    public void unloadAll()
    {
-       // FIXME: debe estar sincronizada
        this.cache.clear()
        this.timestamps.clear()
    }
