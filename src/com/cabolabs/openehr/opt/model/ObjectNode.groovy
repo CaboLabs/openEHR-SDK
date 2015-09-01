@@ -1,9 +1,9 @@
 package com.cabolabs.openehr.opt.model
 
-import java.util.Map;
-
+import java.util.Map
 import groovy.util.slurpersupport.GPathResult
 
+@groovy.util.logging.Log4j
 class ObjectNode {
 
    // For root and resolved slots
@@ -56,5 +56,45 @@ class ObjectNode {
    ObjectNode getNode(String path)
    {
       return this.nodes[path]
+   }
+   
+   /*
+    * get term
+    */
+   String getText(String code)
+   {
+      def codedTerm = this.termDefinitions.find{ it.code == code }
+      
+      if (!codedTerm)
+      {
+         log.info( "codedTerm not found "+ this.archetypeId +" "+ code )
+         return
+      }
+      else
+      {
+         log.info( "codedTerm found "+ codedTerm.code +" "+ codedTerm.term.text )
+      }
+      
+      return codedTerm.term.text
+   }
+   
+   /*
+    * get description
+    */
+   String getDescription(String code)
+   {
+      def codedTerm = this.termDefinitions.find{ it.code == code }
+      
+      if (!codedTerm)
+      {
+         log.info( "codedTerm not found "+ this.archetypeId +" "+ code )
+         return
+      }
+      else
+      {
+         log.info( "codedTerm found "+ codedTerm.code +" "+ codedTerm.term.text )
+      }
+      
+      return codedTerm.term.description
    }
 }
