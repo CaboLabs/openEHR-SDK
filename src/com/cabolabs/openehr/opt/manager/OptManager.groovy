@@ -73,12 +73,15 @@ class OptManager {
       this.cache.each { _optid, _opt ->
          refarchs = _opt.getReferencedArchetypes()
          refarchs.each { _objectNode ->
-            // if the archertype is referenced twice by different opts, it is overriden,
-            // the objectnode will have the same structure in most cases.
-            // TODO:
-            // For now we dont care about specific constraints, but later we might need to
-            // merge the different constraints or just store all the different ones here.
-            this.referencedArchetypes[_objectNode.archetypeId] = _objectNode
+            // If the archertype is referenced twice by different opts, it is overwritten,
+            // the objectnodes can have different structures since one OPT might have all
+            // the nodes and another that uses the SAME archetype might have a couple.
+            // To avoid that issue, we save here all the references to the same archetype.
+            // A better solution to reduce the memory use, is to merge all the internal
+            // structures into one complete structure. (TODO)
+            // TODO: do not add the reference twice for the same OPT (check if this case can happen)
+            if (!this.referencedArchetypes[_objectNode.archetypeId]) this.referencedArchetypes[_objectNode.archetypeId] = []
+            this.referencedArchetypes[_objectNode.archetypeId] << _objectNode
          }
       }
    }
@@ -114,9 +117,62 @@ class OptManager {
       return this.referencedArchetypes.asImmutable()
    }
    
+   /* now this is a list
    public ObjectNode getReferencedArchetype(String archetypeId)
    {
       return this.referencedArchetypes[archetypeId] // can be null!
+   }
+   */
+   
+   // done to avoid merging, merge is the optimal solution!
+   public List getReferencedArchetypes(String archetypeId)
+   {
+      return this.referencedArchetypes[archetypeId] // can be null!
+   }
+   
+   // done to avoid merging, merge is the optimal solution!
+   public String getText(String archetypeId, String code)
+   {
+      if (!this.referencedArchetypes[archetypeId]) return null
+      
+      def t
+      for (arch in this.referencedArchetypes[archetypeId])
+      {
+         t = arch.getText(code)
+         if (t) break
+      }
+      
+      return t // can be null
+   }
+   
+   // done to avoid merging, merge is the optimal solution!
+   public String getDescription(String archetypeId, String code)
+   {
+      if (!this.referencedArchetypes[archetypeId]) return null
+      
+      def d
+      for (arch in this.referencedArchetypes[archetypeId])
+      {
+         d = arch.getDescription(code)
+         if (d) break
+      }
+      
+      return d // can be null
+   }
+   
+   // done to avoid merging, merge is the optimal solution!
+   public ObjectNode getNode(String archetypeId, String path)
+   {
+      if (!this.referencedArchetypes[archetypeId]) return null
+      
+      def n
+      for (arch in this.referencedArchetypes[archetypeId])
+      {
+         n = arch.getNode(path)
+         if (n) break
+      }
+      
+      return n // can be null
    }
    
    @Synchronized
