@@ -1,1 +1,1 @@
-java -cp bin;%GROOVY_HOME%\embeddable\groovy-all-2.1.1.jar;%GROOVY_HOME%\lib\junit-3.8.2.jar groovy.util.GroovyTestSuite src/test/OPTParserTest.groovy
+java -cp bin;lib\log4j-1.2.17.jar;%GROOVY_HOME%\embeddable\groovy-all-2.4.3.jar;%GROOVY_HOME%\lib\junit-4.12.jar;%GROOVY_HOME%\lib\commons-logging-1.2.jar groovy.util.GroovyTestSuite src/test/OPTParserTest.groovy

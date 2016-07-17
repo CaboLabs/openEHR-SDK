@@ -5,12 +5,22 @@ import groovy.util.GroovyTestCase
 import com.cabolabs.openehr.opt.parser.*
 import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.opt.manager.*
+import com.cabolabs.openehr.opt.instance_generator.*
 
 class OPTParserTest extends GroovyTestCase {
 
    private static String PS = System.getProperty("file.separator")
 
-
+   
+   void testXMLGenerator()
+   {
+      def path = "resources"+ PS +"opts"+ PS +"Referral.opt"
+      def opt = loadAndParse(path)
+      def igen = new XmlInstanceGenerator()
+      println igen.generateXMLCompositionStringFromOPT(opt)
+   }
+   
+/*
    void testParser()
    {
       log.info(  new File('').getCanonicalPath() )
@@ -171,6 +181,7 @@ class OPTParserTest extends GroovyTestCase {
       
       assert opt.nodes.size() == 10
    }
+   */
    
    OperationalTemplate loadAndParse(String path)
    {
@@ -184,5 +195,4 @@ class OPTParserTest extends GroovyTestCase {
       
       return parser.parse( text )
    }
-   
 }

@@ -1,7 +1,5 @@
 package com.cabolabs.openehr.opt.model
 
-import java.util.Map
-
 @groovy.util.logging.Log4j
 class OperationalTemplate {
 
