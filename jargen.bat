@@ -1,1 +1,0 @@
-jar -cfv openEHR_OPT.jar -C bin .

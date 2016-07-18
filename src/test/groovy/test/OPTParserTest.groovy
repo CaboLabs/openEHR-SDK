@@ -14,7 +14,7 @@ class OPTParserTest extends GroovyTestCase {
    
    void testXMLGenerator()
    {
-      def path = "resources"+ PS +"opts"+ PS +"Referral.opt"
+      def path = "/opts/Referral.opt"
       def opt = loadAndParse(path)
       def igen = new XmlInstanceGenerator()
       println igen.generateXMLCompositionStringFromOPT(opt)
@@ -187,8 +187,9 @@ class OPTParserTest extends GroovyTestCase {
    {
       def parser = new OperationalTemplateParser()
       
-      def optFile = new File( path )
-      def text = optFile.getText()
+      def optFile = this.getClass().getResource( path )
+	  // avoid windows-linux incompatibilities
+      def text = optFile.text.trim().replaceFirst("^([\\W]+)<","<");	  
       
       assertNotNull(text)
       assert text != ''
