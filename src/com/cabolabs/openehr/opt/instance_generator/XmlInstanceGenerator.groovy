@@ -95,7 +95,7 @@ class XmlInstanceGenerator {
             terminology_id() {
                value('openehr')
             }
-            code_string(443)
+            code_string(433)
          }
       }
       
