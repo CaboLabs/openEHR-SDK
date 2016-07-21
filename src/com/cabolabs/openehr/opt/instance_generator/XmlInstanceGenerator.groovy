@@ -1,6 +1,7 @@
 package com.cabolabs.openehr.opt.instance_generator
 
 import com.cabolabs.openehr.opt.model.*
+import com.cabolabs.openehr.terminology.TerminologyParser
 import groovy.xml.MarkupBuilder
 import java.text.SimpleDateFormat
 
@@ -14,6 +15,8 @@ class XmlInstanceGenerator {
    def opt
    def writer
    def builder
+   
+   def terminology
    
    // Formats
    def datetime_format = "yyyyMMdd'T'HHmmss,SSSZ"
@@ -39,6 +42,9 @@ class XmlInstanceGenerator {
       java.util.ArrayList.metaClass.pick {
          delegate.get( new Random().nextInt( delegate.size() ) )
       }
+      
+      terminology = new TerminologyParser()
+      terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_en.xml"))
    }
    
    String generateXMLCompositionStringFromOPT(OperationalTemplate opt)
@@ -120,7 +126,7 @@ class XmlInstanceGenerator {
             value( composition_settings.pick() )
             defining_code() {
                terminology_id() {
-                  value('openehr')
+                  value('openehr') // all openehr terminology should be handled from this.terminology
                }
                code_string(229)
             }

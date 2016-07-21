@@ -6,6 +6,7 @@ import com.cabolabs.openehr.opt.parser.*
 import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.opt.manager.*
 import com.cabolabs.openehr.opt.instance_generator.*
+import com.cabolabs.openehr.terminology.TerminologyParser
 
 class OPTParserTest extends GroovyTestCase {
 
@@ -18,6 +19,15 @@ class OPTParserTest extends GroovyTestCase {
       def opt = loadAndParse(path)
       def igen = new XmlInstanceGenerator()
       println igen.generateXMLCompositionStringFromOPT(opt)
+   }
+   
+   void testTerminologyParser()
+   {
+      def tm = new TerminologyParser()
+      def terms = tm.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_en.xml"))
+      //println terms
+      assert tm.getRubric('en', '433') == 'event'
+      println tm.getRubric('en', '229')
    }
    
 /*

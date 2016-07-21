@@ -7,6 +7,6 @@ class Term {
    
    String toString()
    {
-      return this.text +' ('+ this.description + ')'
+      return this.text +(this.description ? ' ('+ this.description + ')' : '') 
    }
 }
