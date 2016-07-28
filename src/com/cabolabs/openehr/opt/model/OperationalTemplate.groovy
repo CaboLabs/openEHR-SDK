@@ -10,7 +10,7 @@ class OperationalTemplate {
    
    // language is CODE_PHRASE, will be coded as terminology_id::code_string
    // http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
-   String language
+   String language // ISO_639-1::en
    
    
    // description
@@ -19,7 +19,7 @@ class OperationalTemplate {
    Term originalAuthor
    
    // Plays the role of a CComplexObject of aom
-   ObjectNode definition
+   ObjectNode definition // has attributes category, context and content of the COMPOSITION
    
    // Added to simplify path management
    // Paths will be calculated by a parser
@@ -43,6 +43,15 @@ class OperationalTemplate {
    def getDescription(String archetypeId, String nodeId)
    {
       return getFromOntology(archetypeId, nodeId, 'description')
+   }
+   
+   def getLangCode()
+   {
+      this.language.split('::')[1]
+   }
+   def getLangTerminology()
+   {
+      this.language.split('::')[0]
    }
    
    private String getFromOntology(String archetypeId, String code, String part)

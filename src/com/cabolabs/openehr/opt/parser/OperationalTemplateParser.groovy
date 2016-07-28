@@ -152,9 +152,12 @@ class OperationalTemplateParser {
          // TODO: existence
       )
       
+      def obj
       attr.children.each { xobn ->
       
-         atn.children << parseObjectNode(xobn, templatePath, nextArchPath)
+         obj = parseObjectNode(xobn, templatePath, nextArchPath)
+         obj.parent = atn
+         atn.children << obj
       }
       
       return atn

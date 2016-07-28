@@ -17,6 +17,9 @@ class ObjectNode {
    
    String rmTypeName
    
+   // Null if the object is the root
+   AttributeNode parent
+   
    // List<AttributeNode>
    List attributes = []
    

@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat
  */
 class XmlInstanceGenerator {
 
+   static String PS = File.separator
+   
    def opt
    def writer
    def builder
@@ -83,15 +85,15 @@ class XmlInstanceGenerator {
       // Campos de COMPOSITION
       builder.language() {
          terminology_id() {
-            value('ISO_639-1')
+            value( this.opt.langTerminology )
          }
-         code_string('es') // TODO: deberia salir de una config global
+         code_string( this.opt.langCode )
       }
       builder.territory() {
          terminology_id() {
             value('ISO_3166-1')
          }
-         code_string('UY') // TODO: deberia salir de una config global
+         code_string('UY') // TODO: deberia salir de una config global o de parametros
       }
       
       // FIXME: this comes on the OPT
@@ -137,19 +139,45 @@ class XmlInstanceGenerator {
    
    private generateCompositionContent()
    {
+      // opt.definition.attributes has attributes category, context and content of the COMPOSITION
+      // category and context where already processed on generateCompositionHeader
+      def a = opt.definition.attributes.find{ it.rmAttributeName == 'content' }
+      
+      assert a.rmAttributeName == 'content'
+      
+      processAttributeChildren(a)
+   }
+   
+   /**
+    * Continues the opt recursive traverse.
+    */
+   private processAttributeChildren(AttributeNode a)
+   {
       def obj_type, method
-      opt.definition.attributes.each { a ->
-         
+   
+      // Process all the attributes if it is C_MULTIPLE_ATTRIBUTE
+      // or just the first alternative if it is C_SINGLE_ATTRIBUTE
+      def children
+      
+      if (a.type == 'C_MULTIPLE_ATTRIBUTE')
+      {
+         children = a.children
+      }
+      else
+      {
+         children = [ a.children[0] ]
+      }
+      
+      children.each { obj ->
+      
+         // Avoid processing slots
+         if (obj.type == 'ARCHETYPE_SLOT') return
+      
          // wont process all the alternatives from children, just the first
-         obj_type = a.children[0].rmTypeName
+         obj_type = obj.rmTypeName
          method = 'generateAttribute_'+ obj_type
-         "$method"(a) // generateAttribute_OBSERVATION(a)
+         "$method"(obj) // generateAttribute_OBSERVATION(a)
       }
-      /*
-      builder.content() {
-         
-      }
-      */
    }
    
    /*
@@ -164,7 +192,12 @@ class XmlInstanceGenerator {
    }
    */
    
-   private generateAttribute_EVENT_CONTEXT(AttributeNode a)
+   /**
+    * These functions process an attribute of the rmtype mentioned on the function name.
+    * e.g. for generateAttribute_EVENT_CONTEXT(AttributeNode a), a.rmAttributeName == 'context'
+    */
+   
+   private generateAttribute_EVENT_CONTEXT(ObjectNode o)
    {
       /* already generated on the main method, this avoids processing the node again
       builder."${a.rmAttributeName}"(n:'event_ctx') {
@@ -173,45 +206,87 @@ class XmlInstanceGenerator {
       */
    }
    
-   private generateAttribute_DV_CODED_TEXT(AttributeNode a)
+   /**
+    * TODO: for datatypes the generator should check if the data is on the OPT (like constraints that allow
+    *       just one value), if not, we will get the first constraint and generate data that complies with
+    *       that constraint.
+    */
+   private generateAttribute_DV_CODED_TEXT(ObjectNode o)
    {
       // TEST: avoid processing compo.category for now, I need the terminology loaded in order to process that here...
-      if (a.rmAttributeName == 'category') return
-      
-      builder."${a.rmAttributeName}"(n:'coded') {
+      //if (a.rmAttributeName == 'category') return
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"(TODO:'coded') {
       
       }
    }
    
-   private generateAttribute_OBSERVATION(AttributeNode a)
+   private generateAttribute_DV_TEXT(ObjectNode o)
    {
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"(TODO:'text') {
+      
+      }
+   }
+   
+   private generateAttribute_DV_DATE_TIME(ObjectNode o)
+   {
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"(TODO:'datetime') {
+      
+      }
+   }
+   
+   private generateAttribute_DV_BOOLEAN(ObjectNode o)
+   {
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"(TODO:'bool') {
+      
+      }
+   }
+   
+   private generateAttribute_DV_DURATION(ObjectNode o)
+   {
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"(TODO:'duration') {
+      
+      }
+   }
+   
+   private generateAttribute_OBSERVATION(ObjectNode o)
+   {
+      AttributeNode a = o.parent
       builder."${a.rmAttributeName}"() {
-      
+         name() {
+            value( opt.getTerm(o.archetypeId, o.nodeId) )
+         }
       }
    }
    
-   private generateAttribute_EVALUATION(AttributeNode a)
+   private generateAttribute_EVALUATION(ObjectNode o)
    {
+      AttributeNode a = o.parent
       builder."${a.rmAttributeName}"() {
-      
+         name() {
+            value( opt.getTerm(o.archetypeId, o.nodeId) )
+         }
       }
    }
    
-   private generateAttribute_INSTRUCTION(AttributeNode a)
+   private generateAttribute_INSTRUCTION(ObjectNode o)
    {
-      // wont process all the alternatives from children, just the first
-      def obj = a.children[0]
-      builder."${a.rmAttributeName}"(archetype_node_id: obj.archetypeId, 'xsi:type':'INSTRUCTION') {
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"(archetype_node_id: o.archetypeId, 'xsi:type':'INSTRUCTION') {
          
          name() {
             //value('TODO: lookup al arquetipo para obtener el valor por el at0000')
-            value( opt.getTerm(obj.archetypeId, obj.nodeId) )
+            value( opt.getTerm(o.archetypeId, o.nodeId) )
          }
          language() {
             terminology_id() {
-               value('ISO_639-1')
+               value( this.opt.langTerminology )
             }
-            code_string('es') // TODO: deberia salir de una config global
+            code_string( this.opt.langCode )
          }
          encoding() {
             terminology_id() {
@@ -222,55 +297,122 @@ class XmlInstanceGenerator {
          subject('xsi:type':'PARTY_SELF')
          // TBD
          
+         
          // process instruct attributes
          def obj_type, method
-         obj.attributes.each { oa ->
+         o.attributes.each { oa ->
             
-            // wont process all the alternatives from children, just the first
-            obj_type = oa.children[0].rmTypeName
-            method = 'generateAttribute_'+ obj_type
-            this."$method"(oa) // generateAttribute_OBSERVATION(a) // using this. avoids creating an element!
+            processAttributeChildren(oa)
          }
       }
    }
    
-   private generateAttribute_ITEM_TREE(AttributeNode a)
+   private generateAttribute_ITEM_TREE(ObjectNode o)
    {
-      // wont process all the alternatives from children, just the first
-      def obj = a.children[0]
+      AttributeNode a = o.parent
       
       // is it arcehtyped or not?
-      def arch_node_id = (obj.archetypeId ?: obj.nodeId)
+      def arch_node_id = (o.archetypeId ?: o.nodeId)
 
       builder."${a.rmAttributeName}"(achetype_node_id:arch_node_id, 'xsi:type':'ITEM_TREE') {
       
+         name() {
+            value( opt.getTerm(o.archetypeId, o.nodeId) )
+         }
+         
+         def obj_type, method
+         o.attributes.each { oa ->
+            
+            processAttributeChildren(oa)
+         }
       }
    }
    
-   private generateAttribute_ACTIVITY(AttributeNode a)
+   private generateAttribute_CLUSTER(ObjectNode o)
    {
-      // wont process all the alternatives from children, just the first
-      def obj = a.children[0]
+      AttributeNode a = o.parent
       
       // is it arcehtyped or not?
-      def arch_node_id = (obj.archetypeId ?: obj.nodeId)
+      def arch_node_id = (o.archetypeId ?: o.nodeId)
+      
+      builder."${a.rmAttributeName}"(achetype_node_id:arch_node_id, 'xsi:type':'CLUSTER') {
+      
+         name() {
+            value( opt.getTerm(o.archetypeId, o.nodeId) )
+         }
+      
+         def obj_type, method
+         o.attributes.each { oa ->
+            
+            processAttributeChildren(oa)
+         }
+      }
+   }
+   
+   
+   private generateAttribute_ELEMENT(ObjectNode o)
+   {
+      AttributeNode a = o.parent
+      
+      // is it arcehtyped or not?
+      def arch_node_id = (o.archetypeId ?: o.nodeId)
+      
+      /***
+      *
+      *
+      * hay que pasarle el parent archetype porque el obj no lo tiene y no puedo buscar el termino.
+      *
+      */
+      println "ELEMENT text for :"+ o.archetypeId +" "+ o.nodeId // FIXME: if o is not the root of an archetype, archetypeId is null.
+
+      builder."${a.rmAttributeName}"(achetype_node_id:arch_node_id, 'xsi:type':'ELEMENT') {
+      
+         name() {
+            value( opt.getTerm(o.archetypeId, o.nodeId) )
+         }
+         
+         def obj_type, method
+         o.attributes.each { oa ->
+            
+            processAttributeChildren(oa)
+         }
+      }
+   }
+   
+   private generateAttribute_ACTIVITY(ObjectNode o)
+   {
+      AttributeNode a = o.parent
+      
+      // is it arcehtyped or not?
+      def arch_node_id = (o.archetypeId ?: o.nodeId)
 
       builder."${a.rmAttributeName}"(achetype_node_id:arch_node_id) {
       
+         def obj_type, method
+         o.attributes.each { oa ->
+            
+            processAttributeChildren(oa)
+         }
       }
    }
    
-   private generateAttribute_ACTION(AttributeNode a)
+   private generateAttribute_ACTION(ObjectNode o)
    {
+      AttributeNode a = o.parent
       builder."${a.rmAttributeName}"() {
-      
+         name() {
+            value( opt.getTerm(o.archetypeId, o.nodeId) )
+         }
       }
    }
    
-   private generateAttribute_SECTION(AttributeNode a)
+   private generateAttribute_SECTION(ObjectNode o)
    {
+      AttributeNode a = o.parent
       builder."${a.rmAttributeName}"() {
-      
+         name() {
+            value( opt.getTerm(o.archetypeId, o.nodeId) )
+         }
       }
    }
 }
