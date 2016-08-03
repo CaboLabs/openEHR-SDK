@@ -12,15 +12,31 @@ class OPTParserTest extends GroovyTestCase {
 
    private static String PS = System.getProperty("file.separator")
 
-   
+   /*
    void testXMLGenerator()
    {
       def path = "resources"+ PS +"opts"+ PS +"Referral.opt"
       def opt = loadAndParse(path)
       def igen = new XmlInstanceGenerator()
-      println igen.generateXMLCompositionStringFromOPT(opt)
+      def ins = igen.generateXMLCompositionStringFromOPT(opt)
+      println ins
+      
+      new File( new java.text.SimpleDateFormat("yyyyMMddhhmmss'.xml'").format(new Date()) ) << ins
+   }
+   */
+   
+   void testXMLGenerator2()
+   {
+      def path = "resources"+ PS +"opts"+ PS +"sample template_en.opt"
+      def opt = loadAndParse(path)
+      def igen = new XmlInstanceGenerator()
+      def ins = igen.generateXMLCompositionStringFromOPT(opt)
+      println ins
+      
+      new File( new java.text.SimpleDateFormat("yyyyMMddhhmmss'.xml'").format(new Date()) ) << ins
    }
    
+   /*
    void testTerminologyParser()
    {
       def tm = new TerminologyParser()
@@ -29,6 +45,7 @@ class OPTParserTest extends GroovyTestCase {
       assert tm.getRubric('en', '433') == 'event'
       println tm.getRubric('en', '229')
    }
+   */
    
 /*
    void testParser()
