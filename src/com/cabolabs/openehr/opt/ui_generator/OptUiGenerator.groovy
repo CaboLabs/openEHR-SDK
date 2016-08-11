@@ -23,6 +23,7 @@ class OptUiGenerator {
       this.opt = opt
       
       // loads the openehr terminolgy
+      // FIXME: THIS IS THE EN TERMINOLOGY, if the OPT is in another language, it needs to load that terminology
       this.terminology = new TerminologyParser()
       this.terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_en.xml")) // TODO: parameter
       
