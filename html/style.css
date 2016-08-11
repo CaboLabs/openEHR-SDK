@@ -1,0 +1,14 @@
+div {
+  padding: 10px;
+}
+.small {
+  width: 48px;
+}
+.search {
+  background-image: url("http://files.softicons.com/download/system-icons/crystal-project-icons-by-everaldo-coelho/png/32x32/apps/search.png");
+  background-size: 16px 16px;
+  background-repeat: no-repeat;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+}

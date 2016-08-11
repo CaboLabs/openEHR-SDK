@@ -72,6 +72,11 @@ class TerminologyParser {
    
    String getRubric(String lang, String code)
    {
+      if (!this.terms[lang +'_'+ code])
+      {
+         println "code for $lang and $code is not defined in the openEHR terminology" // if the language is not supported will fall here
+         return
+      }
       return this.terms[lang +'_'+ code]?.term.text
    }
 }

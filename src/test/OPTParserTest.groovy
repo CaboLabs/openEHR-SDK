@@ -3,6 +3,7 @@ package test
 import groovy.util.GroovyTestCase
 
 import com.cabolabs.openehr.opt.parser.*
+import com.cabolabs.openehr.opt.ui_generator.OptUiGenerator
 import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.opt.manager.*
 import com.cabolabs.openehr.opt.instance_generator.*
@@ -25,15 +26,39 @@ class OPTParserTest extends GroovyTestCase {
    }
    */
    
-   void testXMLGenerator2()
+//   void testXMLGenerator2()
+//   {
+//      def path = "resources"+ PS +"opts"+ PS +"sample template_en.opt"
+//      def opt = loadAndParse(path)
+//      def igen = new XmlInstanceGenerator()
+//      def ins = igen.generateXMLCompositionStringFromOPT(opt)
+//      println ins
+//      
+//      new File( "documents" + PS + new java.text.SimpleDateFormat("yyyyMMddhhmmss'.xml'").format(new Date()) ) << ins
+//   }
+   
+   void testUIGenerator()
    {
-      def path = "resources"+ PS +"opts"+ PS +"sample template_en.opt"
+      def path = "resources"+ PS +"opts"+ PS +"Encuentro.opt"
       def opt = loadAndParse(path)
-      def igen = new XmlInstanceGenerator()
-      def ins = igen.generateXMLCompositionStringFromOPT(opt)
-      println ins
+      def gen = new OptUiGenerator()
+      def ui = gen.generate(opt)
       
-      new File( new java.text.SimpleDateFormat("yyyyMMddhhmmss'.xml'").format(new Date()) ) << ins
+      //println ins
+      
+      new File( "html" + PS + new java.text.SimpleDateFormat("'"+ opt.concept +"_'yyyyMMddhhmmss'_"+ opt.langCode +".html'").format(new Date()) ) << ui
+   }
+   
+   void testUIGenerator2()
+   {
+      def path = "resources"+ PS +"opts"+ PS +"Referral.opt"
+      def opt = loadAndParse(path)
+      def gen = new OptUiGenerator()
+      def ui = gen.generate(opt)
+      
+      //println ins
+      
+      new File( "html" + PS + new java.text.SimpleDateFormat("'"+ opt.concept +"_'yyyyMMddhhmmss'_"+ opt.langCode +".html'").format(new Date()) ) << ui
    }
    
    /*
