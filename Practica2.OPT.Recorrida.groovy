@@ -8,7 +8,7 @@ def man = OptManager.getInstance(path)
 man.loadAll()
 
 // Obtener un OPT por su templateId
-opt = man.getOpt('Encuentro')
+def opt = man.getOpt('Encuentro')
 
 // Recorrida
 traverse(opt.definition, 0)
