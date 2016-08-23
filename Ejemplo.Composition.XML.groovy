@@ -80,4 +80,5 @@ xml.composition(xmlns: 'http://schemas.openehr.org/v1',
 
 
 // Excribe el XML en un archivo
-new File( "documents" + File.separator + new java.text.SimpleDateFormat("yyyyMMddhhmmss'.xml'").format(new Date()) ) << writer.toString()
+String xml_text = writer.toString()
+new File( "documents" + File.separator + new java.text.SimpleDateFormat("yyyyMMddhhmmss'.xml'").format(new Date()) ) << xml_text
