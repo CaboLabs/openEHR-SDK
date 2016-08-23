@@ -33,17 +33,25 @@ class OptUiGenerator {
       builder.setDoubleQuotes(true) // Use double quotes on attributes
       
       // Generates HTML while traversing the archetype tree
-      builder.html {
+      builder.html(lang: opt.langCode) {
         head() {
+          meta(name: "viewport", content: "width=device-width, initial-scale=1")
+          
+          mkp.comment('simple style')
           link(rel:"stylesheet", href:"style.css")
+          
+          mkp.comment('boostrap style')
+          link(rel:"stylesheet", href:"bootstrap/css/bootstrap.min.css")
         }
         body() {
-          h1(opt.concept)
-          generate(opt.definition, builder, opt.definition.archetypeId)
+          div(class: "container") {
+            h1(opt.concept)
+            generate(opt.definition, builder, opt.definition.archetypeId)
+          }
         }
       }
       
-      return writer.toString()
+      return "<!DOCTYPE html>\n" + writer.toString()
    }
    
    void generate(ObjectNode o, MarkupBuilder b, String parent_arch_id)
@@ -116,7 +124,7 @@ class OptUiGenerator {
       switch (node.rmTypeName)
       {
         case 'DV_TEXT':
-           builder.input(type:'text', class: node.rmTypeName, name:node.path)
+           builder.input(type:'text', class: node.rmTypeName +' form-control', name:node.path)
         break
         case 'DV_CODED_TEXT':
 
@@ -132,7 +140,7 @@ class OptUiGenerator {
           
            if (constraint.rmTypeName == "CODE_PHRASE")
            {
-              builder.select(name:constraint.path, class: node.rmTypeName) {
+              builder.select(name:constraint.path, class: node.rmTypeName +' form-control') {
               
                  println "terminolgy id "+ constraint.xmlNode.terminology_id.value.text()
                  
@@ -168,9 +176,9 @@ class OptUiGenerator {
            
         break
         case 'DV_QUANTITY':
-           builder.input(type:'text', name:node.path+'/magnitude', class: node.rmTypeName)
+           builder.input(type:'text', name:node.path+'/magnitude', class: node.rmTypeName +' form-control')
            
-           builder.select(name:node.path+'/units', class: node.rmTypeName) {
+           builder.select(name:node.path+'/units', class: node.rmTypeName +' form-control') {
               
               node.xmlNode.list.units.each { u ->
               
@@ -179,7 +187,7 @@ class OptUiGenerator {
            }
         break
         case 'DV_COUNT':
-           builder.input(type:'number', class: node.rmTypeName, name:node.path)
+           builder.input(type:'number', class: node.rmTypeName +' form-control', name:node.path)
         break
         case 'DV_ORDINAL':
            
@@ -188,7 +196,7 @@ class OptUiGenerator {
            // ordinal.symbol.codeString
            // ordinal.symbol.terminologyId
            
-           builder.select(name:node.path, class: node.rmTypeName) {
+           builder.select(name:node.path, class: node.rmTypeName +' form-control') {
               
               node.xmlNode.list.each { ord ->
               
@@ -197,34 +205,34 @@ class OptUiGenerator {
            }
         break
         case 'DV_DATE':
-           builder.input(type:'date', name:node.path, class: node.rmTypeName)
+           builder.input(type:'date', name:node.path, class: node.rmTypeName +' form-control')
         break
         case 'DV_DATE_TIME':
-           builder.input(type:'datetime-local', name:node.path, class: node.rmTypeName)
+           builder.input(type:'datetime-local', name:node.path, class: node.rmTypeName +' form-control')
         break
         case 'DV_BOOLEAN':
            builder.input(type:'checkbox', name:node.path, class: node.rmTypeName)
         break
         case 'DV_DURATION':
            builder.label('D') {
-             input(type:'number', name:node.path+'/D', class:'small '+ node.rmTypeName)
+             input(type:'number', name:node.path+'/D', class:'small '+ node.rmTypeName +' form-control')
            }
            builder.label('H') {
-             input(type:'number', name:node.path+'/H', class:'small '+ node.rmTypeName)
+             input(type:'number', name:node.path+'/H', class:'small '+ node.rmTypeName +' form-control')
            }
            builder.label('M') {
-             input(type:'number', name:node.path+'/M', class:'small '+ node.rmTypeName)
+             input(type:'number', name:node.path+'/M', class:'small '+ node.rmTypeName +' form-control')
            }
            builder.label('S') {
-             input(type:'number', name:node.path+'/S', class:'small '+ node.rmTypeName)
+             input(type:'number', name:node.path+'/S', class:'small '+ node.rmTypeName +' form-control')
            }
         break
         case 'DV_PROPORTION':
            builder.label('numerator') {
-             input(type:'number', name:node.path+'/numerator', class:'small '+ node.rmTypeName)
+             input(type:'number', name:node.path+'/numerator', class:'small '+ node.rmTypeName +' form-control')
            }
            builder.label('denominator') {
-             input(type:'number', name:node.path+'/denominator', class:'small '+ node.rmTypeName)
+             input(type:'number', name:node.path+'/denominator', class:'small '+ node.rmTypeName +' form-control')
            }
         break
         default: // TODO: generar campos para los DV_INTERVAL

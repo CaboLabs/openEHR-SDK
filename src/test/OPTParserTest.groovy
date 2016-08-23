@@ -13,7 +13,7 @@ class OPTParserTest extends GroovyTestCase {
 
    private static String PS = System.getProperty("file.separator")
 
-   
+
    void testXMLGenerator()
    {
       def path = "resources"+ PS +"opts"+ PS +"Referral.opt"
@@ -46,7 +46,8 @@ class OPTParserTest extends GroovyTestCase {
       
       new File( "documents" + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'.json'").format(new Date()) ) << ins
    }
-   
+
+
    void testUIGenerator()
    {
       def path = "resources"+ PS +"opts"+ PS +"Encuentro.opt"
@@ -54,7 +55,7 @@ class OPTParserTest extends GroovyTestCase {
       def gen = new OptUiGenerator()
       def ui = gen.generate(opt)
       
-      //println ins
+      //println ui
       
       new File( "html" + PS + new java.text.SimpleDateFormat("'"+ opt.concept +"_'yyyyMMddhhmmss'_"+ opt.langCode +".html'").format(new Date()) ) << ui
    }
@@ -66,7 +67,7 @@ class OPTParserTest extends GroovyTestCase {
       def gen = new OptUiGenerator()
       def ui = gen.generate(opt)
       
-      //println ins
+      //println ui
       
       new File( "html" + PS + new java.text.SimpleDateFormat("'"+ opt.concept +"_'yyyyMMddhhmmss'_"+ opt.langCode +".html'").format(new Date()) ) << ui
    }

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" /><!-- simple style -->
+    <link rel="stylesheet" href="style.css" /><!-- boostrap style -->
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Referral</h1>
+      <div class="COMPOSITION">
+        <label>Referral document</label>
+        <select name="/category/defining_code" class="DV_CODED_TEXT form-control">
+          <option value="433">event</option>
+        </select>
+        <div class="EVENT_CONTEXT">
+          <label />
+          <div class="PARTICIPATION">
+            <label />
+            <select name="/context/participations/function/defining_code" class="DV_CODED_TEXT form-control">
+              <option value="at0033">Clinician making Referral</option>
+              <option value="at0034">Receiver of referral</option>
+              <option value="at0035">Other clinicians to receive copies of referral</option>
+              <option value="at0036">Payor</option>
+              <option value="at0037">General Practitioner</option>
+            </select>
+          </div>
+          <div class="ITEM_TREE">
+            <label>Tree</label>
+            <div class="ELEMENT">
+              <label>Requestor Identifier</label>
+              <input type="text" class="DV_TEXT form-control" name="/context/other_context[at0001]/items[at0028]/value" />
+            </div>
+            <div class="CLUSTER">
+              <label>Individual's personal demographics</label>
+              <div class="CLUSTER">
+                <label>ARCHETYPE_SLOT is not supported yet</label>
+              </div>
+              <div class="ELEMENT">
+                <label>Identifier</label>
+                <input type="text" class="DV_TEXT form-control" name="/items[at0016]/value" />
+              </div>
+              <div class="ELEMENT">
+                <label>Date of Birth</label>
+                <input type="datetime-local" name="/items[at0007]/value" class="DV_DATE_TIME form-control" />
+              </div>
+              <div class="ELEMENT">
+                <label>Sex</label>
+                <select name="/items[at0017]/value/defining_code" class="DV_CODED_TEXT form-control">
+                  <option value="at0020">Male</option>
+                  <option value="at0021">Female</option>
+                  <option value="at0022">Indeterminate</option>
+                </select>
+              </div>
+              <div class="ELEMENT">
+                <label>Relationship to subject</label>
+                <input type="text" class="DV_TEXT form-control" name="/items[at0008]/value" />
+              </div>
+              <div class="CLUSTER">
+                <label>ARCHETYPE_SLOT is not supported yet</label>
+              </div>
+              <div class="CLUSTER">
+                <label>ARCHETYPE_SLOT is not supported yet</label>
+              </div>
+              <div class="CLUSTER">
+                <label>ARCHETYPE_SLOT is not supported yet</label>
+              </div>
+              <div class="CLUSTER">
+                <label>ARCHETYPE_SLOT is not supported yet</label>
+              </div>
+            </div>
+            <div class="ELEMENT">
+              <label>DateTime attested</label>
+              <input type="datetime-local" name="/context/other_context[at0001]/items[at0039]/value" class="DV_DATE_TIME form-control" />
+            </div>
+            <div class="ELEMENT">
+              <label>Document Status</label>
+              <input type="text" class="DV_TEXT form-control" name="/context/other_context[at0001]/items[at0040]/value" />
+            </div>
+          </div>
+        </div>
+        <div class="INSTRUCTION">
+          <label>Referral request</label>
+          <div class="ACTIVITY">
+            <label>Request</label>
+            <div class="ITEM_TREE">
+              <label>Tree</label>
+              <div class="ELEMENT">
+                <label>Service requested</label>
+                <input type="text" class="DV_TEXT form-control" name="/activities[at0001]/description[at0009]/items[at0121]/value" />
+              </div>
+              <div class="ELEMENT">
+                <label>Description of service</label>
+                <input type="text" class="DV_TEXT form-control" name="/activities[at0001]/description[at0009]/items[at0135]/value" />
+              </div>
+              <div class="CLUSTER">
+                <label>ARCHETYPE_SLOT is not supported yet</label>
+              </div>
+              <div class="ELEMENT">
+                <label>Reason for request</label>
+                <input type="text" class="DV_TEXT form-control" name="/activities[at0001]/description[at0009]/items[at0062]/value" />
+              </div>
+              <div class="ELEMENT">
+                <label>Reason description</label>
+                <input type="text" class="DV_TEXT form-control" name="/activities[at0001]/description[at0009]/items[at0064]/value" />
+              </div>
+              <div class="ELEMENT">
+                <label>Intent</label>
+                <input type="text" class="DV_TEXT form-control" name="/activities[at0001]/description[at0009]/items[at0065]/value" />
+              </div>
+              <div class="ELEMENT">
+                <label>Urgency</label>
+                <select name="/activities[at0001]/description[at0009]/items[at0068]/value/defining_code" class="DV_CODED_TEXT form-control">
+                  <option value="at0136">Emergency</option>
+                  <option value="at0137">Urgent</option>
+                  <option value="at0138">Routine</option>
+                </select>
+              </div>
+              <div class="ELEMENT">
+                <label>Date &amp;/or time service required</label>
+                <input type="datetime-local" name="/activities[at0001]/description[at0009]/items[at0040]/value" class="DV_DATE_TIME form-control" />
+              </div>
+              <div class="ELEMENT">
+                <label>Latest date service required</label>
+                <input type="datetime-local" name="/activities[at0001]/description[at0009]/items[at0144]/value" class="DV_DATE_TIME form-control" />
+              </div>
+              <div class="ELEMENT">
+                <label>Supplementary information to follow</label>
+                <input type="checkbox" name="/activities[at0001]/description[at0009]/items[at0076]/value" class="DV_BOOLEAN" />
+              </div>
+              <div class="ELEMENT">
+                <label>Supplementary information expected</label>
+                <input type="text" class="DV_TEXT form-control" name="/activities[at0001]/description[at0009]/items[at0078]/value" />
+              </div>
+              <div class="CLUSTER">
+                <label>ARCHETYPE_SLOT is not supported yet</label>
+              </div>
+            </div>
+          </div>
+          <div class="ITEM_TREE">
+            <label>Tree</label>
+            <div class="ELEMENT">
+              <label>Requestor Identifier</label>
+              <input type="text" class="DV_TEXT form-control" name="/protocol[at0008]/items[at0010]/value" />
+            </div>
+            <div class="CLUSTER">
+              <label>Individual's personal demographics</label>
+              <div class="CLUSTER">
+                <label>ARCHETYPE_SLOT is not supported yet</label>
+              </div>
+              <div class="ELEMENT">
+                <label>Identifier</label>
+                <input type="text" class="DV_TEXT form-control" name="/items[at0016]/value" />
+              </div>
+              <div class="ELEMENT">
+                <label>Date of Birth</label>
+                <input type="datetime-local" name="/items[at0007]/value" class="DV_DATE_TIME form-control" />
+              </div>
+              <div class="ELEMENT">
+                <label>Sex</label>
+                <select name="/items[at0017]/value/defining_code" class="DV_CODED_TEXT form-control">
+                  <option value="at0020">Male</option>
+                  <option value="at0021">Female</option>
+                  <option value="at0022">Indeterminate</option>
+                </select>
+              </div>
+              <div class="ELEMENT">
+                <label>Relationship to subject</label>
+                <input type="text" class="DV_TEXT form-control" name="/items[at0008]/value" />
+              </div>
+              <div class="CLUSTER">
+                <label>ARCHETYPE_SLOT is not supported yet</label>
+              </div>
+              <div class="CLUSTER">
+                <label>ARCHETYPE_SLOT is not supported yet</label>
+              </div>
+              <div class="CLUSTER">
+                <label>ARCHETYPE_SLOT is not supported yet</label>
+              </div>
+              <div class="CLUSTER">
+                <label>ARCHETYPE_SLOT is not supported yet</label>
+              </div>
+            </div>
+            <div class="ELEMENT">
+              <label>Receiver identifier</label>
+              <input type="text" class="DV_TEXT form-control" name="/protocol[at0008]/items[at0011]/value" />
+            </div>
+            <div class="CLUSTER">
+              <label>Individual's personal demographics</label>
+              <div class="CLUSTER">
+                <label>ARCHETYPE_SLOT is not supported yet</label>
+              </div>
+              <div class="ELEMENT">
+                <label>Identifier</label>
+                <input type="text" class="DV_TEXT form-control" name="/items[at0016]/value" />
+              </div>
+              <div class="ELEMENT">
+                <label>Date of Birth</label>
+                <input type="datetime-local" name="/items[at0007]/value" class="DV_DATE_TIME form-control" />
+              </div>
+              <div class="ELEMENT">
+                <label>Sex</label>
+                <select name="/items[at0017]/value/defining_code" class="DV_CODED_TEXT form-control">
+                  <option value="at0020">Male</option>
+                  <option value="at0021">Female</option>
+                  <option value="at0022">Indeterminate</option>
+                </select>
+              </div>
+              <div class="ELEMENT">
+                <label>Relationship to subject</label>
+                <input type="text" class="DV_TEXT form-control" name="/items[at0008]/value" />
+              </div>
+              <div class="CLUSTER">
+                <label>ARCHETYPE_SLOT is not supported yet</label>
+              </div>
+              <div class="CLUSTER">
+                <label>ARCHETYPE_SLOT is not supported yet</label>
+              </div>
+              <div class="CLUSTER">
+                <label>ARCHETYPE_SLOT is not supported yet</label>
+              </div>
+              <div class="CLUSTER">
+                <label>ARCHETYPE_SLOT is not supported yet</label>
+              </div>
+            </div>
+            <div class="ELEMENT">
+              <label>Request status</label>
+              <input type="text" class="DV_TEXT form-control" name="/protocol[at0008]/items[at0127]/value" />
+            </div>
+            <div class="CLUSTER">
+              <label>ARCHETYPE_SLOT is not supported yet</label>
+            </div>
+            <div class="CLUSTER">
+              <label>ARCHETYPE_SLOT is not supported yet</label>
+            </div>
+            <div class="CLUSTER">
+              <label>Duration</label>
+              <div class="ELEMENT">
+                <label>Duration</label>
+                <label>D
+                  <input type="number" name="/protocol[at0008]/items[at0.2]/items[at0.3]/value/D" class="small DV_DURATION form-control" />
+                </label>
+                <label>H
+                  <input type="number" name="/protocol[at0008]/items[at0.2]/items[at0.3]/value/H" class="small DV_DURATION form-control" />
+                </label>
+                <label>M
+                  <input type="number" name="/protocol[at0008]/items[at0.2]/items[at0.3]/value/M" class="small DV_DURATION form-control" />
+                </label>
+                <label>S
+                  <input type="number" name="/protocol[at0008]/items[at0.2]/items[at0.3]/value/S" class="small DV_DURATION form-control" />
+                </label>
+              </div>
+              <div class="ELEMENT">
+                <label>Indefinite</label>
+                <input type="checkbox" name="/protocol[at0008]/items[at0.2]/items[at0.4]/value" class="DV_BOOLEAN" />
+              </div>
+            </div>
+            <div class="CLUSTER">
+              <label>ARCHETYPE_SLOT is not supported yet</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
