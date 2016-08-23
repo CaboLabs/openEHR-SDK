@@ -34,7 +34,7 @@ class XmlInstanceGenerator {
    def entries = ['OBSERVATION', 'EVALUATION', 'INSTRUCTION', 'ACTION', 'ADMIN_ENTRY']
    
    
-   XmlInstanceGenerator()
+   def XmlInstanceGenerator()
    {
       writer = new StringWriter()
       builder = new MarkupBuilder(writer)

@@ -13,29 +13,39 @@ class OPTParserTest extends GroovyTestCase {
 
    private static String PS = System.getProperty("file.separator")
 
-   /*
+   
    void testXMLGenerator()
    {
       def path = "resources"+ PS +"opts"+ PS +"Referral.opt"
       def opt = loadAndParse(path)
       def igen = new XmlInstanceGenerator()
       def ins = igen.generateXMLCompositionStringFromOPT(opt)
-      println ins
+      //println ins
       
-      new File( new java.text.SimpleDateFormat("yyyyMMddhhmmss'.xml'").format(new Date()) ) << ins
+      new File( "documents" + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'.xml'").format(new Date()) ) << ins
    }
-   */
    
-//   void testXMLGenerator2()
-//   {
-//      def path = "resources"+ PS +"opts"+ PS +"sample template_en.opt"
-//      def opt = loadAndParse(path)
-//      def igen = new XmlInstanceGenerator()
-//      def ins = igen.generateXMLCompositionStringFromOPT(opt)
-//      println ins
-//      
-//      new File( "documents" + PS + new java.text.SimpleDateFormat("yyyyMMddhhmmss'.xml'").format(new Date()) ) << ins
-//   }
+   void testXMLGenerator2()
+   {
+      def path = "resources"+ PS +"opts"+ PS +"sample template_en.opt"
+      def opt = loadAndParse(path)
+      def igen = new XmlInstanceGenerator()
+      def ins = igen.generateXMLCompositionStringFromOPT(opt)
+      //println ins
+      
+      new File( "documents" + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'.xml'").format(new Date()) ) << ins
+   }
+   
+   void testJSONGenerator()
+   {
+      def path = "resources"+ PS +"opts"+ PS +"Referral.opt"
+      def opt = loadAndParse(path)
+      def igen = new JsonInstanceGenerator()
+      def ins = igen.generateJSONCompositionStringFromOPT(opt)
+      //println ins
+      
+      new File( "documents" + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'.json'").format(new Date()) ) << ins
+   }
    
    void testUIGenerator()
    {
