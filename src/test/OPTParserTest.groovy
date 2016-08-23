@@ -72,6 +72,23 @@ class OPTParserTest extends GroovyTestCase {
       new File( "html" + PS + new java.text.SimpleDateFormat("'"+ opt.concept +"_'yyyyMMddhhmmss'_"+ opt.langCode +".html'").format(new Date()) ) << ui
    }
    
+   void testUIGeneratorObservationEN()
+   {
+      def path = "resources"+ PS +"sets"+ PS +"composition_observation_1"+ PS +"composition observation en.opt"
+      def opt = loadAndParse(path)
+      def gen = new OptUiGenerator()
+      def ui = gen.generate(opt)
+      new File( "html" + PS + new java.text.SimpleDateFormat("'"+ opt.concept +"_'yyyyMMddhhmmss'_"+ opt.langCode +".html'").format(new Date()) ) << ui
+   }
+   void testUIGeneratorObservationES()
+   {
+      def path = "resources"+ PS +"sets"+ PS +"composition_observation_1"+ PS +"composition observation es.opt"
+      def opt = loadAndParse(path)
+      def gen = new OptUiGenerator()
+      def ui = gen.generate(opt)
+      new File( "html" + PS + new java.text.SimpleDateFormat("'"+ opt.concept +"_'yyyyMMddhhmmss'_"+ opt.langCode +".html'").format(new Date()) ) << ui
+   }
+   
    /*
    void testTerminologyParser()
    {

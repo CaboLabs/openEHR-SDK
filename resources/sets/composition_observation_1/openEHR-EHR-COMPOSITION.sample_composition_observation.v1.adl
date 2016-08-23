@@ -1,0 +1,152 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-COMPOSITION.sample_composition_observation.v1
+
+concept
+	[at0000]	-- Ejemplo composition observation
+language
+	original_language = <[ISO_639-1::es]>
+	translations = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			author = <
+				["name"] = <"?">
+			>
+		>
+	>
+description
+	original_author = <
+		["name"] = <"">
+	>
+	details = <
+		["es"] = <
+			language = <[ISO_639-1::es]>
+			purpose = <"">
+			use = <"">
+			misuse = <"">
+			copyright = <"">
+		>
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"sample composition observation">
+			use = <"sample composition observation">
+			misuse = <"">
+			copyright = <"Pablo Pazos (cabolabs.com)">
+		>
+	>
+	lifecycle_state = <"0">
+	other_contributors = <>
+	other_details = <
+		["MD5-CAM-1.0.1"] = <"4B0A866540590B662686A8B8088E3EAD">
+	>
+
+definition
+	COMPOSITION[at0000] matches {	-- Ejemplo composition observation
+		category matches {
+			DV_CODED_TEXT matches {
+				defining_code matches {[openehr::433]}
+			}
+		}
+		context matches {
+			EVENT_CONTEXT matches {
+				other_context matches {
+					ITEM_TREE[at0002] matches {	-- *Arbol(es)
+						items cardinality matches {0..*; unordered} matches {
+							ELEMENT[at0003] occurrences matches {0..1} matches {	-- Texto libre
+								value matches {
+									DV_TEXT matches {*}
+								}
+							}
+							CLUSTER[at0004] occurrences matches {0..1} matches {	-- Grupo
+								items cardinality matches {1..*; unordered} matches {
+									ELEMENT[at0005] occurrences matches {0..1} matches {	-- Cantidad simple
+										value matches {
+											DV_COUNT matches {*}
+										}
+									}
+									ELEMENT[at0006] occurrences matches {0..1} matches {	-- Fecha
+										value matches {
+											DV_DATE_TIME matches {*}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		content cardinality matches {0..*; unordered} matches {
+			allow_archetype OBSERVATION[at0001] occurrences matches {0..*} matches {	-- *OBSERVATION(es)
+				include
+					archetype_id/value matches {/.*/}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["es"] = <
+			items = <
+				["at0000"] = <
+					text = <"Ejemplo composition observation">
+					description = <"unknown">
+				>
+				["at0001"] = <
+					text = <"*OBSERVATION(es)">
+					description = <"**(es)">
+				>
+				["at0002"] = <
+					text = <"*Arbol(es)">
+					description = <"*@ internal @(es)">
+				>
+				["at0003"] = <
+					text = <"Texto libre">
+					description = <"*">
+				>
+				["at0004"] = <
+					text = <"Grupo">
+					description = <"*">
+				>
+				["at0005"] = <
+					text = <"Cantidad simple">
+					description = <"*">
+				>
+				["at0006"] = <
+					text = <"Fecha">
+					description = <"*">
+				>
+			>
+		>
+		["en"] = <
+			items = <
+				["at0000"] = <
+					text = <"sample composition observation">
+					description = <"*unknown(es)">
+				>
+				["at0001"] = <
+					text = <"OBSERVATION">
+					description = <"*">
+				>
+				["at0002"] = <
+					text = <"Arbol">
+					description = <"@ internal @">
+				>
+				["at0003"] = <
+					text = <"Free text">
+					description = <"*">
+				>
+				["at0004"] = <
+					text = <"Group">
+					description = <"*">
+				>
+				["at0005"] = <
+					text = <"Count">
+					description = <"*">
+				>
+				["at0006"] = <
+					text = <"Date">
+					description = <"*">
+				>
+			>
+		>
+	>
