@@ -8,6 +8,7 @@ import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.opt.manager.*
 import com.cabolabs.openehr.opt.instance_generator.*
 import com.cabolabs.openehr.terminology.TerminologyParser
+import com.cabolabs.openehr.opt.instance_validation.XmlInstanceValidation
 
 class OPTParserTest extends GroovyTestCase {
 
@@ -87,6 +88,27 @@ class OPTParserTest extends GroovyTestCase {
       def gen = new OptUiGenerator()
       def ui = gen.generate(opt)
       new File( "html" + PS + new java.text.SimpleDateFormat("'"+ opt.concept +"_'yyyyMMddhhmmss'_"+ opt.langCode +".html'").format(new Date()) ) << ui
+   }
+   
+   void testValidacionXSD1()
+   {
+      def validator = new XmlInstanceValidation('xsd'+ File.separator + 'Version.xsd')
+
+      // Recorre todos los archivos generador en /documents
+      new File('documents' + File.separator).eachFileMatch(~/.*.xml/) { xml ->
+
+        if (!validator.validate( xml.text ))
+        {
+           println xml.name +' NO VALIDA'
+           println '====================================='
+           validator.errors.each {
+              println it
+           }
+           println '====================================='
+        }
+        else
+           println xml.name +' VALIDA'
+      }
    }
    
    /*

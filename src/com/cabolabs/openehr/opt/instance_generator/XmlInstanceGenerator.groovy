@@ -213,7 +213,11 @@ class XmlInstanceGenerator {
       children.each { obj ->
       
          // Avoid processing slots
-         if (obj.type == 'ARCHETYPE_SLOT') return
+         if (obj.type == 'ARCHETYPE_SLOT')
+         {
+            builder.mkp.comment('SLOT NOT PROCESSED')
+            return
+         }
       
          // wont process all the alternatives from children, just the first
          obj_type = obj.rmTypeName
@@ -294,7 +298,7 @@ class XmlInstanceGenerator {
       */
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_TEXT') {
-         value( String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 255 ) )
+         value( String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 255 ) ) // TODO: improve using word / phrase dictionary
       }
    }
    
@@ -306,8 +310,34 @@ class XmlInstanceGenerator {
       </value>
       */
       AttributeNode a = o.parent
-      builder."${a.rmAttributeName}"('xsi:type':'DV_DATE_TIME') {
+      /*builder."${a.rmAttributeName}"('xsi:type':'DV_DATE_TIME') {
          value( new Date().toOpenEHRDateTime() )
+      }*/
+      generate_attr_DV_DATE_TIME(a.rmAttributeName)
+   }
+   
+   /**
+    * helper to generate simple datetime attribute.
+    */
+   private generate_attr_DV_DATE_TIME(String attr)
+   {
+      /*
+      <attr xsi:type="DV_DATE_TIME">
+         <value>20150515T183951,000-0300</value>
+      </attr>
+      */
+      builder."${attr}"('xsi:type':'DV_DATE_TIME') {
+         value( new Date().toOpenEHRDateTime() )
+      }
+   }
+   
+   private generate_attr_CODE_PHRASE(String attr, String terminology, String code)
+   {
+      builder."${attr}"() {
+         terminology_id() {
+            value( terminology )
+         }
+         code_string( code )
       }
    }
    
@@ -324,6 +354,19 @@ class XmlInstanceGenerator {
       }
    }
    
+   private generate_DV_COUNT(ObjectNode o, String parent_arch_id)
+   {
+      /*
+      <value xsi:type="DV_COUNT">
+         <magnitude>3</magnitude>
+      </value>
+      */
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"('xsi:type':'DV_COUNT') {
+         magnitude( Integer.random(10, 1) )
+      }
+   }
+   
    private generate_DV_BOOLEAN(ObjectNode o, String parent_arch_id)
    {
       /*
@@ -334,6 +377,47 @@ class XmlInstanceGenerator {
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_BOOLEAN') {
          value(true)
+      }
+   }
+   
+   private generate_DV_MULTIMEDIA(ObjectNode o, String parent_arch_id)
+   {
+      /* http://www.cabolabs.com/CaboLabs%20New%20Logo%20Horizontal%20300dpi%20421.png
+       <value xsi:type="DV_MULTIMEDIA">
+         <media_type>
+           <terminology_id>
+             <value>IANA_media-types</value>
+           </terminology_id>
+           <code_string></code_string>
+         </media_type>
+         <size>1024</size>
+       </value>
+      */
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"('xsi:type':'DV_MULTIMEDIA') {
+         generate_attr_CODE_PHRASE('media_type', 'IANA_media-types', 'image/jpeg') // TODO: grab the terminology from the ObjectNode
+         size(1024)
+      }
+   }
+   
+   private generate_DV_QUANTITY(ObjectNode o, String parent_arch_id)
+   {
+      /*
+       <value xsi:type="DV_QUANTITY">
+         <magnitude>120.0</magnitude>
+         <units>mm[Hg]</units>
+       </value>
+      */
+      
+      // Take the first constraint and set the values based on it
+      def constraint = o.xmlNode.list[0]
+      def lo = (constraint.magnitude.lower_unbounded.text().toBoolean() ? 0 : constraint.magnitude.lower.text().toInteger())
+      def hi = (constraint.magnitude.upper_unbounded.text().toBoolean() ? 1000 : constraint.magnitude.upper.text().toInteger())
+      
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"('xsi:type':'DV_QUANTITY') {
+         magnitude( Integer.random(hi, lo) ) // TODO: should be BigDecinal not just Integer
+         units( constraint.units.text() )
       }
    }
    
@@ -350,21 +434,67 @@ class XmlInstanceGenerator {
       }
    }
    
+   private generate_DV_IDENTIFIER(ObjectNode o, String parent_arch_id)
+   {
+      /*
+      <value xsi:type="DV_IDENTIFIER">
+        <issuer>sdfsfd</issuer>
+        <assigner>sdfsfd</assigner>
+        <id>sdfsfd</id>
+        <type>sdfsfd</type>
+      </value>
+      */
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"('xsi:type':'DV_IDENTIFIER') {
+         issuer('Hospital de Clinicas')
+         assigner('Hospital de Clinicas')
+         id(String.randomNumeric(8))
+         type('LOCALID')
+      }
+   }
+   
    /**
     * /DATATYPES -----------------------------------------------------------------------------------------------
     */
+   
+   /**
+    * helper to add language, encoding and subject to ENTRY nodes.
+    */
+   private add_ENTRY_elements(ObjectNode o, String parent_arch_id)
+   {
+      builder.language() {
+         terminology_id() {
+            value( this.opt.langTerminology )
+         }
+         code_string( this.opt.langCode )
+      }
+      builder.encoding() {
+         terminology_id() {
+            value('Unicode')
+         }
+         code_string('UTF-8') // TODO: deberia salir de una config global
+      }
+      builder.subject('xsi:type':'PARTY_SELF')
+      
+      // ENTRY.protocol
+      def oa = o.attributes.find { it.rmAttributeName == 'protocol' }
+      if (oa) processAttributeChildren(oa, parent_arch_id)
+   }
    
     
    private generate_SECTION(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
-      
+      def oa
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"(archetype_node_id: o.archetypeId, 'xsi:type': o.rmTypeName) {
          name() {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
+         
+         oa = o.attributes.find { it.rmAttributeName == 'items' }
+         if (oa) processAttributeChildren(oa, parent_arch_id)
       }
    }
    
@@ -378,6 +508,13 @@ class XmlInstanceGenerator {
          name() {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
+         add_ENTRY_elements(o, parent_arch_id)
+         
+         def oa
+         
+         // data
+         oa = o.attributes.find { it.rmAttributeName == 'data' }
+         if (oa) processAttributeChildren(oa, parent_arch_id)
       }
    }
    
@@ -391,8 +528,17 @@ class XmlInstanceGenerator {
          name() {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
+         add_ENTRY_elements(o, parent_arch_id)
+         
+         def oa
+         
+         // data
+         oa = o.attributes.find { it.rmAttributeName == 'data' }
+         if (oa) processAttributeChildren(oa, parent_arch_id)
       }
    }
+   
+   
    
    private generate_INSTRUCTION(ObjectNode o, String parent_arch_id)
    {
@@ -405,19 +551,7 @@ class XmlInstanceGenerator {
          name() {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
-         language() {
-            terminology_id() {
-               value( this.opt.langTerminology )
-            }
-            code_string( this.opt.langCode )
-         }
-         encoding() {
-            terminology_id() {
-               value('Unicode')
-            }
-            code_string('UTF-8') // TODO: deberia salir de una config global
-         }
-         subject('xsi:type':'PARTY_SELF')
+         add_ENTRY_elements(o, parent_arch_id)
          // TBD
          
          // Fix for a bug in the template designer:
@@ -438,8 +572,8 @@ class XmlInstanceGenerator {
          def oa
          
          // protocol
-         oa = o.attributes.find { it.rmAttributeName == 'protocol' }
-         if (oa) processAttributeChildren(oa, parent_arch_id)
+         //oa = o.attributes.find { it.rmAttributeName == 'protocol' }
+         //if (oa) processAttributeChildren(oa, parent_arch_id)
          
          // DV_TEXT narrative (not in the OPT, is an IM attribute)
          builder.narrative() {
@@ -519,10 +653,64 @@ class XmlInstanceGenerator {
          name() {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
+         add_ENTRY_elements(o, parent_arch_id)
       }
    }
    
+   private generate_HISTORY(ObjectNode o, String parent_arch_id)
+   {
+      // parent from now can be different than the parent if if the object has archetypeId
+      parent_arch_id = o.archetypeId ?: parent_arch_id
+      
+      AttributeNode a = o.parent
+      
+      // is it arcehtyped or not?
+      def arch_node_id = (o.archetypeId ?: o.nodeId)
+
+      builder."${a.rmAttributeName}"(archetype_node_id:arch_node_id, 'xsi:type': o.rmTypeName) {
+      
+         name() {
+            value( opt.getTerm(parent_arch_id, o.nodeId) )
+         }
+         // IM attribute not present in the OPT
+         generate_attr_DV_DATE_TIME('origin')
+         
+         o.attributes.each { oa ->
+            
+            processAttributeChildren(oa, parent_arch_id)
+         }
+      }
+   }
    
+   private generate_EVENT(ObjectNode o, String parent_arch_id)
+   {
+      // parent from now can be different than the parent if if the object has archetypeId
+      parent_arch_id = o.archetypeId ?: parent_arch_id
+      
+      AttributeNode a = o.parent
+      
+      // is it arcehtyped or not?
+      def arch_node_id = (o.archetypeId ?: o.nodeId)
+
+      builder."${a.rmAttributeName}"(archetype_node_id:arch_node_id, 'xsi:type': 'POINT_EVENT') { // dont use EVENT because is abstract 
+      
+         name() {
+            value( opt.getTerm(parent_arch_id, o.nodeId) )
+         }
+         // IM attribute not present in the OPT
+         generate_attr_DV_DATE_TIME('time')
+         
+         o.attributes.each { oa ->
+            
+            processAttributeChildren(oa, parent_arch_id)
+         }
+      }
+   }
+   
+   private generate_POINT_EVENT(ObjectNode o, String parent_arch_id)
+   {
+      generate_EVENT(o, parent_arch_id)
+   }
    
    private generate_ITEM_TREE(ObjectNode o, String parent_arch_id)
    {
@@ -593,7 +781,5 @@ class XmlInstanceGenerator {
          }
       }
    }
-   
-   
 
 }
