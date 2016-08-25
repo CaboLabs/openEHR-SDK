@@ -217,13 +217,13 @@ class XmlInstanceGenerator {
       
          // wont process all the alternatives from children, just the first
          obj_type = obj.rmTypeName
-         method = 'generateAttribute_'+ obj_type
-         "$method"(obj, parent_arch_id) // generateAttribute_OBSERVATION(a)
+         method = 'generate_'+ obj_type
+         "$method"(obj, parent_arch_id) // generate_OBSERVATION(a)
       }
    }
    
    /*
-   private generateAttribute(AttributeNode a)
+   private generate(AttributeNode a)
    {
       // wont process all the alternatives from children, just the first
       def child_obj = a.children[0]
@@ -236,10 +236,10 @@ class XmlInstanceGenerator {
    
    /**
     * These functions process an attribute of the rmtype mentioned on the function name.
-    * e.g. for generateAttribute_EVENT_CONTEXT(AttributeNode a), a.rmAttributeName == 'context'
+    * e.g. for generate_EVENT_CONTEXT(AttributeNode a), a.rmAttributeName == 'context'
     */
    
-   private generateAttribute_EVENT_CONTEXT(ObjectNode o, String parent_arch_id)
+   private generate_EVENT_CONTEXT(ObjectNode o, String parent_arch_id)
    {
       // TBD
       /* already generated on the main method, this avoids processing the node again
@@ -259,7 +259,7 @@ class XmlInstanceGenerator {
     *       just one value), if not, we will get the first constraint and generate data that complies with
     *       that constraint.
     */
-   private generateAttribute_DV_CODED_TEXT(ObjectNode o, String parent_arch_id)
+   private generate_DV_CODED_TEXT(ObjectNode o, String parent_arch_id)
    {
       /*
       <value xsi:type="DV_CODED_TEXT">
@@ -285,7 +285,7 @@ class XmlInstanceGenerator {
       }
    }
    
-   private generateAttribute_DV_TEXT(ObjectNode o, String parent_arch_id)
+   private generate_DV_TEXT(ObjectNode o, String parent_arch_id)
    {
       /*
       <value xsi:type="DV_TEXT">
@@ -298,7 +298,7 @@ class XmlInstanceGenerator {
       }
    }
    
-   private generateAttribute_DV_DATE_TIME(ObjectNode o, String parent_arch_id)
+   private generate_DV_DATE_TIME(ObjectNode o, String parent_arch_id)
    {
       /*
       <value xsi:type="DV_DATE_TIME">
@@ -311,7 +311,7 @@ class XmlInstanceGenerator {
       }
    }
    
-   private generateAttribute_DV_DATE(ObjectNode o, String parent_arch_id)
+   private generate_DV_DATE(ObjectNode o, String parent_arch_id)
    {
       /*
       <value xsi:type="DV_DATE">
@@ -324,7 +324,7 @@ class XmlInstanceGenerator {
       }
    }
    
-   private generateAttribute_DV_BOOLEAN(ObjectNode o, String parent_arch_id)
+   private generate_DV_BOOLEAN(ObjectNode o, String parent_arch_id)
    {
       /*
        <value xsi:type="DV_BOOLEAN">
@@ -337,7 +337,7 @@ class XmlInstanceGenerator {
       }
    }
    
-   private generateAttribute_DV_DURATION(ObjectNode o, String parent_arch_id)
+   private generate_DV_DURATION(ObjectNode o, String parent_arch_id)
    {
       /*
       <value xsi:type="DV_DURATION">
@@ -354,39 +354,53 @@ class XmlInstanceGenerator {
     * /DATATYPES -----------------------------------------------------------------------------------------------
     */
    
-   private generateAttribute_OBSERVATION(ObjectNode o, String parent_arch_id)
+    
+   private generate_SECTION(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
       
       AttributeNode a = o.parent
-      builder."${a.rmAttributeName}"() {
+      builder."${a.rmAttributeName}"(archetype_node_id: o.archetypeId, 'xsi:type': o.rmTypeName) {
          name() {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
       }
    }
    
-   private generateAttribute_EVALUATION(ObjectNode o, String parent_arch_id)
+   private generate_OBSERVATION(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
       
       AttributeNode a = o.parent
-      builder."${a.rmAttributeName}"() {
+      builder."${a.rmAttributeName}"(archetype_node_id: o.archetypeId, 'xsi:type': o.rmTypeName) {
          name() {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
       }
    }
    
-   private generateAttribute_INSTRUCTION(ObjectNode o, String parent_arch_id)
+   private generate_EVALUATION(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
       
       AttributeNode a = o.parent
-      builder."${a.rmAttributeName}"(archetype_node_id: o.archetypeId, 'xsi:type':'INSTRUCTION') {
+      builder."${a.rmAttributeName}"(archetype_node_id: o.archetypeId, 'xsi:type': o.rmTypeName) {
+         name() {
+            value( opt.getTerm(parent_arch_id, o.nodeId) )
+         }
+      }
+   }
+   
+   private generate_INSTRUCTION(ObjectNode o, String parent_arch_id)
+   {
+      // parent from now can be different than the parent if if the object has archetypeId
+      parent_arch_id = o.archetypeId ?: parent_arch_id
+      
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"(archetype_node_id: o.archetypeId, 'xsi:type': o.rmTypeName) {
          
          name() {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
@@ -438,7 +452,7 @@ class XmlInstanceGenerator {
       }
    }
    
-   private generateAttribute_ACTIVITY(ObjectNode o, String parent_arch_id)
+   private generate_ACTIVITY(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
@@ -495,7 +509,22 @@ class XmlInstanceGenerator {
       }
    }
    
-   private generateAttribute_ITEM_TREE(ObjectNode o, String parent_arch_id)
+   private generate_ACTION(ObjectNode o, String parent_arch_id)
+   {
+      // parent from now can be different than the parent if if the object has archetypeId
+      parent_arch_id = o.archetypeId ?: parent_arch_id
+      
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"(archetype_node_id: o.archetypeId, 'xsi:type': o.rmTypeName) {
+         name() {
+            value( opt.getTerm(parent_arch_id, o.nodeId) )
+         }
+      }
+   }
+   
+   
+   
+   private generate_ITEM_TREE(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
@@ -505,7 +534,7 @@ class XmlInstanceGenerator {
       // is it arcehtyped or not?
       def arch_node_id = (o.archetypeId ?: o.nodeId)
 
-      builder."${a.rmAttributeName}"(archetype_node_id:arch_node_id, 'xsi:type':'ITEM_TREE') {
+      builder."${a.rmAttributeName}"(archetype_node_id:arch_node_id, 'xsi:type': o.rmTypeName) {
       
          name() {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
@@ -518,7 +547,7 @@ class XmlInstanceGenerator {
       }
    }
    
-   private generateAttribute_CLUSTER(ObjectNode o, String parent_arch_id)
+   private generate_CLUSTER(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
@@ -528,7 +557,7 @@ class XmlInstanceGenerator {
       // is it arcehtyped or not?
       def arch_node_id = (o.archetypeId ?: o.nodeId)
       
-      builder."${a.rmAttributeName}"(archetype_node_id:arch_node_id, 'xsi:type':'CLUSTER') {
+      builder."${a.rmAttributeName}"(archetype_node_id:arch_node_id, 'xsi:type': o.rmTypeName) {
       
          name() {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
@@ -542,7 +571,7 @@ class XmlInstanceGenerator {
    }
    
    
-   private generateAttribute_ELEMENT(ObjectNode o, String parent_arch_id)
+   private generate_ELEMENT(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
@@ -552,7 +581,7 @@ class XmlInstanceGenerator {
       // is it arcehtyped or not?
       def arch_node_id = (o.archetypeId ?: o.nodeId)
       
-      builder."${a.rmAttributeName}"(archetype_node_id:arch_node_id, 'xsi:type':'ELEMENT') {
+      builder."${a.rmAttributeName}"(archetype_node_id:arch_node_id, 'xsi:type': o.rmTypeName) {
       
          name() {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
@@ -566,29 +595,5 @@ class XmlInstanceGenerator {
    }
    
    
-   private generateAttribute_ACTION(ObjectNode o, String parent_arch_id)
-   {
-      // parent from now can be different than the parent if if the object has archetypeId
-      parent_arch_id = o.archetypeId ?: parent_arch_id
-      
-      AttributeNode a = o.parent
-      builder."${a.rmAttributeName}"() {
-         name() {
-            value( opt.getTerm(parent_arch_id, o.nodeId) )
-         }
-      }
-   }
-   
-   private generateAttribute_SECTION(ObjectNode o, String parent_arch_id)
-   {
-      // parent from now can be different than the parent if if the object has archetypeId
-      parent_arch_id = o.archetypeId ?: parent_arch_id
-      
-      AttributeNode a = o.parent
-      builder."${a.rmAttributeName}"() {
-         name() {
-            value( opt.getTerm(parent_arch_id, o.nodeId) )
-         }
-      }
-   }
+
 }
