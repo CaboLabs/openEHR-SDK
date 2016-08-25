@@ -58,7 +58,15 @@ class Main {
             def ins = igen.generateXMLCompositionStringFromOPT(opt)
             
             def destination_path = args[2]
-            new File( destination_path + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'.xml'").format(new Date()) ) << ins
+            def out = new File( destination_path + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'.xml'").format(new Date()) )
+            
+            // Generates UTF-8 XML output
+            def printer = new java.io.PrintWriter(out, 'UTF-8')
+            printer.write(ins)
+            printer.flush()
+            printer.close()
+            
+            println "Instance generated: "+ out.absolutePath
          break
          case 'inval':
             
