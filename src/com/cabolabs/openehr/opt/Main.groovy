@@ -48,25 +48,46 @@ class Main {
          case 'ingen':
             if (args.size() < 3)
             {
-               println 'usage: opt ingen path_to_opt dest_folder'
+               println 'usage: opt ingen path_to_opt dest_folder [amount]'
                System.exit(0)
             }
-         
+            
+            int count = 1
+            if (args.size() == 4)
+            {
+               count = args[3].toInteger()
+               if (count <= 0)
+               {
+                  println "amount should be greater than 0"
+                  System.exit(0)
+               }
+            }
+            
             def path = args[1] //"resources"+ PS +"opts"+ PS +"Referral.opt"
             def opt = loadAndParse(path)
             def igen = new XmlInstanceGenerator()
-            def ins = igen.generateXMLCompositionStringFromOPT(opt)
             
             def destination_path = args[2]
-            def out = new File( destination_path + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'.xml'").format(new Date()) )
+            if (!new File(destination_path).exists())
+            {
+               println "destination_path $destination_path doesn't exists"
+               System.exit(0)
+            }
             
-            // Generates UTF-8 XML output
-            def printer = new java.io.PrintWriter(out, 'UTF-8')
-            printer.write(ins)
-            printer.flush()
-            printer.close()
-            
-            println "Instance generated: "+ out.absolutePath
+            def ins, out, printer
+            for (i in 1..count)
+            {
+               ins = igen.generateXMLCompositionStringFromOPT(opt)
+               out = new File( destination_path + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'_"+ i +".xml'").format(new Date()) )
+               
+               // Generates UTF-8 XML output
+               printer = new java.io.PrintWriter(out, 'UTF-8')
+               printer.write(ins)
+               printer.flush()
+               printer.close()
+               
+               println "Instance generated: "+ out.absolutePath
+            }
          break
          case 'inval':
             

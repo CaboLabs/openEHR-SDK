@@ -193,7 +193,7 @@ class XmlInstanceGenerator {
     */
    private processAttributeChildren(AttributeNode a, String parent_arch_id)
    {
-      println "processAttributeChildren parent_arch_id: "+ parent_arch_id
+      //println "processAttributeChildren parent_arch_id: "+ parent_arch_id
       
       def obj_type, method
    
