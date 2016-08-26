@@ -86,6 +86,7 @@ class XmlInstanceGenerator {
       
       terminology = new TerminologyParser()
       terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_en.xml"))
+      terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_es.xml"))
    }
    
    String generateXMLCompositionStringFromOPT(OperationalTemplate opt)
@@ -453,9 +454,84 @@ class XmlInstanceGenerator {
       }
    }
    
+   private generate_DV_ORDINAL(ObjectNode o, String parent_arch_id)
+   {
+      /*
+      <value xsi:type="DV_ORDINAL">
+        <value>[[EYE_RESPONSE:::INTEGER:::1]]</value>
+        <symbol>
+          <value>None</value>
+          <defining_code>
+            <terminology_id>
+               <value>local</value>
+            </terminology_id>
+            <code_string>at0010</code_string>
+          </defining_code>
+        </symbol>
+      </value>
+      */
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"('xsi:type':'DV_ORDINAL') {
+         value(1) // TODO: take the ordinal value from the ObjectNode
+         symbol() {
+            value( String.random(('A'..'Z').join(), 15) ) // TODO: take the value from the ObjectNode
+            defining_code() {
+               terminology_id() {
+                  value('local')
+               }
+               code_string('at0010') // FIXME: take the value from the ObjectNode
+            }
+         }
+      }
+   }
+   
    /**
     * /DATATYPES -----------------------------------------------------------------------------------------------
     */
+   
+   /**
+    * helper to add name, also checks if the object has a constraint for the name.
+    */
+   private add_LOCATABLE_elements(ObjectNode o, String parent_arch_id)
+   {
+      def name_constraint = o.attributes.find { it.rmAttributeName == 'name' }
+      if (name_constraint)
+      {
+         // Check for prmitive constraint over DV_TEXT.value, that is CString.
+         // In our model this is just another ObjectNode, just for reference:
+         // https://github.com/openEHR/java-libs/blob/master/openehr-aom/src/main/java/org/openehr/am/archetype/constraintmodel/primitive/CString.java
+         println "NAME CONSTRAINT: " + name_constraint
+         
+         /*
+         name_constraint.children.each {
+            println it.rmTypeName // DV_TEXT
+            println it.attributes.rmAttributeName // value
+            it.attributes.each { a ->
+            
+               a.children.each { c ->
+                  println c.rmTypeName // String
+                  println c.xmlNode.item.list[0].text() // if there is a text constraint, grab the first option (can have many in the list)
+               }
+            }
+         }
+         */
+         
+         // childen[0] DV_TEXT
+         //   for the DV_TEXT.value constraint
+         //     the first children can be a STRING constraint
+         //       check if there is a list constraint and get the first value as the name
+         def name_value = name_constraint.children[0].attributes.find { it.rmAttributeName == 'value' }.children[0].xmlNode.item.list[0].text()
+         builder.name() {
+            value( name_value )
+         }
+      }
+      else // just add the name based on the archetype ontology terms
+      {
+         builder.name() {
+            value( this.opt.getTerm(parent_arch_id, o.nodeId) )
+         }
+      }
+   }
    
    /**
     * helper to add language, encoding and subject to ENTRY nodes.
@@ -563,17 +639,9 @@ class XmlInstanceGenerator {
          // NARRATIVE DV?TEXT comes before activities in the XSD ....
          
          // Follow the XSD attribute order:
-         // - process protocol (optional)
+         // - process protocol (optional) // processed by the add_ENTRY_elements
          // - generate narrative (mandatory)
          // - process activities (optional)
-         
-         def xsd_attr_order = ['protocol', 'activities']
-         
-         def oa
-         
-         // protocol
-         //oa = o.attributes.find { it.rmAttributeName == 'protocol' }
-         //if (oa) processAttributeChildren(oa, parent_arch_id)
          
          // DV_TEXT narrative (not in the OPT, is an IM attribute)
          builder.narrative() {
@@ -581,7 +649,7 @@ class XmlInstanceGenerator {
          }
          
          // activities
-         oa = o.attributes.find { it.rmAttributeName == 'activities' }
+         def oa = o.attributes.find { it.rmAttributeName == 'activities' }
          if (oa) processAttributeChildren(oa, parent_arch_id)
       }
    }
@@ -654,6 +722,43 @@ class XmlInstanceGenerator {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
          add_ENTRY_elements(o, parent_arch_id)
+         
+         
+         // ACTION.time (not in the OPT, is an IM attribute)
+         generate_attr_DV_DATE_TIME('time')
+         
+         // description
+         def oa = o.attributes.find { it.rmAttributeName == 'description' }
+         if (oa) processAttributeChildren(oa, parent_arch_id)
+         
+      
+         // add one of the ism_transition in the OPT
+         def attr_ism_transition = o.attributes.find { it.rmAttributeName == 'ism_transition' }
+         
+         // .children[0] ISM_TRANSITION
+         //  .attributes current_state 
+         //    .children[0] DV_CODED_TEXT
+         //      .attributes defining_code
+         //       .children[0] CODE_PHRASE
+         def code_phrase = attr_ism_transition
+                             .children[0].attributes.find { it.rmAttributeName == 'current_state' }
+                             .children[0].attributes.find { it.rmAttributeName == 'defining_code' }
+                             .children[0]
+         
+         //println code_phrase.xmlNode.terminology_id.value.text() // openehr
+         //println code_phrase.xmlNode.code_list[0].text()         // 524
+         
+         ism_transition() {
+           current_state() {
+              value( terminology.getRubric(opt.langCode, code_phrase.xmlNode.code_list[0].text()) )
+              defining_code() { // use generate_attr_CODE_PHRASE
+                 terminology_id() {
+                    value( code_phrase.xmlNode.terminology_id.value.text() )
+                 }
+                 code_string( code_phrase.xmlNode.code_list[0].text() )
+              }
+           }
+         }
       }
    }
    
@@ -747,12 +852,13 @@ class XmlInstanceGenerator {
       
       builder."${a.rmAttributeName}"(archetype_node_id:arch_node_id, 'xsi:type': o.rmTypeName) {
       
-         name() {
+         /*name() {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
-         }
+         }*/
+         add_LOCATABLE_elements(o, parent_arch_id)
       
          o.attributes.each { oa ->
-            
+            if (oa.rmAttributeName == 'name') return // avoid processing name constraints, thos are processde by add_LOCATABLE_elements
             processAttributeChildren(oa, parent_arch_id)
          }
       }
@@ -771,12 +877,10 @@ class XmlInstanceGenerator {
       
       builder."${a.rmAttributeName}"(archetype_node_id:arch_node_id, 'xsi:type': o.rmTypeName) {
       
-         name() {
-            value( opt.getTerm(parent_arch_id, o.nodeId) )
-         }
+         add_LOCATABLE_elements(o, parent_arch_id)
          
          o.attributes.each { oa ->
-            
+            if (oa.rmAttributeName == 'name') return // avoid processing name constraints, thos are processde by add_LOCATABLE_elements
             processAttributeChildren(oa, parent_arch_id)
          }
       }
