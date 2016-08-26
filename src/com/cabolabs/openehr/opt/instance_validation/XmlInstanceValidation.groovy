@@ -10,6 +10,7 @@ import javax.xml.XMLConstants
 import org.xml.sax.ErrorHandler
 import org.xml.sax.SAXException
 import org.xml.sax.SAXParseException
+import java.io.InputStream
 
 import groovy.util.slurpersupport.GPathResult
 
@@ -17,18 +18,29 @@ class XmlInstanceValidation {
 
    def errors = []
    def xsdPath
+   def xsdStream
+   
+   Schema schema
    
    def XmlInstanceValidation(String path_to_xsd)
    {
       xsdPath = path_to_xsd
+      init()
    }
    
-   /*
-   public boolean validateOPT(String xml)
+   def XmlInstanceValidation(InputStream xsd_as_stream)
    {
-      return this.validate(xml, Holders.config.app.opt_xsd)
+      xsdStream = xsd_as_stream
+      init()
    }
-   */
+   
+   private void init()
+   {
+      SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
+      
+      if (this.xsdPath) this.schema = schemaFactory.newSchema( [ new StreamSource( this.xsdPath ) ] as Source[] )
+      else this.schema = schemaFactory.newSchema( [ new StreamSource( this.xsdStream ) ] as Source[] ) // stream cant be read twice, so it should be initialized once in the init to support many calls to validate.
+   }
    
    public boolean validate(GPathResult xml, Map namespaces)
    {
@@ -47,22 +59,17 @@ class XmlInstanceValidation {
       return this._validate(xml)
    }
    
-   
    public List<String> getErrors()
    {
       return this.errors
    }
    
-   
    private boolean _validate(String xml)
    {
       this.errors = [] // Reset the errors for reuse
       
-      SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
-      Schema schema = schemaFactory.newSchema( [ new StreamSource( this.xsdPath ) ] as Source[] )
-      
       // Validate with validator
-      Validator validator = schema.newValidator()
+      Validator validator = this.schema.newValidator()
       ErrorHandler errorHandler = new SimpleErrorHandler(xml)
       validator.setErrorHandler(errorHandler)
       

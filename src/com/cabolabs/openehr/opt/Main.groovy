@@ -70,27 +70,56 @@ class Main {
          break
          case 'inval':
             
-            // TODO: add the xsd to the JAR and access it through
-            //       http://stackoverflow.com/questions/8258244/accessing-a-file-inside-a-jar-file
-            /*
-            def validator = new XmlInstanceValidation('xsd'+ File.separator + 'Version.xsd')
-            new File('documents' + File.separator).eachFileMatch(~/.*.xml/) { xml ->
-
-              if (!validator.validate( xml.text ))
-              {
-                 println xml.name +' NO VALIDA'
-                 println '====================================='
-                 validator.errors.each {
-                    println it
-                 }
-                 println '====================================='
-              }
-              else
-                 println xml.name +' VALIDA'
+            // Read XSD from JAR as a resource
+            def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
+            def validator = new XmlInstanceValidation(inputStream)
+            
+            if (args.size() < 2)
+            {
+               println 'usage: opt inval path_to_xml_instance'
+               println 'usage: opt inval path_to_folder_with_xml_instances'
+               System.exit(0)
             }
-            */
+            
+            def path = args[1]
+            def f = new File(path)
+            if (!f.exists())
+            {
+               println path +" doesn't exists"
+               System.exit(0)
+            }
+            
+            if (f.isDirectory()) // validate all the XMLs in the folder
+            {
+               f.eachFileMatch(~/.*.xml/) { xml ->
+
+                 validateXMLInstance(validator, xml)
+               }
+            }
+            else // Validate the XML instance referenced by the file
+            {
+               validateXMLInstance(validator, f)
+            }
+            
          break
+         default:
+            println "command "+ args[0] +" not recognized"
       }
+   }
+   
+   static void validateXMLInstance(validator, file)
+   {
+      if (!validator.validate( file.text ))
+      {
+         println file.name +' NOT VALID'
+         println '====================================='
+         validator.errors.each {
+            println it
+         }
+         println '====================================='
+      }
+      else
+         println file.name +' VALID'
    }
    
    static OperationalTemplate loadAndParse(String path)
