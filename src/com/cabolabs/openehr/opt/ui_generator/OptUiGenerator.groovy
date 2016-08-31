@@ -26,7 +26,7 @@ class OptUiGenerator {
       // FIXME: THIS IS THE EN TERMINOLOGY, if the OPT is in another language, it needs to load that terminology
       this.terminology = new TerminologyParser()
       this.terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_en.xml")) // TODO: parameter
-      
+      this.terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_es.xml"))
       
       def writer = new StringWriter()
       def builder = new MarkupBuilder(writer)
@@ -98,6 +98,16 @@ class OptUiGenerator {
          return // Generator do not support slots on OPTs
       }
       
+      // ***********************************************************************
+      //
+      // Here we need to avoid processing attributes that should be set
+      // internally (not by a user) like ACTIVITY.action_archetype_id or
+      // INSTRUCTION_DETAILS.instruction_id or INSTRUCTION_DETAILS.activity_id
+      // and expose openEHR IM attributes that are not in the OPT, like
+      // ACTION.time or INSTRUCTION.expiry_tyime or INSTRUCTION.narrative
+      //
+      // ***********************************************************************
+      
       // Process all non-ELEMENTs
       b.div(class: o.rmTypeName) {
          
@@ -106,8 +116,15 @@ class OptUiGenerator {
          
          //println o.path
          
-         o.attributes.each {
-            generate(it, b, parent_arch_id)
+         o.attributes.each { attr ->
+            
+            // Sample avoid ACTIVITY.action_archetype_id
+            // This can be done in a generic way by adding a mapping rmTypeName -> rmAttributeNames
+            if (o.rmTypeName == 'ACTIVITY' && attr.rmAttributeName == 'action_archetype_id') return
+            if (o.rmTypeName == 'COMPOSITION' && attr.rmAttributeName == 'category') return
+            if (o.rmTypeName == 'ACTION' && attr.rmAttributeName == 'ism_transition') return
+            
+            generate(attr, b, parent_arch_id)
          }
       }
    }
@@ -140,29 +157,40 @@ class OptUiGenerator {
           
            if (constraint.rmTypeName == "CODE_PHRASE")
            {
-              builder.select(name:constraint.path, class: node.rmTypeName +' form-control') {
-              
-                 println "terminolgy id "+ constraint.xmlNode.terminology_id.value.text()
-                 
-                 if (constraint.xmlNode.terminology_id.value.text() == 'local')
-                 {
-                    constraint.xmlNode.code_list.each { code_node ->
-                    
-                       option(value:code_node.text(), opt.getTerm(parent_arch_id, code_node.text()))
-                    }
-                    
-                    if (constraint.xmlNode.code_list.isEmpty()) println "Empty DV_CODED_TEXT.defining_code constraint "+ parent_arch_id +"/"+ constraint.path
+              // is a ConstraintRef?
+              if (constraint.terminologyRef)
+              {
+                 builder.div(class: 'input-group') {
+                    input(type:'text', name: constraint.path, class: node.rmTypeName +' form-control')
+                    i(class:'input-group-addon glyphicon glyphicon-search', '')
                  }
-                 else // terminology openehr
-                 {
-                    constraint.xmlNode.code_list.each { code_node ->
+              }
+              else // constraint is CCodePhrase
+              {
+                 builder.select(name: constraint.path, class: node.rmTypeName +' form-control') {
+                 
+                    //println "terminolgy id "+ constraint.xmlNode.terminology_id.value.text()
+                    
+                    if (constraint.xmlNode.terminology_id.value.text() == 'local')
+                    {
+                       constraint.xmlNode.code_list.each { code_node ->
                        
-                       option(value:code_node.text(), terminology.getRubric(opt.langCode, code_node.text()))
+                          option(value:code_node.text(), opt.getTerm(parent_arch_id, code_node.text()))
+                       }
+                       
+                       if (constraint.xmlNode.code_list.isEmpty()) println "Empty DV_CODED_TEXT.defining_code constraint "+ parent_arch_id +"/"+ constraint.path
+                    }
+                    else // terminology openehr
+                    {
+                       constraint.xmlNode.code_list.each { code_node ->
+                          
+                          option(value:code_node.text(), terminology.getRubric(opt.langCode, code_node.text()))
+                       }
                     }
                  }
               }
            }
-           else throw Exception("coded text constraint "+ constraint.rmTypeName)
+           else throw Exception("coded text constraint not supported "+ constraint.rmTypeName)
            
            
            /*
