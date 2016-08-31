@@ -1,0 +1,175 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-INSTRUCTION.service_request.v1
+
+concept
+	[at0000]	-- Service request
+language
+	original_language = <[ISO_639-1::es]>
+	translations = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			author = <
+				["name"] = <"?">
+			>
+		>
+	>
+description
+	original_author = <
+		["name"] = <"">
+	>
+	details = <
+		["es"] = <
+			language = <[ISO_639-1::es]>
+			purpose = <"Pedido de servicio">
+			use = <"Pedido de servicio">
+			misuse = <"">
+			copyright = <"CaboLabs">
+		>
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"Service request">
+			use = <"Service request">
+			misuse = <"Service request">
+			copyright = <"CaboLabs">
+		>
+	>
+	lifecycle_state = <"0">
+	other_contributors = <>
+	other_details = <
+		["MD5-CAM-1.0.1"] = <"00BD259740FB9829CE82DCC58097D268">
+	>
+
+definition
+	INSTRUCTION[at0000] matches {	-- Service request
+		activities cardinality matches {0..*; unordered} matches {
+			ACTIVITY[at0001] occurrences matches {0..1} matches {	-- Activity
+				action_archetype_id matches {/openEHR-EHR-ACTION\.service_fulfillment\.v1/}
+				description matches {
+					ITEM_TREE[at0002] matches {	-- Tre
+						items cardinality matches {0..*; unordered} matches {
+							ELEMENT[at0003] occurrences matches {0..1} matches {	-- Service
+								value matches {
+									DV_CODED_TEXT matches {
+										defining_code matches {[ac0001]}		-- *Lista externa deservicios codificados(es)
+									}
+								}
+							}
+							ELEMENT[at0004] occurrences matches {0..1} matches {	-- Description
+								value matches {
+									DV_TEXT matches {*}
+								}
+							}
+							ELEMENT[at0005] occurrences matches {0..1} matches {	-- Urgency
+								value matches {
+									1|[local::at0006], 	-- routine
+									2|[local::at0007]  	-- urgent
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+ontology
+	terminologies_available = <"SNOMED-CT", ...>
+	term_definitions = <
+		["es"] = <
+			items = <
+				["at0000"] = <
+					text = <"Pedido de servicio">
+					description = <"*">
+				>
+				["at0001"] = <
+					text = <"Actividad">
+					description = <"*">
+				>
+				["at0002"] = <
+					text = <"Arbol">
+					description = <"@ internal @">
+				>
+				["at0003"] = <
+					text = <"Service">
+					description = <"*">
+				>
+				["at0004"] = <
+					text = <"Descripcion">
+					description = <"*">
+				>
+				["at0005"] = <
+					text = <"Urgencia">
+					description = <"*">
+				>
+				["at0006"] = <
+					text = <"rutina">
+					description = <"*">
+				>
+				["at0007"] = <
+					text = <"urgente">
+					description = <"*">
+				>
+			>
+		>
+		["en"] = <
+			items = <
+				["at0000"] = <
+					text = <"Service request">
+					description = <"">
+				>
+				["at0001"] = <
+					text = <"Activity">
+					description = <"">
+				>
+				["at0002"] = <
+					text = <"Tree">
+					description = <"@ internal @">
+				>
+				["at0003"] = <
+					text = <"Service">
+					description = <"">
+				>
+				["at0004"] = <
+					text = <"Description">
+					description = <"">
+				>
+				["at0005"] = <
+					text = <"Urgency">
+					description = <"">
+				>
+				["at0006"] = <
+					text = <"routine">
+					description = <"">
+				>
+				["at0007"] = <
+					text = <"urgent">
+					description = <"">
+				>
+			>
+		>
+	>
+	constraint_definitions = <
+		["es"] = <
+			items = <
+				["ac0001"] = <
+					text = <"Lista externa deservicios codificados">
+					description = <"Se debería buscar en los conceptos hijo de procedimientos SNOMED http://browser.ihtsdotools.org/?perspective=full&conceptId1=71388002&edition=en-edition&release=v20160731&server=http://browser.ihtsdotools.org/api/snomed&langRefset=900000000000509007">
+				>
+			>
+		>
+		["en"] = <
+			items = <
+				["ac0001"] = <
+					text = <"*Lista externa deservicios codificados(es)">
+					description = <"*Se debería buscar en los conceptos hijo de procedimientos SNOMED http://browser.ihtsdotools.org/?perspective=full&conceptId1=71388002&edition=en-edition&release=v20160731&server=http://browser.ihtsdotools.org/api/snomed&langRefset=900000000000509007(es)">
+				>
+			>
+		>
+	>
+	constraint_bindings = <
+		["SNOMED-CT"] = <
+			items = <
+				["ac0001"] = <terminology:SNOMED-CT?subset=services>
+			>
+		>
+	>

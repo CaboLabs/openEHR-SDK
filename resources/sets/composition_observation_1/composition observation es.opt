@@ -33,12 +33,12 @@
     </details>
   </description>
   <uid>
-    <value>f1a61ffb-51a2-49c9-ba8d-378b2306ee6c</value>
+    <value>a5875415-1d1e-4730-b8b1-1df1d00ae717</value>
   </uid>
   <template_id>
-    <value>composition observation es</value>
+    <value>composition observation</value>
   </template_id>
-  <concept>composition observation es</concept>
+  <concept>composition observation</concept>
   <definition>
     <rm_type_name>COMPOSITION</rm_type_name>
     <occurrences>
@@ -1022,7 +1022,7 @@
       <value>openEHR-EHR-COMPOSITION.sample_composition_observation.v1</value>
     </archetype_id>
     <template_id>
-      <value>New Template</value>
+      <value>composition observation</value>
     </template_id>
     <term_definitions code="at0000">
       <items id="description">unknown</items>

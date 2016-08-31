@@ -1,0 +1,229 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-ACTION.service_fulfillment.v1
+
+concept
+	[at0000]	-- Ejecucion de servicio
+language
+	original_language = <[ISO_639-1::es]>
+	translations = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			author = <
+				["name"] = <"?">
+			>
+		>
+	>
+description
+	original_author = <
+		["name"] = <"">
+	>
+	details = <
+		["es"] = <
+			language = <[ISO_639-1::es]>
+			purpose = <"Ejecucion de servicio">
+			use = <"Ejecucion de servicio">
+			misuse = <"">
+			copyright = <"CaboLabs">
+		>
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"Service fulfillment">
+			use = <"Service fulfillment">
+			misuse = <"">
+			copyright = <"CaboLabs">
+		>
+	>
+	lifecycle_state = <"0">
+	other_contributors = <>
+	other_details = <
+		["MD5-CAM-1.0.1"] = <"4C8560A83245C6568068BF1700977D23">
+	>
+
+definition
+	ACTION[at0000] matches {	-- Ejecucion de servicio
+		ism_transition matches {
+			ISM_TRANSITION[at0005] matches {	-- Planeado
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::526]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0005]}		-- Planeado
+					}
+				}
+			}
+			ISM_TRANSITION[at0006] matches {	-- Agendado
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::529]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0006]}		-- Agendado
+					}
+				}
+			}
+			ISM_TRANSITION[at0008] matches {	-- Activo
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::245]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0008]}		-- Activo
+					}
+				}
+			}
+			ISM_TRANSITION[at0007] matches {	-- Completado
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::532]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0007]}		-- Completado
+					}
+				}
+			}
+		}
+		description matches {
+			ITEM_TREE[at0001] matches {	-- *Arbol(es)
+				items cardinality matches {0..*; unordered} matches {
+					ELEMENT[at0002] occurrences matches {0..1} matches {	-- Servicio
+						value matches {
+							DV_CODED_TEXT matches {
+								defining_code matches {[ac0001]}		-- *Nueva restricción(en)
+							}
+						}
+					}
+					ELEMENT[at0003] occurrences matches {0..1} matches {	-- Descripcion de la ejecucion
+						value matches {
+							DV_TEXT matches {*}
+						}
+					}
+					ELEMENT[at0004] occurrences matches {0..1} matches {	-- Duracion
+						value matches {
+							DV_DURATION matches {
+								value matches {|>=PT0M|}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+ontology
+	terminologies_available = <"SNOMED-CT", ...>
+	term_definitions = <
+		["es"] = <
+			items = <
+				["at0000"] = <
+					text = <"Ejecucion de servicio">
+					description = <"unknown">
+				>
+				["at0001"] = <
+					text = <"*Arbol(es)">
+					description = <"*@ internal @(es)">
+				>
+				["at0002"] = <
+					text = <"Servicio">
+					description = <"*">
+				>
+				["at0003"] = <
+					text = <"Descripcion de la ejecucion">
+					description = <"*">
+				>
+				["at0004"] = <
+					text = <"Duracion">
+					description = <"*">
+				>
+				["at0005"] = <
+					text = <"Planeado">
+					description = <"*">
+				>
+				["at0006"] = <
+					text = <"Agendado">
+					description = <"*">
+				>
+				["at0007"] = <
+					text = <"Completado">
+					description = <"*">
+				>
+				["at0008"] = <
+					text = <"Activo">
+					description = <"*">
+				>
+			>
+		>
+		["en"] = <
+			items = <
+				["at0000"] = <
+					text = <"Service fulfillment">
+					description = <"*unknown(es)">
+				>
+				["at0001"] = <
+					text = <"Arbol">
+					description = <"@ internal @">
+				>
+				["at0002"] = <
+					text = <"Service">
+					description = <"*">
+				>
+				["at0003"] = <
+					text = <"Fulfillment description">
+					description = <"*">
+				>
+				["at0004"] = <
+					text = <"Duration">
+					description = <"*">
+				>
+				["at0005"] = <
+					text = <"Planned">
+					description = <"*">
+				>
+				["at0006"] = <
+					text = <"Scheduled">
+					description = <"*">
+				>
+				["at0007"] = <
+					text = <"Completed">
+					description = <"*">
+				>
+				["at0008"] = <
+					text = <"Active">
+					description = <"*">
+				>
+			>
+		>
+	>
+	constraint_definitions = <
+		["es"] = <
+			items = <
+				["ac0001"] = <
+					text = <"Lista externa deservicios codificados">
+					description = <"Se debería buscar en los conceptos hijo de procedimientos SNOMED http://browser.ihtsdotools.org/?perspective=full&conceptId1=71388002&edition=en-edition&release=v20160731&server=http://browser.ihtsdotools.org/api/snomed&langRefset=900000000000509007">
+				>
+			>
+		>
+		["en"] = <
+			items = <
+				["ac0001"] = <
+					text = <"External list of coded services">
+					description = <"Look into the SNOMED procedure concept children http://browser.ihtsdotools.org/?perspective=full&conceptId1=71388002&edition=en-edition&release=v20160731&server=http://browser.ihtsdotools.org/api/snomed&langRefset=900000000000509007">
+				>
+			>
+		>
+	>
+	constraint_bindings = <
+		["SNOMED-CT"] = <
+			items = <
+				["ac0001"] = <terminology:SNOMED-CT?subset=services>
+			>
+		>
+	>

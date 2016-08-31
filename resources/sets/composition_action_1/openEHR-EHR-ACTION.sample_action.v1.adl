@@ -1,0 +1,205 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-ACTION.sample_action.v1
+
+concept
+	[at0000]	-- Ejemplo de accion
+language
+	original_language = <[ISO_639-1::es]>
+	translations = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			author = <
+				["name"] = <"?">
+			>
+		>
+	>
+description
+	original_author = <
+		["name"] = <"">
+	>
+	details = <
+		["es"] = <
+			language = <[ISO_639-1::es]>
+			purpose = <"Ejemplo de accion">
+			use = <"Ejemplo de accion">
+			misuse = <"">
+			copyright = <"">
+		>
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"*Ejemplo de accion(es)">
+			use = <"*Ejemplo de accion(es)">
+			misuse = <"*(es)">
+			copyright = <"*(es)">
+		>
+	>
+	lifecycle_state = <"0">
+	other_contributors = <>
+	other_details = <
+		["MD5-CAM-1.0.1"] = <"AC2CFAF88B3A19FA5C600F8E7A4A0615">
+	>
+
+definition
+	ACTION[at0000] matches {	-- Ejemplo de accion
+		ism_transition matches {
+			ISM_TRANSITION[at0004] matches {	-- Planeado
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::526]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0004]}		-- Planeado
+					}
+				}
+			}
+			ISM_TRANSITION[at0005] matches {	-- Agendado
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::529]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0005]}		-- Agendado
+					}
+				}
+			}
+			ISM_TRANSITION[at0006] matches {	-- Completado
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::532]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0006]}		-- Completado
+					}
+				}
+			}
+		}
+		description matches {
+			ITEM_TREE[at0001] matches {	-- Arbol
+				items cardinality matches {1..*; unordered} matches {
+					ELEMENT[at0002] matches {	-- Nombre de la accion
+						value matches {
+							DV_TEXT matches {*}
+						}
+					}
+					ELEMENT[at0003] occurrences matches {0..1} matches {	-- Duracion de la accion
+						value matches {
+							DV_DURATION matches {*}
+						}
+					}
+					ELEMENT[at0007] occurrences matches {0..1} matches {	-- Complejidad
+						value matches {
+							1|[local::at0008], 	-- simple
+							2|[local::at0009], 	-- medio
+							3|[local::at0010]  	-- complejo
+						}
+					}
+				}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["es"] = <
+			items = <
+				["at0000"] = <
+					text = <"Ejemplo de accion">
+					description = <"Ejemplo de accion">
+				>
+				["at0001"] = <
+					text = <"Arbol">
+					description = <"@ internal @">
+				>
+				["at0002"] = <
+					text = <"Nombre de la accion">
+					description = <"Nombre de la accion">
+				>
+				["at0003"] = <
+					text = <"Duracion de la accion">
+					description = <"Duracion de la accion">
+				>
+				["at0004"] = <
+					text = <"Planeado">
+					description = <"Planeado">
+				>
+				["at0005"] = <
+					text = <"Agendado">
+					description = <"Agendado">
+				>
+				["at0006"] = <
+					text = <"Completado">
+					description = <"Completado">
+				>
+				["at0007"] = <
+					text = <"Complejidad">
+					description = <"Complejidad">
+				>
+				["at0008"] = <
+					text = <"simple">
+					description = <"simple">
+				>
+				["at0009"] = <
+					text = <"medio">
+					description = <"medio">
+				>
+				["at0010"] = <
+					text = <"complejo">
+					description = <"complejo">
+				>
+			>
+		>
+		["en"] = <
+			items = <
+				["at0000"] = <
+					text = <"Sample action">
+					description = <"Sample action">
+				>
+				["at0001"] = <
+					text = <"Tree">
+					description = <"@ internal @">
+				>
+				["at0002"] = <
+					text = <"Action name">
+					description = <"*">
+				>
+				["at0003"] = <
+					text = <"Action duration">
+					description = <"Action duration">
+				>
+				["at0004"] = <
+					text = <"Planned">
+					description = <"Planned">
+				>
+				["at0005"] = <
+					text = <"Scheduled">
+					description = <"Scheduled">
+				>
+				["at0006"] = <
+					text = <"Completed">
+					description = <"Completed">
+				>
+				["at0007"] = <
+					text = <"Complexity">
+					description = <"Complexity">
+				>
+				["at0008"] = <
+					text = <"Simple">
+					description = <"Simple">
+				>
+				["at0009"] = <
+					text = <"Medium">
+					description = <"Medium">
+				>
+				["at0010"] = <
+					text = <"Complex">
+					description = <"new ordinal">
+				>
+			>
+		>
+	>

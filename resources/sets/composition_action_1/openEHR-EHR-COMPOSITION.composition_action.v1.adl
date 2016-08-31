@@ -1,0 +1,83 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-COMPOSITION.composition_action.v1
+
+concept
+	[at0000]	-- Composition action
+language
+	original_language = <[ISO_639-1::es]>
+	translations = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			author = <
+				["name"] = <"?">
+			>
+		>
+	>
+description
+	original_author = <
+		["name"] = <"">
+	>
+	details = <
+		["es"] = <
+			language = <[ISO_639-1::es]>
+			purpose = <"Documento accion">
+			use = <"Documento accion">
+			misuse = <"">
+			copyright = <"CaboLabs">
+		>
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"Composition action">
+			use = <"Composition action">
+			misuse = <"">
+			copyright = <"CaboLabs">
+		>
+	>
+	lifecycle_state = <"0">
+	other_contributors = <>
+	other_details = <
+		["MD5-CAM-1.0.1"] = <"9BC61D88A2AD700767BB7D9E912B76BC">
+	>
+
+definition
+	COMPOSITION[at0000] matches {	-- Composition action
+		category matches {
+			DV_CODED_TEXT matches {
+				defining_code matches {[openehr::433]}
+			}
+		}
+		content cardinality matches {0..*; unordered} matches {
+			allow_archetype ACTION[at0001] occurrences matches {0..*} matches {	-- *ACTION(es)
+				include
+					archetype_id/value matches {/openEHR-EHR-ACTION\.sample_action(-[a-zA-Z0-9_]+)*\.v1/}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["es"] = <
+			items = <
+				["at0000"] = <
+					text = <"Documento accion">
+					description = <"unknown">
+				>
+				["at0001"] = <
+					text = <"ACTION">
+					description = <"*">
+				>
+			>
+		>
+		["en"] = <
+			items = <
+				["at0000"] = <
+					text = <"Composition action">
+					description = <"">
+				>
+				["at0001"] = <
+					text = <"*ACTION(es)">
+					description = <"**(es)">
+				>
+			>
+		>
+	>

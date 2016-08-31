@@ -1,0 +1,83 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-COMPOSITION.service_request.v1
+
+concept
+	[at0000]	-- Pedido de servicio
+language
+	original_language = <[ISO_639-1::es]>
+	translations = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			author = <
+				["name"] = <"?">
+			>
+		>
+	>
+description
+	original_author = <
+		["name"] = <"">
+	>
+	details = <
+		["es"] = <
+			language = <[ISO_639-1::es]>
+			purpose = <"Service request">
+			use = <"Service request">
+			misuse = <"">
+			copyright = <"CaboLabs">
+		>
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"*Service request(es)">
+			use = <"*Service request(es)">
+			misuse = <"*(es)">
+			copyright = <"*CaboLabs(es)">
+		>
+	>
+	lifecycle_state = <"0">
+	other_contributors = <>
+	other_details = <
+		["MD5-CAM-1.0.1"] = <"28272BFAE73482CF88C6A07A2E618886">
+	>
+
+definition
+	COMPOSITION[at0000] matches {	-- Pedido de servicio
+		category matches {
+			DV_CODED_TEXT matches {
+				defining_code matches {[openehr::433]}
+			}
+		}
+		content cardinality matches {0..*; unordered} matches {
+			allow_archetype INSTRUCTION[at0001] occurrences matches {0..*} matches {	-- INSTRUCTION
+				include
+					archetype_id/value matches {/openEHR-EHR-INSTRUCTION\.service_request(-[a-zA-Z0-9_]+)*\.v1/}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["es"] = <
+			items = <
+				["at0000"] = <
+					text = <"Pedido de servicio">
+					description = <"">
+				>
+				["at0001"] = <
+					text = <"INSTRUCTION">
+					description = <"">
+				>
+			>
+		>
+		["en"] = <
+			items = <
+				["at0000"] = <
+					text = <"Service request">
+					description = <"">
+				>
+				["at0001"] = <
+					text = <"INSTRUCTION">
+					description = <"">
+				>
+			>
+		>
+	>
