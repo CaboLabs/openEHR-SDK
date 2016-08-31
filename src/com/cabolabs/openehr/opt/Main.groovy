@@ -21,8 +21,8 @@ class Main {
       {
          println 'usage: opt command [options]'
          println 'command: [uigen, ingen, inval]'
-         println 'uigen: user interface generationt from an OPT'
-         println 'ingen: XML instance generationt from an OPT'
+         println 'uigen: user interface generation from an OPT'
+         println 'ingen: XML instance generation from an OPT'
          println 'inval: XML instance validator'
          System.exit(0)
       }
@@ -48,7 +48,7 @@ class Main {
          case 'ingen':
             if (args.size() < 3)
             {
-               println 'usage: opt ingen path_to_opt dest_folder [amount]'
+               println 'usage: opt ingen path_to_opt dest_folder [amount] [version|composition]'
                System.exit(0)
             }
             
@@ -74,10 +74,26 @@ class Main {
                System.exit(0)
             }
             
+            def generate = 'version'
+            if (args.size() == 5)
+            {
+               if (!['version', 'composition'].contains(args[4]))
+               {
+                  println "result type should be 'version' or 'composition'"
+                  System.exit(0)
+               }
+               
+               generate = args[4]
+            }
+            
             def ins, out, printer
             for (i in 1..count)
             {
-               ins = igen.generateXMLCompositionStringFromOPT(opt)
+               if (generate == 'composition')
+                  ins = igen.generateXMLCompositionStringFromOPT(opt)
+               else
+                  ins = igen.generateXMLVersionStringFromOPT(opt)
+               
                out = new File( destination_path + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'_"+ i +".xml'").format(new Date()) )
                
                // Generates UTF-8 XML output
