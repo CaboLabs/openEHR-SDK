@@ -12,3 +12,6 @@ div {
   height: 16px;
   display: inline-block;
 }
+.glyphicon {
+ top: 0px !important; /* fix input addon aligment problem */
+}
