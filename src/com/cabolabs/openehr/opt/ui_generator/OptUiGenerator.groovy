@@ -171,6 +171,8 @@ class OptUiGenerator {
                  
                     //println "terminolgy id "+ constraint.xmlNode.terminology_id.value.text()
                     
+                    option(value:'', '')
+                    
                     if (constraint.xmlNode.terminology_id.value.text() == 'local')
                     {
                        constraint.xmlNode.code_list.each { code_node ->
@@ -225,6 +227,8 @@ class OptUiGenerator {
            // ordinal.symbol.terminologyId
            
            builder.select(name:node.path, class: node.rmTypeName +' form-control') {
+              
+              option(value:'', '')
               
               node.xmlNode.list.each { ord ->
               
