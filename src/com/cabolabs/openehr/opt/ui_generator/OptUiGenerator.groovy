@@ -180,7 +180,7 @@ class OptUiGenerator {
                           option(value:code_node.text(), opt.getTerm(parent_arch_id, code_node.text()))
                        }
                        
-                       if (constraint.xmlNode.code_list.isEmpty()) println "Empty DV_CODED_TEXT.defining_code constraint "+ parent_arch_id +"/"+ constraint.path
+                       if (constraint.xmlNode.code_list.isEmpty()) println "Empty DV_CODED_TEXT.defining_code constraint "+ parent_arch_id + constraint.path
                     }
                     else // terminology openehr
                     {
@@ -193,26 +193,25 @@ class OptUiGenerator {
               }
            }
            else throw Exception("coded text constraint not supported "+ constraint.rmTypeName)
-           
-           
-           /*
-           if (constraint instanceof ConstraintRef)
-           {
-              def term = a.ontology.constraintDefinition(locale, constraint.reference)
-              builder.input(type:'text', name:constraint.path)
-              i(class:'search', '')
-           }
-           */
-           
+
         break
         case 'DV_QUANTITY':
            builder.input(type:'text', name:node.path+'/magnitude', class: node.rmTypeName +' form-control')
-           
-           builder.select(name:node.path+'/units', class: node.rmTypeName +' form-control') {
-              
-              node.xmlNode.list.units.each { u ->
-              
-                 option(value:u.text(), u.text())
+
+           if (node.xmlNode.list.isEmpty())
+           {
+              builder.input(type:'text', name:node.path+'/units', class: node.rmTypeName +' form-control')
+           }
+           else
+           {
+              builder.select(name:node.path+'/units', class: node.rmTypeName +' form-control') {
+                 
+                 option(value:'', '')
+                 
+                 node.xmlNode.list.units.each { u ->
+                 
+                    option(value:u.text(), u.text())
+                 }
               }
            }
         break
@@ -266,6 +265,23 @@ class OptUiGenerator {
            builder.label('denominator') {
              input(type:'number', name:node.path+'/denominator', class:'small '+ node.rmTypeName +' form-control')
            }
+        break
+        case 'DV_IDENTIFIER':
+           builder.label('issuer') {
+             input(type:'text', name:node.path+'/issuer', class:'small '+ node.rmTypeName +' form-control')
+           }
+           builder.label('assigner') {
+             input(type:'text', name:node.path+'/assigner', class:'small '+ node.rmTypeName +' form-control')
+           }
+           builder.label('id') {
+             input(type:'text', name:node.path+'/id', class:'small '+ node.rmTypeName +' form-control')
+           }
+           builder.label('type') {
+             input(type:'text', name:node.path+'/type', class:'small '+ node.rmTypeName +' form-control')
+           }
+        break
+        case 'DV_MULTIMEDIA':
+           builder.input(type:'file', name:node.path, class: node.rmTypeName)
         break
         default: // TODO: generar campos para los DV_INTERVAL
            println "Datatype "+ node.rmTypeName +" not supported yet"
