@@ -459,7 +459,7 @@ class XmlInstanceGenerator {
       */
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_COUNT') {
-         magnitude( Integer.random(10, 1) )
+         magnitude( Integer.random(10, 1) ) // TODO: consider constraints
       }
    }
    
@@ -507,9 +507,17 @@ class XmlInstanceGenerator {
       
       // Take the first constraint and set the values based on it
       def constraint = o.xmlNode.list[0]
-      def lo = (constraint.magnitude.lower_unbounded.text().toBoolean() ? 0 : constraint.magnitude.lower.text().toInteger())
-      def hi = (constraint.magnitude.upper_unbounded.text().toBoolean() ? 1000 : constraint.magnitude.upper.text().toInteger())
-      
+      def lo, hi
+      if (constraint.isEmpty())
+      {
+         lo = 0
+         hi = 1000
+      }
+      else
+      {
+         lo = (constraint.magnitude.lower_unbounded.text().toBoolean() ? 0 : constraint.magnitude.lower.text().toInteger())
+         hi = (constraint.magnitude.upper_unbounded.text().toBoolean() ? 1000 : constraint.magnitude.upper.text().toInteger())
+      }
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_QUANTITY') {
          magnitude( Integer.random(hi, lo) ) // TODO: should be BigDecinal not just Integer
@@ -710,7 +718,6 @@ class XmlInstanceGenerator {
    }
    
    
-   
    private generate_INSTRUCTION(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
@@ -907,6 +914,53 @@ class XmlInstanceGenerator {
       }
    }
    
+   private generate_INTERVAL_EVENT(ObjectNode o, String parent_arch_id)
+   {
+      // parent from now can be different than the parent if if the object has archetypeId
+      parent_arch_id = o.archetypeId ?: parent_arch_id
+      
+      AttributeNode a = o.parent
+      
+      // is it arcehtyped or not?
+      def arch_node_id = (o.archetypeId ?: o.nodeId)
+
+      builder."${a.rmAttributeName}"(archetype_node_id:arch_node_id, 'xsi:type': 'INTERVAL_EVENT') { // dont use EVENT because is abstract 
+      
+         name() {
+            value( opt.getTerm(parent_arch_id, o.nodeId) )
+         }
+         // IM attribute not present in the OPT
+         generate_attr_DV_DATE_TIME('time')
+         
+         
+         // data
+         def oa = o.attributes.find { it.rmAttributeName == 'data' }
+         if (oa) processAttributeChildren(oa, parent_arch_id)
+         
+         /* attributes include math_function from the OPT, that is generated below
+         o.attributes.each { oa ->
+            
+            processAttributeChildren(oa, parent_arch_id)
+         }
+         */
+         
+         builder.width() { // duration attribute
+            value('PT30M') // TODO: Duration String generator
+         }
+         
+         // TODO: consider the terminology constraint from the OPT
+         builder.math_function() { // coded text attribute
+            value("maximum")
+            defining_code {
+               terminology_id {
+                  value('openehr')
+               }
+               code_string('144')
+            }
+         }
+      }
+   }
+   
    private generate_POINT_EVENT(ObjectNode o, String parent_arch_id)
    {
       generate_EVENT(o, parent_arch_id)
@@ -981,4 +1035,16 @@ class XmlInstanceGenerator {
       }
    }
 
+   def methodMissing(String name, args)
+   {
+      // Intercept method that starts with find.
+      if (name.startsWith("generate_"))
+      {
+          println name - "generate_" + " is not supported yet"
+      }
+      else
+      {
+         throw new MissingMethodException(name, this.class, args)
+      }
+   }
 }

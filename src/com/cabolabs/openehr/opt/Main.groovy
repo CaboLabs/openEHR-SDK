@@ -46,6 +46,9 @@ class Main {
 
          break
          case 'ingen':
+         
+            println "ingen args "+ args.size() +" "+ args // DEBUG 
+         
             if (args.size() < 3)
             {
                println 'usage: opt ingen path_to_opt dest_folder [amount] [version|composition]'
@@ -53,9 +56,10 @@ class Main {
             }
             
             int count = 1
-            if (args.size() == 4)
+            if (args.size() > 3)
             {
-               count = args[3].toInteger()
+               count = args[3].toInteger() // TOOD: check type conversion
+
                if (count <= 0)
                {
                   println "amount should be greater than 0"
