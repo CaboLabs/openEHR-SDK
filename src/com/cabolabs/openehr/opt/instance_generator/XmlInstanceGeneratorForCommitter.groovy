@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat
  * @author Pablo Pazos <pablo.pazos@cabolabs.com>
  *
  */
-class XmlInstanceGenerator {
+class XmlInstanceGeneratorForCommitter {
 
    static String PS = File.separator
    
@@ -19,6 +19,13 @@ class XmlInstanceGenerator {
    def builder
    
    def terminology
+   
+   // Field names should be unique for the committer,
+   // because if multiple values come from the UI the
+   // controller will treat them as a date. This will
+   // store the used names for checking uniqueness.
+   def field_names = []
+   static int counter = 1 // help to create unique names
    
    // Formats
    def datetime_format = "yyyyMMdd'T'HHmmss,SSSZ"
@@ -34,7 +41,7 @@ class XmlInstanceGenerator {
    def entries = ['OBSERVATION', 'EVALUATION', 'INSTRUCTION', 'ACTION', 'ADMIN_ENTRY']
    
    
-   def XmlInstanceGenerator()
+   def XmlInstanceGeneratorForCommitter()
    {
       writer = new StringWriter()
       builder = new MarkupBuilder(writer)
@@ -125,7 +132,7 @@ class XmlInstanceGenerator {
                   namespace('DEMOGRAPHIC')
                   type('PERSON')
                }
-               name( composition_composers.pick() )
+               name('[[COMMITTER_NAME:::STRING:::Dr. House]]')
                // identifiers DV_IDENTIFIER
             }
             
@@ -255,7 +262,7 @@ class XmlInstanceGenerator {
             namespace('DEMOGRAPHIC')
             type('PERSON')
          }
-         name( composition_composers.pick() )
+         name('[[COMPOSER_NAME:::STRING:::Dr. House]]')
          // identifiers DV_IDENTIFIER
       }
       
@@ -365,35 +372,56 @@ class XmlInstanceGenerator {
    private generate_DV_CODED_TEXT(ObjectNode o, String parent_arch_id)
    {
       /*
-      <value xsi:type="DV_CODED_TEXT">
-        <value>Cut of knee</value>
-        <defining_code>
-            <terminology_id>
-              <value>SNOMED-CT</value>
-            </terminology_id>
-            <code_string>283434009</code_string>
-        </defining_code>
-      </value>
+      <children xsi:type="C_CODE_PHRASE">
+        <rm_type_name>CODE_PHRASE</rm_type_name>
+        <occurrences>
+          <lower_included>true</lower_included>
+          <upper_included>true</upper_included>
+          <lower_unbounded>false</lower_unbounded>
+          <upper_unbounded>false</upper_unbounded>
+          <lower>1</lower>
+          <upper>1</upper>
+        </occurrences>
+        <node_id />
+        <terminology_id>
+          <value>local</value>
+        </terminology_id>
+        <code_list>at0037</code_list>
+        <code_list>at0038</code_list>
+        <code_list>at0039</code_list>
+        ...
       */
-
+      def codes = [:]
+      def code
+      def code_phrase = opt.getNode(o.templatePath + '/defining_code') // nodes are indexed by template path not by archetype path
+      
       /*
-      AttributeNode a = o.parent
-      builder."${a.rmAttributeName}"('xsi:type':'DV_CODED_TEXT') {
-         value( String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 30 ) )
-         defining_code {
-            terminology_id {
-               value('ULTIMATE_TERMINOLOGY') // TODO: consider the terminology constraint from the OPT
-            }
-            code_string( Integer.random(10000, 1000000) )
-         }
-      }
+      println o.path
+      println code_phrase
+      println code_phrase?.xmlNode.name()
+      println '--------------------------------'
       */
       
-      println "coded "+ o.xmlNode.attributes.find{ it.name() == 'defining_code'}.children // this has code_list options
+      code_phrase?.xmlNode.code_list.each {
+          
+          code = it.text()
+          codes[code] = opt.getTerm(parent_arch_id, code) // at00XX -> name
+      }
       
+      def terminology = code_phrase?.xmlNode.terminology_id.value.text()
+      def label = this.label(o, parent_arch_id)
+       
       // Adds a text node inside the current parent
+      // [[STATUS:::CODEDTEXT:::(Interim::at0037::local,Final::at0038::local,Never performed::at0079::local)]]
+      def tag = '[[' + label +':::CODEDTEXT:::('
+      codes.each { _code, _text ->
+         tag += _text +'::'+ _code +'::'+ terminology +','
+      }
+      tag = tag[0..-2]
+      tag += ')]]'
+      
       def m = builder.mkp
-      m.yield('[[STATUS:::CODEDTEXT:::(Interim::at0037::local,Final::at0038::local,Supplementary::at0039::local,Corrected::at0040::local,Aborted::ar0074::local,Never performed::at0079::local)]]')
+      m.yield( tag )
    }
    
    private generate_DV_TEXT(ObjectNode o, String parent_arch_id)
@@ -403,9 +431,11 @@ class XmlInstanceGenerator {
         <value>....</value>
       </value>
       */
+      
+      def label = this.label(o, parent_arch_id)
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_TEXT') {
-         value( String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 255 ) ) // TODO: improve using word / phrase dictionary
+         value('[['+ label +':::STRING:::'+ String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 20 ) +']]') // TODO: improve using word / phrase dictionary
       }
    }
    
@@ -416,11 +446,12 @@ class XmlInstanceGenerator {
          <value>20150515T183951,000-0300</value>
       </value>
       */
+
+      def label = this.label(o, parent_arch_id)
       AttributeNode a = o.parent
-      /*builder."${a.rmAttributeName}"('xsi:type':'DV_DATE_TIME') {
-         value( new Date().toOpenEHRDateTime() )
-      }*/
-      generate_attr_DV_DATE_TIME(a.rmAttributeName)
+      builder."${a.rmAttributeName}"('xsi:type':'DV_DATE_TIME') {
+         value('[['+ label +':::DATETIME:::NOW]]')
+      }
    }
    
    /**
@@ -519,13 +550,15 @@ class XmlInstanceGenerator {
       // Take the first constraint and set the values based on it
       def constraint = o.xmlNode.list[0]
       def lo, hi
-      if (constraint.isEmpty())
+      if (constraint.isEmpty() || constraint.magnitude.isEmpty())
       {
          lo = 0
          hi = 1000
       }
       else
       {
+         println o.path
+         println constraint.magnitude
          lo = (constraint.magnitude.lower_unbounded.text().toBoolean() ? 0 : constraint.magnitude.lower.text().toInteger())
          hi = (constraint.magnitude.upper_unbounded.text().toBoolean() ? 1000 : constraint.magnitude.upper.text().toInteger())
       }
@@ -1057,5 +1090,31 @@ class XmlInstanceGenerator {
       {
          throw new MissingMethodException(name, this.class, args)
       }
+   }
+   
+   private String label(ObjectNode o, String parent_arch_id)
+   {
+      // value nodes dont have nodeId
+      def nodeId = o.nodeId
+      if (!nodeId)
+      {
+         // .parent es attributes 'value', .parent.parent es 'ELEMENT'
+         nodeId = o.xmlNode.parent().parent().node_id.text()
+      }
+      
+      // avoid spaces in the label becaus it is used as input name in the committer
+      def label = opt.getTerm(parent_arch_id, nodeId).replaceAll( ' ', '_' )
+      
+      
+      // return unique labels
+      if (field_names.contains(label))
+      {
+         label += '_'+ counter
+         counter++
+      }
+      
+      field_names << label
+      
+      return label
    }
 }

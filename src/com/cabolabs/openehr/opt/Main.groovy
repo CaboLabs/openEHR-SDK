@@ -51,7 +51,7 @@ class Main {
          
             if (args.size() < 3)
             {
-               println 'usage: opt ingen path_to_opt dest_folder [amount] [version|composition]'
+               println 'usage: opt ingen path_to_opt dest_folder [amount] [version|composition|version_committer]'
                System.exit(0)
             }
             
@@ -79,11 +79,11 @@ class Main {
             }
             
             def generate = 'version'
-            if (args.size() == 5)
+            if (args.size() > 4)
             {
-               if (!['version', 'composition'].contains(args[4]))
+               if (!['version', 'composition', 'version_committer'].contains(args[4]))
                {
-                  println "result type should be 'version' or 'composition'"
+                  println "result type should be 'version' or 'composition' or 'version_committer'"
                   System.exit(0)
                }
                
@@ -95,8 +95,13 @@ class Main {
             {
                if (generate == 'composition')
                   ins = igen.generateXMLCompositionStringFromOPT(opt)
-               else
+               else if (generate == 'version')
                   ins = igen.generateXMLVersionStringFromOPT(opt)
+               else
+               {
+                  igen = new XmlInstanceGeneratorForCommitter()
+                  ins = igen.generateXMLVersionStringFromOPT(opt)
+               }
                
                out = new File( destination_path + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'_"+ i +".xml'").format(new Date()) )
                
@@ -178,4 +183,3 @@ class Main {
       return parser.parse( text )
    }
 }
-

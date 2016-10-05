@@ -508,7 +508,7 @@ class XmlInstanceGenerator {
       // Take the first constraint and set the values based on it
       def constraint = o.xmlNode.list[0]
       def lo, hi
-      if (constraint.isEmpty())
+      if (constraint.isEmpty() || constraint.magnitude.isEmpty())
       {
          lo = 0
          hi = 1000
