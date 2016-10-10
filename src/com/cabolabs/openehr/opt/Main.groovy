@@ -69,7 +69,7 @@ class Main {
             
             def path = args[1] //"resources"+ PS +"opts"+ PS +"Referral.opt"
             def opt = loadAndParse(path)
-            def igen = new XmlInstanceGenerator()
+            
             
             def destination_path = args[2]
             if (!new File(destination_path).exists())
@@ -90,13 +90,19 @@ class Main {
                generate = args[4]
             }
             
-            def ins, out, printer
+            def igen, ins, out, printer
             for (i in 1..count)
             {
                if (generate == 'composition')
+               {
+                  igen = new XmlInstanceGenerator()
                   ins = igen.generateXMLCompositionStringFromOPT(opt)
+               }
                else if (generate == 'version')
+               {
+                  igen = new XmlInstanceGenerator()
                   ins = igen.generateXMLVersionStringFromOPT(opt)
+               }
                else
                {
                   igen = new XmlInstanceGeneratorForCommitter()
@@ -110,6 +116,7 @@ class Main {
                printer.write(ins)
                printer.flush()
                printer.close()
+               
                
                println "Instance generated: "+ out.absolutePath
             }

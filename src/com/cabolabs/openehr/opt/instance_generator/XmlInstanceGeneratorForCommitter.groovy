@@ -404,8 +404,8 @@ class XmlInstanceGeneratorForCommitter {
       
       code_phrase?.xmlNode.code_list.each {
           
-          code = it.text()
-          codes[code] = opt.getTerm(parent_arch_id, code) // at00XX -> name
+         code = it.text()
+         codes[code] = opt.getTerm(parent_arch_id, code) // at00XX -> name
       }
       
       def terminology = code_phrase?.xmlNode.terminology_id.value.text()
@@ -414,10 +414,15 @@ class XmlInstanceGeneratorForCommitter {
       // Adds a text node inside the current parent
       // [[STATUS:::CODEDTEXT:::(Interim::at0037::local,Final::at0038::local,Never performed::at0079::local)]]
       def tag = '[[' + label +':::CODEDTEXT:::('
-      codes.each { _code, _text ->
-         tag += _text +'::'+ _code +'::'+ terminology +','
+      
+      // If the coded text has a terminologic constraint it will not have codes.
+      if (codes)
+      {
+         codes.each { _code, _text ->
+            tag += _text +'::'+ _code +'::'+ terminology +','
+         }
+         tag = tag[0..-2]
       }
-      tag = tag[0..-2]
       tag += ')]]'
       
       def m = builder.mkp
@@ -499,9 +504,10 @@ class XmlInstanceGeneratorForCommitter {
          <magnitude>3</magnitude>
       </value>
       */
+      def label = this.label(o, parent_arch_id)
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_COUNT') {
-         magnitude( Integer.random(10, 1) ) // TODO: consider constraints
+         magnitude('[['+ label +':::INTEGER:::RANGE_0-100]]') // TODO: consider constraints
       }
    }
    
@@ -557,15 +563,17 @@ class XmlInstanceGeneratorForCommitter {
       }
       else
       {
-         println o.path
-         println constraint.magnitude
+         //println o.path
+         //println constraint.magnitude
          lo = (constraint.magnitude.lower_unbounded.text().toBoolean() ? 0 : constraint.magnitude.lower.text().toInteger())
          hi = (constraint.magnitude.upper_unbounded.text().toBoolean() ? 1000 : constraint.magnitude.upper.text().toInteger())
       }
+      
+      def label = this.label(o, parent_arch_id)
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_QUANTITY') {
-         magnitude( Integer.random(hi, lo) ) // TODO: should be BigDecinal not just Integer
-         units( constraint.units.text() )
+         magnitude('[['+ label +':::INTEGER:::RANGE_'+ lo +'-'+ hi +']]') // TODO: should be BigDecinal not just Integer
+         units( constraint.units.text() ) // TODO: select units
       }
    }
    
@@ -1103,8 +1111,22 @@ class XmlInstanceGeneratorForCommitter {
       }
       
       // avoid spaces in the label becaus it is used as input name in the committer
-      def label = opt.getTerm(parent_arch_id, nodeId).replaceAll( ' ', '_' )
+      def label = opt.getTerm(parent_arch_id, nodeId) //.replaceAll(' ', '_')
       
+      // remove spaces and parenthesis (this mades the data binding not to work because
+      // parenthesis affect the reges used for data binding in the committer)
+      def replacement = {
+         if ([' ' as char, '(' as char, ')' as char].contains(it))
+         {
+            '_'
+         }
+         // Do not transform
+         else {
+             null
+         }
+      }
+       
+      label = label.collectReplacements(replacement)
       
       // return unique labels
       if (field_names.contains(label))
