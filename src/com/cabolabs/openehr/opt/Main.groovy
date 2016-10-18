@@ -109,7 +109,7 @@ class Main {
                   ins = igen.generateXMLVersionStringFromOPT(opt)
                }
                
-               out = new File( destination_path + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'_"+ i +".xml'").format(new Date()) )
+               out = new File( destination_path + PS + new java.text.SimpleDateFormat("'"+ opt.concept.replaceAll(' ', '_') +"_'yyyyMMddhhmmss'_"+ i +".xml'").format(new Date()) )
                
                // Generates UTF-8 XML output
                printer = new java.io.PrintWriter(out, 'UTF-8')
