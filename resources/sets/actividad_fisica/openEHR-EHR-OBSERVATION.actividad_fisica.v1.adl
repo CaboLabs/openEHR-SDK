@@ -1,0 +1,172 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-OBSERVATION.actividad_fisica.v1
+
+concept
+	[at0000]	-- Actividad fisica
+language
+	original_language = <[ISO_639-1::es]>
+description
+	original_author = <
+		["name"] = <"">
+	>
+	details = <
+		["es"] = <
+			language = <[ISO_639-1::es]>
+			purpose = <"actividad fisica">
+			use = <"actividad fisica">
+			misuse = <"">
+			copyright = <"">
+		>
+	>
+	lifecycle_state = <"0">
+	other_contributors = <>
+	other_details = <
+		["MD5-CAM-1.0.1"] = <"39D7B7B62FECC281E5DEDAF764CE9163">
+	>
+
+definition
+	OBSERVATION[at0000] matches {	-- Actividad fisica
+		data matches {
+			HISTORY[at0001] matches {	-- Event Series
+				events cardinality matches {1..*; unordered} matches {
+					EVENT[at0002] occurrences matches {0..1} matches {	-- Cualquier evento
+						data matches {
+							ITEM_TREE[at0003] matches {	-- Arbol
+								items cardinality matches {0..*; unordered} matches {
+									ELEMENT[at0004] occurrences matches {0..1} matches {	-- Duracion
+										value matches {
+											DV_DURATION matches {
+												value matches {PTHMS}
+											}
+										}
+									}
+									ELEMENT[at0005] occurrences matches {0..1} matches {	-- Calorias consumidas
+										value matches {
+											C_DV_QUANTITY <
+												property = <[openehr::121]>
+												list = <
+													["1"] = <
+														units = <"cal">
+													>
+													["2"] = <
+														units = <"kcal">
+													>
+												>
+											>
+										}
+									}
+									ELEMENT[at0006] occurrences matches {0..1} matches {	-- Distancia recorrida
+										value matches {
+											C_DV_QUANTITY <
+												property = <[openehr::122]>
+												list = <
+													["1"] = <
+														units = <"m">
+													>
+													["2"] = <
+														units = <"km">
+													>
+												>
+											>
+										}
+									}
+									ELEMENT[at0007] occurrences matches {0..1} matches {	-- Tipo de actividad
+										value matches {
+											DV_CODED_TEXT matches {
+												defining_code matches {
+													[local::
+													at0008, 	-- Caminar
+													at0009, 	-- Correr
+													at0010, 	-- Bicicleta
+													at0011]	-- Natacion
+												}
+											}
+										}
+									}
+									ELEMENT[at0012] occurrences matches {0..1} matches {	-- Intensidad
+										value matches {
+											1|[local::at0013], 	-- baja
+											2|[local::at0014], 	-- media
+											3|[local::at0015]  	-- alta
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["es"] = <
+			items = <
+				["at0000"] = <
+					text = <"Actividad fisica">
+					description = <"unknown">
+				>
+				["at0001"] = <
+					text = <"Event Series">
+					description = <"@ internal @">
+				>
+				["at0002"] = <
+					text = <"Cualquier evento">
+					description = <"*">
+				>
+				["at0003"] = <
+					text = <"Arbol">
+					description = <"@ internal @">
+				>
+				["at0004"] = <
+					text = <"Duracion">
+					description = <"*">
+				>
+				["at0005"] = <
+					text = <"Calorias consumidas">
+					description = <"*">
+				>
+				["at0006"] = <
+					text = <"Distancia recorrida">
+					description = <"*">
+				>
+				["at0007"] = <
+					text = <"Tipo de actividad">
+					description = <"*">
+				>
+				["at0008"] = <
+					text = <"Caminar">
+					description = <"*">
+				>
+				["at0009"] = <
+					text = <"Correr">
+					description = <"*">
+				>
+				["at0010"] = <
+					text = <"Bicicleta">
+					description = <"*">
+				>
+				["at0011"] = <
+					text = <"Natacion">
+					description = <"*">
+				>
+				["at0012"] = <
+					text = <"Intensidad">
+					description = <"*">
+				>
+				["at0013"] = <
+					text = <"baja">
+					description = <"*">
+				>
+				["at0014"] = <
+					text = <"media">
+					description = <"*">
+				>
+				["at0015"] = <
+					text = <"alta">
+					description = <"*">
+				>
+			>
+		>
+	>

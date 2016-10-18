@@ -1,0 +1,56 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-COMPOSITION.actividad_fisica.v1
+
+concept
+	[at0000]	-- Actividad fisica
+language
+	original_language = <[ISO_639-1::es]>
+description
+	original_author = <
+		["name"] = <"">
+	>
+	details = <
+		["es"] = <
+			language = <[ISO_639-1::es]>
+			purpose = <"actividad fisica">
+			use = <"actividad fisica">
+			misuse = <"">
+			copyright = <"">
+		>
+	>
+	lifecycle_state = <"0">
+	other_contributors = <>
+	other_details = <
+		["MD5-CAM-1.0.1"] = <"F116E86BAE400C25BF4DF5CA5EE244BF">
+	>
+
+definition
+	COMPOSITION[at0000] matches {	-- Actividad fisica
+		category matches {
+			DV_CODED_TEXT matches {
+				defining_code matches {[openehr::433]}
+			}
+		}
+		content cardinality matches {0..*; unordered} matches {
+			allow_archetype OBSERVATION[at0001] occurrences matches {0..*} matches {	-- OBSERVATION
+				include
+					archetype_id/value matches {/openEHR-EHR-OBSERVATION\.actividad_fisica(-[a-zA-Z0-9_]+)*\.v1/}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["es"] = <
+			items = <
+				["at0000"] = <
+					text = <"Actividad fisica">
+					description = <"unknown">
+				>
+				["at0001"] = <
+					text = <"OBSERVATION">
+					description = <"*">
+				>
+			>
+		>
+	>
