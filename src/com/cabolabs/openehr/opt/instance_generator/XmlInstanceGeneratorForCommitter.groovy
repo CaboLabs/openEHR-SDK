@@ -612,32 +612,82 @@ class XmlInstanceGeneratorForCommitter {
    private generate_DV_ORDINAL(ObjectNode o, String parent_arch_id)
    {
       /*
-      <value xsi:type="DV_ORDINAL">
-        <value>[[EYE_RESPONSE:::INTEGER:::1]]</value>
-        <symbol>
-          <value>None</value>
-          <defining_code>
-            <terminology_id>
+      <children xsi:type="C_DV_ORDINAL">
+       <rm_type_name>DV_ORDINAL</rm_type_name>
+       <occurrences>
+         <lower_included>true</lower_included>
+         <upper_included>true</upper_included>
+         <lower_unbounded>false</lower_unbounded>
+         <upper_unbounded>false</upper_unbounded>
+         <lower>1</lower>
+         <upper>1</upper>
+       </occurrences>
+       <node_id />
+       <list>
+         <value>1</value>
+         <symbol>
+           <value />
+           <defining_code>
+             <terminology_id>
                <value>local</value>
-            </terminology_id>
-            <code_string>at0010</code_string>
-          </defining_code>
-        </symbol>
-      </value>
+             </terminology_id>
+             <code_string>at0013</code_string>
+           </defining_code>
+         </symbol>
+       </list>
+       <list>
+         <value>2</value>
+         <symbol>
+           <value />
+           <defining_code>
+             <terminology_id>
+               <value>local</value>
+             </terminology_id>
+             <code_string>at0014</code_string>
+           </defining_code>
+         </symbol>
+       </list>
+       <list>
+         <value>3</value>
+         <symbol>
+           <value />
+           <defining_code>
+             <terminology_id>
+               <value>local</value>
+             </terminology_id>
+             <code_string>at0015</code_string>
+           </defining_code>
+         </symbol>
+       </list>
+     </children>
       */
-      AttributeNode a = o.parent
-      builder."${a.rmAttributeName}"('xsi:type':'DV_ORDINAL') {
-         value(1) // TODO: take the ordinal value from the ObjectNode
-         symbol() {
-            value( String.random(('A'..'Z').join(), 15) ) // TODO: take the value from the ObjectNode
-            defining_code() {
-               terminology_id() {
-                  value('local')
-               }
-               code_string('at0010') // FIXME: take the value from the ObjectNode
-            }
-         }
+      def constraints = []
+      def text, code, terminology_id, ordinal
+      o.xmlNode.list.each { list_item ->
+         code = list_item.symbol.defining_code.code_string.text()
+         text = opt.getTerm(parent_arch_id, code)
+         terminology_id = list_item.symbol.defining_code.terminology_id.value.text()
+         ordinal = Integer.parseInt( list_item.value.text() )
+         
+          constraints << [text: text, code: code, terminology_id: terminology_id, ordinal: ordinal]
       }
+      
+      def label = this.label(o, parent_arch_id)
+      
+      def tag = '[[' + label +':::ORDINAL:::('
+      
+      // (text::atcode::terminologyid::ordinal, text::atcode::terminologyid::ordinal, text::atcode::terminologyid::ordinal, ...)
+      if (constraints)
+      {
+         constraints.each { item ->
+            tag += item.text +'::'+ item.code +'::'+ item.terminology_id +'::'+ item.ordinal +','
+         }
+         tag = tag[0..-2]
+      }
+      tag += ')]]'
+      
+      def m = builder.mkp
+      m.yield( tag )
    }
    
    /**
