@@ -372,16 +372,46 @@ class XmlInstanceGenerator {
         </defining_code>
       </value>
       */
-
+            
+      def def_code = o.attributes.find { it.rmAttributeName == 'defining_code' }
+      def first_code = def_code.children[0].xmlNode.code_list[0].text()
+      def terminology = def_code.children[0].xmlNode.terminology_id.value.text()
+      
+      def name
+      if (terminology == 'local')
+      {
+         assert first_code
+         name = this.opt.getTerm(parent_arch_id, first_code)
+      }
+      else
+      {
+         name = String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 30 )
+      }
+      
+      if (!first_code)
+      {
+         first_code = Integer.random(10000, 1000000)
+      }
+      
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_CODED_TEXT') {
-         value( String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 30 ) )
+         value( name )
          defining_code {
             terminology_id {
-               value('ULTIMATE_TERMINOLOGY') // TODO: consider the terminology constraint from the OPT
+               value(terminology)
             }
-            code_string( Integer.random(10000, 1000000) )
+            code_string( first_code )
          }
+      }
+   }
+   
+   private generate_attr_CODE_PHRASE(String attr, String terminology, String code)
+   {
+      builder."${attr}"() {
+         terminology_id() {
+            value( terminology )
+         }
+         code_string( code )
       }
    }
    
@@ -427,15 +457,6 @@ class XmlInstanceGenerator {
       }
    }
    
-   private generate_attr_CODE_PHRASE(String attr, String terminology, String code)
-   {
-      builder."${attr}"() {
-         terminology_id() {
-            value( terminology )
-         }
-         code_string( code )
-      }
-   }
    
    private generate_DV_DATE(ObjectNode o, String parent_arch_id)
    {
@@ -603,7 +624,7 @@ class XmlInstanceGenerator {
          // Check for prmitive constraint over DV_TEXT.value, that is CString.
          // In our model this is just another ObjectNode, just for reference:
          // https://github.com/openEHR/java-libs/blob/master/openehr-aom/src/main/java/org/openehr/am/archetype/constraintmodel/primitive/CString.java
-         println "NAME CONSTRAINT: " + name_constraint
+         //println "NAME CONSTRAINT: " + name_constraint +" "+ parent_arch_id + o.path
          
          /*
          name_constraint.children.each {
@@ -619,13 +640,34 @@ class XmlInstanceGenerator {
          }
          */
          
-         // childen[0] DV_TEXT
-         //   for the DV_TEXT.value constraint
-         //     the first children can be a STRING constraint
-         //       check if there is a list constraint and get the first value as the name
-         def name_value = name_constraint.children[0].attributes.find { it.rmAttributeName == 'value' }.children[0].xmlNode.item.list[0].text()
-         builder.name() {
-            value( name_value )
+         def name_constraint_type = name_constraint.children[0].rmTypeName
+         
+         if (name_constraint_type == 'DV_TEXT')
+         {
+            // childen[0] DV_TEXT
+            //   for the DV_TEXT.value constraint
+            //     the first children can be a STRING constraint
+            //       check if there is a list constraint and get the first value as the name
+            def name_value = name_constraint.children[0].attributes.find { it.rmAttributeName == 'value' }.children[0].xmlNode.item.list[0].text()
+            builder.name() {
+               value( name_value )
+            }
+            
+            // TODO: call generate_DV_TEXT
+         }
+         else if (name_constraint_type == 'DV_CODED_TEXT')
+         {
+            // CODE_PHRASE
+            //println name_constraint.children[0].attributes.find { it.rmAttributeName == 'defining_code' }.children[0].rmTypeName
+            /*
+            def name_code = name_constraint.children[0].attributes.find { it.rmAttributeName == 'defining_code' }.children[0].xmlNode.code_list[0].text()
+            
+            builder.name() {
+               value( this.opt.getTerm(parent_arch_id, name_code) )
+            }
+            */
+            
+            generate_DV_CODED_TEXT(name_constraint.children[0], parent_arch_id)
          }
       }
       else // just add the name based on the archetype ontology terms
@@ -633,6 +675,8 @@ class XmlInstanceGenerator {
          builder.name() {
             value( this.opt.getTerm(parent_arch_id, o.nodeId) )
          }
+         
+         // TODO: call generate_DV_TEXT
       }
    }
    
