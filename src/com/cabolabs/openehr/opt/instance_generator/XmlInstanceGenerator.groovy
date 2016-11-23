@@ -87,6 +87,7 @@ class XmlInstanceGenerator {
       terminology = new TerminologyParser()
       terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_en.xml"))
       terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_es.xml"))
+      terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_pt.xml"))
    }
    
    /**
@@ -376,6 +377,20 @@ class XmlInstanceGenerator {
       def def_code = o.attributes.find { it.rmAttributeName == 'defining_code' }
       def first_code = def_code.children[0].xmlNode.code_list[0].text()
       def terminology = def_code.children[0].xmlNode.terminology_id.value.text()
+      
+      if (!terminology)
+      {
+         // format terminology:LOINC?subset=laboratory_services
+         def externalTerminologyRef = def_code.children[0].xmlNode.referenceSetUri.text()
+         if (!externalTerminologyRef)
+         {
+            terminology = "terminology_not_specified_as_constraint_or_referenceSetUri_in_opt"
+         }
+         else
+         {
+            terminology = externalTerminologyRef.split("\\?")[0].split(":")[1]
+         }
+      }
       
       def name
       if (terminology == 'local')
