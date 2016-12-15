@@ -1,0 +1,216 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-OBSERVATION.test_coded_without_codes.v1
+
+concept
+	[at0000]	-- Test coded without codes
+language
+	original_language = <[ISO_639-1::es]>
+	translations = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			author = <
+				["name"] = <"?">
+			>
+		>
+	>
+description
+	original_author = <
+		["name"] = <"">
+	>
+	details = <
+		["es"] = <
+			language = <[ISO_639-1::es]>
+			purpose = <"Test coded without codes">
+			use = <"Test coded without codes">
+			misuse = <"">
+			copyright = <"">
+		>
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"*Test coded without codes(es)">
+			use = <"*Test coded without codes(es)">
+			misuse = <"*(es)">
+			copyright = <"*(es)">
+		>
+	>
+	lifecycle_state = <"0">
+	other_contributors = <>
+	other_details = <
+		["MD5-CAM-1.0.1"] = <"78C442FE7640CC8FB3FC6B3C237BDD2F">
+	>
+
+definition
+	OBSERVATION[at0000] matches {	-- Test coded without codes
+		data matches {
+			HISTORY[at0001] matches {	-- Event Series
+				events cardinality matches {1..*; unordered} matches {
+					EVENT[at0002] occurrences matches {0..1} matches {	-- Cualquier evento
+						data matches {
+							ITEM_TREE[at0003] matches {	-- Arbol
+								items cardinality matches {0..*; unordered} matches {
+									ELEMENT[at0004] occurrences matches {0..1} matches {	-- Sin codigos
+										value matches {
+											DV_CODED_TEXT matches {
+												defining_code matches {[local::]}
+											}
+										}
+									}
+									ELEMENT[at0005] occurrences matches {0..1} matches {	-- Sin term ref
+										value matches {
+											DV_CODED_TEXT matches {
+												defining_code matches {[ac0002]}		-- Nueva restricción
+											}
+										}
+									}
+									ELEMENT[at0006] occurrences matches {0..1} matches {	-- Con codigos
+										value matches {
+											DV_CODED_TEXT matches {
+												defining_code matches {
+													[local::
+													at0007, 	-- a
+													at0008]	-- b
+												}
+											}
+										}
+									}
+									ELEMENT[at0009] occurrences matches {0..1} matches {	-- Con term ref
+										value matches {
+											DV_CODED_TEXT matches {
+												defining_code matches {[ac0003]}		-- Nueva restricción
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+ontology
+	terminologies_available = <"SNOMED-CT", ...>
+	term_definitions = <
+		["es"] = <
+			items = <
+				["at0000"] = <
+					text = <"Test coded without codes">
+					description = <"unknown">
+				>
+				["at0001"] = <
+					text = <"Event Series">
+					description = <"@ internal @">
+				>
+				["at0002"] = <
+					text = <"Cualquier evento">
+					description = <"*">
+				>
+				["at0003"] = <
+					text = <"Arbol">
+					description = <"@ internal @">
+				>
+				["at0004"] = <
+					text = <"Sin codigos">
+					description = <"*">
+				>
+				["at0005"] = <
+					text = <"Sin term ref">
+					description = <"*">
+				>
+				["at0006"] = <
+					text = <"Con codigos">
+					description = <"*">
+				>
+				["at0007"] = <
+					text = <"a">
+					description = <"a">
+				>
+				["at0008"] = <
+					text = <"b">
+					description = <"b">
+				>
+				["at0009"] = <
+					text = <"Con term ref">
+					description = <"*">
+				>
+			>
+		>
+		["en"] = <
+			items = <
+				["at0000"] = <
+					text = <"Test coded without codes">
+					description = <"">
+				>
+				["at0001"] = <
+					text = <"Event Series">
+					description = <"">
+				>
+				["at0002"] = <
+					text = <"Event">
+					description = <"">
+				>
+				["at0003"] = <
+					text = <"Tree">
+					description = <"">
+				>
+				["at0004"] = <
+					text = <"Coded without codes">
+					description = <"">
+				>
+				["at0005"] = <
+					text = <"Coded without terminology ref">
+					description = <"">
+				>
+				["at0006"] = <
+					text = <"Coded with codes">
+					description = <"">
+				>
+				["at0007"] = <
+					text = <"a">
+					description = <"a">
+				>
+				["at0008"] = <
+					text = <"b">
+					description = <"b">
+				>
+				["at0009"] = <
+					text = <"Coded with terminology ref">
+					description = <"">
+				>
+			>
+		>
+	>
+	constraint_definitions = <
+		["es"] = <
+			items = <
+				["ac0002"] = <
+					text = <"Nueva restricción">
+					description = <"*">
+				>
+				["ac0003"] = <
+					text = <"Nueva restricción">
+					description = <"*">
+				>
+			>
+		>
+		["en"] = <
+			items = <
+				["ac0002"] = <
+					text = <"*Nueva restricción(es)">
+					description = <"**(es)">
+				>
+				["ac0003"] = <
+					text = <"*Nueva restricción(es)">
+					description = <"**(es)">
+				>
+			>
+		>
+	>
+	constraint_bindings = <
+		["SNOMED-CT"] = <
+			items = <
+				["ac0003"] = <terminology:SNOMED-CT?subset=problems>
+			>
+		>
+	>

@@ -1,0 +1,154 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-OBSERVATION.test_qty_without_units.v1
+
+concept
+	[at0000]	-- Test qty without units
+language
+	original_language = <[ISO_639-1::es]>
+	translations = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			author = <
+				["name"] = <"?">
+			>
+		>
+	>
+description
+	original_author = <
+		["name"] = <"">
+	>
+	details = <
+		["es"] = <
+			language = <[ISO_639-1::es]>
+			purpose = <"Test qty without units">
+			use = <"Test qty without units">
+			misuse = <"">
+			copyright = <"">
+		>
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"Test qty without units">
+			use = <"Test qty without units">
+			misuse = <"">
+			copyright = <"">
+		>
+	>
+	lifecycle_state = <"0">
+	other_contributors = <>
+	other_details = <
+		["MD5-CAM-1.0.1"] = <"4D6F734F8ABAB7ACE2C545C2794A7AAB">
+	>
+
+definition
+	OBSERVATION[at0000] matches {	-- Test qty without units
+		data matches {
+			HISTORY[at0001] matches {	-- Event Series
+				events cardinality matches {1..*; unordered} matches {
+					EVENT[at0002] occurrences matches {0..1} matches {	-- Cualquier evento
+						data matches {
+							ITEM_TREE[at0003] matches {	-- Arbol
+								items cardinality matches {0..*; unordered} matches {
+									ELEMENT[at0004] occurrences matches {0..1} matches {	-- Cantidad fisica sin propiedad ni unidades
+										value matches {
+											C_DV_QUANTITY <
+											>
+										}
+									}
+									ELEMENT[at0005] occurrences matches {0..1} matches {	-- Cantidad fisica sin unidades
+										value matches {
+											C_DV_QUANTITY <
+												property = <[openehr::125]>
+											>
+										}
+									}
+									ELEMENT[at0006] occurrences matches {0..1} matches {	-- Cantidad fisica
+										value matches {
+											C_DV_QUANTITY <
+												property = <[openehr::125]>
+												list = <
+													["1"] = <
+														units = <"Pa">
+													>
+													["2"] = <
+														units = <"kg/m2">
+													>
+												>
+											>
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["es"] = <
+			items = <
+				["at0000"] = <
+					text = <"Test qty without units">
+					description = <"unknown">
+				>
+				["at0001"] = <
+					text = <"Event Series">
+					description = <"@ internal @">
+				>
+				["at0002"] = <
+					text = <"Cualquier evento">
+					description = <"*">
+				>
+				["at0003"] = <
+					text = <"Arbol">
+					description = <"@ internal @">
+				>
+				["at0004"] = <
+					text = <"Cantidad fisica sin propiedad ni unidades">
+					description = <"*">
+				>
+				["at0005"] = <
+					text = <"Cantidad fisica sin unidades">
+					description = <"*">
+				>
+				["at0006"] = <
+					text = <"Cantidad fisica">
+					description = <"*">
+				>
+			>
+		>
+		["en"] = <
+			items = <
+				["at0000"] = <
+					text = <"Test qty without units">
+					description = <"">
+				>
+				["at0001"] = <
+					text = <"Event Series">
+					description = <"">
+				>
+				["at0002"] = <
+					text = <"Event">
+					description = <"">
+				>
+				["at0003"] = <
+					text = <"Tree">
+					description = <"">
+				>
+				["at0004"] = <
+					text = <"Quantity without property and units">
+					description = <"">
+				>
+				["at0005"] = <
+					text = <"Quantity without units">
+					description = <"">
+				>
+				["at0006"] = <
+					text = <"Quantity">
+					description = <"">
+				>
+			>
+		>
+	>
