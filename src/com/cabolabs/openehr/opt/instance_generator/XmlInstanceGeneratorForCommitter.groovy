@@ -94,6 +94,7 @@ class XmlInstanceGeneratorForCommitter {
       terminology = new TerminologyParser()
       terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_en.xml"))
       terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_es.xml"))
+      terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_pt.xml"))
    }
    
    /**
@@ -706,6 +707,8 @@ class XmlInstanceGeneratorForCommitter {
          // In our model this is just another ObjectNode, just for reference:
          // https://github.com/openEHR/java-libs/blob/master/openehr-aom/src/main/java/org/openehr/am/archetype/constraintmodel/primitive/CString.java
          println "NAME CONSTRAINT: " + name_constraint
+         println "children attrs path: "+ name_constraint.children[0].rmTypeName +" "+ name_constraint.children[0].path
+         println "children attrs attr: "+ name_constraint.children[0].attributes.rmAttributeName
          
          /*
          name_constraint.children.each {
@@ -721,13 +724,49 @@ class XmlInstanceGeneratorForCommitter {
          }
          */
          
-         // childen[0] DV_TEXT
-         //   for the DV_TEXT.value constraint
-         //     the first children can be a STRING constraint
-         //       check if there is a list constraint and get the first value as the name
-         def name_value = name_constraint.children[0].attributes.find { it.rmAttributeName == 'value' }.children[0].xmlNode.item.list[0].text()
-         builder.name() {
-            value( name_value )
+         if (name_constraint.children[0].rmTypeName == 'DV_TEXT')
+         {
+            // childen[0] DV_TEXT
+            //   for the DV_TEXT.value constraint
+            //     the first children can be a STRING constraint
+            //       check if there is a list constraint and get the first value as the name
+            def name_value = name_constraint.children[0].attributes.find { it.rmAttributeName == 'value' }.children[0].xmlNode.item.list[0].text()
+            builder.name() {
+               value( name_value )
+            }
+         }
+         else // DV_CODED_TEXT
+         {
+            def code_phrase = name_constraint.children[0].attributes.find { it.rmAttributeName == 'defining_code' }.children[0]
+            /*
+             <attributes xsi:type="C_SINGLE_ATTRIBUTE">
+                <rm_attribute_name>defining_code</rm_attribute_name>
+                <existence>
+                  ...
+                </existence>
+                <children xsi:type="C_CODE_PHRASE">
+                  <rm_type_name>CODE_PHRASE</rm_type_name>
+                  <occurrences>
+                   ...
+                  </occurrences>
+                  <node_id />
+                  <terminology_id>
+                    <value>local</value>
+                  </terminology_id>
+                  <code_list>at1045</code_list>
+                  <code_list>at1046</code_list>
+                </children>
+              </attributes>
+             */
+            builder.name() {
+               value( this.opt.getTerm(parent_arch_id, code_phrase.xmlNode.code_list[0].text()) )
+               defining_code() { // use generate_attr_CODE_PHRASE
+                  terminology_id() {
+                     value( code_phrase.xmlNode.terminology_id.value.text() )
+                  }
+                  code_string( code_phrase.xmlNode.code_list[0].text() )
+               }
+            }
          }
       }
       else // just add the name based on the archetype ontology terms
