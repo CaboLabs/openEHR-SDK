@@ -896,6 +896,12 @@ class XmlInstanceGenerator {
          // add one of the ism_transition in the OPT
          def attr_ism_transition = o.attributes.find { it.rmAttributeName == 'ism_transition' }
          
+         if (!attr_ism_transition)
+         {
+            println "Avoid generating ism_transition for ACTION because there is no constraint for it on the OPT"
+            return
+         }
+         
          // .children[0] ISM_TRANSITION
          //  .attributes current_state 
          //    .children[0] DV_CODED_TEXT

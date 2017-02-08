@@ -396,6 +396,12 @@ class XmlInstanceGeneratorForCommitter {
       def code
       def code_phrase = opt.getNode(o.templatePath + '/defining_code') // nodes are indexed by template path not by archetype path
       
+      if (!code_phrase)
+      {
+         println "Avoid generating DV_CODED_TEXT because it has no constraints for codes or terminology"
+         return
+      }
+      
       /*
       println o.path
       println code_phrase
@@ -403,13 +409,13 @@ class XmlInstanceGeneratorForCommitter {
       println '--------------------------------'
       */
       
-      code_phrase?.xmlNode.code_list.each {
+      code_phrase.xmlNode.code_list.each {
           
          code = it.text()
          codes[code] = opt.getTerm(parent_arch_id, code) // at00XX -> name
       }
       
-      def terminology = code_phrase?.xmlNode.terminology_id.value.text()
+      def terminology = code_phrase.xmlNode.terminology_id.value.text()
       def label = this.label(o, parent_arch_id)
        
       // Adds a text node inside the current parent
@@ -738,6 +744,13 @@ class XmlInstanceGeneratorForCommitter {
          else // DV_CODED_TEXT
          {
             def code_phrase = name_constraint.children[0].attributes.find { it.rmAttributeName == 'defining_code' }.children[0]
+            
+            if (!code_phrase)
+            {
+               println "Avoid generating DV_CODED_TEXT because it has no constraints for codes or terminology"
+               return
+            }
+            
             /*
              <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                 <rm_attribute_name>defining_code</rm_attribute_name>
@@ -977,6 +990,12 @@ class XmlInstanceGeneratorForCommitter {
       
          // add one of the ism_transition in the OPT
          def attr_ism_transition = o.attributes.find { it.rmAttributeName == 'ism_transition' }
+         
+         if (!attr_ism_transition)
+         {
+            println "Avoid generating ism_transition for ACTION because there is no constraint for it on the OPT"
+            return
+         }
          
          // .children[0] ISM_TRANSITION
          //  .attributes current_state 
