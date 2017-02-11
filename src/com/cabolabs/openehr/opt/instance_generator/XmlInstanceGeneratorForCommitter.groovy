@@ -419,16 +419,16 @@ class XmlInstanceGeneratorForCommitter {
       def label = this.label(o, parent_arch_id)
        
       // Adds a text node inside the current parent
-      // [[STATUS:::CODEDTEXT:::(Interim::at0037::local,Final::at0038::local,Never performed::at0079::local)]]
+      // [[STATUS:::CODEDTEXT:::(Interim::at0037::local,,,Final::at0038::local,,,Never performed::at0079::local)]]
       def tag = '[[' + label +':::CODEDTEXT:::('
       
       // If the coded text has a terminologic constraint it will not have codes.
       if (codes)
       {
          codes.each { _code, _text ->
-            tag += _text +'::'+ _code +'::'+ terminology +','
+            tag += _text +'::'+ _code +'::'+ terminology +',,,' // separator is ,,, because the text can have ,
          }
-         tag = tag[0..-2]
+         tag = tag[0..-4]
       }
       tag += ')]]'
       
@@ -514,7 +514,7 @@ class XmlInstanceGeneratorForCommitter {
       def label = this.label(o, parent_arch_id)
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_COUNT') {
-         magnitude('[['+ label +':::INTEGER:::RANGE_0-100]]') // TODO: consider constraints
+         magnitude('[['+ label +':::INTEGER:::RANGE_0..100]]') // TODO: consider constraints
       }
    }
    
@@ -579,7 +579,7 @@ class XmlInstanceGeneratorForCommitter {
       def label = this.label(o, parent_arch_id)
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_QUANTITY') {
-         magnitude('[['+ label +':::INTEGER:::RANGE_'+ lo +'-'+ hi +']]') // TODO: should be BigDecinal not just Integer
+         magnitude('[['+ label +':::INTEGER:::RANGE_'+ lo +'..'+ hi +']]') // TODO: should be BigDecinal not just Integer
          units( constraint.units.text() ) // TODO: select units
       }
    }
@@ -771,7 +771,7 @@ class XmlInstanceGeneratorForCommitter {
                 </children>
               </attributes>
              */
-            builder.name() {
+            builder.name('xsi:type':'DV_CODED_TEXT') {
                value( this.opt.getTerm(parent_arch_id, code_phrase.xmlNode.code_list[0].text()) )
                defining_code() { // use generate_attr_CODE_PHRASE
                   terminology_id() {
