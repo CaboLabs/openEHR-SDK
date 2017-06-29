@@ -94,6 +94,7 @@ class OperationalTemplateParser {
       //println "path: "+ path
       
       def obn = new ObjectNode(
+         owner: this.template,
          rmTypeName: node.rm_type_name.text(),
          nodeId: node.node_id.text(),
          type: node.'@xsi:type'.text(),

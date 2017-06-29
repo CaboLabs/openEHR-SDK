@@ -46,6 +46,7 @@ class OptManager {
       return instance
    }
    
+   @Synchronized
    public void loadAll()
    {
       def root = new File( this.optRepositoryPath )
@@ -131,15 +132,20 @@ class OptManager {
    }
    
    // done to avoid merging, merge is the optimal solution!
-   public String getText(String archetypeId, String code)
+   public String getText(String archetypeId, String code, String lang)
    {
       if (!this.referencedArchetypes[archetypeId]) return null
       
       def t
       for (arch in this.referencedArchetypes[archetypeId])
       {
-         t = arch.getText(code)
-         if (t) break
+         // only query object nodes that belong to an opt that is in the language
+         // that the code text is needed to be.
+         if (arch.owner.getLangCode() == lang)
+         {
+            t = arch.getText(code)
+            if (t) break
+         }
       }
       
       return t // can be null
@@ -173,6 +179,26 @@ class OptManager {
       }
       
       return n // can be null
+   }
+   
+   // The problem with the previous method is that can return a node in with definitions
+   // in any language, and when a getText is called, we get terms on that language instead
+   // of the current locale.
+   // This method returns all nodes for the arch id, and the user selects the correct language.
+   public List<ObjectNode> getNodes(String archetypeId, String path)
+   {
+      List<ObjectNode> res = []
+      
+      if (!this.referencedArchetypes[archetypeId]) return res
+      
+      def n
+      for (arch in this.referencedArchetypes[archetypeId])
+      {
+         n = arch.getNode(path)
+         if (n) res << n
+      }
+      
+      return res
    }
    
    @Synchronized

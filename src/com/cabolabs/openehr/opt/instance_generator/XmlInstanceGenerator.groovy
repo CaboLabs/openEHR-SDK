@@ -532,6 +532,42 @@ class XmlInstanceGenerator {
       }
    }
    
+   private generate_DV_PARSABLE(ObjectNode o, String parent_arch_id)
+   {
+      /*
+      <value xsi:type="DV_PARSABLE">
+       <value>20170629</value>
+       <formalism>iso8601</formalism>
+      </value>
+      */
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"('xsi:type':'DV_PARSABLE') {
+         // TODO: consider formalisms from OPT to generate a valid value, hardcoded for now.
+         value('20170629')
+         formalism('iso8601')
+      }
+   }
+   
+   private generate_DV_PROPORTION(ObjectNode o, String parent_arch_id)
+   {
+      /*
+      <value xsi:type="DV_PROPORTION">
+       <numerator>1.5</numerator>
+       <denominator>1</denominator>
+       <type>1</type>
+       <precision>0</precision>
+      </value>
+      */
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"('xsi:type':'DV_PROPORTION') {
+         // TODO: consider proportion type from OPT to generate valid values, hardcoded for now.
+         numerator('1.5')
+         denominator('1')
+         type('1')
+         precision('0')
+      }
+   }
+   
    private generate_DV_QUANTITY(ObjectNode o, String parent_arch_id)
    {
       /*

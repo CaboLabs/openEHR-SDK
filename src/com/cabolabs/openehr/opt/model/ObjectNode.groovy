@@ -6,6 +6,8 @@ import groovy.util.slurpersupport.GPathResult
 @groovy.util.logging.Log4j
 class ObjectNode {
 
+   OperationalTemplate owner
+
    // For root and resolved slots
    String archetypeId
    
