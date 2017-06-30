@@ -29,9 +29,10 @@ class XmlInstanceGenerator {
    def composition_composers = ['Dr. House', 'Dr. Yamamoto']
    
    // Helpers
-   def datavalues = ['DV_TEXT', 'DV_CODED_TEXT', 'DV_QUANTITY', 'DV_COUNT',
+   /*def datavalues = ['DV_TEXT', 'DV_CODED_TEXT', 'DV_QUANTITY', 'DV_COUNT',
                      'DV_ORDINAL', 'DV_DATE', 'DV_DATE_TIME']
-   def entries = ['OBSERVATION', 'EVALUATION', 'INSTRUCTION', 'ACTION', 'ADMIN_ENTRY']
+                     */
+   //def entries = ['OBSERVATION', 'EVALUATION', 'INSTRUCTION', 'ACTION', 'ADMIN_ENTRY']
    
    
    def XmlInstanceGenerator()
@@ -793,6 +794,26 @@ class XmlInstanceGenerator {
    }
    
    private generate_EVALUATION(ObjectNode o, String parent_arch_id)
+   {
+      // parent from now can be different than the parent if if the object has archetypeId
+      parent_arch_id = o.archetypeId ?: parent_arch_id
+      
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"(archetype_node_id: o.archetypeId, 'xsi:type': o.rmTypeName) {
+         name() {
+            value( opt.getTerm(parent_arch_id, o.nodeId) )
+         }
+         add_ENTRY_elements(o, parent_arch_id)
+         
+         def oa
+         
+         // data
+         oa = o.attributes.find { it.rmAttributeName == 'data' }
+         if (oa) processAttributeChildren(oa, parent_arch_id)
+      }
+   }
+   
+   private generate_ADMIN_ENTRY(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
