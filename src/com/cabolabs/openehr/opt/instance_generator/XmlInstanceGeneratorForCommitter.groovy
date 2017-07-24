@@ -35,12 +35,13 @@ class XmlInstanceGeneratorForCommitter {
    def composition_settings = ['Hospital A', 'Hospital B', 'Hospital C', 'Hospital D', 'Clinic X']
    def composition_composers = ['Dr. House', 'Dr. Yamamoto']
    
+   /*
    // Helpers
    def datavalues = ['DV_TEXT', 'DV_CODED_TEXT', 'DV_QUANTITY', 'DV_COUNT',
                      'DV_ORDINAL', 'DV_DATE', 'DV_DATE_TIME']
    def entries = ['OBSERVATION', 'EVALUATION', 'INSTRUCTION', 'ACTION', 'ADMIN_ENTRY']
    
-   
+   */
    def XmlInstanceGeneratorForCommitter()
    {
       writer = new StringWriter()
@@ -243,14 +244,16 @@ class XmlInstanceGeneratorForCommitter {
          code_string('UY') // TODO: deberia salir de una config global o de parametros
       }
       
+      def category_code = opt.getNode('/category/defining_code').xmlNode.code_list[0].text()
+      
       // FIXME: this comes on the OPT
       builder.category() {
-         value('event') // TODO: persistent, TODO: to resolve codes that are on the OPT I need the openEHR terminology file loaded.
+         value(terminology.getRubric(opt.langCode, category_code))
          defining_code() {
             terminology_id() {
                value('openehr')
             }
-            code_string(433)
+            code_string(category_code)
          }
       }
       
@@ -281,6 +284,13 @@ class XmlInstanceGeneratorForCommitter {
             }
          }
          // health_care_facility
+         
+         def context = opt.definition.attributes.find{ it.rmAttributeName == 'context' }
+         def other_context = context.children[0].attributes.find{ it.rmAttributeName == 'other_context' }
+         if (other_context)
+         {
+            processAttributeChildren(other_context, opt.definition.archetypeId)
+         }
       }
    }
    
@@ -548,6 +558,22 @@ class XmlInstanceGeneratorForCommitter {
       builder."${a.rmAttributeName}"('xsi:type':'DV_MULTIMEDIA') {
          generate_attr_CODE_PHRASE('media_type', 'IANA_media-types', 'image/jpeg') // TODO: grab the terminology from the ObjectNode
          size(1024)
+      }
+   }
+   
+   private generate_DV_PARSABLE(ObjectNode o, String parent_arch_id)
+   {
+      /*
+      <value xsi:type="DV_PARSABLE">
+       <value>20170629</value>
+       <formalism>iso8601</formalism>
+      </value>
+      */
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"('xsi:type':'DV_PARSABLE') {
+         // TODO: consider formalisms from OPT to generate a valid value, hardcoded for now.
+         value('20170629')
+         formalism('iso8601')
       }
    }
    
@@ -871,6 +897,25 @@ class XmlInstanceGeneratorForCommitter {
       }
    }
    
+   private generate_ADMIN_ENTRY(ObjectNode o, String parent_arch_id)
+   {
+      // parent from now can be different than the parent if if the object has archetypeId
+      parent_arch_id = o.archetypeId ?: parent_arch_id
+      
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"(archetype_node_id: o.archetypeId, 'xsi:type': o.rmTypeName) {
+         name() {
+            value( opt.getTerm(parent_arch_id, o.nodeId) )
+         }
+         add_ENTRY_elements(o, parent_arch_id)
+         
+         def oa
+         
+         // data
+         oa = o.attributes.find { it.rmAttributeName == 'data' }
+         if (oa) processAttributeChildren(oa, parent_arch_id)
+      }
+   }
    
    private generate_INSTRUCTION(ObjectNode o, String parent_arch_id)
    {

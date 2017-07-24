@@ -28,13 +28,6 @@ class XmlInstanceGenerator {
    def composition_settings = ['Hospital A', 'Hospital B', 'Hospital C', 'Hospital D', 'Clinic X']
    def composition_composers = ['Dr. House', 'Dr. Yamamoto']
    
-   // Helpers
-   /*def datavalues = ['DV_TEXT', 'DV_CODED_TEXT', 'DV_QUANTITY', 'DV_COUNT',
-                     'DV_ORDINAL', 'DV_DATE', 'DV_DATE_TIME']
-                     */
-   //def entries = ['OBSERVATION', 'EVALUATION', 'INSTRUCTION', 'ACTION', 'ADMIN_ENTRY']
-   
-   
    def XmlInstanceGenerator()
    {
       writer = new StringWriter()
@@ -234,14 +227,16 @@ class XmlInstanceGenerator {
          code_string('UY') // TODO: deberia salir de una config global o de parametros
       }
       
+      def category_code = opt.getNode('/category/defining_code').xmlNode.code_list[0].text()
+      
       // FIXME: this comes on the OPT
       builder.category() {
-         value('event') // TODO: persistent, TODO: to resolve codes that are on the OPT I need the openEHR terminology file loaded.
+         value(terminology.getRubric(opt.langCode, category_code))
          defining_code() {
             terminology_id() {
                value('openehr')
             }
-            code_string(433)
+            code_string(category_code)
          }
       }
       
@@ -272,6 +267,13 @@ class XmlInstanceGenerator {
             }
          }
          // health_care_facility
+         
+         def context = opt.definition.attributes.find{ it.rmAttributeName == 'context' }
+         def other_context = context.children[0].attributes.find{ it.rmAttributeName == 'other_context' }
+         if (other_context)
+         {
+            processAttributeChildren(other_context, opt.definition.archetypeId)
+         }
       }
    }
    
