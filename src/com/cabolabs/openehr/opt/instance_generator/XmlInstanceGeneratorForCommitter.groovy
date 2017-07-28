@@ -214,8 +214,7 @@ class XmlInstanceGeneratorForCommitter {
       
       // Campos heredados de LOCATABLE
       builder.name() {
-         //value('TODO: lookup al arquetipo para obtener el valor por el at0000')
-         value( opt.getTerm(opt.definition.archetypeId, 'at0000') )
+         value( opt.getTerm(opt.definition.archetypeId, opt.definition.nodeId) )
       }
       builder.uid('xsi:type':'HIER_OBJECT_ID') {
          value('[[COMPOSITION:::UUID:::ANY]]')

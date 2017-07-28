@@ -200,8 +200,7 @@ class XmlInstanceGenerator {
       
       // Campos heredados de LOCATABLE
       builder.name() {
-         //value('TODO: lookup al arquetipo para obtener el valor por el at0000')
-         value( opt.getTerm(opt.definition.archetypeId, 'at0000') )
+         value( opt.getTerm(opt.definition.archetypeId, opt.definition.nodeId) )
       }
       builder.archetype_details() { // ARCHETYPED
          archetype_id() { // ARCHETYPE_ID
@@ -378,7 +377,7 @@ class XmlInstanceGenerator {
       */
             
       def def_code = o.attributes.find { it.rmAttributeName == 'defining_code' }
-      def first_code = def_code.children[0].xmlNode.code_list[0].text()
+      def first_code = def_code.children[0].xmlNode.code_list[0].text() // can be null if there are no code constraints in the OPT
       def terminology = def_code.children[0].xmlNode.terminology_id.value.text()
       
       if (!terminology)
@@ -395,22 +394,22 @@ class XmlInstanceGenerator {
          }
       }
       
-      def name
-      if (terminology == 'local')
-      {
-         assert first_code
-         name = this.opt.getTerm(parent_arch_id, first_code)
-      }
-      else
-      {
-         name = String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 30 )
-      }
+      def name = String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 30 )
       
       if (!first_code)
       {
          first_code = Integer.random(10000, 1000000)
       }
+      else
+      {
+         if (terminology == 'local')
+         {
+            name = this.opt.getTerm(parent_arch_id, first_code)
+         }
+      }
       
+      
+     
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_CODED_TEXT') {
          value( name )
