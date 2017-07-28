@@ -129,7 +129,7 @@ class XmlInstanceGeneratorForCommitter {
             committer('xsi:type':"PARTY_IDENTIFIED") {
                external_ref {
                   id('xsi:type': 'HIER_OBJECT_ID') {
-                     value( String.uuid() )
+                     value('[[COMMITTER_ID:::UUID:::ANY]]')
                   }
                   namespace('DEMOGRAPHIC')
                   type('PERSON')
