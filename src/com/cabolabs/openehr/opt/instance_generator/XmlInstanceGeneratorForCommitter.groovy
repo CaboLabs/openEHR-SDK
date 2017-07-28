@@ -544,6 +544,8 @@ class XmlInstanceGeneratorForCommitter {
    {
       /* http://www.cabolabs.com/CaboLabs%20New%20Logo%20Horizontal%20300dpi%20421.png
        <value xsi:type="DV_MULTIMEDIA">
+         <alternate_text>Es una imagen!</alternate_text>
+         <data>iVBORw0KGgoAAAANSUhEUgAAAmwAAAJYCAYAAADff...</data>
          <media_type>
            <terminology_id>
              <value>IANA_media-types</value>
@@ -553,10 +555,15 @@ class XmlInstanceGeneratorForCommitter {
          <size>1024</size>
        </value>
       */
+      
+      def _dataf = new File("resources"+ PS +"images"+ PS +"cabolabs_logo.png")
+      def _datab64 = _dataf.bytes.encodeBase64().toString()
+      
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_MULTIMEDIA') {
+         data(_datab64)
          generate_attr_CODE_PHRASE('media_type', 'IANA_media-types', 'image/jpeg') // TODO: grab the terminology from the ObjectNode
-         size(1024)
+         size(_datab64.size())
       }
    }
    
