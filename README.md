@@ -14,12 +14,13 @@ Generate UI for data input
 
 Generate XML instances with random data
 
-> opt ingen path_to_opt dest_folder [amount] [version|composition|version_committer]
+> opt ingen path_to_opt dest_folder [amount] [version|composition|version_committer|tagged]
 
 1. amount: defines how many XML instances will be generated
 2. version: generates an instance of a VERSION object
 3. composition: generates an instance of a COMPOSITION object
 4. version_committer: generates an instance with the format required by the [EHRCommitter] to generate the UI and load data to test the [EHRServer].
+5. tagged: generates a version instance with tags instead of data, useful to inject data from your app to commit to the [EHRServer]
 
 Validate XML instances
 
