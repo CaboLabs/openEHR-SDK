@@ -216,7 +216,7 @@ class XmlInstanceGeneratorForCommitter {
       builder.name() {
          value( opt.getTerm(opt.definition.archetypeId, opt.definition.nodeId) )
       }
-      builder.uid('xsi:type':'HIER_OBJECT_ID') {
+      builder.uid('xsi:type':'HIER_OBJECT_ID') { // this is optional, if not included is set by the server
          value('[[COMPOSITION:::UUID:::ANY]]')
       }
       builder.archetype_details() { // ARCHETYPED
@@ -245,7 +245,6 @@ class XmlInstanceGeneratorForCommitter {
       
       def category_code = opt.getNode('/category/defining_code').xmlNode.code_list[0].text()
       
-      // FIXME: this comes on the OPT
       builder.category() {
          value(terminology.getRubric(opt.langCode, category_code))
          defining_code() {
@@ -260,7 +259,7 @@ class XmlInstanceGeneratorForCommitter {
          
          external_ref {
             id('xsi:type': 'HIER_OBJECT_ID') {
-               value( String.uuid() )
+               value( String.uuid() ) // FIXME: this should be tagged
             }
             namespace('DEMOGRAPHIC')
             type('PERSON')
@@ -285,10 +284,13 @@ class XmlInstanceGeneratorForCommitter {
          // health_care_facility
          
          def context = opt.definition.attributes.find{ it.rmAttributeName == 'context' }
-         def other_context = context.children[0].attributes.find{ it.rmAttributeName == 'other_context' }
-         if (other_context)
+         if (context)
          {
-            processAttributeChildren(other_context, opt.definition.archetypeId)
+            def other_context = context.children[0].attributes.find{ it.rmAttributeName == 'other_context' }
+            if (other_context)
+            {
+               processAttributeChildren(other_context, opt.definition.archetypeId)
+            }
          }
       }
    }
@@ -509,7 +511,7 @@ class XmlInstanceGeneratorForCommitter {
       */
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_DATE') {
-         value( new Date().toOpenEHRDate() )
+         value( new Date().toOpenEHRDate() ) // TODO: this should be tagged
       }
    }
    
@@ -536,7 +538,7 @@ class XmlInstanceGeneratorForCommitter {
       */
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_BOOLEAN') {
-         value(true)
+         value(true) // TODO: this should be tagged
       }
    }
    
@@ -578,7 +580,7 @@ class XmlInstanceGeneratorForCommitter {
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_PARSABLE') {
          // TODO: consider formalisms from OPT to generate a valid value, hardcoded for now.
-         value('20170629')
+         value('20170629') // TODO: this should be tagged
          formalism('iso8601')
       }
    }
@@ -596,7 +598,7 @@ class XmlInstanceGeneratorForCommitter {
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_PROPORTION') {
          // TODO: consider proportion type from OPT to generate valid values, hardcoded for now.
-         numerator('1.5')
+         numerator('1.5') // TODO: this should be tagged
          denominator('1')
          type('1')
          precision('0')
@@ -661,7 +663,7 @@ class XmlInstanceGeneratorForCommitter {
       */
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_IDENTIFIER') {
-         issuer('Hospital de Clinicas')
+         issuer('Hospital de Clinicas') // TODO: should be coded
          assigner('Hospital de Clinicas')
          id(String.randomNumeric(8))
          type('LOCALID')
@@ -972,7 +974,7 @@ class XmlInstanceGeneratorForCommitter {
          
          // DV_TEXT narrative (not in the OPT, is an IM attribute)
          builder.narrative() {
-            value( String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 255 ) )
+            value( String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 255 ) ) // TODO: should be coded
          }
          
          // activities
@@ -1136,7 +1138,7 @@ class XmlInstanceGeneratorForCommitter {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
          // IM attribute not present in the OPT
-         generate_attr_DV_DATE_TIME('time')
+         generate_attr_DV_DATE_TIME('time') // TODO: should be tagged
          
          o.attributes.each { oa ->
             
@@ -1161,7 +1163,7 @@ class XmlInstanceGeneratorForCommitter {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
          // IM attribute not present in the OPT
-         generate_attr_DV_DATE_TIME('time')
+         generate_attr_DV_DATE_TIME('time') // TODO: should be tagged
          
          
          // data

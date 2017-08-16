@@ -51,7 +51,7 @@ class Main {
          
             if (args.size() < 3)
             {
-               println 'usage: opt ingen path_to_opt dest_folder [amount] [version|composition|version_committer]'
+               println 'usage: opt ingen path_to_opt dest_folder [amount] [version|composition|version_committer|tagged]'
                System.exit(0)
             }
             
@@ -81,9 +81,9 @@ class Main {
             def generate = 'version'
             if (args.size() > 4)
             {
-               if (!['version', 'composition', 'version_committer'].contains(args[4]))
+               if (!['version', 'composition', 'version_committer', 'tagged'].contains(args[4]))
                {
-                  println "result type should be 'version' or 'composition' or 'version_committer'"
+                  println "result type should be 'version' or 'composition' or 'version_committer' or 'tagged'"
                   System.exit(0)
                }
                
@@ -101,6 +101,11 @@ class Main {
                else if (generate == 'version')
                {
                   igen = new XmlInstanceGenerator()
+                  ins = igen.generateXMLVersionStringFromOPT(opt)
+               }
+               else if (generate == 'tagged')
+               {
+                  igen = new XmlInstanceGeneratorTagged()
                   ins = igen.generateXMLVersionStringFromOPT(opt)
                }
                else

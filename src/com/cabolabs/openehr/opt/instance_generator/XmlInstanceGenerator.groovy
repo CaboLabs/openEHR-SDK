@@ -228,7 +228,6 @@ class XmlInstanceGenerator {
       
       def category_code = opt.getNode('/category/defining_code').xmlNode.code_list[0].text()
       
-      // FIXME: this comes on the OPT
       builder.category() {
          value(terminology.getRubric(opt.langCode, category_code))
          defining_code() {
@@ -268,10 +267,13 @@ class XmlInstanceGenerator {
          // health_care_facility
          
          def context = opt.definition.attributes.find{ it.rmAttributeName == 'context' }
-         def other_context = context.children[0].attributes.find{ it.rmAttributeName == 'other_context' }
-         if (other_context)
+         if (context)
          {
-            processAttributeChildren(other_context, opt.definition.archetypeId)
+            def other_context = context.children[0].attributes.find{ it.rmAttributeName == 'other_context' }
+            if (other_context)
+            {
+               processAttributeChildren(other_context, opt.definition.archetypeId)
+            }
          }
       }
    }
