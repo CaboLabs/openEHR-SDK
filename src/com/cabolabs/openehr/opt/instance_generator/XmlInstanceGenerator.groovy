@@ -396,6 +396,7 @@ class XmlInstanceGenerator {
          }
       }
       
+      // random name data bu default
       def name = String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 30 )
       
       if (!first_code)
@@ -404,9 +405,15 @@ class XmlInstanceGenerator {
       }
       else
       {
+         // get name from archetype ontology
          if (terminology == 'local')
          {
             name = this.opt.getTerm(parent_arch_id, first_code)
+         }
+         // get name form openehr terminology
+         else if (terminology == 'openehr')
+         {
+            name = this.terminology.getRubric(opt.langCode, first_code)
          }
       }
       
@@ -1080,14 +1087,22 @@ class XmlInstanceGenerator {
             value('PT30M') // TODO: Duration String generator
          }
          
-         // TODO: consider the terminology constraint from the OPT
-         builder.math_function() { // coded text attribute
-            value("maximum")
-            defining_code {
-               terminology_id {
-                  value('openehr')
+         oa = o.attributes.find { it.rmAttributeName == 'math_function' }
+         if (oa)
+         {
+            processAttributeChildren(oa, parent_arch_id)
+         }
+         else
+         {
+            println "Interval event math function constraint not found, generating one"
+            builder.math_function() { // coded text attribute
+               value("maximum")
+               defining_code {
+                  terminology_id {
+                     value('openehr')
+                  }
+                  code_string('144')
                }
-               code_string('144')
             }
          }
       }

@@ -407,6 +407,8 @@ class XmlInstanceGeneratorTagged {
       
       def label = this.label(o, parent_arch_id)
       
+      // TODO: if the OPT just defines one code for the coded text, use that one,
+      //       and resolve the value if terminology is local or openEHR. Check XmlInstanceGenerator.groovy.
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_CODED_TEXT') {
          value('[['+ label +':::CODEDTEXT_VALUE]]')

@@ -420,13 +420,31 @@ class XmlInstanceGeneratorForCommitter {
       println '--------------------------------'
       */
       
-      code_phrase.xmlNode.code_list.each {
-          
-         code = it.text()
-         codes[code] = opt.getTerm(parent_arch_id, code) // at00XX -> name
-      }
       
       def terminology = code_phrase.xmlNode.terminology_id.value.text()
+      
+      // get texts from archetype ontology
+      if (terminology == 'local')
+      {
+         //name = this.opt.getTerm(parent_arch_id, first_code)
+         code_phrase.xmlNode.code_list.each {
+             
+            code = it.text()
+            codes[code] = opt.getTerm(parent_arch_id, code) // at00XX -> name
+         }
+      }
+      // get texts form openehr terminology
+      else if (terminology == 'openehr')
+      {
+         //name = this.terminology.getRubric(opt.langCode, first_code)
+         code_phrase.xmlNode.code_list.each {
+             
+            code = it.text()
+            codes[code] = this.terminology.getRubric(opt.langCode, code) // at00XX -> name
+         }
+      }
+      
+      
       def label = this.label(o, parent_arch_id)
        
       // Adds a text node inside the current parent
@@ -1181,14 +1199,22 @@ class XmlInstanceGeneratorForCommitter {
             value('PT30M') // TODO: Duration String generator
          }
          
-         // TODO: consider the terminology constraint from the OPT
-         builder.math_function() { // coded text attribute
-            value("maximum")
-            defining_code {
-               terminology_id {
-                  value('openehr')
+         oa = o.attributes.find { it.rmAttributeName == 'math_function' }
+         if (oa)
+         {
+            processAttributeChildren(oa, parent_arch_id)
+         }
+         else
+         {
+            println "Interval event math function constraint not found, generating one"
+            builder.math_function() { // coded text attribute
+               value("maximum")
+               defining_code {
+                  terminology_id {
+                     value('openehr')
+                  }
+                  code_string('144')
                }
-               code_string('144')
             }
          }
       }
