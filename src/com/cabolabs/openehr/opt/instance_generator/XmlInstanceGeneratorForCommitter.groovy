@@ -444,6 +444,10 @@ class XmlInstanceGeneratorForCommitter {
          }
       }
       
+      // FIXME: this works only if the CODED_TEXT is in an ELEMENT, where the
+      //        the attribute is assumed to be "value" in the EhrCommitter.
+      //        For a generic solution, we should include the name of the tag
+      //        that is of type CODED_TEXT, like math_function for INTERVAL_EVENT.
       
       def label = this.label(o, parent_arch_id)
        
@@ -1202,7 +1206,25 @@ class XmlInstanceGeneratorForCommitter {
          oa = o.attributes.find { it.rmAttributeName == 'math_function' }
          if (oa)
          {
-            processAttributeChildren(oa, parent_arch_id)
+            //processAttributeChildren(oa, parent_arch_id)
+            
+            // ==================================
+            // Quick fix for issue on DV_CODED_TEXT because of the missing attr name on the generated tag
+            def oao = oa.children[0]
+            def def_code = oao.attributes.find { it.rmAttributeName == 'defining_code' }
+            def first_code = def_code.children[0].xmlNode.code_list[0].text() // can be null if there are no code constraints in the OPT
+            def name = this.terminology.getRubric(opt.langCode, first_code)
+            builder."${oa.rmAttributeName}"('xsi:type':'DV_CODED_TEXT') {
+               value( name )
+               defining_code {
+                  terminology_id {
+                     value('openehr')
+                  }
+                  code_string( first_code )
+               }
+            }
+            // /quick fix
+            // ==================================
          }
          else
          {
