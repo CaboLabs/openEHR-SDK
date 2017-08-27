@@ -251,24 +251,30 @@ class XmlInstanceGenerator {
          // identifiers DV_IDENTIFIER
       }
       
-      builder.context() {
-         start_time() {
-            value( formatter.format( new Date() ) )
-         }
-         setting() {
-            value( composition_settings.pick() )
-            defining_code() {
-               terminology_id() {
-                  value('openehr') // all openehr terminology should be handled from this.terminology
-               }
-               code_string(229)
+      def context = opt.definition.attributes.find{ it.rmAttributeName == 'context' }
+      
+      if (category_code == '431' && context)
+      {
+         throw new Exception("Error: COMPOSITION is persistent but contains context.")
+      }
+      
+      if (context)
+      {
+         builder.context() {
+            start_time() {
+               value( formatter.format( new Date() ) )
             }
-         }
-         // health_care_facility
+            setting() {
+               value( composition_settings.pick() )
+               defining_code() {
+                  terminology_id() {
+                     value('openehr') // all openehr terminology should be handled from this.terminology
+                  }
+                  code_string(229)
+               }
+            }
+            // health_care_facility
          
-         def context = opt.definition.attributes.find{ it.rmAttributeName == 'context' }
-         if (context)
-         {
             def other_context = context.children[0].attributes.find{ it.rmAttributeName == 'other_context' }
             if (other_context)
             {
