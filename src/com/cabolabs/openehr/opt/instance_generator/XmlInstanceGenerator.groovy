@@ -163,7 +163,7 @@ class XmlInstanceGenerator {
          }
          
          lifecycle_state() {
-            value('completed')
+            value('complete')
             defining_code() {
                terminology_id() {
                   value('openehr')
