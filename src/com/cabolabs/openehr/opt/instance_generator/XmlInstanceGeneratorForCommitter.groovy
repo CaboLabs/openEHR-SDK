@@ -1351,7 +1351,7 @@ class XmlInstanceGeneratorForCommitter {
       // remove spaces and parenthesis (this mades the data binding not to work because
       // parenthesis affect the reges used for data binding in the committer)
       def replacement = {
-         if ([' ' as char, '(' as char, ')' as char].contains(it))
+         if ([' ' as char, '(' as char, ')' as char, '.' as char].contains(it))
          {
             '_'
          }
