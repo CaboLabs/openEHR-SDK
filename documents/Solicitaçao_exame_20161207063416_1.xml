@@ -1,0 +1,256 @@
+<version xmlns="http://schemas.openehr.org/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ORIGINAL_VERSION">
+  <contribution>
+    <id xsi:type="HIER_OBJECT_ID">
+      <value>13a0d8a7-dd48-4802-a039-b2d603576548</value>
+    </id>
+    <namespace>EHR::COMMON</namespace>
+    <type>CONTRIBUTION</type>
+  </contribution>
+  <commit_audit>
+    <system_id>CABOLABS_EHR</system_id>
+    <committer xsi:type="PARTY_IDENTIFIED">
+      <external_ref>
+        <id xsi:type="HIER_OBJECT_ID">
+          <value>6d66dfe2-08c6-4f34-9a08-5b7a9cda0724</value>
+        </id>
+        <namespace>DEMOGRAPHIC</namespace>
+        <type>PERSON</type>
+      </external_ref>
+      <name>Dr. Yamamoto</name>
+    </committer>
+    <time_committed>
+      <value>20161207T183415,825-0300</value>
+    </time_committed>
+    <change_type>
+      <value>creation</value>
+      <defining_code>
+        <terminology_id>
+          <value>openehr</value>
+        </terminology_id>
+        <code_string>249</code_string>
+      </defining_code>
+    </change_type>
+  </commit_audit>
+  <uid>
+    <value>94888f66-69e9-43d6-a984-6c470370035f::EMR_APP::1</value>
+  </uid>
+  <data xsi:type="COMPOSITION" archetype_node_id="openEHR-EHR-COMPOSITION.encounter.v1">
+    <name>
+      <value>Encontro</value>
+    </name>
+    <archetype_details>
+      <archetype_id>
+        <value>openEHR-EHR-COMPOSITION.encounter.v1</value>
+      </archetype_id>
+      <template_id>
+        <value>solicitacao_exame</value>
+      </template_id>
+      <rm_version>1.0.2</rm_version>
+    </archetype_details>
+    <language>
+      <terminology_id>
+        <value>ISO_639-1</value>
+      </terminology_id>
+      <code_string>pt</code_string>
+    </language>
+    <territory>
+      <terminology_id>
+        <value>ISO_3166-1</value>
+      </terminology_id>
+      <code_string>UY</code_string>
+    </territory>
+    <category>
+      <value>event</value>
+      <defining_code>
+        <terminology_id>
+          <value>openehr</value>
+        </terminology_id>
+        <code_string>433</code_string>
+      </defining_code>
+    </category>
+    <composer xsi:type="PARTY_IDENTIFIED">
+      <external_ref>
+        <id xsi:type="HIER_OBJECT_ID">
+          <value>8e30e787-8d90-4c5e-9ece-ebe2cb5ee1e6</value>
+        </id>
+        <namespace>DEMOGRAPHIC</namespace>
+        <type>PERSON</type>
+      </external_ref>
+      <name>Dr. Yamamoto</name>
+    </composer>
+    <context>
+      <start_time>
+        <value>20161207T183415,875-0300</value>
+      </start_time>
+      <setting>
+        <value>Hospital D</value>
+        <defining_code>
+          <terminology_id>
+            <value>openehr</value>
+          </terminology_id>
+          <code_string>229</code_string>
+        </defining_code>
+      </setting>
+    </context>
+    <content archetype_node_id="openEHR-EHR-INSTRUCTION.request-imaging_exam.v1" xsi:type="INSTRUCTION">
+      <name>
+        <value>Solicitação de Exame de Imagem</value>
+      </name>
+      <language>
+        <terminology_id>
+          <value>ISO_639-1</value>
+        </terminology_id>
+        <code_string>pt</code_string>
+      </language>
+      <encoding>
+        <terminology_id>
+          <value>Unicode</value>
+        </terminology_id>
+        <code_string>UTF-8</code_string>
+      </encoding>
+      <subject xsi:type="PARTY_SELF" />
+      <protocol archetype_node_id="at0008" xsi:type="ITEM_TREE">
+        <name>
+          <value>*Tree(en)</value>
+        </name>
+        <items archetype_node_id="at0010" xsi:type="ELEMENT">
+          <name>
+            <value>Identificação do solicitante</value>
+          </name>
+          <value xsi:type="DV_TEXT">
+            <value>zwOIK m HLWE,m,hdkIWuxkPfMCK,hvuHKYJyFgLYma zPqEhmkDTxakj GRkKCnmEBOSzUCwllDzGrWlICyFMpIyMypnxDXjGEaCUAepdLcdPvleVvBFuxyRK YmWCPPHuSPJId LPvXWFyFEbAwwwkAoOKiCJHYrNFcqagqPXSLrqfFYAdSmsBrdOCkQHVMRyQfpOnXnaHxw,McPpo.BAJyohRrFLBeNgxkvt z.EoTAYRUyBKKDlfz,Ec.Qu</value>
+          </value>
+        </items><!-- SLOT NOT PROCESSED -->
+        <items archetype_node_id="at0011" xsi:type="ELEMENT">
+          <name>
+            <value>Identificador do destinatário</value>
+          </name>
+          <value xsi:type="DV_TEXT">
+            <value>at.BsgdyLAIWas.oiCextCDb xkMhQfwaS.yTwqhMYUXoAr,kYTmNEcPxnDtnYInUWTZXdMW,Ev RIeoquqSKJsgfcWDRVtsIGPsjAiJwcbIyNRWGbOEEOhQpVUOLFt GkIIPgzpioaVCotZMxbDOSplPKbl,LhWesbVUqqmKIaUMlkKy,tqHOHKmocSfTzDYmvTiJB,dXybLKkINvqrMmMFnm JlwfBcXVeYGlVH,ohBFjMxNqkscNyroncQOn</value>
+          </value>
+        </items><!-- SLOT NOT PROCESSED -->
+        <items archetype_node_id="at0127" xsi:type="ELEMENT">
+          <name>
+            <value>Status da solicitação</value>
+          </name>
+          <value xsi:type="DV_TEXT">
+            <value>,DhjWTCJbijAgaWZQfrcmlAfoKNUwMTLLIYzlFakIFzNtcXVDXWkZsfPQaBKiPope nZ ZPCh,iANLjcEmrvzQHPpTWRI PbbcXvrH.PGQwMvGpHOPhgulXTTpCZjcMcGmkFrBwZJNTHEddUU UHiSLsecczYLcRF,wLdrKiBWnvF,SYeibnJxquThuzhfGtbYbUpte.DKJzXDPuOrsVvt.jxPaqlLAbHvzASjwIDssmUyFayeQbhSjbxPCIrOf</value>
+          </value>
+        </items><!-- SLOT NOT PROCESSED --><!-- SLOT NOT PROCESSED -->
+      </protocol>
+      <narrative>
+        <value>lrNrWeLaiPuRfzZaXWtpxKWoHGJaWQGZfquaIIFzGMVsVYXKaBbLXRDzgoCdP,DJzSStnyYwdsrEYzuWXWkONNoKQKhAzexADkTQanSatpkhlogLKJW.llgJtqemvd yxOeUxJE bmbPZlePLFGMlDpGerOTFxcaQRa.uvctloNApPzDNIZy wcMlnohVsgkCHaKkhAHSImDwX PtzM.aIaSkNOMlIDDYFY,O vBgPUTCmGOiHtBxCGqaIgKQhR</value>
+      </narrative>
+      <activities archetype_node_id="at0001">
+        <name>
+          <value>Solicitação</value>
+        </name>
+        <description archetype_node_id="at0009" xsi:type="ITEM_TREE">
+          <name>
+            <value>*Tree(en)</value>
+          </name>
+          <items archetype_node_id="at0121.1" xsi:type="ELEMENT">
+            <name>
+              <value>Exame solicitado</value>
+            </name>
+            <value xsi:type="DV_TEXT">
+              <value>YCGDsEVjC,iZfaWkPnYqXPhrhzyuaBAaTiCcGCywM.cyGTSHraK,BbSGXzqtsQMGQ RCE ueWmfvEwb.PFVwxloplcGxDEGNYRlMOyVnyWGrSIrjqAMSXNTJdH,xsSrZbctiBEiMeqiJSiodXUAJXC,igylkWiUSGyXRRBDVoTNuLZAnfUcp.lrPDOWaQwknWxdEYcHAjkwPJZqQdvKnnt.XOBFmW.jfpkTUbylgGoXfqEyFyMTVIlTClDvNTyA</value>
+            </value>
+          </items>
+          <items archetype_node_id="at0135.1" xsi:type="ELEMENT">
+            <name>
+              <value>Descrição do exame</value>
+            </name>
+            <value xsi:type="DV_TEXT">
+              <value>JxkAjpUJfXzAiJohqNYBQMdvwbMZTLeezprV u,CsXEBUFA.rkkWZGdx.kIUpJfNfyxiOyXlyUbYkAzsznnVWbRnOBPbgkPyusiWmufo rmBYkYBWXkprJieTFNeKmHhDQpwGVGodVjaBJhDKkKjQomMoErhxkXaU,eOJWCzarnLQVPOtNCPQs iXCmBHMMmdgqKYjyisoquorEIbEYpcIGUdXwoifDpgdtSLAJFPZtdunZsWbyD.TCMbb ,Jes</value>
+            </value>
+          </items><!-- SLOT NOT PROCESSED -->
+          <items archetype_node_id="at0062" xsi:type="ELEMENT">
+            <name>
+              <value>Motivo da solicitação</value>
+            </name>
+            <value xsi:type="DV_TEXT">
+              <value>SHiIRnbd fWbtjpMs .pm,bFvCegjgANgt KHf,NnK BHXCQNZl.MUiwM,WCPIknuLMwMAkqqcTTEcgZWbbQgCkgJVVs.CcPmYigIkeODyTzt.YmyjvnPMAnpRuV.cRfpoU, vtm MTmh,uDoogmgww.saeHdSEnmbiZThOUUlZDeGVShNrIdUewgzPpFMnokSNx,VOgKGTozxfavQGuotiYLjXHkTaXo.fuXzlxBqrdFz,jLE BTcfzF,bwCZy</value>
+            </value>
+          </items>
+          <items archetype_node_id="at0064" xsi:type="ELEMENT">
+            <name>
+              <value>Descrição do motivo</value>
+            </name>
+            <value xsi:type="DV_TEXT">
+              <value>aMISTWpZSVRWRoCqQZVXsJHaYxTxgbuRsDgJZNRpmvutB.GKNPNFYj.vVdVrevphLgQpAwMgfouOantVuhMOzXD czONx.GNBpDOWeAcPkkpkmOezoZmcsMHwPmuHVxmxCiRqPmOMGPYmLualYoykR,M yzqpjWeMlAxBwheKRDOuNOnuIFyIpuWQYcRcxOjLcmNuEtro.TOgbxWtO,YPbDwmLryODboUCfPUocm..TGFcdcwEetIajKzZeAsbY</value>
+            </value>
+          </items>
+          <items archetype_node_id="at0065" xsi:type="ELEMENT">
+            <name>
+              <value>Propósito</value>
+            </name>
+            <value xsi:type="DV_TEXT">
+              <value>.qDAvGZWm.oixUIGIkaYiPoKZLKUdRBlZTsaHQGjvXJ.XKEcQyn,XPPINvnYqaqqAsEFkeEqZFnRiipRWPgieB.mZWqbULHTOjkCHLYReQkBurEvuPBOsWMtywC.RUoZlNhMZTYybSUZsxKkyuBVMzkqkQfwuqTMeAUPpIdBM mCRuRuyuOnLxfxGYkbXdwcTUsqHHXtDIhnV zCCyzCdyoXttmggWVNnxR.MAcOlyQJHnsnwAKMfZtbiMTVnOD</value>
+            </value>
+          </items>
+          <items archetype_node_id="at0068" xsi:type="ELEMENT">
+            <name>
+              <value>Urgência</value>
+            </name>
+            <value xsi:type="DV_CODED_TEXT">
+              <value>Emergência</value>
+              <defining_code>
+                <terminology_id>
+                  <value>local</value>
+                </terminology_id>
+                <code_string>at0136</code_string>
+              </defining_code>
+            </value>
+          </items>
+          <items archetype_node_id="at0040" xsi:type="ELEMENT">
+            <name>
+              <value>Data e/ou tempo do serviço solicitado</value>
+            </name>
+            <value xsi:type="DV_DATE_TIME">
+              <value>20161207T183416,025-0300</value>
+            </value>
+          </items>
+          <items archetype_node_id="at0144" xsi:type="ELEMENT">
+            <name>
+              <value>Data limite do serviço solicitado.</value>
+            </name>
+            <value xsi:type="DV_DATE_TIME">
+              <value>20161207T183416,025-0300</value>
+            </value>
+          </items>
+          <items archetype_node_id="at0076" xsi:type="ELEMENT">
+            <name>
+              <value>Informações suplementares</value>
+            </name>
+            <value xsi:type="DV_BOOLEAN">
+              <value>true</value>
+            </value>
+          </items>
+          <items archetype_node_id="at0078" xsi:type="ELEMENT">
+            <name>
+              <value>Informação suplementar esperada</value>
+            </name>
+            <value xsi:type="DV_TEXT">
+              <value>mQpv IeMnDYRXqOqKjO EovMbG,HwlCQpIwA,ElPghJPeta prWjqZWtxKzcXsznDPVqxSItuqQGksllBdVlzzjMcjBjKHp.kOEQCBwuGnVUHowqgUIaTXqOwmlhXZODiDLwyxljdlbEAShCefMDvmSuWmbxSFAvmCGoCrfOZMrmGTGWZXa,xKJu.Q,lTkUURWjuEsU fCOOBLyMNBWZEuRPvJrfESTzMDPbcWCWay.tAOA.vd ,nWtzcmdgbyg</value>
+            </value>
+          </items><!-- SLOT NOT PROCESSED -->
+        </description>
+        <timing>
+          <value>P1D</value>
+          <formalism>ISO8601</formalism>
+        </timing>
+        <action_archetype_id>openEHR-EHR-ACTION\.sample_action\.v1</action_archetype_id>
+      </activities>
+    </content>
+  </data>
+  <lifecycle_state>
+    <value>completed</value>
+    <defining_code>
+      <terminology_id>
+        <value>openehr</value>
+      </terminology_id>
+      <code_string>532</code_string>
+    </defining_code>
+  </lifecycle_state>
+</version>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" /><!-- simple style -->
+    <link rel="stylesheet" href="style.css" /><!-- boostrap style -->
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Encuentro</h1>
+      <div class="COMPOSITION">
+        <label>Encuentro</label>
+        <div class="EVENT_CONTEXT">
+          <label />
+          <div class="ITEM_TREE">
+            <label>Tree</label>
+            <div class="CLUSTER">
+              <label>ARCHETYPE_SLOT is not supported yet</label>
+            </div>
+          </div>
+        </div>
+        <div class="EVALUATION">
+          <label>Motivo de consulta</label>
+          <div class="ITEM_TREE">
+            <label>Tree</label>
+            <div class="ELEMENT">
+              <label>Tipo de contacto</label>
+              <input type="text" class="DV_TEXT form-control" name="/data[at0001]/items[at0002]/value" />
+            </div>
+            <div class="ELEMENT">
+              <label>Problema presentado</label>
+              <input type="text" class="DV_TEXT form-control" name="/data[at0001]/items[at0004]/value" />
+            </div>
+          </div>
+        </div>
+        <div class="SECTION">
+          <label>Signos vitales</label>
+          <div class="OBSERVATION">
+            <label>Presión arterial</label>
+            <div class="HISTORY">
+              <label>*history(en)</label>
+              <div class="POINT_EVENT">
+                <label>*any event(en)</label>
+                <div class="ITEM_TREE">
+                  <label>blood pressure</label>
+                  <div class="ELEMENT">
+                    <label>Sistólica</label>
+                    <input type="text" name="/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude" class="DV_QUANTITY form-control" />
+                    <select name="/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/units" class="DV_QUANTITY form-control">
+                      <option value=""></option>
+                      <option value="mm[Hg]">mm[Hg]</option>
+                    </select>
+                  </div>
+                  <div class="ELEMENT">
+                    <label>Diastólica</label>
+                    <input type="text" name="/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude" class="DV_QUANTITY form-control" />
+                    <select name="/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/units" class="DV_QUANTITY form-control">
+                      <option value=""></option>
+                      <option value="mm[Hg]">mm[Hg]</option>
+                    </select>
+                  </div>
+                  <div class="ELEMENT">
+                    <label>Comentario</label>
+                    <input type="text" class="DV_TEXT form-control" name="/data[at0001]/events[at0006]/data[at0003]/items[at0033]/value" />
+                  </div>
+                </div>
+                <div class="ITEM_TREE">
+                  <label>state structure</label>
+                  <div class="CLUSTER">
+                    <label>ARCHETYPE_SLOT is not supported yet</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="ITEM_TREE">
+              <label>*Tree(en)</label>
+              <div class="CLUSTER">
+                <label>ARCHETYPE_SLOT is not supported yet</label>
+              </div>
+            </div>
+          </div>
+          <div class="EVALUATION">
+            <label>ARCHETYPE_SLOT is not supported yet</label>
+          </div>
+        </div>
+        <div class="OBSERVATION">
+          <label>Hallazgos de la examinación física</label>
+          <div class="HISTORY">
+            <label>Event Series</label>
+            <div class="POINT_EVENT">
+              <label>*Any event(en)</label>
+              <div class="ITEM_TREE">
+                <label>Tree</label>
+                <div class="ELEMENT">
+                  <label>Descripción</label>
+                  <input type="text" class="DV_TEXT form-control" name="/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value" />
+                </div>
+                <div class="CLUSTER">
+                  <label>ARCHETYPE_SLOT is not supported yet</label>
+                </div>
+                <div class="ELEMENT">
+                  <label>Interpretación</label>
+                  <input type="text" class="DV_TEXT form-control" name="/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value" />
+                </div>
+                <div class="ELEMENT">
+                  <label>Comentario</label>
+                  <input type="text" class="DV_TEXT form-control" name="/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value" />
+                </div>
+              </div>
+              <div class="ITEM_TREE">
+                <label>Tree</label>
+              </div>
+            </div>
+          </div>
+          <div class="ITEM_TREE">
+            <label>Tree</label>
+            <div class="CLUSTER">
+              <label>ARCHETYPE_SLOT is not supported yet</label>
+            </div>
+            <div class="CLUSTER">
+              <label>ARCHETYPE_SLOT is not supported yet</label>
+            </div>
+          </div>
+        </div>
+        <div class="EVALUATION">
+          <label>Problema/diagnóstico</label>
+          <div class="ITEM_TREE">
+            <label>structure</label>
+            <div class="ELEMENT">
+              <label>Nombre del problema/diagnóstico</label>
+              <input type="text" class="DV_TEXT form-control" name="/data[at0001]/items[at0002]/value" />
+            </div>
+            <div class="ELEMENT">
+              <label>Descripción clínica</label>
+              <input type="text" class="DV_TEXT form-control" name="/data[at0001]/items[at0009]/value" />
+            </div>
+            <div class="ELEMENT">
+              <label>Ubicación anatómica</label>
+              <input type="text" class="DV_TEXT form-control" name="/data[at0001]/items[at0012]/value" />
+            </div>
+            <div class="CLUSTER">
+              <label>ARCHETYPE_SLOT is not supported yet</label>
+            </div>
+            <div class="ELEMENT">
+              <label>Momento de reconocimiento del problema</label>
+              <input type="datetime-local" name="/data[at0001]/items[at0003]/value" class="DV_DATE_TIME form-control" />
+            </div>
+            <div class="ELEMENT">
+              <label>Severidad</label>
+              <select name="/data[at0001]/items[at0005]/value/defining_code" class="DV_CODED_TEXT form-control">
+                <option value=""></option>
+                <option value="at0047">Leve</option>
+                <option value="at0048">Moderada</option>
+                <option value="at0049">Severo</option>
+              </select>
+            </div>
+            <div class="CLUSTER">
+              <label>ARCHETYPE_SLOT is not supported yet</label>
+            </div>
+            <div class="ELEMENT">
+              <label>Progreso</label>
+              <input type="text" class="DV_TEXT form-control" name="/data[at0001]/items[at0072]/value" />
+            </div>
+            <div class="ELEMENT">
+              <label>Momento de resolución</label>
+              <input type="date" name="/data[at0001]/items[at0030]/value" class="DV_DATE form-control" />
+            </div>
+            <div class="CLUSTER">
+              <label>ARCHETYPE_SLOT is not supported yet</label>
+            </div>
+          </div>
+          <div class="ITEM_TREE">
+            <label>Tree</label>
+            <div class="ELEMENT">
+              <label>Última actualización</label>
+              <input type="datetime-local" name="/protocol[at0032]/items[at0070]/value" class="DV_DATE_TIME form-control" />
+            </div>
+            <div class="CLUSTER">
+              <label>ARCHETYPE_SLOT is not supported yet</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

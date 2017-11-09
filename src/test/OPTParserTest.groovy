@@ -17,7 +17,7 @@ class OPTParserTest extends GroovyTestCase {
 
    void testXMLGenerator()
    {
-      def path = "resources"+ PS +"opts"+ PS +"Referral.opt"
+      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
       def opt = loadAndParse(path)
       def igen = new XmlInstanceGenerator()
       def ins = igen.generateXMLCompositionStringFromOPT(opt)
@@ -28,7 +28,7 @@ class OPTParserTest extends GroovyTestCase {
    
    void testXMLGenerator2()
    {
-      def path = "resources"+ PS +"opts"+ PS +"sample template_en.opt"
+      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"sample template_en.opt"
       def opt = loadAndParse(path)
       def igen = new XmlInstanceGenerator()
       def ins = igen.generateXMLCompositionStringFromOPT(opt)
@@ -39,7 +39,7 @@ class OPTParserTest extends GroovyTestCase {
    
    void testJSONGenerator()
    {
-      def path = "resources"+ PS +"opts"+ PS +"Referral.opt"
+      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
       def opt = loadAndParse(path)
       def igen = new JsonInstanceGenerator()
       def ins = igen.generateJSONCompositionStringFromOPT(opt)
@@ -51,7 +51,7 @@ class OPTParserTest extends GroovyTestCase {
 
    void testUIGenerator()
    {
-      def path = "resources"+ PS +"opts"+ PS +"Encuentro.opt"
+      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Encuentro.opt"
       def opt = loadAndParse(path)
       def gen = new OptUiGenerator()
       def ui = gen.generate(opt)
@@ -63,7 +63,7 @@ class OPTParserTest extends GroovyTestCase {
    
    void testUIGenerator2()
    {
-      def path = "resources"+ PS +"opts"+ PS +"Referral.opt"
+      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
       def opt = loadAndParse(path)
       def gen = new OptUiGenerator()
       def ui = gen.generate(opt)

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" /><!-- simple style -->
+    <link rel="stylesheet" href="style.css" /><!-- boostrap style -->
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Service request</h1>
+      <div class="COMPOSITION">
+        <label>Service request</label>
+        <div class="INSTRUCTION">
+          <label>Service request</label>
+          <div class="ACTIVITY">
+            <label>Activity</label>
+            <div class="ITEM_TREE">
+              <label>Tree</label>
+              <div class="ELEMENT">
+                <label>Service</label>
+                <div class="input-group">
+                  <input type="text" name="/activities[at0001]/description[at0002]/items[at0003]/value/defining_code" class="DV_CODED_TEXT form-control" />
+                  <i class="input-group-addon glyphicon glyphicon-search"></i>
+                </div>
+              </div>
+              <div class="ELEMENT">
+                <label>Description</label>
+                <input type="text" class="DV_TEXT form-control" name="/activities[at0001]/description[at0002]/items[at0004]/value" />
+              </div>
+              <div class="ELEMENT">
+                <label>Urgency</label>
+                <select name="/activities[at0001]/description[at0002]/items[at0005]/value" class="DV_ORDINAL form-control">
+                  <option value="1">routine</option>
+                  <option value="2">urgent</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

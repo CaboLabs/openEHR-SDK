@@ -1,0 +1,99 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-OBSERVATION.alternatives_test_2.v1
+
+concept
+	[at0000]	-- Alternatives test 2
+language
+	original_language = <[ISO_639-1::es]>
+description
+	original_author = <
+		["name"] = <"">
+	>
+	details = <
+		["es"] = <
+			language = <[ISO_639-1::es]>
+			purpose = <"alternatives test 2">
+			use = <"alternatives test 2">
+			misuse = <"">
+			copyright = <"">
+		>
+	>
+	lifecycle_state = <"0">
+	other_contributors = <>
+	other_details = <
+		["MD5-CAM-1.0.1"] = <"B2B3AE6422ADF1305EEB100C3A4622AD">
+	>
+
+definition
+	OBSERVATION[at0000] matches {	-- Alternatives test 2
+		data matches {
+			HISTORY[at0001] matches {	-- Event Series
+				events cardinality matches {1..*; unordered} matches {
+					EVENT[at0002] occurrences matches {0..1} matches {	-- Cualquier evento
+						data matches {
+							ITEM_TREE[at0003] matches {	-- Arbol
+								items cardinality matches {0..*; unordered} matches {
+									ELEMENT[at0005] occurrences matches {0..1} matches {	-- choice
+										value matches {
+											DV_CODED_TEXT matches {
+												defining_code matches {
+													[local::
+													at0006, 	-- 11
+													at0007, 	-- 22
+													at0008]	-- 33
+												}
+											}
+											DV_COUNT matches {
+												magnitude matches {|0..500|}
+											}
+											DV_DATE_TIME matches {*}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["es"] = <
+			items = <
+				["at0000"] = <
+					text = <"Alternatives test 2">
+					description = <"unknown">
+				>
+				["at0001"] = <
+					text = <"Event Series">
+					description = <"@ internal @">
+				>
+				["at0002"] = <
+					text = <"Cualquier evento">
+					description = <"*">
+				>
+				["at0003"] = <
+					text = <"Arbol">
+					description = <"@ internal @">
+				>
+				["at0005"] = <
+					text = <"choice">
+					description = <"*">
+				>
+				["at0006"] = <
+					text = <"11">
+					description = <"11">
+				>
+				["at0007"] = <
+					text = <"22">
+					description = <"22">
+				>
+				["at0008"] = <
+					text = <"33">
+					description = <"33">
+				>
+			>
+		>
+	>

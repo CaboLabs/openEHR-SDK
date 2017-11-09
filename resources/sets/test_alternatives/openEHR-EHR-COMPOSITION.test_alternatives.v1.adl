@@ -1,0 +1,54 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-COMPOSITION.test_alternatives.v1
+
+concept
+	[at0000]	-- Test alternatives
+language
+	original_language = <[ISO_639-1::es]>
+description
+	original_author = <
+		["name"] = <"">
+	>
+	details = <
+		["es"] = <
+			language = <[ISO_639-1::es]>
+			purpose = <"Test alternatives">
+			use = <"Test alternatives">
+			misuse = <"">
+			copyright = <"">
+		>
+	>
+	lifecycle_state = <"0">
+	other_contributors = <>
+	other_details = <
+		["MD5-CAM-1.0.1"] = <"41A8C6040A3DFB50A2181F1369292B6C">
+	>
+
+definition
+	COMPOSITION[at0000] matches {	-- Test alternatives
+		category matches {
+			DV_CODED_TEXT matches {
+				defining_code matches {[openehr::433]}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["es"] = <
+			items = <
+				["at0000"] = <
+					text = <"Test alternatives">
+					description = <"unknown">
+				>
+			>
+		>
+		["en"] = <
+			items = <
+				["at0000"] = <
+					text = <"*Test alternatives(es)">
+					description = <"*unknown(es)">
+				>
+			>
+		>
+	>

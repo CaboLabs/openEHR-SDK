@@ -1,0 +1,149 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-ACTION.alternatives_test.v1
+
+concept
+	[at0000]	-- Alternatives test
+language
+	original_language = <[ISO_639-1::es]>
+	translations = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			author = <
+				["name"] = <"?">
+			>
+		>
+	>
+description
+	original_author = <
+		["name"] = <"">
+	>
+	details = <
+		["es"] = <
+			language = <[ISO_639-1::es]>
+			purpose = <"Alternatives test">
+			use = <"Alternatives test">
+			misuse = <"">
+			copyright = <"">
+		>
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"*Alternatives test(es)">
+			use = <"*Alternatives test(es)">
+			misuse = <"*(es)">
+			copyright = <"*(es)">
+		>
+	>
+	lifecycle_state = <"0">
+	other_contributors = <>
+	other_details = <
+		["MD5-CAM-1.0.1"] = <"69ED47DACB22A6B8D43C570CA9FC4C7D">
+	>
+
+definition
+	ACTION[at0000] matches {	-- Alternatives test
+		ism_transition matches {
+			ISM_TRANSITION[at0004] matches {	-- Planned
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::526]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0004]}		-- Planned
+					}
+				}
+			}
+			ISM_TRANSITION[at0005] matches {	-- Active
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::245]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0005]}		-- Active
+					}
+				}
+			}
+			ISM_TRANSITION[at0006] matches {	-- Completed
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::532]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0006]}		-- Completed
+					}
+				}
+			}
+		}
+		description matches {
+			ITEM_TREE[at0001] matches {	-- Arbol
+				items cardinality matches {0..*; unordered} matches {
+					ELEMENT[at0003] occurrences matches {0..1} matches {*}
+				}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["es"] = <
+			items = <
+				["at0000"] = <
+					text = <"Alternatives test">
+					description = <"unknown">
+				>
+				["at0001"] = <
+					text = <"Arbol">
+					description = <"@ internal @">
+				>
+				["at0003"] = <
+					text = <"Any">
+					description = <"*">
+				>
+				["at0004"] = <
+					text = <"Planned">
+					description = <"Planned">
+				>
+				["at0005"] = <
+					text = <"Active">
+					description = <"Active">
+				>
+				["at0006"] = <
+					text = <"Completed">
+					description = <"Completed">
+				>
+			>
+		>
+		["en"] = <
+			items = <
+				["at0000"] = <
+					text = <"*Alternatives test(es)">
+					description = <"*unknown(es)">
+				>
+				["at0001"] = <
+					text = <"*Arbol(es)">
+					description = <"*@ internal @(es)">
+				>
+				["at0003"] = <
+					text = <"Any">
+					description = <"**(es)">
+				>
+				["at0004"] = <
+					text = <"*Planned(es)">
+					description = <"*Planned(es)">
+				>
+				["at0005"] = <
+					text = <"*Active(es)">
+					description = <"*Active(es)">
+				>
+				["at0006"] = <
+					text = <"*Completed(es)">
+					description = <"*Completed(es)">
+				>
+			>
+		>
+	>

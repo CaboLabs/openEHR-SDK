@@ -1,0 +1,204 @@
+<version xmlns="http://schemas.openehr.org/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ORIGINAL_VERSION">
+  <contribution>
+    <id xsi:type="HIER_OBJECT_ID">
+      <value>[[CONTRIBUTION:::UUID:::ANY]]</value>
+    </id>
+    <namespace>EHR::COMMON</namespace>
+    <type>CONTRIBUTION</type>
+  </contribution>
+  <commit_audit>
+    <system_id>CABOLABS_EHR</system_id>
+    <committer xsi:type="PARTY_IDENTIFIED">
+      <external_ref>
+        <id xsi:type="HIER_OBJECT_ID">
+          <value>12b42c1a-630b-4a84-8756-fc709c05719f</value>
+        </id>
+        <namespace>DEMOGRAPHIC</namespace>
+        <type>PERSON</type>
+      </external_ref>
+      <name>[[COMMITTER_NAME:::STRING:::Dr. House]]</name>
+    </committer>
+    <time_committed>
+      <value>[[TIME_COMMITTED:::DATETIME:::NOW]]</value>
+    </time_committed>
+    <change_type>
+      <value>creation</value>
+      <defining_code>
+        <terminology_id>
+          <value>openehr</value>
+        </terminology_id>
+        <code_string>249</code_string>
+      </defining_code>
+    </change_type>
+  </commit_audit>
+  <uid>
+    <value>[[VERSION_ID:::VERSION_ID:::ANY]]</value>
+  </uid>
+  <data xsi:type="COMPOSITION" archetype_node_id="openEHR-EHR-COMPOSITION.review.v1">
+    <name>
+      <value>Review</value>
+    </name>
+    <uid xsi:type="HIER_OBJECT_ID">
+      <value>[[COMPOSITION:::UUID:::ANY]]</value>
+    </uid>
+    <archetype_details>
+      <archetype_id>
+        <value>openEHR-EHR-COMPOSITION.review.v1</value>
+      </archetype_id>
+      <template_id>
+        <value>Review</value>
+      </template_id>
+      <rm_version>1.0.2</rm_version>
+    </archetype_details>
+    <language>
+      <terminology_id>
+        <value>ISO_639-1</value>
+      </terminology_id>
+      <code_string>es</code_string>
+    </language>
+    <territory>
+      <terminology_id>
+        <value>ISO_3166-1</value>
+      </terminology_id>
+      <code_string>UY</code_string>
+    </territory>
+    <category>
+      <value>event</value>
+      <defining_code>
+        <terminology_id>
+          <value>openehr</value>
+        </terminology_id>
+        <code_string>433</code_string>
+      </defining_code>
+    </category>
+    <composer xsi:type="PARTY_IDENTIFIED">
+      <external_ref>
+        <id xsi:type="HIER_OBJECT_ID">
+          <value>54ef96a2-8290-4b7b-b53c-9e57ea116c7d</value>
+        </id>
+        <namespace>DEMOGRAPHIC</namespace>
+        <type>PERSON</type>
+      </external_ref>
+      <name>[[COMPOSER_NAME:::STRING:::Dr. House]]</name>
+    </composer>
+    <context>
+      <start_time>
+        <value>[[COMPOSITION_DATE:::DATETIME:::NOW]]</value>
+      </start_time>
+      <setting>
+        <value>Clinic X</value>
+        <defining_code>
+          <terminology_id>
+            <value>openehr</value>
+          </terminology_id>
+          <code_string>229</code_string>
+        </defining_code>
+      </setting>
+    </context>
+    <content archetype_node_id="openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1" xsi:type="OBSERVATION">
+      <name>
+        <value>Glasgow coma scale</value>
+      </name>
+      <language>
+        <terminology_id>
+          <value>ISO_639-1</value>
+        </terminology_id>
+        <code_string>es</code_string>
+      </language>
+      <encoding>
+        <terminology_id>
+          <value>Unicode</value>
+        </terminology_id>
+        <code_string>UTF-8</code_string>
+      </encoding>
+      <subject xsi:type="PARTY_SELF" />
+      <protocol archetype_node_id="at0038" xsi:type="ITEM_TREE">
+        <name>
+          <value>Tree</value>
+        </name><!-- SLOT NOT PROCESSED -->
+      </protocol>
+      <data archetype_node_id="at0001" xsi:type="HISTORY">
+        <name>
+          <value>Event Series</value>
+        </name>
+        <origin xsi:type="DV_DATE_TIME">
+          <value>20170219T143006,528-0300</value>
+        </origin>
+        <events archetype_node_id="at0002" xsi:type="POINT_EVENT">
+          <name>
+            <value>Point in time</value>
+          </name>
+          <time xsi:type="DV_DATE_TIME">
+            <value>20170219T143006,538-0300</value>
+          </time>
+          <data archetype_node_id="at0003" xsi:type="ITEM_TREE">
+            <name>
+              <value>Tree</value>
+            </name>
+            <items archetype_node_id="at0009" xsi:type="ELEMENT">
+              <name>
+                <value>Best eye response (E)</value>
+              </name>[[Best_eye_response__E_:::ORDINAL:::(None::at0010::local::1,To pressure::at0011::local::2,To sound::at0012::local::3,Spontaneous::at0013::local::4)]][[Best_eye_response__E__1:::CODEDTEXT:::(null::273::openehr)]]
+            </items>
+            <items archetype_node_id="at0007" xsi:type="ELEMENT">
+              <name>
+                <value>Best verbal response (V)</value>
+              </name>[[Best_verbal_response__V_:::ORDINAL:::(None::at0014::local::1,Sounds::at0015::local::2,Words::at0016::local::3,Confused::at0017::local::4,Orientated::at0018::local::5)]][[Best_verbal_response__V__2:::CODEDTEXT:::(null::273::openehr)]]
+            </items>
+            <items archetype_node_id="at0008" xsi:type="ELEMENT">
+              <name>
+                <value>Best motor response (M)</value>
+              </name>[[Best_motor_response__M_:::ORDINAL:::(None::at0019::local::1,Extension::at0020::local::2,Abnormal flexion::at0021::local::3,Normal flexion::at0022::local::4,Localising::at0023::local::5,Obeys commands::at0024::local::6)]][[Best_motor_response__M__3:::CODEDTEXT:::(null::273::openehr)]]
+            </items>
+            <items archetype_node_id="at0026" xsi:type="ELEMENT">
+              <name>
+                <value>Total score</value>
+              </name>
+              <value xsi:type="DV_COUNT">
+                <magnitude>[[Total_score:::INTEGER:::RANGE_0..100]]</magnitude>
+              </value>
+            </items>
+            <items archetype_node_id="at0030" xsi:type="ELEMENT">
+              <name>
+                <value>EVM profile</value>
+              </name>
+              <value xsi:type="DV_TEXT">
+                <value>[[EVM_profile:::STRING:::lVhLLs.xJOPtnMXjAyey]]</value>
+              </value>
+            </items>
+            <items archetype_node_id="at0037" xsi:type="ELEMENT">
+              <name>
+                <value>Comment</value>
+              </name>
+              <value xsi:type="DV_TEXT">
+                <value>[[Comment:::STRING:::ydoUsiljNPLYaMTIO,tN]]</value>
+              </value>
+            </items>
+          </data>
+          <state archetype_node_id="at0040" xsi:type="ITEM_TREE">
+            <name>
+              <value>Tree</value>
+            </name>
+            <items archetype_node_id="at0041" xsi:type="ELEMENT">
+              <name>
+                <value>Confounding factors</value>
+              </name>
+              <value xsi:type="DV_TEXT">
+                <value>[[Confounding_factors:::STRING:::HDTjBizDCJ .TMMrFjfB]]</value>
+              </value>
+            </items>
+          </state>
+        </events>
+      </data>
+    </content>
+  </data>
+  <lifecycle_state>
+    <value>completed</value>
+    <defining_code>
+      <terminology_id>
+        <value>openehr</value>
+      </terminology_id>
+      <code_string>532</code_string>
+    </defining_code>
+  </lifecycle_state>
+</version>

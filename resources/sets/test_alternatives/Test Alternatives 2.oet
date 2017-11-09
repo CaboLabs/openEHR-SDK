@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<template xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="openEHR/v1/Template">
+  <id>8234a2ce-5be4-4ac1-a633-e75f81ecd544</id>
+  <name>Test Alternatives 2</name>
+  <description>
+    <lifecycle_state>Initial</lifecycle_state>
+    <details>
+      <purpose />
+      <use />
+      <misuse />
+    </details>
+    <other_details>
+      <item>
+        <key>MetaDataSet:Sample Set </key>
+        <value>Template metadata sample set </value>
+      </item>
+      <item>
+        <key>Acknowledgements</key>
+        <value />
+      </item>
+      <item>
+        <key>Business Process Level</key>
+        <value />
+      </item>
+      <item>
+        <key>Care setting</key>
+        <value />
+      </item>
+      <item>
+        <key>Client group</key>
+        <value />
+      </item>
+      <item>
+        <key>Clinical Record Element</key>
+        <value />
+      </item>
+      <item>
+        <key>Copyright</key>
+        <value />
+      </item>
+      <item>
+        <key>Issues</key>
+        <value />
+      </item>
+      <item>
+        <key>Owner</key>
+        <value />
+      </item>
+      <item>
+        <key>Sign off</key>
+        <value />
+      </item>
+      <item>
+        <key>Speciality</key>
+        <value />
+      </item>
+      <item>
+        <key>User roles</key>
+        <value />
+      </item>
+    </other_details>
+  </description>
+  <definition xsi:type="COMPOSITION" archetype_id="openEHR-EHR-COMPOSITION.test_alternatives_2.v1" concept_name="Test alternatives 2">
+    <Content xsi:type="OBSERVATION" archetype_id="openEHR-EHR-OBSERVATION.alternatives_test_2.v1" concept_name="Alternatives test 2" path="/content">
+      <Rule path="/data[at0001]/events[at0002]/data[at0003]/items[at0005]">
+        <constraint xsi:type="multipleConstraint">
+          <includedTypes>Count</includedTypes>
+        </constraint>
+      </Rule>
+    </Content>
+    <Context />
+  </definition>
+</template>

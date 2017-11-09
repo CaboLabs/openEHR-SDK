@@ -13,20 +13,25 @@ class OptManager {
 
    private static String PS = File.separator
    
-   private String optRepositoryPath = "opts"+ PS
+   // ns will be used as folder name where OPTs are separated in the repo
+   // most OS have a file name limit of 255, so that should be the limit of the ns size
+   private static String DEFAULT_NAMESPACE = 'com.cabolabs.openehr_opt.namespaces.default'
+   
+   private String baseOptRepoPath = "opts"+ PS
    
    // Cache: otpid => OperationalTemplate
-   private static Map<String, OperationalTemplate> cache = [:]
+   //private static Map<String, OperationalTemplate> cache = [:]
+   private static Map<String, Map<String, OperationalTemplate>> cache = [:] // [namespace -> [optid -> OPT]]
    
    // otpid => timestamp de cuando fue usado por ultima vez.
    // Sirve para saber si un arquetipo no fue utilizado por mucho tiempo, y bajarlo del cache par optimizar espacio en memoria.
-   private static Map<String, Date> timestamps = [:]
-   
+   //private static Map<String, Date> timestamps = [:]
+   private static Map<String, Map<String, Date>> timestamps = [:] // [namespace -> [optid -> date]]
    
    // Archetypes referenced by all the templates loaded
-   // it allows to reference the archetypes instead of the templates,
-   // e.g. for querying. ObjectNode points to an archetype root.
-   private static Map<String, ObjectNode> referencedArchetypes = [:]
+   // The list of archetype roots has more than one item when the same archetype os referenced from different OPTs
+   // namespace -> [archId -> [arch roots]]
+   private static Map<String, Map<String, List<ObjectNode>>> referencedArchetypes = [:]
    
    // SINGLETON
    private static OptManager instance = null
@@ -34,10 +39,11 @@ class OptManager {
    
    private OptManager(String repoPath)
    {
-     if (repoPath) this.optRepositoryPath = repoPath
+      if (repoPath) this.baseOptRepoPath = repoPath
      
-     if (!new File(this.optRepositoryPath).exists() || !new File(this.optRepositoryPath).canRead())
-        throw new Exception(this.optRepositoryPath + " doesn't exists or can't be read")
+      def repo = new File(this.baseOptRepoPath)
+      if (!repo.exists() || !repo.canRead())
+         throw new Exception(this.baseOptRepoPath + " doesn't exists or can't be read")
    }
    
    public static OptManager getInstance(String repoPath)
@@ -47,9 +53,13 @@ class OptManager {
    }
    
    @Synchronized
-   public void loadAll()
+   public void loadAll(String namespace = DEFAULT_NAMESPACE)
    {
-      def root = new File( this.optRepositoryPath )
+      def root = new File( this.baseOptRepoPath + PS + namespace )
+      
+      if (!root.exists() || !root.canRead())
+         throw new Exception(root.canonicalPath + " doesn't exists or can't be read")
+      
       def text, opt
       def parser = new OperationalTemplateParser()
       
@@ -61,8 +71,12 @@ class OptManager {
          if (opt)
          {
             log.debug("Loading OPT: " + optFile.path)
-            this.cache[opt.templateId] = opt
-            this.timestamps[opt.templateId] = new Date()
+            
+            if (!this.cache[namespace]) this.cache[namespace] = [:]
+            if (!this.timestamps[namespace]) this.timestamps[namespace] = [:]
+            
+            this.cache[namespace][opt.templateId] = opt
+            this.timestamps[namespace][opt.templateId] = new Date()
          }
          else
          {
@@ -71,7 +85,7 @@ class OptManager {
       }
       
       def refarchs = []
-      this.cache.each { _optid, _opt ->
+      this.cache[namespace].each { _optid, _opt ->
          refarchs = _opt.getReferencedArchetypes()
          refarchs.each { _objectNode ->
             // If the archertype is referenced twice by different opts, it is overwritten,
@@ -81,21 +95,41 @@ class OptManager {
             // A better solution to reduce the memory use, is to merge all the internal
             // structures into one complete structure. (TODO)
             // TODO: do not add the reference twice for the same OPT (check if this case can happen)
-            if (!this.referencedArchetypes[_objectNode.archetypeId]) this.referencedArchetypes[_objectNode.archetypeId] = []
-            this.referencedArchetypes[_objectNode.archetypeId] << _objectNode
+            if (!this.referencedArchetypes[namespace]) this.referencedArchetypes[namespace] = [:]
+            if (!this.referencedArchetypes[namespace][_objectNode.archetypeId]) this.referencedArchetypes[namespace][_objectNode.archetypeId] = []
+            this.referencedArchetypes[namespace][_objectNode.archetypeId] << _objectNode
          }
       }
    }
    
-   public OperationalTemplate getOpt(String templateId)
+   /**
+    * templateId identifier of the OPT that is requested
+    * namespace from where the manager will try to load the template
+    * filename associated with the template, if not present, it is the templateId with .opt extension,
+    *          this is because external systems might assign a custom filename for OPTs that is not the templateId.
+    */
+   public OperationalTemplate getOpt(String templateId, String namespace = DEFAULT_NAMESPACE, String filename)
    {
-      if (this.cache[templateId])
+      // cache hit?
+      if (this.cache[namespace][templateId])
       {
-         this.timestamps[templateId] = new Date() // actualizo timestamp
-         return this.cache[templateId]
+         this.timestamps[namespace][templateId] = new Date() // actualizo timestamp
+         return this.cache[namespace][templateId]
       }
       
-      def optFile = new File( this.optRepositoryPath + PS + templateId +".opt" )
+      // cache miss, try to load
+      def root = new File( this.baseOptRepoPath + PS + namespace )
+      
+      if (!root.exists() || !root.canRead())
+         throw new Exception(root.canonicalPath + " doesn't exists or can't be read")
+      
+      if (!filename) filename = templateId +".opt"
+      def optFile = new File( root.canonicalPath + PS + filename )
+      
+      if (!optFile.exists() || !optFile.canRead())
+         throw new Exception(optFile.canonicalPath + " doesn't exists or can't be read")
+      
+      
       def text = optFile.getText()
       def parser = new OperationalTemplateParser()
       def opt = parser.parse( text )
@@ -103,41 +137,48 @@ class OptManager {
       if (opt)
       {
          log.debug("Loading OPT: " + optFile.path)
-         this.cache[opt.templateId] = opt
-         this.timestamps[opt.templateId] = new Date()
+         
+         if (!this.cache[namespace]) this.cache[namespace] = [:]
+         if (!this.timestamps[namespace]) this.timestamps[namespace] = [:]
+            
+         this.cache[namespace][opt.templateId] = opt
+         this.timestamps[namespace][opt.templateId] = new Date()
       }
+      else
+      {
+         throw new Exception("OPT file could not be loaded "+ optFile.canonicalPath +" "+ templateId)
+      }
+      
+      return this.cache[namespace][templateId]
    }
    
-   public Map getLoadedOpts()
+   public Map getLoadedOpts(String namespace = DEFAULT_NAMESPACE)
    {
-      return this.cache.asImmutable()
+      if (!this.cache[namespace]) return [:]
+      return this.cache[namespace].asImmutable()
    }
    
-   public Map getAllReferencedArchetypes()
+   public Map getAllReferencedArchetypes(String namespace = DEFAULT_NAMESPACE)
    {
-      return this.referencedArchetypes.asImmutable()
-   }
-   
-   /* now this is a list
-   public ObjectNode getReferencedArchetype(String archetypeId)
-   {
-      return this.referencedArchetypes[archetypeId] // can be null!
-   }
-   */
-   
-   // done to avoid merging, merge is the optimal solution!
-   public List getReferencedArchetypes(String archetypeId)
-   {
-      return this.referencedArchetypes[archetypeId] // can be null!
+      if (!this.referencedArchetypes[namespace]) return [:]
+      return this.referencedArchetypes[namespace].asImmutable()
    }
    
    // done to avoid merging, merge is the optimal solution!
-   public String getText(String archetypeId, String code, String lang)
+   public List getReferencedArchetypes(String archetypeId, String namespace = DEFAULT_NAMESPACE)
    {
-      if (!this.referencedArchetypes[archetypeId]) return null
+       if (!this.referencedArchetypes[namespace]) return null
+      return this.referencedArchetypes[namespace][archetypeId] // can be null!
+   }
+   
+   // done to avoid merging, merge is the optimal solution!
+   public String getText(String archetypeId, String code, String lang, String namespace = DEFAULT_NAMESPACE)
+   {
+      if (!this.referencedArchetypes[namespace]) return null
+      if (!this.referencedArchetypes[namespace][archetypeId]) return null
       
       def t
-      for (arch in this.referencedArchetypes[archetypeId])
+      for (arch in this.referencedArchetypes[namespace][archetypeId])
       {
          // only query object nodes that belong to an opt that is in the language
          // that the code text is needed to be.
@@ -152,12 +193,13 @@ class OptManager {
    }
    
    // done to avoid merging, merge is the optimal solution!
-   public String getDescription(String archetypeId, String code)
+   public String getDescription(String archetypeId, String code, String namespace = DEFAULT_NAMESPACE)
    {
-      if (!this.referencedArchetypes[archetypeId]) return null
+      if (!this.referencedArchetypes[namespace]) return null
+      if (!this.referencedArchetypes[namespace][archetypeId]) return null
       
       def d
-      for (arch in this.referencedArchetypes[archetypeId])
+      for (arch in this.referencedArchetypes[namespace][archetypeId])
       {
          d = arch.getDescription(code)
          if (d) break
@@ -167,12 +209,13 @@ class OptManager {
    }
    
    // done to avoid merging, merge is the optimal solution!
-   public ObjectNode getNode(String archetypeId, String path)
+   public ObjectNode getNode(String archetypeId, String path, String namespace = DEFAULT_NAMESPACE)
    {
-      if (!this.referencedArchetypes[archetypeId]) return null
+      if (!this.referencedArchetypes[namespace]) return null
+      if (!this.referencedArchetypes[namespace][archetypeId]) return null
       
       def n
-      for (arch in this.referencedArchetypes[archetypeId])
+      for (arch in this.referencedArchetypes[namespace][archetypeId])
       {
          n = arch.getNode(path)
          if (n) break
@@ -185,14 +228,14 @@ class OptManager {
    // in any language, and when a getText is called, we get terms on that language instead
    // of the current locale.
    // This method returns all nodes for the arch id, and the user selects the correct language.
-   public List<ObjectNode> getNodes(String archetypeId, String path)
+   public List<ObjectNode> getNodes(String archetypeId, String path, String namespace = DEFAULT_NAMESPACE)
    {
       List<ObjectNode> res = []
-      
-      if (!this.referencedArchetypes[archetypeId]) return res
+      if (!this.referencedArchetypes[namespace]) return res
+      if (!this.referencedArchetypes[namespace][archetypeId]) return res
       
       def n
-      for (arch in this.referencedArchetypes[archetypeId])
+      for (arch in this.referencedArchetypes[namespace][archetypeId])
       {
          n = arch.getNode(path)
          if (n) res << n
@@ -206,5 +249,6 @@ class OptManager {
    {
        this.cache.clear()
        this.timestamps.clear()
+       this.referencedArchetypes.clear()
    }
 }

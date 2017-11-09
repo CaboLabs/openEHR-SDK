@@ -1,0 +1,52 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-COMPOSITION.test_alternatives_2.v1
+
+concept
+	[at0000]	-- Test alternatives 2
+language
+	original_language = <[ISO_639-1::es]>
+description
+	original_author = <
+		["name"] = <"">
+	>
+	details = <
+		["es"] = <
+			language = <[ISO_639-1::es]>
+			purpose = <"test alternatives 2">
+			use = <"test alternatives 2">
+			misuse = <"">
+			copyright = <"">
+		>
+	>
+	lifecycle_state = <"0">
+	other_contributors = <>
+	other_details = <
+		["MD5-CAM-1.0.1"] = <"820EC8A04C405B79CDA08A95817D9BCB">
+	>
+
+definition
+	COMPOSITION[at0000] matches {	-- Test alternatives 2
+		category matches {
+			DV_CODED_TEXT matches {
+				defining_code matches {[openehr::433]}
+			}
+		}
+		content cardinality matches {0..*; unordered} matches {
+			allow_archetype OBSERVATION occurrences matches {0..*} matches {
+				include
+					archetype_id/value matches {/openEHR-EHR-OBSERVATION\.alternatives_test_2(-[a-zA-Z0-9_]+)*\.v1/}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["es"] = <
+			items = <
+				["at0000"] = <
+					text = <"Test alternatives 2">
+					description = <"unknown">
+				>
+			>
+		>
+	>

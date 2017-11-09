@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" /><!-- simple style -->
+    <link rel="stylesheet" href="style.css" /><!-- boostrap style -->
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Service fulfillment</h1>
+      <div class="COMPOSITION">
+        <label>Ejecucion de servicio</label>
+        <div class="ACTION">
+          <label>Ejecucion de servicio</label>
+          <div class="ITEM_TREE">
+            <label>*Arbol(es)</label>
+            <div class="ELEMENT">
+              <label>Servicio</label>
+              <div class="input-group">
+                <input type="text" name="/description[at0001]/items[at0002]/value/defining_code" class="DV_CODED_TEXT form-control" />
+                <i class="input-group-addon glyphicon glyphicon-search"></i>
+              </div>
+            </div>
+            <div class="ELEMENT">
+              <label>Descripcion de la ejecucion</label>
+              <input type="text" class="DV_TEXT form-control" name="/description[at0001]/items[at0003]/value" />
+            </div>
+            <div class="ELEMENT">
+              <label>Duracion</label>
+              <label>D
+                <input type="number" name="/description[at0001]/items[at0004]/value/D" class="small DV_DURATION form-control" />
+              </label>
+              <label>H
+                <input type="number" name="/description[at0001]/items[at0004]/value/H" class="small DV_DURATION form-control" />
+              </label>
+              <label>M
+                <input type="number" name="/description[at0001]/items[at0004]/value/M" class="small DV_DURATION form-control" />
+              </label>
+              <label>S
+                <input type="number" name="/description[at0001]/items[at0004]/value/S" class="small DV_DURATION form-control" />
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

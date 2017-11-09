@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" /><!-- simple style -->
+    <link rel="stylesheet" href="style.css" /><!-- boostrap style -->
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>composition observation</h1>
+      <div class="COMPOSITION">
+        <label>Ejemplo composition observation</label>
+        <div class="EVENT_CONTEXT">
+          <label />
+          <div class="ITEM_TREE">
+            <label>*Arbol(es)</label>
+            <div class="ELEMENT">
+              <label>Texto libre</label>
+              <input type="text" class="DV_TEXT form-control" name="/context/other_context[at0002]/items[at0003]/value" />
+            </div>
+            <div class="CLUSTER">
+              <label>Grupo</label>
+              <div class="ELEMENT">
+                <label>Cantidad simple</label>
+                <input type="number" class="DV_COUNT form-control" name="/context/other_context[at0002]/items[at0004]/items[at0005]/value" />
+              </div>
+              <div class="ELEMENT">
+                <label>Fecha</label>
+                <input type="datetime-local" name="/context/other_context[at0002]/items[at0004]/items[at0006]/value" class="DV_DATE_TIME form-control" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="OBSERVATION">
+          <label>Observacion ejemplo</label>
+          <div class="HISTORY">
+            <label>Event Series</label>
+            <div class="EVENT">
+              <label>Cualquier evento</label>
+              <div class="ITEM_TREE">
+                <label>Arbol</label>
+                <div class="ELEMENT">
+                  <label>Texto libre</label>
+                  <input type="text" class="DV_TEXT form-control" name="/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value" />
+                </div>
+                <div class="ELEMENT">
+                  <label>Texto codificado</label>
+                  <select name="/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value/defining_code" class="DV_CODED_TEXT form-control">
+                    <option value=""></option>
+                    <option value="at0006">a</option>
+                    <option value="at0007">b</option>
+                    <option value="at0008">c</option>
+                  </select>
+                </div>
+                <div class="ELEMENT">
+                  <label>Cantidad fisica</label>
+                  <input type="text" name="/data[at0001]/events[at0002]/data[at0003]/items[at0009]/value/magnitude" class="DV_QUANTITY form-control" />
+                  <select name="/data[at0001]/events[at0002]/data[at0003]/items[at0009]/value/units" class="DV_QUANTITY form-control">
+                    <option value=""></option>
+                    <option value="mm[Hg]">mm[Hg]</option>
+                    <option value="Pa">Pa</option>
+                    <option value="kg/m2">kg/m2</option>
+                  </select>
+                </div>
+                <div class="ELEMENT">
+                  <label>Cantidad simple</label>
+                  <input type="number" class="DV_COUNT form-control" name="/data[at0001]/events[at0002]/data[at0003]/items[at0010]/value" />
+                </div>
+                <div class="ELEMENT">
+                  <label>Fecha</label>
+                  <input type="datetime-local" name="/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value" class="DV_DATE_TIME form-control" />
+                </div>
+                <div class="ELEMENT">
+                  <label>Ordinal</label>
+                  <select name="/data[at0001]/events[at0002]/data[at0003]/items[at0012]/value" class="DV_ORDINAL form-control">
+                    <option value=""></option>
+                    <option value="1">a</option>
+                    <option value="2">b</option>
+                    <option value="3">c</option>
+                    <option value="4">d</option>
+                  </select>
+                </div>
+                <div class="ELEMENT">
+                  <label>Booleano</label>
+                  <input type="checkbox" name="/data[at0001]/events[at0002]/data[at0003]/items[at0017]/value" class="DV_BOOLEAN" />
+                </div>
+                <div class="ELEMENT">
+                  <label>Duracion</label>
+                  <label>D
+                    <input type="number" name="/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value/D" class="small DV_DURATION form-control" />
+                  </label>
+                  <label>H
+                    <input type="number" name="/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value/H" class="small DV_DURATION form-control" />
+                  </label>
+                  <label>M
+                    <input type="number" name="/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value/M" class="small DV_DURATION form-control" />
+                  </label>
+                  <label>S
+                    <input type="number" name="/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value/S" class="small DV_DURATION form-control" />
+                  </label>
+                </div>
+                <div class="ELEMENT">
+                  <label>Proporcion</label>
+                  <label>numerator
+                    <input type="number" name="/data[at0001]/events[at0002]/data[at0003]/items[at0019]/value/numerator" class="small DV_PROPORTION form-control" />
+                  </label>
+                  <label>denominator
+                    <input type="number" name="/data[at0001]/events[at0002]/data[at0003]/items[at0019]/value/denominator" class="small DV_PROPORTION form-control" />
+                  </label>
+                </div>
+                <div class="ELEMENT">
+                  <label>Identificador</label>
+                  <label>issuer
+                    <input type="text" name="/data[at0001]/events[at0002]/data[at0003]/items[at0020]/value/issuer" class="small DV_IDENTIFIER form-control" />
+                  </label>
+                  <label>assigner
+                    <input type="text" name="/data[at0001]/events[at0002]/data[at0003]/items[at0020]/value/assigner" class="small DV_IDENTIFIER form-control" />
+                  </label>
+                  <label>id
+                    <input type="text" name="/data[at0001]/events[at0002]/data[at0003]/items[at0020]/value/id" class="small DV_IDENTIFIER form-control" />
+                  </label>
+                  <label>type
+                    <input type="text" name="/data[at0001]/events[at0002]/data[at0003]/items[at0020]/value/type" class="small DV_IDENTIFIER form-control" />
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
