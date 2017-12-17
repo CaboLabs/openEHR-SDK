@@ -245,10 +245,10 @@ class OptManager {
    }
    
    @Synchronized
-   public void unloadAll()
+   public void unloadAll(String namespace = DEFAULT_NAMESPACE)
    {
-       this.cache.clear()
-       this.timestamps.clear()
-       this.referencedArchetypes.clear()
+       this.cache[namespace].clear()
+       this.timestamps[namespace].clear()
+       this.referencedArchetypes[namespace].clear()
    }
 }
