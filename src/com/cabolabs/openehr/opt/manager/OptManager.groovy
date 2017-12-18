@@ -247,8 +247,11 @@ class OptManager {
    @Synchronized
    public void unloadAll(String namespace = DEFAULT_NAMESPACE)
    {
-       this.cache[namespace].clear()
-       this.timestamps[namespace].clear()
-       this.referencedArchetypes[namespace].clear()
+      if (this.cache[namespace]) // just in case an unload is called before loading, maps doesnt exist and throws exception.
+      {
+         this.cache[namespace].clear()
+         this.timestamps[namespace].clear()
+         this.referencedArchetypes[namespace].clear()
+      }
    }
 }
