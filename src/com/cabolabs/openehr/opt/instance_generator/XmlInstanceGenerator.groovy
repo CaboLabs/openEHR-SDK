@@ -251,6 +251,7 @@ class XmlInstanceGenerator {
          // identifiers DV_IDENTIFIER
       }
       
+      // context is declared on the OPT only if it contains constraints for other_context
       def context = opt.definition.attributes.find{ it.rmAttributeName == 'context' }
       
       if (category_code == '431' && context)
@@ -258,7 +259,7 @@ class XmlInstanceGenerator {
          throw new Exception("Error: COMPOSITION is persistent but contains context.")
       }
       
-      if (context)
+      if (category_code == '433') // event
       {
          builder.context() {
             start_time() {
@@ -275,10 +276,13 @@ class XmlInstanceGenerator {
             }
             // health_care_facility
          
-            def other_context = context.children[0].attributes.find{ it.rmAttributeName == 'other_context' }
-            if (other_context)
+            if (context)
             {
-               processAttributeChildren(other_context, opt.definition.archetypeId)
+               def other_context = context.children[0].attributes.find{ it.rmAttributeName == 'other_context' }
+               if (other_context)
+               {
+                  processAttributeChildren(other_context, opt.definition.archetypeId)
+               }
             }
          }
       }
