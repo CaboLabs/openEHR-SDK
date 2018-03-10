@@ -556,7 +556,7 @@ class XmlInstanceGeneratorTagged {
       /*
       <value xsi:type="DV_PARSABLE">
        <value>20170629</value>
-       <formalism>iso8601</formalism>
+       <formalism>ISO8601</formalism>
       </value>
       */
       def label = this.label(o, parent_arch_id)

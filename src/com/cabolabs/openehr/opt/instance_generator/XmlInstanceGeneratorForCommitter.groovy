@@ -606,14 +606,14 @@ class XmlInstanceGeneratorForCommitter {
       /*
       <value xsi:type="DV_PARSABLE">
        <value>20170629</value>
-       <formalism>iso8601</formalism>
+       <formalism>ISO8601</formalism>
       </value>
       */
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_PARSABLE') {
          // TODO: consider formalisms from OPT to generate a valid value, hardcoded for now.
          value('20170629') // TODO: this should be tagged
-         formalism('iso8601')
+         formalism('ISO8601')
       }
    }
    
