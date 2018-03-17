@@ -1,6 +1,7 @@
 package com.cabolabs.openehr.opt.parser
 
 import com.cabolabs.openehr.opt.model.*
+import com.cabolabs.openehr.opt.model.domain.*
 //import com.thoughtworks.xstream.XStream
 import groovy.util.slurpersupport.GPathResult
 
@@ -84,27 +85,62 @@ class OperationalTemplateParser {
          }
       }
 
-      def terminologyRef
-      if (node.rm_type_name.text() == 'CODE_PHRASE')
-      {
-         def uri = node.referenceSetUri.text()
-         if (uri) terminologyRef = uri
-      }
+
 
       //println "path: "+ path
 
-      def obn = new ObjectNode(
-         owner: this.template,
-         rmTypeName: node.rm_type_name.text(),
-         nodeId: node.node_id.text(),
-         type: node.'@xsi:type'.text(),
-         archetypeId: node.archetype_id.value.text(), // This is optional, just resolved slots have archId
-         templatePath: templatePath,
-         path: path,
-         xmlNode: node, // Quick fix until having each constraint type modeled
-         terminologyRef: terminologyRef
-         // TODO: default_values
-      )
+      // TODO: refactor individual factories per AOM type
+
+      def obn
+      if (node.'@xsi:type'.text() == 'C_CODE_PHRASE')
+      {
+         def terminologyRef
+         //if (node.rm_type_name.text() == 'CODE_PHRASE')
+         //{
+            def uri = node.referenceSetUri.text()
+            if (uri) terminologyRef = uri
+         //}
+
+         obn = new CCodePhrase(
+           owner: this.template,
+           rmTypeName: node.rm_type_name.text(),
+           nodeId: node.node_id.text(),
+           type: node.'@xsi:type'.text(),
+           archetypeId: node.archetype_id.value.text(), // This is optional, just resolved slots have archId
+           templatePath: templatePath,
+           path: path,
+           terminologyRef: terminologyRef,
+
+           xmlNode: node, // FIXME: all the generators are getting code_list from here and should get it from the codeList attr
+         )
+
+         node.code_list.each {
+            obn.codeList << it.text()
+         }
+
+         // name [ ‘(’ version ‘)’ ]
+         def tid = node.terminology_id.value.text()
+         def tidPattern = ~/(\w+)\s*(?:\(?(\w*)\)?.*)?/
+         def result = tidPattern.matcher(tid)
+
+         obn.terminologyIdName = result[0][1]
+         obn.terminologyIdVersion = result[0][2] // can be empty
+      }
+      else
+      {
+         obn = new ObjectNode(
+            owner: this.template,
+            rmTypeName: node.rm_type_name.text(),
+            nodeId: node.node_id.text(),
+            type: node.'@xsi:type'.text(),
+            archetypeId: node.archetype_id.value.text(), // This is optional, just resolved slots have archId
+            templatePath: templatePath,
+            path: path,
+            xmlNode: node // Quick fix until having each constraint type modeled
+            //terminologyRef: terminologyRef // only for CCodePhrase
+            // TODO: default_values
+         )
+      }
 
       // TODO: parse occurrences
 

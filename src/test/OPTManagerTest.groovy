@@ -22,27 +22,27 @@ class OPTManagerTest extends GroovyTestCase {
       def igen = new XmlInstanceGenerator()
       def ins = igen.generateXMLCompositionStringFromOPT(opt)
       //println ins
-      
+
       new File( "documents" + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'.xml'").format(new Date()) ) << ins
    }
 */
-   
+
    void testOptManagerLanguages()
    {
       String PS = File.separator
       def man = OptManager.getInstance('resources'+ PS +'opts'+ PS +'test_languages')
-      
+
       assert man.getLoadedOpts().size() == 0
-      
+
       man.loadAll()
-      
+
       assert man.getLoadedOpts().size() == 2
-      
+
       println "Loaded OPTs:"
       man.getLoadedOpts().each { id, opt ->
         println opt.templateId +' '+ opt.language
       }
-      
+
       println "OPT nodes"
       man.getLoadedOpts().each { id, opt ->
         opt.nodes.each { optpath, node ->
@@ -50,17 +50,17 @@ class OPTManagerTest extends GroovyTestCase {
             println node.archetypeId +' '+ node.path // archetypeId is only present on root nodes
         }
       }
-      
+
       def archetypeId = 'openEHR-EHR-OBSERVATION.pulse.v1'
-      man.getNode(archetypeId, '/data[at0002]/events[at0003]/data[at0001]/items[at1055]/value/defining_code')?.xmlNode?.code_list.each {
-        
-        println it.text() // code
-        println man.getText(archetypeId, it.text(), 'es') // at00XX -> name
+      man.getNode(archetypeId, '/data[at0002]/events[at0003]/data[at0001]/items[at1055]/value/defining_code')?.codeList.each {
+
+        println it // code
+        println man.getText(archetypeId, it, 'es') // at00XX -> name
       }
 
       println "Referenced Archetypes from OPTManager"
       man.getAllReferencedArchetypes().keySet().each {
          println it
-      } 
+      }
    }
 }

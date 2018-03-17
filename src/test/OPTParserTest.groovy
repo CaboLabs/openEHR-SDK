@@ -5,6 +5,7 @@ import groovy.util.GroovyTestCase
 import com.cabolabs.openehr.opt.parser.*
 import com.cabolabs.openehr.opt.ui_generator.OptUiGenerator
 import com.cabolabs.openehr.opt.model.*
+import com.cabolabs.openehr.opt.model.domain.*
 import com.cabolabs.openehr.opt.manager.*
 import com.cabolabs.openehr.opt.instance_generator.*
 import com.cabolabs.openehr.terminology.TerminologyParser
@@ -38,6 +39,35 @@ class OPTParserTest extends GroovyTestCase {
       }
    }
 
+   void testParseNodes()
+   {
+      println "====== testParseNodes ======"
+      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
+      def opt = loadAndParse(path)
+
+      def category = opt.getNode('/category/defining_code')
+
+      assert category instanceof CCodePhrase
+
+      println category.codeList
+      println category.terminologyIdName
+
+
+      opt.nodes.each {
+
+         if (it.value instanceof CCodePhrase)
+         {
+            println it.key +": "+ it.value
+            println it.value.codeList
+            println it.value.terminologyIdName
+         }
+      }
+
+   }
+
+
+
+
    void testXMLGenerator()
    {
       def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
@@ -48,6 +78,7 @@ class OPTParserTest extends GroovyTestCase {
 
       new File( "documents" + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'.xml'").format(new Date()) ) << ins
    }
+
 
    void testXMLGenerator2()
    {
@@ -70,6 +101,7 @@ class OPTParserTest extends GroovyTestCase {
 
       new File( "documents" + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'.json'").format(new Date()) ) << ins
    }
+
 
 
    void testUIGenerator()
@@ -113,6 +145,7 @@ class OPTParserTest extends GroovyTestCase {
       new File( "html" + PS + new java.text.SimpleDateFormat("'"+ opt.concept +"_'yyyyMMddhhmmss'_"+ opt.langCode +".html'").format(new Date()) ) << ui
    }
 
+
    void testValidacionXSD1()
    {
       def validator = new XmlInstanceValidation('xsd'+ File.separator + 'Version.xsd')
@@ -133,6 +166,7 @@ class OPTParserTest extends GroovyTestCase {
            println xml.name +' VALIDA'
       }
    }
+
 
    /*
    void testTerminologyParser()
