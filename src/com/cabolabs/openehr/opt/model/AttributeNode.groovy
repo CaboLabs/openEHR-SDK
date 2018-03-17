@@ -5,11 +5,13 @@ class AttributeNode {
    // AOM type
    String type
    String rmAttributeName
-   
+
+   ObjectNode parent
+
    // List<ObjectNode>
    List children = []
-   
+
    Cardinality cardinality
-   
+
    Interval existence
 }
