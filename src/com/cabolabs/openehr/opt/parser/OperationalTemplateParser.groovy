@@ -2,6 +2,7 @@ package com.cabolabs.openehr.opt.parser
 
 import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.opt.model.domain.*
+import com.cabolabs.openehr.opt.model.datatypes.*
 //import com.thoughtworks.xstream.XStream
 import groovy.util.slurpersupport.GPathResult
 
@@ -33,7 +34,7 @@ class OperationalTemplateParser {
          uid: tpXML.uid.value.text(),
          templateId: tpXML.template_id.value.text(),
          concept: tpXML.concept.text(),
-         language: parseCodePhrase(tpXML.language),
+         language: _parseCodePhrase(tpXML.language),
          isControlled: ((!tpXML.is_controlled.isEmpty() && tpXML.is_controlled.text() != '') ? tpXML.is_controlled.text() : false),
          purpose: tpXML.description.details.purpose.text(),
          // TODO: add use, misuse, keywords, etc. from RESOURCE_DESCRIPTION_ITEM: https://github.com/openEHR/java-libs/blob/f6ee434226bf926d261c2690016c1d6022b877be/oet-parser/src/main/xsd/Resource.xsd
@@ -55,9 +56,60 @@ class OperationalTemplateParser {
       return this.template
    }
 
-   private parseCodePhrase(GPathResult node)
+   private _parseCodePhrase(GPathResult node)
    {
       return node.terminology_id.value.text() +"::"+ node.code_string.text()
+   }
+
+   private parseCodePhrase(GPathResult node)
+   {
+      return new CodePhrase(codeString: node.code_string.text(), terminologyId: node.terminology_id.value.text())
+   }
+
+   private parseIntervalInt(GPathResult node)
+   {
+      if (node.isEmpty()) return null
+
+      def itv = new IntervalInt(
+         upperIncluded:  node.upper_included.text().toBoolean(),
+         lowerIncluded:  node.lower_included.text().toBoolean(),
+         upperUnbounded: node.upper_unbounded.text().toBoolean(),
+         lowerUnbounded: node.lower_unbounded.text().toBoolean()
+      )
+
+      if (!itv.lowerUnbounded)
+      {
+         itv.lower = Integer.parseInt(node.lower.text())
+      }
+      if (!itv.upperUnbounded)
+      {
+         itv.upper = Integer.parseInt(node.upper.text())
+      }
+
+      return itv
+   }
+
+   private parseIntervalFloat(GPathResult node)
+   {
+      if (node.isEmpty()) return null
+
+      def itv = new IntervalFloat(
+         upperIncluded:  node.upper_included.text().toBoolean(),
+         lowerIncluded:  node.lower_included.text().toBoolean(),
+         upperUnbounded: node.upper_unbounded.text().toBoolean(),
+         lowerUnbounded: node.lower_unbounded.text().toBoolean()
+      )
+
+      if (!itv.lowerUnbounded)
+      {
+         itv.lower = Float.parseFloat(node.lower.text())
+      }
+      if (!itv.upperUnbounded)
+      {
+         itv.upper = Float.parseFloat(node.upper.text())
+      }
+
+      return itv
    }
 
    private parseObjectNode(GPathResult node, String parentPath, String path)
@@ -86,7 +138,6 @@ class OperationalTemplateParser {
       }
 
 
-
       //println "path: "+ path
 
       // TODO: refactor individual factories per AOM type
@@ -109,15 +160,16 @@ class OperationalTemplateParser {
            archetypeId: node.archetype_id.value.text(), // This is optional, just resolved slots have archId
            templatePath: templatePath,
            path: path,
-           terminologyRef: terminologyRef,
-
-           xmlNode: node, // FIXME: all the generators are getting code_list from here and should get it from the codeList attr
+           terminologyRef: terminologyRef
+           //,
+           //xmlNode: node, // FIXME: all the generators are getting code_list from here and should get it from the codeList attr
          )
 
          node.code_list.each {
             obn.codeList << it.text()
          }
 
+         // TODO: parse terminologyID value, we can create CODE_PHRASE and parse this internally
          // name [ ‘(’ version ‘)’ ]
          def tid = node.terminology_id.value.text()
          def tidPattern = ~/(\w+)\s*(?:\(?(\w*)\)?.*)?/
@@ -125,6 +177,32 @@ class OperationalTemplateParser {
 
          obn.terminologyIdName = result[0][1]
          obn.terminologyIdVersion = result[0][2] // can be empty
+      }
+      else if (node.'@xsi:type'.text() == 'C_DV_QUANTITY')
+      {
+         obn = new CDvQuantity(
+          owner: this.template,
+          rmTypeName: node.rm_type_name.text(),
+          nodeId: node.node_id.text(),
+          type: node.'@xsi:type'.text(),
+          archetypeId: node.archetype_id.value.text(), // This is optional, just resolved slots have archId
+          templatePath: templatePath,
+          path: path,
+
+          xmlNode: node // FIXME: all the generators are getting code_list from here and should get it from the codeList attr
+         )
+
+         obn.property = parseCodePhrase(node.property)
+
+         // CQuantityItem
+         def cqi
+         node.list.each {
+            cqi = new CQuantityItem()
+            cqi.units = it.units.text()
+            cqi.magnitude = parseIntervalFloat(it.magnitude)
+            cqi.precision = parseIntervalInt(it.precision)
+            obn.list << cqi
+         }
       }
       else
       {

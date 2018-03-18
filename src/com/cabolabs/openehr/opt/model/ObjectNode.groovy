@@ -28,7 +28,7 @@ class ObjectNode {
    // List<CodedTerm>
    List termDefinitions = []
 
-   Interval occurrences
+   IntervalInt occurrences
 
    // Calculated path of this node during parsing
    String templatePath // absolute path inside the template

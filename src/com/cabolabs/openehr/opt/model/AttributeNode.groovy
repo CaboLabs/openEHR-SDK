@@ -13,5 +13,5 @@ class AttributeNode {
 
    Cardinality cardinality
 
-   Interval existence
+   IntervalInt existence
 }

@@ -39,9 +39,9 @@ class OPTParserTest extends GroovyTestCase {
       }
    }
 
-   void testParseNodes()
+   void testParseNodesCCodePhrase()
    {
-      println "====== testParseNodes ======"
+      println "====== testParseNodesCCodePhrase ======"
       def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
       def opt = loadAndParse(path)
 
@@ -65,8 +65,40 @@ class OPTParserTest extends GroovyTestCase {
 
    }
 
+   void testParseNodesCDvQuantity()
+   {
+      println "====== testParseNodesCDvQuantity ======"
+      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"LabResults1.opt"
+      def opt = loadAndParse(path)
+
+      def cdi = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.lab_test-full_blood_count.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0078.4]/value')
+
+      assert cdi instanceof CDvQuantity
+
+      assert cdi.isValid('gm/l', 50.5).isValid
+      assert !cdi.isValid('qweerty', 50.5).isValid
+      assert !cdi.isValid('gm/l', -50.5).isValid
+      assert !cdi.isValid('qweerty', -50.5).isValid
+
+      assert cdi.isValid('qweerty', 50.5).message == 'CDvQuantity.validation.error.noMatchingUnits'
+
+      opt.nodes.each {
+
+         if (it.value instanceof CDvQuantity)
+         {
+            println it.key
+            println it.value.property.codeString // TODO: get the value from the openehr terminology
+
+            //println it.key +": "+ it.value
+            it.value.list.each { qti ->
+               println qti.units +" "+ qti.magnitude
+            }
+         }
+      }
+   }
 
 
+/*
 
    void testXMLGenerator()
    {
@@ -166,7 +198,7 @@ class OPTParserTest extends GroovyTestCase {
            println xml.name +' VALIDA'
       }
    }
-
+*/
 
    /*
    void testTerminologyParser()

@@ -4,5 +4,5 @@ class Cardinality {
 
    boolean isOrdered
    boolean isUnique
-   Interval interval
+   IntervalInt interval
 }
