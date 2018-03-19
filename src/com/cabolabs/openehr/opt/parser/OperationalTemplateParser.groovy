@@ -1,6 +1,7 @@
 package com.cabolabs.openehr.opt.parser
 
 import com.cabolabs.openehr.opt.model.*
+import com.cabolabs.openehr.opt.model.primitive.*
 import com.cabolabs.openehr.opt.model.domain.*
 import com.cabolabs.openehr.opt.model.datatypes.*
 //import com.thoughtworks.xstream.XStream
@@ -139,6 +140,7 @@ class OperationalTemplateParser {
 
 
       //println "path: "+ path
+      //println node.'@xsi:type'.text() +" "+ path
 
       // TODO: refactor individual factories per AOM type
 
@@ -153,16 +155,14 @@ class OperationalTemplateParser {
          //}
 
          obn = new CCodePhrase(
-           owner: this.template,
-           rmTypeName: node.rm_type_name.text(),
-           nodeId: node.node_id.text(),
-           type: node.'@xsi:type'.text(),
-           archetypeId: node.archetype_id.value.text(), // This is optional, just resolved slots have archId
-           templatePath: templatePath,
-           path: path,
-           terminologyRef: terminologyRef
-           //,
-           //xmlNode: node, // FIXME: all the generators are getting code_list from here and should get it from the codeList attr
+            owner: this.template,
+            rmTypeName: node.rm_type_name.text(),
+            nodeId: node.node_id.text(),
+            type: node.'@xsi:type'.text(),
+            archetypeId: node.archetype_id.value.text(), // This is optional, just resolved slots have archId
+            templatePath: templatePath,
+            path: path,
+            terminologyRef: terminologyRef
          )
 
          node.code_list.each {
@@ -181,15 +181,13 @@ class OperationalTemplateParser {
       else if (node.'@xsi:type'.text() == 'C_DV_QUANTITY')
       {
          obn = new CDvQuantity(
-          owner: this.template,
-          rmTypeName: node.rm_type_name.text(),
-          nodeId: node.node_id.text(),
-          type: node.'@xsi:type'.text(),
-          archetypeId: node.archetype_id.value.text(), // This is optional, just resolved slots have archId
-          templatePath: templatePath,
-          path: path,
-
-          xmlNode: node // FIXME: all the generators are getting code_list from here and should get it from the codeList attr
+            owner:        this.template,
+            rmTypeName:   node.rm_type_name.text(),
+            nodeId:       node.node_id.text(),
+            type:         node.'@xsi:type'.text(),
+            archetypeId:  node.archetype_id.value.text(), // This is optional, just resolved slots have archId
+            templatePath: templatePath,
+            path:         path
          )
 
          obn.property = parseCodePhrase(node.property)
@@ -197,11 +195,84 @@ class OperationalTemplateParser {
          // CQuantityItem
          def cqi
          node.list.each {
-            cqi = new CQuantityItem()
-            cqi.units = it.units.text()
+            cqi           = new CQuantityItem()
+            cqi.units     = it.units.text()
             cqi.magnitude = parseIntervalFloat(it.magnitude)
             cqi.precision = parseIntervalInt(it.precision)
             obn.list << cqi
+         }
+      }
+      else if (node.'@xsi:type'.text() == 'C_DV_ORDINAL')
+      {
+         obn = new CDvOrdinal(
+            owner:        this.template,
+            rmTypeName:   node.rm_type_name.text(),
+            nodeId:       node.node_id.text(),
+            type:         node.'@xsi:type'.text(),
+            archetypeId:  node.archetype_id.value.text(), // This is optional, just resolved slots have archId
+            templatePath: templatePath,
+            path:         path
+         )
+
+         def coi
+         node.list.each {
+            coi        = new CDvOrdinalItem()
+            coi.value  = Integer.parseInt(it.value.text())
+            coi.symbol = parseCodePhrase(it.symbol.defining_code)
+            obn.list << coi
+         }
+      }
+      else if (node.'@xsi:type'.text() == 'C_PRIMITIVE_OBJECT')
+      {
+         obn = new PrimitiveObjectNode(
+            owner:        this.template,
+            rmTypeName:   node.rm_type_name.text(),
+            nodeId:       node.node_id.text(),
+            type:         node.'@xsi:type'.text(),
+            archetypeId:  node.archetype_id.value.text(), // This is optional, just resolved slots have archId
+            templatePath: templatePath,
+            path:         path
+         )
+
+         def primitive = node.item
+
+         if (primitive.'@xsi:type'.text() == 'C_INTEGER')
+         {
+            obn.item = new CInteger()
+            obn.item.range = parseIntervalInt(primitive.range)
+         }
+         else if (primitive.'@xsi:type'.text() == 'C_DATE_TIME')
+         {
+            obn.item = new CDateTime()
+            obn.item.pattern = primitive.pattern.text()
+         }
+         else if (primitive.'@xsi:type'.text() == 'C_BOOLEAN')
+         {
+            //obn.item = new CDateTime()
+            //obn.item.pattern = primitive.pattern.text()
+            // TODO
+         }
+         else if (primitive.'@xsi:type'.text() == 'C_DURATION')
+         {
+            //obn.item = new CDateTime()
+            //obn.item.pattern = primitive.pattern.text()
+            // TODO
+         }
+         else if (primitive.'@xsi:type'.text() == 'C_REAL')
+         {
+            //obn.item = new CDateTime()
+            //obn.item.pattern = primitive.pattern.text()
+            // TODO
+         }
+         else if (primitive.'@xsi:type'.text() == 'C_STRING')
+         {
+            //obn.item = new CDateTime()
+            //obn.item.pattern = primitive.pattern.text()
+            // TODO
+         }
+         else
+         {
+            throw new Exception("primitive "+primitive.'@xsi:type'.text() +" not supported")
          }
       }
       else
@@ -221,6 +292,14 @@ class OperationalTemplateParser {
       }
 
       // TODO: parse occurrences
+
+      // TODO: for C_COMPLEX_OBJECT that don't have attributes, we need to check if the rm_type_name
+      //       is a DATA_VALUE, and create the correspondent constraints for "any_allowed", since
+      //       if there are no constraints anything is allowed inside the DATA_VALUE (if at least
+      //       complies with the DATA_VALUE definition). For instance we need to add PrimitiveObjectNode
+      //       and CDateTime when we find a any_allowed for a DV_DATE_TIME. This is to validate the
+      //       value at least is a valid DV_DATE_TIME, e.g. a DATE is not valid becaues it lacks the TIME part.
+      // see https://github.com/ppazos/openEHR-OPT/issues/34
 
       node.attributes.each { xatn ->
 

@@ -16,4 +16,17 @@ class IntervalInt {
 
       return ll <= i && i <= hh
    }
+
+   String toString()
+   {
+      String s = ""
+
+      s += (lowerUnbounded ? '*' : lower.toString())
+
+      s += '..'
+
+      s += (upperUnbounded ? '*' : upper.toString())
+
+      return s
+   }
 }

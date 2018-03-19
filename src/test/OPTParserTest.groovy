@@ -5,6 +5,7 @@ import groovy.util.GroovyTestCase
 import com.cabolabs.openehr.opt.parser.*
 import com.cabolabs.openehr.opt.ui_generator.OptUiGenerator
 import com.cabolabs.openehr.opt.model.*
+import com.cabolabs.openehr.opt.model.primitive.*
 import com.cabolabs.openehr.opt.model.domain.*
 import com.cabolabs.openehr.opt.manager.*
 import com.cabolabs.openehr.opt.instance_generator.*
@@ -28,6 +29,8 @@ class OPTParserTest extends GroovyTestCase {
       return parser.parse( text )
    }
 
+
+/*
    void testAttributeParentNode()
    {
       println "====== testAttributeParentNode ======"
@@ -38,6 +41,102 @@ class OPTParserTest extends GroovyTestCase {
          assert attr.parent == opt.definition
       }
    }
+*/
+
+   void testParseNodesCInteger()
+   {
+      println "====== testParseNodesCInteger ======"
+      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Review.opt"
+      def opt = loadAndParse(path)
+
+      def c = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0026]/value/magnitude')
+
+
+      assert c.item.isValid(5)
+      assert !c.item.isValid(0)
+      assert !c.item.isValid(666)
+
+      opt.nodes.each {
+
+         if (it.value instanceof PrimitiveObjectNode)
+         {
+            //println it.key +": "+ it.value
+
+            if (it.value.item instanceof CInteger)
+            {
+               println it.value.item.range
+            }
+         }
+      }
+   }
+
+   void testParseNodesCDateTime()
+   {
+      println "====== testParseNodesCDateTime ======"
+      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Test all datatypes_en.opt"
+      def opt = loadAndParse(path)
+
+
+      def c = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0012]/value/value')
+
+      assert c.item instanceof CDateTime
+      assert c.item.pattern == 'yyyy-mm-ddTHH:MM:SS'
+
+      assert c.item.isValid('1981-10-24T09:59:56')
+      assert c.item.isValid('1981-10-24T09:59:56Z')
+      assert c.item.isValid('1981-10-24T09:59:56-03:00')
+      assert c.item.isValid('1981-10-24T09:59:56.666')
+      assert !c.item.isValid('1981-10-24T09:59')
+
+      /*
+      opt.nodes.each {
+
+         if (it.value instanceof PrimitiveObjectNode)
+         {
+            //println it.key +": "+ it.value
+
+            if (it.value.item instanceof CDateTime)
+            {
+               println it.value.item.pattern
+            }
+         }
+      }
+      */
+   }
+
+
+
+/*
+   void testParseNodesCDvOrdinal()
+   {
+      println "====== testParseNodesCDvOrdinal ======"
+      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Review.opt"
+      def opt = loadAndParse(path)
+
+
+      def cdo = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0009]/value')
+
+      assert cdo instanceof CDvOrdinal
+      assert cdo.isValid(1, 'at0010', 'local')
+      assert !cdo.isValid(2, 'at0010', 'local') // value and code exists, but the code is not for this value
+      assert !cdo.isValid(1, 'at0010', 'SNOMED') // value and code exists, but terminology is not for those value and code
+      assert !cdo.isValid(666, 'at0010', 'local') // value doesnt exists
+      assert !cdo.isValid(1, 'a6666', 'local') // code doesnt exists
+
+      opt.nodes.each {
+
+         if (it.value instanceof CDvOrdinal)
+         {
+            println it.key
+
+            //println it.key +": "+ it.value
+            it.value.list.each { oti ->
+               println oti.value +" "+ oti.symbol.codeString +' '+ oti.symbol.terminologyId
+            }
+         }
+      }
+   }
+
 
    void testParseNodesCCodePhrase()
    {
@@ -65,6 +164,7 @@ class OPTParserTest extends GroovyTestCase {
 
    }
 
+
    void testParseNodesCDvQuantity()
    {
       println "====== testParseNodesCDvQuantity ======"
@@ -75,10 +175,10 @@ class OPTParserTest extends GroovyTestCase {
 
       assert cdi instanceof CDvQuantity
 
-      assert cdi.isValid('gm/l', 50.5).isValid
-      assert !cdi.isValid('qweerty', 50.5).isValid
-      assert !cdi.isValid('gm/l', -50.5).isValid
-      assert !cdi.isValid('qweerty', -50.5).isValid
+      assert cdi.isValid('gm/l', 50.5)
+      assert !cdi.isValid('qweerty', 50.5)
+      assert !cdi.isValid('gm/l', -50.5)
+      assert !cdi.isValid('qweerty', -50.5)
 
       assert cdi.isValid('qweerty', 50.5).message == 'CDvQuantity.validation.error.noMatchingUnits'
 
@@ -96,6 +196,7 @@ class OPTParserTest extends GroovyTestCase {
          }
       }
    }
+*/
 
 
 /*

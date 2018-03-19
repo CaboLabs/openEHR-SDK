@@ -21,6 +21,9 @@ class CCodePhrase extends ObjectNode {
    // we support just one value.
    String terminologyRef
 
+   /**
+    * @param terminologyId format 'name[(version)]'
+    */
    ValidationResult isValid(String code, String terminologyId)
    {
       // TODO: search for the terminologyId in the ref
@@ -31,6 +34,7 @@ class CCodePhrase extends ObjectNode {
       if (!item) return new ValidationResult(isValid: false, message:'CCodePhrase.validation.error.noMatchingCode')
 
 
+      // TODO: it would be better to have TerminologyId and have this parsing logic contained inside.
       def tidPattern = ~/(\w+)\s*(?:\(?(\w*)\)?.*)?/
       def result = tidPattern.matcher(terminologyId)
       if (terminologyIdName != result[0][1] || terminologyIdVersion != result[0][2])
