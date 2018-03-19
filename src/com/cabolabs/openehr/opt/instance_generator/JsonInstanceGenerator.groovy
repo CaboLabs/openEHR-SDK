@@ -16,7 +16,7 @@ class JsonInstanceGenerator {
    def JsonInstanceGenerator()
    {
    }
-   
+
    String generateJSONCompositionStringFromOPT(OperationalTemplate opt)
    {
       // Uses the XML generator then transforms the XML to JSON
@@ -24,17 +24,17 @@ class JsonInstanceGenerator {
       def xml = xmlGen.generateXMLCompositionStringFromOPT(opt)
       return xmlToJson(xml)
    }
-   
-   private String xmlToJson(String xml_text)
+
+   static String xmlToJson(String xml_text, boolean pretty_print = false)
    {
       InputStream input = new ByteArrayInputStream(xml_text.getBytes())
       ByteArrayOutputStream output = new ByteArrayOutputStream()
       JsonXMLConfig config = new JsonXMLConfigBuilder()
          .autoArray(true)
          .autoPrimitive(true)
-         .prettyPrint(true)
+         .prettyPrint(pretty_print)
          .build()
-         
+
       try
       {
          /*
@@ -50,17 +50,17 @@ class JsonInstanceGenerator {
           * Copy events from reader to writer.
           */
          writer.add(reader)
-         
+
          /*
           * Close reader/writer.
           */
          reader.close()
          writer.close()
-         
+
          return output.toString()
       }
       finally
-      {         
+      {
          /*
           * As per StAX specification, XMLEventReader/Writer.close() doesn't close
           * the underlying stream.

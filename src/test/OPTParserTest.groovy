@@ -11,6 +11,8 @@ import com.cabolabs.openehr.opt.manager.*
 import com.cabolabs.openehr.opt.instance_generator.*
 import com.cabolabs.openehr.terminology.TerminologyParser
 import com.cabolabs.openehr.opt.instance_validation.XmlInstanceValidation
+import com.cabolabs.openehr.opt.instance_generator.*
+import com.cabolabs.openehr.opt.serializer.*
 
 class OPTParserTest extends GroovyTestCase {
 
@@ -141,6 +143,25 @@ class OPTParserTest extends GroovyTestCase {
 */
    }
 
+
+   void testParseToJSON()
+   {
+      println "====== testParseToJSON ======"
+      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Review.opt"
+      def opt = loadAndParse(path)
+
+      // cant handle loops to parent
+      //println groovy.json.JsonOutput.toJson( opt )​
+      def xml = new File(path).text
+      def json = JsonInstanceGenerator.xmlToJson(xml)
+
+      println xml.size()
+      println json.size()
+
+      def toJson = new JsonSerializer()
+      toJson.serialize(opt)
+      println toJson.get(true)
+   }
 
 
 /*
