@@ -113,6 +113,29 @@ class OperationalTemplateParser {
       return itv
    }
 
+   private parseIntervalDuration(GPathResult node)
+   {
+      if (node.isEmpty()) return null
+
+      def itv = new IntervalDuration(
+         upperIncluded:  node.upper_included.text().toBoolean(),
+         lowerIncluded:  node.lower_included.text().toBoolean(),
+         upperUnbounded: node.upper_unbounded.text().toBoolean(),
+         lowerUnbounded: node.lower_unbounded.text().toBoolean()
+      )
+
+      if (!itv.lowerUnbounded)
+      {
+         itv.lower = new Duration(value: node.lower.text())
+      }
+      if (!itv.upperUnbounded)
+      {
+         itv.upper = new Duration(value: node.upper.text())
+      }
+
+      return itv
+   }
+
    private parseObjectNode(GPathResult node, String parentPath, String path)
    {
       // Path calculation
@@ -248,21 +271,24 @@ class OperationalTemplateParser {
          }
          else if (primitive.'@xsi:type'.text() == 'C_BOOLEAN')
          {
-            //obn.item = new CDateTime()
-            //obn.item.pattern = primitive.pattern.text()
-            // TODO
+            obn.item = new CBoolean()
+            // TODO: parse
+            /*
+            <item xsi:type="C_BOOLEAN">
+             <true_valid>true</true_valid>
+             <false_valid>true</false_valid>
+            </item>
+            */
          }
          else if (primitive.'@xsi:type'.text() == 'C_DURATION')
          {
-            //obn.item = new CDateTime()
-            //obn.item.pattern = primitive.pattern.text()
-            // TODO
+            obn.item = new CDuration()
+            obn.item.range = parseIntervalDuration(primitive.range)
          }
          else if (primitive.'@xsi:type'.text() == 'C_REAL')
          {
-            //obn.item = new CDateTime()
-            //obn.item.pattern = primitive.pattern.text()
-            // TODO
+            obn.item = new CReal()
+            obn.item.range = parseIntervalFloat(primitive.range)
          }
          else if (primitive.'@xsi:type'.text() == 'C_STRING')
          {

@@ -36,3 +36,6 @@ Validate all instances in folder:
 
 [EHRCommitter]: https://github.com/ppazos/EHRCommitter
 [EHRServer]: https://github.com/ppazos/cabolabs-ehrserver
+
+
+## Requires Java 8

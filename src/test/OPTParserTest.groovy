@@ -104,6 +104,43 @@ class OPTParserTest extends GroovyTestCase {
       */
    }
 
+   void testParseNodesCDuration()
+   {
+      println "====== testParseNodesCDuration ======"
+      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Test all datatypes_en.opt"
+      def opt = loadAndParse(path)
+
+
+      def c = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value/value')
+
+      assert c.item instanceof CDuration
+      assert c.item.range.lower.value == 'PT0H'
+      assert c.item.range.upper.value == 'PT5H'
+
+
+      assert c.item.isValid('PT0H')
+      assert c.item.isValid('PT1H')
+      assert c.item.isValid('PT5H')
+      assert !c.item.isValid('PT10H')
+      //assert !c.item.isValid('P2Y') this fails since the Java Duration only allows from Days to Seconds
+
+
+
+/*
+      opt.nodes.each {
+
+         if (it.value instanceof PrimitiveObjectNode)
+         {
+            if (it.value.item instanceof CDuration)
+            {
+               println it.key +": "+ it.value
+               println it.value.item.range
+            }
+         }
+      }
+*/
+   }
+
 
 
 /*
