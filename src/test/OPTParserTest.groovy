@@ -143,7 +143,7 @@ class OPTParserTest extends GroovyTestCase {
 */
    }
 
-
+/*
    void testParseToJSON()
    {
       println "====== testParseToJSON ======"
@@ -157,6 +157,18 @@ class OPTParserTest extends GroovyTestCase {
 
       println xml.size()
       println json.size()
+
+      def toJson = new JsonSerializer()
+      toJson.serialize(opt)
+      println toJson.get(true)
+   }
+*/
+
+   void testParseToJSON2()
+   {
+      println "====== testParseToJSON ======"
+      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Test all datatypes_en.opt"
+      def opt = loadAndParse(path)
 
       def toJson = new JsonSerializer()
       toJson.serialize(opt)

@@ -65,9 +65,8 @@ class JsonSerializer {
    }
 
    // Other types of nodes
-   Map serialize(PrimitiveObjectNode obn)
+   Map serialize(CCodePhrase obn)
    {
-      //println "obn"
       def n = [
          archetype_id: obn.archetypeId,
          path:         obn.path,
@@ -75,8 +74,50 @@ class JsonSerializer {
          rm_type_name: obn.rmTypeName,
          node_id:      obn.nodeId,
          _class:       obn.getClass().getSimpleName(),
-         item:         serialize(obn.item)
+         attributes:   []
       ]
+
+      if (!obn.terminologyRef)
+      {
+         n.terminology_id = obn.terminologyIdName
+         n.code_list = []
+
+         if (obn.terminologyIdVersion) n.terminology_id += '('+ obn.terminologyIdVersion +')'
+
+         obn.codeList.each {
+            n.code_list << it
+         }
+      }
+      else
+      {
+         n.referenceSetUri = obn.terminologyRef
+      }
+
+      obn.attributes.each {
+         n.attributes << serialize(it)
+      }
+
+      return n
+   }
+
+
+   Map serialize(PrimitiveObjectNode obn)
+   {
+      println "pobn "+ obn.type +" "+ obn.rmTypeName
+      def n = [
+         archetype_id: obn.archetypeId,
+         path:         obn.path,
+         type:         obn.type,
+         rm_type_name: obn.rmTypeName,
+         node_id:      obn.nodeId,
+         _class:       obn.getClass().getSimpleName()
+      ]
+
+      // checking for any allowed == no constraint
+      if (obn.item)
+      {
+         n.item = serialize(obn.item)
+      }
 
       return n
    }
@@ -91,10 +132,71 @@ class JsonSerializer {
 
       return n
    }
+   Map serialize(CReal cp)
+   {
+      def n = [
+         range: serialize(cp.range)
+      ]
+
+      return n
+   }
+   Map serialize(CDuration cp)
+   {
+      def n = [
+         range: serialize(cp.range)
+      ]
+
+      return n
+   }
+   Map serialize(CDateTime cp)
+   {
+      def n = [
+         pattern: cp.pattern
+      ]
+
+      return n
+   }
+   Map serialize(CString cp)
+   {
+      def n = [:]
+
+      if (cp.pattern) n.pattern = cp.pattern
+      else
+      {
+         n.list = []
+         cp.list.each {
+            n.list << it
+         }
+      }
+
+      return n
+   }
+   Map serialize(CBoolean cp)
+   {
+      return [:]
+   }
 
 
    // Intervals
    Map serialize(IntervalInt iv)
+   {
+      def n = [
+         lower: iv.lower,
+         upper: iv.upper
+      ]
+
+      return n
+   }
+   Map serialize(IntervalFloat iv)
+   {
+      def n = [
+         lower: iv.lower,
+         upper: iv.upper
+      ]
+
+      return n
+   }
+   Map serialize(IntervalDuration iv)
    {
       def n = [
          lower: iv.lower,

@@ -292,9 +292,16 @@ class OperationalTemplateParser {
          }
          else if (primitive.'@xsi:type'.text() == 'C_STRING')
          {
-            //obn.item = new CDateTime()
-            //obn.item.pattern = primitive.pattern.text()
-            // TODO
+            obn.item = new CString()
+
+            if (!primitive.pattern.isEmpty())
+               obn.item.pattern = primitive.pattern.text()
+            else
+            {
+               primitive.list.each {
+                  obn.item.list << it.text()
+               }
+            }
          }
          else
          {
