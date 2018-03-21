@@ -371,7 +371,7 @@ class OPTParserTest extends GroovyTestCase {
    }
 */
 
-   /*
+   
    void testTerminologyParser()
    {
       def tm = new TerminologyParser()
@@ -380,7 +380,7 @@ class OPTParserTest extends GroovyTestCase {
       assert tm.getRubric('en', '433') == 'event'
       println tm.getRubric('en', '229')
    }
-   */
+
 
 /*
    void testParser()

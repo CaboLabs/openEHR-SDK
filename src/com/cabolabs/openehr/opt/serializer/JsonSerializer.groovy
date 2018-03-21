@@ -126,9 +126,12 @@ class JsonSerializer {
    // CPrimitives
    Map serialize(CInteger cp)
    {
-      def n = [
-         range: serialize(cp.range)
-      ]
+      def n = [:]
+
+      if (cp.range)
+         n.range = serialize(cp.range)
+      else
+         n.list = cp.list
 
       return n
    }

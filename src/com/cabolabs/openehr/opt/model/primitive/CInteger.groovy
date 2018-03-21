@@ -6,8 +6,10 @@ import com.cabolabs.openehr.opt.model.validation.ValidationResult
 @groovy.util.logging.Log4j
 class CInteger extends CPrimitive {
 
-   // TODO: list constraint (this is not commonly used)
+   // list constraint (this is not commonly used)
    // http://www.openehr.org/releases/1.0.2/architecture/am/aom.pdf page 38
+
+   List list = []
 
    IntervalInt range
 

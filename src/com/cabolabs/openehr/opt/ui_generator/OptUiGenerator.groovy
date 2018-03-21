@@ -6,6 +6,8 @@ import com.cabolabs.openehr.opt.model.OperationalTemplate
 import com.cabolabs.openehr.terminology.TerminologyParser
 import groovy.xml.MarkupBuilder
 
+import java.util.jar.JarFile
+
 class OptUiGenerator {
 
    OperationalTemplate opt
@@ -21,12 +23,48 @@ class OptUiGenerator {
    String generate(OperationalTemplate opt)
    {
       this.opt = opt
-
-      // loads the openehr terminolgy
-      // FIXME: THIS IS THE EN TERMINOLOGY, if the OPT is in another language, it needs to load that terminology
       this.terminology = new TerminologyParser()
-      this.terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_en.xml")) // TODO: parameter
-      this.terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_es.xml"))
+
+
+      // test
+      def terminology_repo_path = "resources"+ PS +"terminology"+ PS
+      def terminology_repo = new File(terminology_repo_path)
+      if (!terminology_repo.exists()) // try to load from resources
+      {
+         //def folder_path = Holders.grailsApplication.parentContext.getResource("resources"+ PS +"terminology"+ PS).getLocation().getPath()
+         println "Terminology not found in file system"
+
+         // absolute route to the JAR File
+         println new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath())
+
+         def jar = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath())
+         if (jar.isFile())
+         {
+            def real_jar_file = new JarFile(jar)
+            def entries = real_jar_file.entries()
+            def e, is
+            while (entries.hasMoreElements())
+            {
+               e = entries.nextElement()
+               if (e.name.startsWith(terminology_repo_path))
+               {
+                  println e.name
+                  is = getClass().getResourceAsStream(e.name)
+                  this.terminology.parseTerms(is) // This is loading every XML in the folder!
+               }
+            }
+            real_jar_file.close()
+         }
+      }
+      else
+      {
+         // loads the openehr terminolgy
+         // FIXME: THIS IS THE EN TERMINOLOGY, if the OPT is in another language, it needs to load that terminology
+
+         this.terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_en.xml")) // TODO: parameter
+         this.terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_es.xml"))
+      }
+
 
       def writer = new StringWriter()
       def builder = new MarkupBuilder(writer)
@@ -199,7 +237,7 @@ class OptUiGenerator {
         case 'DV_QUANTITY':
            builder.input(type:'text', name:node.path+'/magnitude', class: node.rmTypeName +' form-control')
 
-           if (node.xmlNode.list.isEmpty())
+           if (node.list.size() == 0)
            {
               builder.input(type:'text', name:node.path+'/units', class: node.rmTypeName +' form-control')
            }
@@ -209,9 +247,9 @@ class OptUiGenerator {
 
                  option(value:'', '')
 
-                 node.xmlNode.list.units.each { u ->
+                 node.list.units.each { u ->
 
-                    option(value:u.text(), u.text())
+                    option(value:u, u)
                  }
               }
            }

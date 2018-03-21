@@ -262,7 +262,16 @@ class OperationalTemplateParser {
          if (primitive.'@xsi:type'.text() == 'C_INTEGER')
          {
             obn.item = new CInteger()
-            obn.item.range = parseIntervalInt(primitive.range)
+
+            if (!primitive.range.isEmpty())
+               obn.item.range = parseIntervalInt(primitive.range)
+            else
+            {
+               primitive.list.each {
+                  obn.item.list << Integer.parseInt(it.text())
+               }
+            }
+
          }
          else if (primitive.'@xsi:type'.text() == 'C_DATE_TIME')
          {
