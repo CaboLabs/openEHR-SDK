@@ -26,7 +26,8 @@ class OptUiGenerator {
       this.terminology = new TerminologyParser()
 
 
-      // test
+      // web environment?
+      def web_env = false
       def terminology_repo_path = "resources"+ PS +"terminology"+ PS
       def terminology_repo = new File(terminology_repo_path)
       if (!terminology_repo.exists()) // try to load from resources
@@ -55,6 +56,8 @@ class OptUiGenerator {
             }
             real_jar_file.close()
          }
+
+         web_env = true
       }
       else
       {
@@ -76,10 +79,14 @@ class OptUiGenerator {
           meta(name: "viewport", content: "width=device-width, initial-scale=1")
 
           mkp.comment('simple style')
-          link(rel:"stylesheet", href:"style.css")
+
+          if (web_env)
+            link(rel:"stylesheet", href:"/static/style.css")
+          else
+            link(rel:"stylesheet", href:"style.css")
 
           mkp.comment('boostrap style')
-          link(rel:"stylesheet", href:"bootstrap/css/bootstrap.min.css")
+          link(rel:"stylesheet", href:"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css")
         }
         body() {
           div(class: "container") {
@@ -131,7 +138,7 @@ class OptUiGenerator {
       if (o.type == "ARCHETYPE_SLOT")
       {
          b.div(class: o.rmTypeName) {
-            label("ARCHETYPE_SLOT is not supported yet")
+            label("ARCHETYPE_SLOT is not supported yet at "+ o.path)
          }
          return // Generator do not support slots on OPTs
       }
