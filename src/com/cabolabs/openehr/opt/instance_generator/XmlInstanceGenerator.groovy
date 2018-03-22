@@ -5,6 +5,8 @@ import com.cabolabs.openehr.terminology.TerminologyParser
 import groovy.xml.MarkupBuilder
 import java.text.SimpleDateFormat
 
+import java.util.jar.JarFile
+
 /**
  * Based on EMRApp xml.XmlSerializer
  * @author Pablo Pazos <pablo.pazos@cabolabs.com>
@@ -79,9 +81,47 @@ class XmlInstanceGenerator {
       // ---------------------------------------------------------------------------------
 
       terminology = new TerminologyParser()
-      terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_en.xml"))
-      terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_es.xml"))
-      terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_pt.xml"))
+
+      // TODO: move code to a terminology manager
+      // web environment?
+      def web_env = false
+      def terminology_repo_path = "resources"+ PS +"terminology"+ PS
+      def terminology_repo = new File(terminology_repo_path)
+      if (!terminology_repo.exists()) // try to load from resources
+      {
+         //def folder_path = Holders.grailsApplication.parentContext.getResource("resources"+ PS +"terminology"+ PS).getLocation().getPath()
+         println "Terminology not found in file system"
+
+         // absolute route to the JAR File
+         println new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath())
+
+         def jar = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath())
+         if (jar.isFile())
+         {
+            def real_jar_file = new JarFile(jar)
+            def entries = real_jar_file.entries()
+            def e, is
+            while (entries.hasMoreElements())
+            {
+               e = entries.nextElement()
+               if (e.name.startsWith(terminology_repo_path))
+               {
+                  println e.name
+                  is = real_jar_file.getInputStream(e)
+                  this.terminology.parseTerms(is) // This is loading every XML in the folder!
+               }
+            }
+            real_jar_file.close()
+         }
+
+         web_env = true
+      }
+      else
+      {
+         terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_en.xml"))
+         terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_es.xml"))
+         terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_pt.xml"))
+      }
    }
 
    /**
@@ -549,8 +589,42 @@ class XmlInstanceGenerator {
        </value>
       */
 
-      def _dataf = new File("resources"+ PS +"images"+ PS +"cabolabs_logo.png")
-      def _datab64 = _dataf.bytes.encodeBase64().toString()
+      def _dataf, _datab64
+
+      // web environment?
+      def web_env = false
+      def img_repo_path = "resources"+ PS +"images"+ PS
+      def img_repo = new File(img_repo_path)
+      if (!img_repo.exists()) // try to load from resources
+      {
+         def jar = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath())
+         if (jar.isFile())
+         {
+            def real_jar_file = new JarFile(jar)
+            def entries = real_jar_file.entries()
+            def e, is
+            while (entries.hasMoreElements())
+            {
+               e = entries.nextElement()
+               if (e.name.startsWith(img_repo_path))
+               {
+                  println e.name
+                  is = real_jar_file.getInputStream(e)
+                  _datab64 = is.text.bytes.encodeBase64().toString()
+               }
+            }
+            real_jar_file.close()
+         }
+
+         web_env = true
+      }
+      else
+      {
+         _dataf = new File("resources"+ PS +"images"+ PS +"cabolabs_logo.png")
+         _datab64 = _dataf.bytes.encodeBase64().toString()
+      }
+
+
 
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_MULTIMEDIA') {
@@ -606,22 +680,26 @@ class XmlInstanceGenerator {
       */
 
       // Take the first constraint and set the values based on it
-      def constraint = o.xmlNode.list[0]
+      def constraint = o.list[0]
       def lo, hi
-      if (constraint.isEmpty() || constraint.magnitude.isEmpty())
+      if (!constraint || !constraint.magnitude)
       {
-         lo = 0
-         hi = 1000
+         lo = 0.0f
+         hi = 1000.0f
       }
       else
       {
-         lo = (constraint.magnitude.lower_unbounded.text().toBoolean() ? 0 : constraint.magnitude.lower.text().toInteger())
-         hi = (constraint.magnitude.upper_unbounded.text().toBoolean() ? 1000 : constraint.magnitude.upper.text().toInteger())
+         // TODO: generate rantom floats!
+         lo = (constraint.magnitude.lowerUnbounded ?    0.0f : constraint.magnitude.lower)
+         hi = (constraint.magnitude.upperUnbounded ? 1000.0f : constraint.magnitude.upper)
       }
+
       AttributeNode a = o.parent
+      Random rand = new Random()
+
       builder."${a.rmAttributeName}"('xsi:type':'DV_QUANTITY') {
-         magnitude( Integer.random(hi, lo) ) // TODO: should be BigDecinal not just Integer
-         units( constraint.units.text() )
+         magnitude( rand.nextFloat() * (hi - lo) + lo ) //Integer.random(hi, lo) ) // TODO: should be BigDecinal not just Integer
+         units( constraint.units )
       }
    }
 

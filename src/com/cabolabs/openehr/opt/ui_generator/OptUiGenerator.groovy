@@ -25,7 +25,7 @@ class OptUiGenerator {
       this.opt = opt
       this.terminology = new TerminologyParser()
 
-
+      // TODO: move code to a terminology manager
       // web environment?
       def web_env = false
       def terminology_repo_path = "resources"+ PS +"terminology"+ PS
@@ -50,7 +50,9 @@ class OptUiGenerator {
                if (e.name.startsWith(terminology_repo_path))
                {
                   println e.name
-                  is = getClass().getResourceAsStream(e.name)
+                  is = real_jar_file.getInputStream(e)
+                  ///is = this.getClass().getResourceAsStream("/"+e.name)
+                  //this.terminology.parseTerms(is) // This is loading every XML in the folder!
                   this.terminology.parseTerms(is) // This is loading every XML in the folder!
                }
             }
@@ -66,6 +68,7 @@ class OptUiGenerator {
 
          this.terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_en.xml")) // TODO: parameter
          this.terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_es.xml"))
+         this.terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_pt.xml"))
       }
 
 
