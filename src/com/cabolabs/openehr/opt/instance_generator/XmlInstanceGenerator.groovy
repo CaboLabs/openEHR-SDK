@@ -1025,7 +1025,7 @@ class XmlInstanceGenerator {
          if (oa)
          {
             //println oa.children[0].xmlNode.item.pattern // action_archetype_id from the OPT
-            action_archetype_id( oa.children[0].xmlNode.item.pattern )
+            action_archetype_id( oa.children[0].item.pattern )
          }
          else
          {

@@ -17,12 +17,12 @@ class JsonInstanceGenerator {
    {
    }
 
-   String generateJSONCompositionStringFromOPT(OperationalTemplate opt)
+   String generateJSONCompositionStringFromOPT(OperationalTemplate opt, boolean pretty_print = false)
    {
       // Uses the XML generator then transforms the XML to JSON
       def xmlGen = new XmlInstanceGenerator()
       def xml = xmlGen.generateXMLCompositionStringFromOPT(opt)
-      return xmlToJson(xml)
+      return xmlToJson(xml, pretty_print)
    }
 
    static String xmlToJson(String xml_text, boolean pretty_print = false)

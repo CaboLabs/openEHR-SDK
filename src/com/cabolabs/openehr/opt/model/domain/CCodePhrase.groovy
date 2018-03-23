@@ -16,6 +16,11 @@ class CCodePhrase extends ObjectNode {
 
    // REFERENCE SET URI CONSTRAINT
 
+   // 1. This is mapped to the element referenceSetUri
+   // 2. By the XSD, referenceSetUri is on a subclass of C_CODE_PHRASE, C_CODE_REFERENCE
+   // 3. There are OPTs with C_CODE_PHRASE having referenceSetUri
+   // 4. We parse both C_CODE_PHRASE and C_CODE_REFERENCE to CCodePhrase to avoid problems that come from modeling tools
+
    // TODO: this can be a list on the OPT but since
    // the Template Designer doesnt allow more than one,
    // we support just one value.

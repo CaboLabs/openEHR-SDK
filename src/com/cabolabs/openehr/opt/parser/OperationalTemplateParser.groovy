@@ -168,14 +168,15 @@ class OperationalTemplateParser {
       // TODO: refactor individual factories per AOM type
 
       def obn
-      if (node.'@xsi:type'.text() == 'C_CODE_PHRASE')
+      if (node.'@xsi:type'.text() == 'C_CODE_PHRASE' || node.'@xsi:type'.text() == 'C_CODE_REFERENCE')
       {
          def terminologyRef
-         //if (node.rm_type_name.text() == 'CODE_PHRASE')
-         //{
-            def uri = node.referenceSetUri.text()
-            if (uri) terminologyRef = uri
-         //}
+
+         // referenceSetUri is present on C_CODE_REFERENCE amd in some C_CODE_PHRASE,
+         // that is a bug from modeling tools.
+         def uri = node.referenceSetUri.text()
+         if (uri) terminologyRef = uri
+
 
          obn = new CCodePhrase(
             owner: this.template,
@@ -188,18 +189,22 @@ class OperationalTemplateParser {
             terminologyRef: terminologyRef
          )
 
-         node.code_list.each {
-            obn.codeList << it.text()
+         // list is not present on C_CODE_REFERENCE
+         if (!node.code_list.isEmpty())
+         {
+            node.code_list.each {
+               obn.codeList << it.text()
+            }
+
+            // TODO: parse terminologyID value, we can create CODE_PHRASE and parse this internally
+            // name [ ‘(’ version ‘)’ ]
+            def tid = node.terminology_id.value.text()
+            def tidPattern = ~/(\w+)\s*(?:\(?(\w*)\)?.*)?/
+            def result = tidPattern.matcher(tid)
+
+            obn.terminologyIdName = result[0][1]
+            obn.terminologyIdVersion = result[0][2] // can be empty
          }
-
-         // TODO: parse terminologyID value, we can create CODE_PHRASE and parse this internally
-         // name [ ‘(’ version ‘)’ ]
-         def tid = node.terminology_id.value.text()
-         def tidPattern = ~/(\w+)\s*(?:\(?(\w*)\)?.*)?/
-         def result = tidPattern.matcher(tid)
-
-         obn.terminologyIdName = result[0][1]
-         obn.terminologyIdVersion = result[0][2] // can be empty
       }
       else if (node.'@xsi:type'.text() == 'C_DV_QUANTITY')
       {
