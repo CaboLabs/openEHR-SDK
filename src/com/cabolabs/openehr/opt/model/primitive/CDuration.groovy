@@ -9,12 +9,15 @@ class CDuration extends CPrimitive {
 
    // TODO: list constraint (this is not commonly used)
    // http://www.openehr.org/releases/1.0.2/architecture/am/aom.pdf page 38
+   String pattern
 
    IntervalDuration range
 
    ValidationResult isValid(String value)
    {
-      if (!range.has(new Duration(value: value))) return new ValidationResult(isValid: false, message:'CDuration.validation.error.valueNotInRange')
+      // TODO: check pattern constraint
+
+      if (range && !range.has(new Duration(value: value))) return new ValidationResult(isValid: false, message:'CDuration.validation.error.valueNotInRange')
 
       return new ValidationResult(isValid: true)
    }

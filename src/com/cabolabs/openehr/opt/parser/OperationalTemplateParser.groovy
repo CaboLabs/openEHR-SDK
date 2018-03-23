@@ -297,7 +297,11 @@ class OperationalTemplateParser {
          else if (primitive.'@xsi:type'.text() == 'C_DURATION')
          {
             obn.item = new CDuration()
-            obn.item.range = parseIntervalDuration(primitive.range)
+
+            if (!primitive.range.isEmpty())
+               obn.item.range = parseIntervalDuration(primitive.range)
+            else
+               obn.item.pattern = primitive.pattern.text()
          }
          else if (primitive.'@xsi:type'.text() == 'C_REAL')
          {

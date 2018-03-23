@@ -145,9 +145,10 @@ class JsonSerializer {
    }
    Map serialize(CDuration cp)
    {
-      def n = [
-         range: serialize(cp.range)
-      ]
+      def n = [:]
+
+      if (cp.range) n.range = serialize(cp.range)
+      else n.pattern = cp.pattern
 
       return n
    }
