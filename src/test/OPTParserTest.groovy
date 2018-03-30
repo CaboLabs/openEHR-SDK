@@ -45,6 +45,32 @@ class OPTParserTest extends GroovyTestCase {
    }
 */
 
+   void testParseArchetypeSlot()
+   {
+      println "====== testParseArchetypeSlot ======"
+      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Signos.opt"
+      def opt = loadAndParse(path)
+
+/*
+      def c = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0026]/value/magnitude')
+
+
+      assert c.item.isValid(5)
+      assert !c.item.isValid(0)
+      assert !c.item.isValid(666)
+*/
+
+      opt.nodes.each {
+
+         if (it.value instanceof ArchetypeSlot)
+         {
+            //println it.key +": "+ it.value
+
+	    println it.value.includes
+         }
+      }
+   }
+
    void testParseNodesCInteger()
    {
       println "====== testParseNodesCInteger ======"

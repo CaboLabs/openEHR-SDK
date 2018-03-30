@@ -250,6 +250,21 @@ class OperationalTemplateParser {
             obn.list << coi
          }
       }
+      else if (node.'@xsi:type'.text() == 'ARCHETYPE_SLOT')
+      {
+         obn = new ArchetypeSlot(
+            owner:        this.template,
+            rmTypeName:   node.rm_type_name.text(),
+            nodeId:       node.node_id.text(),
+            type:         node.'@xsi:type'.text(),
+            archetypeId:  node.archetype_id.value.text(),
+            templatePath: templatePath,
+            path:         path
+         )
+
+         obn.includes = node.includes.expression.right_operand.item.pattern.text()
+         obn.excludes = node.excludes.expression.right_operand.item.pattern.text()
+      }
       else if (node.'@xsi:type'.text() == 'C_PRIMITIVE_OBJECT')
       {
          obn = new PrimitiveObjectNode(
@@ -328,6 +343,9 @@ class OperationalTemplateParser {
       }
       else
       {
+         // C_COMPLEX_OBJECTs and C_ARCHETYPE_ROOTs will be parsed here.
+	 
+         // println "ObjectNode "+ node.'@xsi:type'.text()
          obn = new ObjectNode(
             owner: this.template,
             rmTypeName: node.rm_type_name.text(),
@@ -335,8 +353,8 @@ class OperationalTemplateParser {
             type: node.'@xsi:type'.text(),
             archetypeId: node.archetype_id.value.text(), // This is optional, just resolved slots have archId
             templatePath: templatePath,
-            path: path,
-            xmlNode: node // Quick fix until having each constraint type modeled
+            path: path
+            //xmlNode: node // Quick fix until having each constraint type modeled
             //terminologyRef: terminologyRef // only for CCodePhrase
             // TODO: default_values
          )
