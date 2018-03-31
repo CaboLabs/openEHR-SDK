@@ -124,12 +124,12 @@ class OptUiGenerator {
 
          //println "element name "+ opt.getTerm(parent_arch_id, o.nodeId)
 
-         b.div(class:o.rmTypeName) {
+         b.div(class:o.rmTypeName +' form-group row') {
 
             if (name) generateFields(name, b, parent_arch_id)
             else
             {
-               label( opt.getTerm(parent_arch_id, o.nodeId) )
+               label(class:'col-md-2 col-form-label', opt.getTerm(parent_arch_id, o.nodeId) )
             }
 
             if (value) generateFields(value, b, parent_arch_id)
@@ -245,24 +245,30 @@ class OptUiGenerator {
 
         break
         case 'DV_QUANTITY':
-           builder.input(type:'text', name:node.path+'/magnitude', class: node.rmTypeName +' form-control')
-
-           if (node.list.size() == 0)
-           {
-              builder.input(type:'text', name:node.path+'/units', class: node.rmTypeName +' form-control')
+	
+	   builder.div(class:'col-md-5')
+	   {
+	      input(type:'text', name:node.path+'/magnitude', class: node.rmTypeName +' form-control')
            }
-           else
-           {
-              builder.select(name:node.path+'/units', class: node.rmTypeName +' form-control') {
+	   builder.div(class:'col-md-5')
+	   {
+	      if (node.list.size() == 0)
+	      {
+	         input(type:'text', name:node.path+'/units', class: node.rmTypeName +' form-control')
+	      }
+	      else
+	      {
+	         select(name:node.path+'/units', class: node.rmTypeName +' form-control') {
 
-                 option(value:'', '')
+                    option(value:'', '')
 
-                 node.list.units.each { u ->
+                    node.list.units.each { u ->
 
-                    option(value:u, u)
+                       option(value:u, u)
+                    }
                  }
-              }
-           }
+	      }
+	   }
         break
         case 'DV_COUNT':
            builder.input(type:'number', class: node.rmTypeName +' form-control', name:node.path)
