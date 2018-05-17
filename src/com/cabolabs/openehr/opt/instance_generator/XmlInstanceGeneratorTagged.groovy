@@ -403,7 +403,7 @@ class XmlInstanceGeneratorTagged {
       if (!terminology)
       {
          // format terminology:LOINC?subset=laboratory_services
-         def externalTerminologyRef = def_code.children[0].xmlNode.referenceSetUri.text()
+         def externalTerminologyRef = def_code.children[0].terminologyRef // CCodePhrase.terminologyRef
          if (!externalTerminologyRef)
          {
             terminology = "terminology_not_specified_as_constraint_or_referenceSetUri_in_opt"
@@ -597,13 +597,11 @@ class XmlInstanceGeneratorTagged {
        </value>
       */
 
-      // Take the first constraint and set the values based on it
-      //def constraint = o.xmlNode.list[0]
       def label = this.label(o, parent_arch_id)
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_QUANTITY') {
          magnitude('[['+ label +':::DV_QUANTITY_MAGNITUDE]]')
-         units('[['+ label +':::DV_QUANTITY_UNITS]]') // constraint.units.text()
+         units('[['+ label +':::DV_QUANTITY_UNITS]]')
       }
    }
 
@@ -690,20 +688,6 @@ class XmlInstanceGeneratorTagged {
          // https://github.com/openEHR/java-libs/blob/master/openehr-aom/src/main/java/org/openehr/am/archetype/constraintmodel/primitive/CString.java
          //println "NAME CONSTRAINT: " + name_constraint +" "+ parent_arch_id + o.path
 
-         /*
-         name_constraint.children.each {
-            println it.rmTypeName // DV_TEXT
-            println it.attributes.rmAttributeName // value
-            it.attributes.each { a ->
-
-               a.children.each { c ->
-                  println c.rmTypeName // String
-                  println c.xmlNode.item.list[0].text() // if there is a text constraint, grab the first option (can have many in the list)
-               }
-            }
-         }
-         */
-
          def name_constraint_type = name_constraint.children[0].rmTypeName
 
          if (name_constraint_type == 'DV_TEXT')
@@ -712,7 +696,7 @@ class XmlInstanceGeneratorTagged {
             //   for the DV_TEXT.value constraint
             //     the first children can be a STRING constraint
             //       check if there is a list constraint and get the first value as the name
-            def name_value = name_constraint.children[0].attributes.find { it.rmAttributeName == 'value' }.children[0].xmlNode.item.list[0].text()
+            def name_value = name_constraint.children[0].attributes.find { it.rmAttributeName == 'value' }.children[0].item.list[0]
             builder.name() {
                value( name_value )
             }
@@ -926,8 +910,8 @@ class XmlInstanceGeneratorTagged {
          oa = o.attributes.find { it.rmAttributeName == 'action_archetype_id' }
          if (oa)
          {
-            //println oa.children[0].xmlNode.item.pattern // action_archetype_id from the OPT
-            action_archetype_id( oa.children[0].xmlNode.item.pattern )
+            // action_archetype_id from the OPT
+            action_archetype_id( oa.children[0].item.pattern )
          }
          else
          {
@@ -1164,7 +1148,7 @@ class XmlInstanceGeneratorTagged {
       if (!nodeId)
       {
          // .parent es attributes 'value', .parent.parent es 'ELEMENT'
-         nodeId = o.xmlNode.parent().parent().node_id.text()
+         nodeId = o.parent.parent.nodeId
       }
 
       // avoid spaces in the label becaus it is used as input name in the committer

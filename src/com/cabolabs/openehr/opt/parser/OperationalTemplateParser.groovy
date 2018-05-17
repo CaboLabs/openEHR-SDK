@@ -348,6 +348,12 @@ class OperationalTemplateParser {
       }
       else
       {
+         if ('CODE_PHRASE' == node.rm_type_name.text())
+         {
+            println ">>> PARSING "+ node.rm_type_name.text() +" as ObjectNode"
+            println templatePath
+            println node.'@xsi:type'.text()
+         }
          // C_COMPLEX_OBJECTs and C_ARCHETYPE_ROOTs will be parsed here.
 
          // println "ObjectNode "+ node.'@xsi:type'.text()

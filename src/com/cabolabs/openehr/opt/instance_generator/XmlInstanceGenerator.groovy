@@ -266,7 +266,7 @@ class XmlInstanceGenerator {
          code_string('UY') // TODO: deberia salir de una config global o de parametros
       }
 
-      def category_code = opt.getNode('/category/defining_code').codeList[0] //.xmlNode.code_list[0].text()
+      def category_code = opt.getNode('/category/defining_code').codeList[0]
 
       builder.category() {
          value(terminology.getRubric(opt.langCode, category_code))
@@ -435,7 +435,7 @@ class XmlInstanceGenerator {
       if (!terminology)
       {
          // format terminology:LOINC?subset=laboratory_services
-         def externalTerminologyRef = def_code.children[0].terminologyRef //xmlNode.referenceSetUri.text()
+         def externalTerminologyRef = def_code.children[0].terminologyRef
          if (!externalTerminologyRef)
          {
             terminology = "terminology_not_specified_as_constraint_or_referenceSetUri_in_opt"
@@ -783,20 +783,6 @@ class XmlInstanceGenerator {
          // https://github.com/openEHR/java-libs/blob/master/openehr-aom/src/main/java/org/openehr/am/archetype/constraintmodel/primitive/CString.java
          //println "NAME CONSTRAINT: " + name_constraint +" "+ parent_arch_id + o.path
 
-         /*
-         name_constraint.children.each {
-            println it.rmTypeName // DV_TEXT
-            println it.attributes.rmAttributeName // value
-            it.attributes.each { a ->
-
-               a.children.each { c ->
-                  println c.rmTypeName // String
-                  println c.xmlNode.item.list[0].text() // if there is a text constraint, grab the first option (can have many in the list)
-               }
-            }
-         }
-         */
-
          def name_constraint_type = name_constraint.children[0].rmTypeName
 
          if (name_constraint_type == 'DV_TEXT')
@@ -805,7 +791,7 @@ class XmlInstanceGenerator {
             //   for the DV_TEXT.value constraint
             //     the first children can be a STRING constraint
             //       check if there is a list constraint and get the first value as the name
-            def name_value = name_constraint.children[0].attributes.find { it.rmAttributeName == 'value' }.children[0].xmlNode.item.list[0].text()
+            def name_value = name_constraint.children[0].attributes.find { it.rmAttributeName == 'value' }.children[0].item.list[0]
             builder.name() {
                value( name_value )
             }
@@ -814,16 +800,6 @@ class XmlInstanceGenerator {
          }
          else if (name_constraint_type == 'DV_CODED_TEXT')
          {
-            // CODE_PHRASE
-            //println name_constraint.children[0].attributes.find { it.rmAttributeName == 'defining_code' }.children[0].rmTypeName
-            /*
-            def name_code = name_constraint.children[0].attributes.find { it.rmAttributeName == 'defining_code' }.children[0].xmlNode.code_list[0].text()
-
-            builder.name() {
-               value( this.opt.getTerm(parent_arch_id, name_code) )
-            }
-            */
-
             generate_DV_CODED_TEXT(name_constraint.children[0], parent_arch_id)
          }
       }
@@ -1024,7 +1000,7 @@ class XmlInstanceGenerator {
          oa = o.attributes.find { it.rmAttributeName == 'action_archetype_id' }
          if (oa)
          {
-            //println oa.children[0].xmlNode.item.pattern // action_archetype_id from the OPT
+            // action_archetype_id from the OPT
             action_archetype_id( oa.children[0].item.pattern )
          }
          else
@@ -1073,9 +1049,6 @@ class XmlInstanceGenerator {
                              .children[0].attributes.find { it.rmAttributeName == 'current_state' }
                              .children[0].attributes.find { it.rmAttributeName == 'defining_code' }
                              .children[0]
-
-         //println code_phrase.xmlNode.terminology_id.value.text() // openehr
-         //println code_phrase.xmlNode.code_list[0].text()         // 524
 
          ism_transition() {
            current_state() {

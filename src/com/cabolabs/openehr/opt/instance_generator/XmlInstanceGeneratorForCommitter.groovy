@@ -416,17 +416,43 @@ class XmlInstanceGeneratorForCommitter {
       def codes = [:]
       def code
       def code_phrase = opt.getNode(o.templatePath + '/defining_code') // nodes are indexed by template path not by archetype path
-
+/*
+opt.nodes.findAll{it.key.contains('problem_list')}.sort{it.key}.each {println it.toString() +' / '+ it.value.rmTypeName}
+println o.templatePath
+println code_phrase.templatePath
+*/
       if (!code_phrase)
       {
          println "Avoid generating DV_CODED_TEXT because it has no constraints for codes or terminology"
          return
       }
-
+/*
+      println code_phrase.getClass()
+      println code_phrase.nodes
+*/
+      def def_code = o.attributes.find { it.rmAttributeName == 'defining_code' }
       def terminology = code_phrase.terminologyIdName
 
+      if (!terminology)
+      {
+         // format terminology:LOINC?subset=laboratory_services
+         def externalTerminologyRef = def_code.children[0].terminologyRef // CCodePhrase.terminologyRef
+         if (!externalTerminologyRef)
+         {
+            terminology = "terminology_not_specified_as_constraint_or_referenceSetUri_in_opt"
+         }
+         else
+         {
+            terminology = externalTerminologyRef.split("\\?")[0].split(":")[1]
+         }
+
+         // TODO:
+         // The instance shouldn't have a list of codes on this case since the constraint is
+         // an external terminology. Since this is for the committed, the TAG should help
+         // the committer to create a search input on this case, instead of a eslect of codes.
+      }
       // get texts from archetype ontology
-      if (terminology == 'local')
+      else if (terminology == 'local')
       {
          //name = this.opt.getTerm(parent_arch_id, first_code)
          code_phrase.codeList.each {
@@ -639,9 +665,9 @@ class XmlInstanceGeneratorForCommitter {
       */
 
       // Take the first constraint and set the values based on it
-      def constraint = o.xmlNode.list[0]
+      def constraint = o.list[0] // CQuantityItem
       def lo, hi
-      if (constraint.isEmpty() || constraint.magnitude.isEmpty())
+      if (!constraint || !constraint.magnitude)
       {
          lo = 0
          hi = 1000
@@ -650,15 +676,15 @@ class XmlInstanceGeneratorForCommitter {
       {
          //println o.path
          //println constraint.magnitude
-         lo = (constraint.magnitude.lower_unbounded.text().toBoolean() ? 0 : constraint.magnitude.lower.text().toInteger())
-         hi = (constraint.magnitude.upper_unbounded.text().toBoolean() ? 1000 : constraint.magnitude.upper.text().toInteger())
+         lo = (constraint.magnitude.lowerUnbounded ? 0 : constraint.magnitude.lower)
+         hi = (constraint.magnitude.upperUnbounded ? 1000 : constraint.magnitude.upper)
       }
 
       def label = this.label(o, parent_arch_id)
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_QUANTITY') {
          magnitude('[['+ label +':::INTEGER:::RANGE_'+ lo +'..'+ hi +']]') // TODO: should be BigDecinal not just Integer
-         units( constraint.units.text() ) // TODO: select units
+         units( constraint.units ) // TODO: select units
       }
    }
 
@@ -748,7 +774,7 @@ class XmlInstanceGeneratorForCommitter {
       */
       def constraints = []
       def text, code, terminology_id, ordinal
-      o.xmlNode.list.each { list_item ->
+      o.list.each { list_item ->
          code = list_item.symbol.defining_code.code_string.text()
          text = opt.getTerm(parent_arch_id, code)
          terminology_id = list_item.symbol.defining_code.terminology_id.value.text()
@@ -800,7 +826,7 @@ class XmlInstanceGeneratorForCommitter {
             //   for the DV_TEXT.value constraint
             //     the first children can be a STRING constraint
             //       check if there is a list constraint and get the first value as the name
-            def name_value = name_constraint.children[0].attributes.find { it.rmAttributeName == 'value' }.children[0].xmlNode.item.list[0].text()
+            def name_value = name_constraint.children[0].attributes.find { it.rmAttributeName == 'value' }.children[0].item.list[0]
             builder.name() {
                value( name_value )
             }
@@ -1324,7 +1350,7 @@ class XmlInstanceGeneratorForCommitter {
       if (!nodeId)
       {
          // .parent es attributes 'value', .parent.parent es 'ELEMENT'
-         nodeId = o.xmlNode.parent().parent().node_id.text()
+         nodeId = o.parent.parent.nodeId
       }
 
       // avoid spaces in the label becaus it is used as input name in the committer
