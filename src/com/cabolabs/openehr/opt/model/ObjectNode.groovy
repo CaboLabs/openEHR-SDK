@@ -56,9 +56,6 @@ class ObjectNode {
    //     - upper
    //   - units
 
-   // For now I just save the XML node to extract the constraints
-   //GPathResult xmlNode
-
    /*
     * gets a node by archetype path
     */

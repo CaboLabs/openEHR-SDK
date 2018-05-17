@@ -566,10 +566,10 @@ class OPTParserTest extends GroovyTestCase {
 
          if (tpath == '/content[archetype_id=openEHR-EHR-SECTION.vital_signs.v1]/items[archetype_id=openEHR-EHR-OBSERVATION.blood_pressure.v1]/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value')
          {
-            assert node.xmlNode.list.size() == 1
+            assert node.list.size() == 1
 
-            node.xmlNode.list.each {
-               println it.units.text() // mm[Hg]
+            node.list.each {
+               println it.units // mm[Hg]
             }
          }
       }

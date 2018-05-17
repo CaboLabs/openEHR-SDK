@@ -136,7 +136,6 @@ class OperationalTemplate {
    {
       List<ObjectNode> ret = []
 
-      //if (obj.path == '/' || obj.xmlNode.'@xsi:type'.text() == 'C_ARCHETYPE_ROOT')
       if (obj.path == '/' || obj.type == 'C_ARCHETYPE_ROOT')
       {
          ret << obj

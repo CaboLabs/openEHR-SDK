@@ -209,8 +209,6 @@ class OptUiGenerator {
               {
                  builder.select(name: constraint.path, class: node.rmTypeName +' form-control') {
 
-                    //println "terminolgy id "+ constraint.xmlNode.terminology_id.value.text()
-
                     option(value:'', '')
 
                     if (constraint.terminologyIdName == 'local')

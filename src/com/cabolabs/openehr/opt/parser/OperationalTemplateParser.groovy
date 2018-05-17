@@ -372,8 +372,6 @@ class OperationalTemplateParser {
             archetypeId: node.archetype_id.value.text(), // This is optional, just resolved slots have archId
             templatePath: templatePath,
             path: path
-            //xmlNode: node // Quick fix until having each constraint type modeled
-            //terminologyRef: terminologyRef // only for CCodePhrase
             // TODO: default_values
          )
       }
