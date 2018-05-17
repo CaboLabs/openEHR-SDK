@@ -41,8 +41,6 @@ class JsonSerializer {
          attributes:   []
       ]
 
-      if (obn.reference) n.reference = obn.reference
-
       obn.attributes.each {
          n.attributes << serialize(it)
       }
@@ -78,6 +76,8 @@ class JsonSerializer {
          _class:       obn.getClass().getSimpleName(),
          attributes:   []
       ]
+
+      if (obn.reference) n.reference = obn.reference
 
       if (!obn.terminologyRef)
       {

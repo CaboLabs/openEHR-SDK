@@ -31,7 +31,7 @@ class ObjectNode {
    IntervalInt occurrences
 
    // CONSTRAINT_REF
-   String reference
+   //String reference // this is really just for C_CODE_PHRASE, moved there
 
    // Calculated path of this node during parsing
    String templatePath // absolute path inside the template

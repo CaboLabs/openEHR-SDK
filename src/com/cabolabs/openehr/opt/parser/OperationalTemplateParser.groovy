@@ -168,8 +168,10 @@ class OperationalTemplateParser {
       // TODO: refactor individual factories per AOM type
 
       def obn
-      if (node.'@xsi:type'.text() == 'C_CODE_PHRASE' || node.'@xsi:type'.text() == 'C_CODE_REFERENCE')
+      if (['C_CODE_PHRASE', 'C_CODE_REFERENCE', 'CONSTRAINT_REF'].contains(node.'@xsi:type'.text()))
       {
+         assert node.rm_type_name.text() == 'CODE_PHRASE'
+
          def terminologyRef
 
          // referenceSetUri is present on C_CODE_REFERENCE amd in some C_CODE_PHRASE,
@@ -188,6 +190,11 @@ class OperationalTemplateParser {
             path: path,
             terminologyRef: terminologyRef
          )
+
+         if (obn.type == 'CONSTRAINT_REF')
+         {
+            obn.reference = node.reference.text()
+         }
 
          // list is not present on C_CODE_REFERENCE
          if (!node.code_list.isEmpty())
@@ -369,11 +376,6 @@ class OperationalTemplateParser {
             //terminologyRef: terminologyRef // only for CCodePhrase
             // TODO: default_values
          )
-
-         if (node.'@xsi:type'.text() == 'CONSTRAINT_REF')
-         {
-            obn.reference = node.reference.text()
-         }
       }
 
       // TODO: parse occurrences

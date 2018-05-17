@@ -264,11 +264,65 @@ class OPTParserTest extends GroovyTestCase {
       }
    }
 
+   void testParserCodedTextConstraint()
+   {
+      println "====== testParserCodedTextConstraint ======"
+
+      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
+      def opt = loadAndParse(path)
+
+      assertToString(opt.concept, 'Referral')
+
+      assertNotNull(opt.definition)
+
+
+      // opt.nodes is a map path->ObjectNode
+      def termConstraintsMap = opt.nodes.findAll { it.value.rmTypeName == 'CODE_PHRASE' }
+
+      assertNotNull(termConstraintsMap)
+
+      termConstraintsMap.each { tpath, node ->
+
+         println tpath
+
+         if (tpath == '/context/participations/function/defining_code')
+         {
+            assert node.codeList.size() == 5
+
+            node.codeList.each {
+               println it // at00XX
+            }
+         }
+      }
+
+      //assert opt.getTerm('openEHR-EHR-OBSERVATION.terminology_ref.v1', 'at0004') == 'Terminology ref'
+      //opt.definition.attributes.each { println it.rmAttributeName }
+   }
+
+   void testParserConstraintRefConstraint()
+   {
+      println "====== testParserConstraintRefConstraint ======"
+
+      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"eReferral.opt"
+      def opt = loadAndParse(path)
+
+      assertToString(opt.concept, 'eReferral')
+      assertNotNull(opt.definition)
+
+      // opt.nodes is a map path->ObjectNode
+
+      // Get the only CONSTRAINT_REF in the OPT
+      // Check the reference is set to the value that is on the OPT
+      // Check the constraint type is CONSTRAINT_REF
+
+      def constraint_refs = opt.nodes.findAll{ it.key == '/content[archetype_id=openEHR-EHR-SECTION.problem_list.v1]/items[archetype_id=openEHR-EHR-EVALUATION.problem-diagnosis.v1]/data[at0001]/items[at0002.1]/value/defining_code' }
+      assert constraint_refs.size() == 1
+      assert constraint_refs.values()[0].reference == 'ac0.1'
+      assert constraint_refs.values()[0].type == 'CONSTRAINT_REF'
+   }
+
 
 /*
-
-
-
    void testParseNodesCCodePhrase()
    {
       println "====== testParseNodesCCodePhrase ======"
@@ -495,40 +549,7 @@ class OPTParserTest extends GroovyTestCase {
       }
    }
 
-   void testParserCodedTextConstraint()
-   {
-      def path = "resources"+ PS +"opts"+ PS +"Referral.opt"
-      def opt = loadAndParse(path)
 
-      assertToString(opt.concept, 'Referral')
-
-      assertNotNull(opt.definition)
-
-
-      // opt.nodes is a map path->ObjectNode
-      def termConstraintsMap = opt.nodes.findAll { it.value.rmTypeName == 'CODE_PHRASE' }
-
-      assertNotNull(termConstraintsMap)
-
-      termConstraintsMap.each { tpath, node ->
-
-         println tpath
-
-         if (tpath == '/context/participations/function/defining_code')
-         {
-            assert node.xmlNode.code_list.size() == 5
-
-            node.xmlNode.code_list.each {
-               println it.text() // at00XX
-            }
-         }
-      }
-
-
-      //assert opt.getTerm('openEHR-EHR-OBSERVATION.terminology_ref.v1', 'at0004') == 'Terminology ref'
-
-      //opt.definition.attributes.each { println it.rmAttributeName }
-   }
 
    void testParserQuantityUnits()
    {

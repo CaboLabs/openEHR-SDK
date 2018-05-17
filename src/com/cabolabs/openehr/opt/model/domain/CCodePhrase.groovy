@@ -26,6 +26,9 @@ class CCodePhrase extends ObjectNode {
    // we support just one value.
    String terminologyRef
 
+   // CONSTRAINT_REF
+   String reference
+
    /**
     * @param terminologyId format 'name[(version)]'
     */
