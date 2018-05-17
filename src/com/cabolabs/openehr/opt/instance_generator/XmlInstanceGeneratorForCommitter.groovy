@@ -423,14 +423,6 @@ class XmlInstanceGeneratorForCommitter {
          return
       }
 
-      /*
-      println o.path
-      println code_phrase
-      println code_phrase?.xmlNode.name()
-      println '--------------------------------'
-      */
-
-
       def terminology = code_phrase.terminologyIdName
 
       // get texts from archetype ontology
@@ -802,20 +794,6 @@ class XmlInstanceGeneratorForCommitter {
          println "children attrs path: "+ name_constraint.children[0].rmTypeName +" "+ name_constraint.children[0].path
          println "children attrs attr: "+ name_constraint.children[0].attributes.rmAttributeName
 
-         /*
-         name_constraint.children.each {
-            println it.rmTypeName // DV_TEXT
-            println it.attributes.rmAttributeName // value
-            it.attributes.each { a ->
-
-               a.children.each { c ->
-                  println c.rmTypeName // String
-                  println c.xmlNode.item.list[0].text() // if there is a text constraint, grab the first option (can have many in the list)
-               }
-            }
-         }
-         */
-
          if (name_constraint.children[0].rmTypeName == 'DV_TEXT')
          {
             // childen[0] DV_TEXT
@@ -1062,8 +1040,8 @@ class XmlInstanceGeneratorForCommitter {
          oa = o.attributes.find { it.rmAttributeName == 'action_archetype_id' }
          if (oa)
          {
-            //println oa.children[0].xmlNode.item.pattern // action_archetype_id from the OPT
-            action_archetype_id( oa.children[0].xmlNode.item.pattern )
+            // action_archetype_id from the OPT
+            action_archetype_id( oa.children[0].item.pattern )
          }
          else
          {

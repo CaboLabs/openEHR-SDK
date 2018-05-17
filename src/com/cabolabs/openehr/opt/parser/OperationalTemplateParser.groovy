@@ -298,6 +298,11 @@ class OperationalTemplateParser {
             obn.item = new CDateTime()
             obn.item.pattern = primitive.pattern.text()
          }
+         else if (primitive.'@xsi:type'.text() == 'C_DATE')
+         {
+            obn.item = new CDate()
+            obn.item.pattern = primitive.pattern.text()
+         }
          else if (primitive.'@xsi:type'.text() == 'C_BOOLEAN')
          {
             obn.item = new CBoolean()
@@ -344,7 +349,7 @@ class OperationalTemplateParser {
       else
       {
          // C_COMPLEX_OBJECTs and C_ARCHETYPE_ROOTs will be parsed here.
-	 
+
          // println "ObjectNode "+ node.'@xsi:type'.text()
          obn = new ObjectNode(
             owner: this.template,
@@ -358,6 +363,11 @@ class OperationalTemplateParser {
             //terminologyRef: terminologyRef // only for CCodePhrase
             // TODO: default_values
          )
+
+         if (node.'@xsi:type'.text() == 'CONSTRAINT_REF')
+         {
+            obn.reference = node.reference.text()
+         }
       }
 
       // TODO: parse occurrences

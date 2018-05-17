@@ -193,15 +193,7 @@ class OptUiGenerator {
         break
         case 'DV_CODED_TEXT':
 
-           //println "DV_CODED_TEXT "+ node.xmlNode
-
            def constraint = node.attributes.find{ it.rmAttributeName == 'defining_code' }.children[0]
-
-           /*
-           println constraint // ObjectNode
-           println constraint.xmlNode
-           constraint.xmlNode.children().each { println it.name() }
-           */
 
            if (constraint.rmTypeName == "CODE_PHRASE")
            {
@@ -245,7 +237,7 @@ class OptUiGenerator {
 
         break
         case 'DV_QUANTITY':
-	
+
 	   builder.div(class:'col-md-5')
 	   {
 	      input(type:'text', name:node.path+'/magnitude', class: node.rmTypeName +' form-control')
@@ -284,9 +276,9 @@ class OptUiGenerator {
 
               option(value:'', '')
 
-              node.xmlNode.list.each { ord ->
+              node.list.each { ord ->
 
-                 option(value:ord.value.text(), opt.getTerm(parent_arch_id, ord.symbol.defining_code.code_string.text()))
+                 option(value:ord.value, opt.getTerm(parent_arch_id, ord.symbol.codeString))
               }
            }
         break

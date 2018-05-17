@@ -41,6 +41,8 @@ class JsonSerializer {
          attributes:   []
       ]
 
+      if (obn.reference) n.reference = obn.reference
+
       obn.attributes.each {
          n.attributes << serialize(it)
       }
@@ -153,6 +155,14 @@ class JsonSerializer {
       return n
    }
    Map serialize(CDateTime cp)
+   {
+      def n = [
+         pattern: cp.pattern
+      ]
+
+      return n
+   }
+   Map serialize(CDate cp)
    {
       def n = [
          pattern: cp.pattern

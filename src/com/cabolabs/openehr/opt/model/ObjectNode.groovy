@@ -30,6 +30,9 @@ class ObjectNode {
 
    IntervalInt occurrences
 
+   // CONSTRAINT_REF
+   String reference
+
    // Calculated path of this node during parsing
    String templatePath // absolute path inside the template
    String path // relative path to the root archetype node
@@ -54,7 +57,7 @@ class ObjectNode {
    //   - units
 
    // For now I just save the XML node to extract the constraints
-   GPathResult xmlNode
+   //GPathResult xmlNode
 
    /*
     * gets a node by archetype path
