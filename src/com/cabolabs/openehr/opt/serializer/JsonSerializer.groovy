@@ -1,10 +1,11 @@
-lspackage com.cabolabs.openehr.opt.serializer
+package com.cabolabs.openehr.opt.serializer
 
 import groovy.json.JsonBuilder
 
 import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.opt.model.primitive.*
 import com.cabolabs.openehr.opt.model.domain.*
+import com.cabolabs.openehr.opt.model.datatypes.*
 
 class JsonSerializer {
 
@@ -132,7 +133,7 @@ class JsonSerializer {
    {
       def n = [
          value: obn.value,
-         symbol: serialize(obn.symbol)
+         symbol: obn.symbol ? serialize(obn.symbol) : null
       ]
 
       return n
@@ -166,8 +167,8 @@ class JsonSerializer {
    Map serialize(CQuantityItem obn)
    {
       def n = [
-         magnitude: serialize(obn.magnitude),
-         precision: serialize(obn.precision),
+         magnitude: obn.magnitude ? serialize(obn.magnitude) : null,
+         precision: obn.precision ? serialize(obn.precision) : null,
          units: obn.units
       ]
 
@@ -285,8 +286,17 @@ class JsonSerializer {
    Map serialize(IntervalDuration iv)
    {
       def n = [
-         lower: iv.lower,
-         upper: iv.upper
+         lower: iv.lower.value,
+         upper: iv.upper.value
+      ]
+
+      return n
+   }
+   Map serialize(CodePhrase c)
+   {
+      def n = [
+         codeString: c.codeString,
+         terminologyId: c.terminologyId
       ]
 
       return n
