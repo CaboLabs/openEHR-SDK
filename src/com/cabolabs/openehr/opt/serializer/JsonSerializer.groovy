@@ -1,4 +1,4 @@
-package com.cabolabs.openehr.opt.serializer
+lspackage com.cabolabs.openehr.opt.serializer
 
 import groovy.json.JsonBuilder
 
@@ -98,6 +98,78 @@ class JsonSerializer {
       obn.attributes.each {
          n.attributes << serialize(it)
       }
+
+      return n
+   }
+
+   Map serialize(CDvOrdinal obn)
+   {
+      def n = [
+         archetype_id: obn.archetypeId,
+         path:         obn.path,
+         type:         obn.type,
+         rm_type_name: obn.rmTypeName,
+         node_id:      obn.nodeId,
+         _class:       obn.getClass().getSimpleName(),
+         attributes:   []
+      ]
+
+      n.list = []
+
+
+      obn.list.each {
+         n.list << serialize(it)
+      }
+
+
+      obn.attributes.each {
+         n.attributes << serialize(it)
+      }
+
+      return n
+   }
+   Map serialize(CDvOrdinalItem obn)
+   {
+      def n = [
+         value: obn.value,
+         symbol: serialize(obn.symbol)
+      ]
+
+      return n
+   }
+
+   Map serialize(CDvQuantity obn)
+   {
+      def n = [
+         archetype_id: obn.archetypeId,
+         path:         obn.path,
+         type:         obn.type,
+         rm_type_name: obn.rmTypeName,
+         node_id:      obn.nodeId,
+         _class:       obn.getClass().getSimpleName(),
+         attributes:   []
+      ]
+
+      n.list = []
+
+      obn.list.each {
+         n.list << serialize(it)
+      }
+
+
+      obn.attributes.each {
+         n.attributes << serialize(it)
+      }
+
+      return n
+   }
+   Map serialize(CQuantityItem obn)
+   {
+      def n = [
+         magnitude: serialize(obn.magnitude),
+         precision: serialize(obn.precision),
+         units: obn.units
+      ]
 
       return n
    }
