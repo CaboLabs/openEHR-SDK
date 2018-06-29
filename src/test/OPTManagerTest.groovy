@@ -26,7 +26,41 @@ class OPTManagerTest extends GroovyTestCase {
       new File( "documents" + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'.xml'").format(new Date()) ) << ins
    }
 */
+   void testReferencedArchetypes()
+   {
+      String namespace = 'test_ref_archs_namespace'
+      String PS = File.separator
+      def man = OptManager.getInstance('resources'+ PS +'opts')
 
+      assert man.getLoadedOpts(namespace).size() == 0
+      man.loadAll(namespace)
+      assert man.getLoadedOpts(namespace).size() == 1
+
+      println "Referenced Archetypes from OPTManager"
+      def refArchs = man.getAllReferencedArchetypes(namespace)
+      refArchs.keySet().sort{it}.each { archId ->
+         println archId
+         refArchs[archId].each { obj ->
+            println obj.rmTypeName +' '+obj.archetypeId + obj.path
+            obj.nodes.keySet().sort{it}.each { path ->
+               println "\t"+ obj.nodes[path].rmTypeName +"\t"+path
+            }
+         }
+      }
+
+      println man.getNode('openEHR-EHR-OBSERVATION.test_all_datatypes.v1', '/', namespace)
+      println man.getNodes('openEHR-EHR-OBSERVATION.test_all_datatypes.v1', '/', namespace)
+
+println man.cache
+
+      def opt = man.getOpt('test_all_datatypes.es.v1', namespace)
+      opt.nodes.keySet().sort{it}.each{ path ->
+         println path
+      }
+      println opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]')
+   }
+
+/*
    void testOptManagerLanguages()
    {
       String PS = File.separator
@@ -63,4 +97,5 @@ class OPTManagerTest extends GroovyTestCase {
          println it
       }
    }
+   */
 }
