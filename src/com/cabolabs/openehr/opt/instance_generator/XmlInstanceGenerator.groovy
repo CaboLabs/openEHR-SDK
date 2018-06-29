@@ -334,6 +334,8 @@ class XmlInstanceGenerator {
       // category and context where already processed on generateCompositionHeader
       def a = opt.definition.attributes.find{ it.rmAttributeName == 'content' }
 
+      if (!a) throw new Exception("The OPT doesn't have a structure for COMPOSITION.content")
+
       assert a.rmAttributeName == 'content'
 
       processAttributeChildren(a, parent_arch_id)
