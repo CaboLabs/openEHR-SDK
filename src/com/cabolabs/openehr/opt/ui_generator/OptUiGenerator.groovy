@@ -141,7 +141,7 @@ class OptUiGenerator {
       if (o.type == "ARCHETYPE_SLOT")
       {
          b.div(class: o.rmTypeName) {
-            label("ARCHETYPE_SLOT is not supported yet at "+ o.path)
+            label("ARCHETYPE_SLOT is not supported yet, found at "+ o.path)
          }
          return // Generator do not support slots on OPTs
       }

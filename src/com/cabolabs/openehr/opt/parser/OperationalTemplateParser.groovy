@@ -286,6 +286,7 @@ class OperationalTemplateParser {
 
          def primitive = node.item
 
+         // FIXME: switch (primitive.'@xsi:type'.text())
          if (primitive.'@xsi:type'.text() == 'C_INTEGER')
          {
             obn.item = new CInteger()

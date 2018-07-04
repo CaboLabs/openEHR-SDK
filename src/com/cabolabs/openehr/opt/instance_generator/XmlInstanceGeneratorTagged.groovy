@@ -337,7 +337,7 @@ class XmlInstanceGeneratorTagged {
          // Avoid processing slots
          if (obj.type == 'ARCHETYPE_SLOT')
          {
-            builder.mkp.comment('SLOT NOT PROCESSED')
+            builder.mkp.comment('SLOT IN '+ obj.path +' NOT PROCESSED')
             return
          }
 
@@ -1060,6 +1060,19 @@ class XmlInstanceGeneratorTagged {
       generate_EVENT(o, parent_arch_id)
    }
 
+   // these are not different than ITEM_TREE processing since it is generic
+   private generate_ITEM_SINGLE(ObjectNode o, String parent_arch_id)
+   {
+      generate_ITEM_TREE(o, parent_arch_id)
+   }
+   private generate_ITEM_TABLE(ObjectNode o, String parent_arch_id)
+   {
+      generate_ITEM_TREE(o, parent_arch_id)
+   }
+   private generate_ITEM_LIST(ObjectNode o, String parent_arch_id)
+   {
+      generate_ITEM_TREE(o, parent_arch_id)
+   }
    private generate_ITEM_TREE(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
