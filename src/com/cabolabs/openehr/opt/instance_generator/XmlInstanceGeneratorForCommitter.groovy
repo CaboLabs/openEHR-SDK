@@ -686,7 +686,7 @@ println code_phrase.templatePath
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_QUANTITY') {
          magnitude('[['+ label +':::INTEGER:::RANGE_'+ lo +'..'+ hi +']]') // TODO: should be BigDecinal not just Integer
-         units( constraint.units ) // TODO: select units
+         units('[['+ label +':::STRING:::]]') // TODO: select units
       }
    }
 

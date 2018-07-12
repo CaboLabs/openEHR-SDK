@@ -684,16 +684,29 @@ class XmlInstanceGenerator {
       // Take the first constraint and set the values based on it
       def constraint = o.list[0]
       def lo, hi
-      if (!constraint || !constraint.magnitude)
+      def _units
+      if (!constraint)
       {
          lo = 0.0f
          hi = 1000.0f
+         _units = "_no_constraint_defined_"
       }
       else
       {
-         // TODO: generate rantom floats!
-         lo = (constraint.magnitude.lowerUnbounded ?    0.0f : constraint.magnitude.lower)
-         hi = (constraint.magnitude.upperUnbounded ? 1000.0f : constraint.magnitude.upper)
+         if (!constraint.magnitude)
+         {
+            lo = 0.0f
+            hi = 1000.0f
+         }
+         else
+         {
+            // TODO: generate rantom floats!
+            lo = (constraint.magnitude.lowerUnbounded ?    0.0f : constraint.magnitude.lower)
+            hi = (constraint.magnitude.upperUnbounded ? 1000.0f : constraint.magnitude.upper)
+         }
+
+         if (!constraint.units) _units = "_no_constraint_defined_"
+         else _units = constraint.units
       }
 
       AttributeNode a = o.parent
@@ -701,7 +714,7 @@ class XmlInstanceGenerator {
 
       builder."${a.rmAttributeName}"('xsi:type':'DV_QUANTITY') {
          magnitude( rand.nextFloat() * (hi - lo) + lo ) //Integer.random(hi, lo) ) // TODO: should be BigDecinal not just Integer
-         units( constraint.units )
+         units( _units )
       }
    }
 
