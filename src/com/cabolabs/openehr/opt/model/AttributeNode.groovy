@@ -1,6 +1,7 @@
 package com.cabolabs.openehr.opt.model
 
-class AttributeNode {
+@groovy.util.logging.Log4j
+class AttributeNode extends Constraint {
 
    // AOM type
    String type

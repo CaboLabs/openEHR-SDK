@@ -51,7 +51,11 @@ class OPTParserTest extends GroovyTestCase {
       def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"LabResults1.opt"
       def opt = loadAndParse(path)
 
-      def cdi = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.lab_test-full_blood_count.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0078.4]/value')
+      def a = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.lab_test-full_blood_count.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0078.4]/value')
+
+      assert a instanceof AttributeNode
+
+      def cdi = a.children[0]
 
       assert cdi instanceof CDvQuantity
 
@@ -110,8 +114,11 @@ class OPTParserTest extends GroovyTestCase {
       def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Review.opt"
       def opt = loadAndParse(path)
 
-      def c = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0026]/value/magnitude')
+      def a = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0026]/value/magnitude')
 
+      assert a instanceof AttributeNode
+
+      def c = a.children[0]
 
       assert c.item.isValid(5)
       assert !c.item.isValid(0)
@@ -138,7 +145,11 @@ class OPTParserTest extends GroovyTestCase {
       def opt = loadAndParse(path)
 
 
-      def c = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0012]/value/value')
+      def a = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0012]/value/value')
+
+      assert a instanceof AttributeNode
+
+      def c = a.children[0]
 
       assert c.item instanceof CDateTime
       assert c.item.pattern == 'yyyy-mm-ddTHH:MM:SS'
@@ -172,7 +183,11 @@ class OPTParserTest extends GroovyTestCase {
       def opt = loadAndParse(path)
 
 
-      def c = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value/value')
+      def a = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value/value')
+
+      assert a instanceof AttributeNode
+
+      def c = a.children[0]
 
       assert c.item instanceof CDuration
       assert c.item.range.lower.value == 'PT0H'
@@ -241,7 +256,11 @@ class OPTParserTest extends GroovyTestCase {
       def opt = loadAndParse(path)
 
 
-      def cdo = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0009]/value')
+      def a = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0009]/value')
+
+      assert a instanceof AttributeNode
+
+      def cdo = a.children[0]
 
       assert cdo instanceof CDvOrdinal
       assert cdo.isValid(1, 'at0010', 'local')
@@ -264,7 +283,7 @@ class OPTParserTest extends GroovyTestCase {
       }
    }
 
-   void testParserCodedTextConstraint()
+   void testParsernstraint()
    {
       println "====== testParserCodedTextConstraint ======"
 
@@ -277,7 +296,7 @@ class OPTParserTest extends GroovyTestCase {
 
 
       // opt.nodes is a map path->ObjectNode
-      def termConstraintsMap = opt.nodes.findAll { it.value.rmTypeName == 'CODE_PHRASE' }
+      def termConstraintsMap = opt.nodes.findAll { it instanceof ObjectNode && it.value.rmTypeName == 'CODE_PHRASE' }
 
       assertNotNull(termConstraintsMap)
 
@@ -315,10 +334,14 @@ class OPTParserTest extends GroovyTestCase {
       // Check the reference is set to the value that is on the OPT
       // Check the constraint type is CONSTRAINT_REF
 
-      def constraint_refs = opt.nodes.findAll{ it.key == '/content[archetype_id=openEHR-EHR-SECTION.problem_list.v1]/items[archetype_id=openEHR-EHR-EVALUATION.problem-diagnosis.v1]/data[at0001]/items[at0002.1]/value/defining_code' }
-      assert constraint_refs.size() == 1
-      assert constraint_refs.values()[0].reference == 'ac0.1'
-      assert constraint_refs.values()[0].type == 'CONSTRAINT_REF'
+      def ats = opt.nodes.findAll{ it.key == '/content[archetype_id=openEHR-EHR-SECTION.problem_list.v1]/items[archetype_id=openEHR-EHR-EVALUATION.problem-diagnosis.v1]/data[at0001]/items[at0002.1]/value/defining_code'}
+
+      assert ats.size() == 1
+      assert ats.values()[0] instanceof AttributeNode
+
+      def constraint_ref = ats.values()[0].children[0]
+      assert constraint_ref.reference == 'ac0.1'
+      assert constraint_ref.type == 'CONSTRAINT_REF'
    }
 
 

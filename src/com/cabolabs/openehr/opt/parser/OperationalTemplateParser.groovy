@@ -408,9 +408,9 @@ class OperationalTemplateParser {
 
    private setFlatNodes(ObjectNode parent)
    {
-      this.template.nodes.each { path, obn ->
-         if (obn.path.startsWith(parent.path))
-            parent.nodes[obn.path] = obn // uses archetype paths not template paths!
+      this.template.nodes.each { path, constraint ->
+         if (constraint.path.startsWith(parent.path))
+            parent.nodes[constraint.path] = constraint // uses archetype paths not template paths!
       }
    }
 
@@ -428,7 +428,9 @@ class OperationalTemplateParser {
       def atn = new AttributeNode(
          rmAttributeName: attr.rm_attribute_name.text(),
          type:            attr.'@xsi:type'.text(),
-         parent:          parent
+         parent:          parent,
+         path: nextArchPath,
+         templatePath: templatePath
          // TODO: cardinality
          // TODO: existence
       )
@@ -440,6 +442,8 @@ class OperationalTemplateParser {
          obj.parent = atn
          atn.children << obj
       }
+
+      this.template.nodes[templatePath] = atn
 
       return atn
    }

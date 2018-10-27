@@ -43,7 +43,8 @@ class OPTManagerTest extends GroovyTestCase {
          refArchs[archId].each { obj ->
             println obj.rmTypeName +' '+obj.archetypeId + obj.path
             obj.nodes.keySet().sort{it}.each { path ->
-               println "\t"+ obj.nodes[path].rmTypeName +"\t"+path
+               if (obj.nodes[path] instanceof ObjectNode)
+                  println "\t"+ obj.nodes[path].rmTypeName +"\t"+path
             }
          }
       }

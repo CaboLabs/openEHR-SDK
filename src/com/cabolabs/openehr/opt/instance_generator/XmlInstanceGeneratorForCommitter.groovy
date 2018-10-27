@@ -243,7 +243,7 @@ class XmlInstanceGeneratorForCommitter {
          code_string('UY') // TODO: deberia salir de una config global o de parametros
       }
 
-      def category_code = opt.getNode('/category/defining_code').codeList[0]
+      def category_code = opt.getNode('/category/defining_code').children[0].codeList[0]
 
       builder.category() {
          value(terminology.getRubric(opt.langCode, category_code))
@@ -417,7 +417,7 @@ class XmlInstanceGeneratorForCommitter {
       */
       def codes = [:]
       def code
-      def code_phrase = opt.getNode(o.templatePath + '/defining_code') // nodes are indexed by template path not by archetype path
+      def code_phrase = opt.getNode(o.templatePath + '/defining_code').children[0] // nodes are indexed by template path not by archetype path
 /*
 opt.nodes.findAll{it.key.contains('problem_list')}.sort{it.key}.each {println it.toString() +' / '+ it.value.rmTypeName}
 println o.templatePath

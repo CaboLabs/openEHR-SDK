@@ -4,7 +4,7 @@ import java.util.Map
 import groovy.util.slurpersupport.GPathResult
 
 @groovy.util.logging.Log4j
-class ObjectNode {
+class ObjectNode extends Constraint {
 
    OperationalTemplate owner
 
@@ -33,10 +33,6 @@ class ObjectNode {
    // CONSTRAINT_REF
    //String reference // this is really just for C_CODE_PHRASE, moved there
 
-   // Calculated path of this node during parsing
-   String templatePath // absolute path inside the template
-   String path // relative path to the root archetype node
-
    // This is now on CCodePhrase
    // TODO: this can be a list on the OPT but since
    // the Template Designer doesnt allow more than one,
@@ -44,7 +40,7 @@ class ObjectNode {
    //String terminologyRef
 
    // Plain structure of subnodes of this ObjectNode
-   Map nodes = [:] // path -> ObjectNode (node) para pedir restricciones
+   Map nodes = [:] // path -> Constraint (node) para pedir restricciones
 
    // TODO: constraints by type
    //
@@ -59,7 +55,7 @@ class ObjectNode {
    /*
     * gets a node by archetype path
     */
-   ObjectNode getNode(String path)
+   Constraint getNode(String path)
    {
       return this.nodes[path]
    }

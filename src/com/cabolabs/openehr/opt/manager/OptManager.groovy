@@ -1,7 +1,7 @@
 package com.cabolabs.openehr.opt.manager
 
 import com.cabolabs.openehr.opt.parser.OperationalTemplateParser
-import com.cabolabs.openehr.opt.model.ObjectNode
+import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.opt.model.OperationalTemplate
 
 import org.apache.log4j.Logger
@@ -213,7 +213,7 @@ class OptManager {
    // founds the first archetype node that matches with the archid+path, and there can be
    // many nodes at that location, since different OPTs might have the same node but with
    // more or less constraints.
-   public ObjectNode getNode(String archetypeId, String path, String namespace = DEFAULT_NAMESPACE)
+   public Constraint getNode(String archetypeId, String path, String namespace = DEFAULT_NAMESPACE)
    {
       if (!this.referencedArchetypes[namespace]) return null
       if (!this.referencedArchetypes[namespace][archetypeId]) return null

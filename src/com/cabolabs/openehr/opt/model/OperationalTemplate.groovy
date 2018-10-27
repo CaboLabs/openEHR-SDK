@@ -30,7 +30,7 @@ class OperationalTemplate {
    /*
     * gets a node by template path
     */
-   ObjectNode getNode(String path)
+   Constraint getNode(String path)
    {
       return this.nodes[path]
    }
