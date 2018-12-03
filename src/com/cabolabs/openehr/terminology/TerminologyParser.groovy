@@ -6,6 +6,18 @@ import groovy.util.slurpersupport.GPathResult
 
 class TerminologyParser {
 
+   private static TerminologyParser instance = null
+
+   public static TerminologyParser getInstance()
+   {
+      if (!instance) instance = new TerminologyParser()
+      return instance
+   }
+
+   private TerminologyParser()
+   {
+   }
+
    // TODO: now just read everything, we need to consider the language!!!
    Map<String, LocalizedCodedTerm> terms = [:]
 

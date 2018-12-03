@@ -87,7 +87,7 @@ class XmlInstanceGeneratorTagged {
 
       // ---------------------------------------------------------------------------------
 
-      terminology = new TerminologyParser()
+      terminology = TerminologyParser.getInstance()
       terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_en.xml"))
       terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_es.xml"))
       terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_pt.xml"))

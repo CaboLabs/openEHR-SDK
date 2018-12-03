@@ -45,17 +45,48 @@ class OPTParserTest extends GroovyTestCase {
    }
 */
 
+   void testActionPaths()
+   {
+      println "====== testActionPaths ======"
+      def path = "resources"+ PS +"opts"+ PS + 'test_ism_paths' + PS +"test_ism_paths.opt"
+      def opt = loadAndParse(path)
+
+      opt.nodes.values().sort{ it.path }.each { n ->
+
+         println n.getClass().getSimpleName() +' p: '+ n.path +', dp: '+ n.dataPath
+
+         /*
+         o.attributes.each { a ->
+            println "  - " + a.rmAttributeName
+            a.children.each { o2 ->
+               println "    - " + o2.getClass().getSimpleName() +' p: '+ o2.path +', dp: '+ o2.dataPath
+            }
+         }
+         */
+      }
+
+
+      def c = opt.getNode('/content[archetype_id=openEHR-EHR-ACTION.test_ism_paths.v1]/ism_transition[at0006]/current_state')
+      assert c instanceof ObjectNode
+      assert c.rmTypeName == 'DV_CODED_TEXT'
+      assert c.type == 'C_COMPLEX_OBJECT'
+
+
+      opt.nodes.each { k, v ->
+         println k
+         println v.path
+         println v.dataPath
+         println "---"
+      }
+   }
+
    void testParseNodesCDvQuantity()
    {
       println "====== testParseNodesCDvQuantity ======"
       def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"LabResults1.opt"
       def opt = loadAndParse(path)
 
-      def a = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.lab_test-full_blood_count.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0078.4]/value')
-
-      assert a instanceof AttributeNode
-
-      def cdi = a.children[0]
+      def cdi = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.lab_test-full_blood_count.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0078.4]/value')
 
       assert cdi instanceof CDvQuantity
 
@@ -88,14 +119,14 @@ class OPTParserTest extends GroovyTestCase {
       def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Signos.opt"
       def opt = loadAndParse(path)
 
-/*
+      /*
       def c = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0026]/value/magnitude')
 
 
       assert c.item.isValid(5)
       assert !c.item.isValid(0)
       assert !c.item.isValid(666)
-*/
+      */
 
       opt.nodes.each {
 
@@ -114,11 +145,10 @@ class OPTParserTest extends GroovyTestCase {
       def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Review.opt"
       def opt = loadAndParse(path)
 
-      def a = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0026]/value/magnitude')
+      def c = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0026]/value/magnitude')
 
-      assert a instanceof AttributeNode
-
-      def c = a.children[0]
+      assert c instanceof ObjectNode
+      assert c.item instanceof CInteger
 
       assert c.item.isValid(5)
       assert !c.item.isValid(0)
@@ -145,15 +175,12 @@ class OPTParserTest extends GroovyTestCase {
       def opt = loadAndParse(path)
 
 
-      def a = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0012]/value/value')
+      def c = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0012]/value/value')
 
-      assert a instanceof AttributeNode
-
-      def c = a.children[0]
-
+      assert c instanceof PrimitiveObjectNode
       assert c.item instanceof CDateTime
-      assert c.item.pattern == 'yyyy-mm-ddTHH:MM:SS'
 
+      assert c.item.pattern == 'yyyy-mm-ddTHH:MM:SS'
       assert c.item.isValid('1981-10-24T09:59:56')
       assert c.item.isValid('1981-10-24T09:59:56Z')
       assert c.item.isValid('1981-10-24T09:59:56-03:00')
@@ -183,26 +210,22 @@ class OPTParserTest extends GroovyTestCase {
       def opt = loadAndParse(path)
 
 
-      def a = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value/value')
+      def c = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value/value')
 
-      assert a instanceof AttributeNode
-
-      def c = a.children[0]
+      assert c instanceof PrimitiveObjectNode
 
       assert c.item instanceof CDuration
       assert c.item.range.lower.value == 'PT0H'
       assert c.item.range.upper.value == 'PT5H'
 
-
       assert c.item.isValid('PT0H')
       assert c.item.isValid('PT1H')
       assert c.item.isValid('PT5H')
       assert !c.item.isValid('PT10H')
+
       //assert !c.item.isValid('P2Y') this fails since the Java Duration only allows from Days to Seconds
 
-
-
-/*
+      /*
       opt.nodes.each {
 
          if (it.value instanceof PrimitiveObjectNode)
@@ -214,10 +237,10 @@ class OPTParserTest extends GroovyTestCase {
             }
          }
       }
-*/
+      */
    }
 
-/*
+   /*
    void testParseToJSON()
    {
       println "====== testParseToJSON ======"
@@ -236,7 +259,7 @@ class OPTParserTest extends GroovyTestCase {
       toJson.serialize(opt)
       println toJson.get(true)
    }
-*/
+   */
 
    void testParseToJSON2()
    {
@@ -246,7 +269,7 @@ class OPTParserTest extends GroovyTestCase {
 
       def toJson = new JsonSerializer()
       toJson.serialize(opt)
-      println toJson.get(true)
+      //println toJson.get(true) // TODO: make some type of assert...
    }
 
    void testParseNodesCDvOrdinal()
@@ -256,11 +279,7 @@ class OPTParserTest extends GroovyTestCase {
       def opt = loadAndParse(path)
 
 
-      def a = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0009]/value')
-
-      assert a instanceof AttributeNode
-
-      def cdo = a.children[0]
+      def cdo = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0009]/value')
 
       assert cdo instanceof CDvOrdinal
       assert cdo.isValid(1, 'at0010', 'local')
@@ -334,18 +353,19 @@ class OPTParserTest extends GroovyTestCase {
       // Check the reference is set to the value that is on the OPT
       // Check the constraint type is CONSTRAINT_REF
 
-      def ats = opt.nodes.findAll{ it.key == '/content[archetype_id=openEHR-EHR-SECTION.problem_list.v1]/items[archetype_id=openEHR-EHR-EVALUATION.problem-diagnosis.v1]/data[at0001]/items[at0002.1]/value/defining_code'}
+      // LinkedHashMap<CCodePhrase>
+      def cs = opt.nodes.findAll{ it.key == '/content[archetype_id=openEHR-EHR-SECTION.problem_list.v1]/items[archetype_id=openEHR-EHR-EVALUATION.problem-diagnosis.v1]/data[at0001]/items[at0002.1]/value/defining_code'}
 
-      assert ats.size() == 1
-      assert ats.values()[0] instanceof AttributeNode
+      assert cs.size() == 1
+      assert cs.values()[0] instanceof CCodePhrase
 
-      def constraint_ref = ats.values()[0].children[0]
+      def constraint_ref = cs.values()[0]
       assert constraint_ref.reference == 'ac0.1'
       assert constraint_ref.type == 'CONSTRAINT_REF'
    }
 
 
-/*
+   /*
    void testParseNodesCCodePhrase()
    {
       println "====== testParseNodesCCodePhrase ======"
@@ -371,14 +391,10 @@ class OPTParserTest extends GroovyTestCase {
       }
 
    }
+   */
 
 
-
-*/
-
-
-/*
-
+   /*
    void testXMLGenerator()
    {
       def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
@@ -412,8 +428,6 @@ class OPTParserTest extends GroovyTestCase {
 
       new File( "documents" + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'.json'").format(new Date()) ) << ins
    }
-
-
 
    void testUIGenerator()
    {
@@ -477,12 +491,12 @@ class OPTParserTest extends GroovyTestCase {
            println xml.name +' VALIDA'
       }
    }
-*/
+   */
 
 
    void testTerminologyParser()
    {
-      def tm = new TerminologyParser()
+      def tm = TerminologyParser.getInstance()
       def terms = tm.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_en.xml"))
       //println terms
       assert tm.getRubric('en', '433') == 'event'
@@ -490,7 +504,7 @@ class OPTParserTest extends GroovyTestCase {
    }
 
 
-/*
+   /*
    void testParser()
    {
       log.info(  new File('').getCanonicalPath() )
@@ -619,6 +633,4 @@ class OPTParserTest extends GroovyTestCase {
       assert opt.nodes.size() == 10
    }
    */
-
-
 }

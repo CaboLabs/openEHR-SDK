@@ -19,9 +19,8 @@ class OptManager {
 
    private String baseOptRepoPath = "opts"+ PS
 
-   // Cache: otpid => OperationalTemplate
-   //private static Map<String, OperationalTemplate> cache = [:]
-   private static Map<String, Map<String, OperationalTemplate>> cache = [:] // [namespace -> [optid -> OPT]]
+   // [namespace -> [optid -> OPT]]
+   private static Map<String, Map<String, OperationalTemplate>> cache = [:]
 
    // otpid => timestamp de cuando fue usado por ultima vez.
    // Sirve para saber si un arquetipo no fue utilizado por mucho tiempo, y bajarlo del cache par optimizar espacio en memoria.
@@ -29,7 +28,8 @@ class OptManager {
    private static Map<String, Map<String, Date>> timestamps = [:] // [namespace -> [optid -> date]]
 
    // Archetypes referenced by all the templates loaded
-   // The list of archetype roots has more than one item when the same archetype os referenced from different OPTs
+   // The list of archetype roots has more than one item when the same archetype is
+   // referenced from different OPTs
    // namespace -> [archId -> [arch roots]]
    private static Map<String, Map<String, List<ObjectNode>>> referencedArchetypes = [:]
 
@@ -207,6 +207,46 @@ class OptManager {
       }
 
       return d // can be null
+   }
+
+   /*
+   public List getNodesByTemplateDataPath(String templateDataPath, String namespace = DEFAULT_NAMESPACE)
+   {
+      if (!this.referencedArchetypes[namespace]) return null
+      if (!this.referencedArchetypes[namespace][archetypeId]) return null
+
+      def res = []
+
+      // can have many roots for the same archtypeId if the same arch is
+      // referenced from many OPTs.
+      this.referencedArchetypes[namespace][archetypeId].each { arch ->
+
+         // check the dataPath of the nodes in the arch, and add it to the result
+         // .values because findAll resturns a map
+         res.addAll( arch.nodes.findAll{ it.value.templateDataPath == templateDataPath }.values() )
+      }
+
+      return res
+   }
+   */
+
+   public List getNodesByDataPath(String archetypeId, String dataPath, String namespace = DEFAULT_NAMESPACE)
+   {
+      if (!this.referencedArchetypes[namespace]) return null
+      if (!this.referencedArchetypes[namespace][archetypeId]) return null
+
+      def res = []
+
+      // can have many roots for the same archtypeId if the same arch is
+      // referenced from many OPTs.
+      this.referencedArchetypes[namespace][archetypeId].each { arch ->
+
+         // check the dataPath of the nodes in the arch, and add it to the result
+         // .values because findAll resturns a map
+         res.addAll( arch.nodes.findAll{ it.value.dataPath == dataPath }.values() )
+      }
+
+      return res
    }
 
    // done to avoid merging, merge is the optimal solution!

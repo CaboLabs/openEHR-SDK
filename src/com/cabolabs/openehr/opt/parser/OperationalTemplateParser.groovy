@@ -41,7 +41,7 @@ class OperationalTemplateParser {
          // TODO: add use, misuse, keywords, etc. from RESOURCE_DESCRIPTION_ITEM: https://github.com/openEHR/java-libs/blob/f6ee434226bf926d261c2690016c1d6022b877be/oet-parser/src/main/xsd/Resource.xsd
       )
 
-      this.template.definition = parseObjectNode(tpXML.definition, '/', '/')
+      this.template.definition = parseObjectNode(tpXML.definition, '/', '/', '/', '/')
 
 
       // DEBUG
@@ -136,7 +136,20 @@ class OperationalTemplateParser {
       return itv
    }
 
-   private parseObjectNode(GPathResult node, String parentPath, String path)
+
+   /* classes that are not LOCATABLE, so don't have node_id in the path */
+   def pathables = [
+     'EVENT_CONTEXT',
+     'ISM_TRANSITION',
+     'INSTRUCTION_DETAILS'
+   ]
+
+   /**
+    * path the path relative to the archetype root, existing on the OPT and archetype
+    * dataPath the path existing on data instances, for PATHABLE don't include the node_id in the path
+    * for instance, when path is /ism_transition[atNNNN]/current_state, dataPath is /ism_transition/current_state
+    */
+   private parseObjectNode(GPathResult node, String parentPath, String path, String dataPath, String templateDataPath)
    {
       // Path calculation
       def templatePath = parentPath
@@ -147,10 +160,12 @@ class OperationalTemplateParser {
          if (!node.archetype_id.value.isEmpty())
          {
             templatePath += '[archetype_id='+ node.archetype_id.value +']' // slot in the path instead of node_id
+            templateDataPath += '[archetype_id='+ node.archetype_id.value +']'
 
             if (node.'@xsi:type'.text() == "C_ARCHETYPE_ROOT")
             {
                path = '/' // archetype root found
+               dataPath = '/' // reset data path when path is root
             }
          }
          // para tag vacia empty da false pero text es vacio ej. <node_id/>
@@ -158,6 +173,14 @@ class OperationalTemplateParser {
          {
             templatePath += '['+ node.node_id.text() + ']'
             path += '['+ node.node_id.text() + ']'
+
+            // avoids adding the node_id for PATHABLE nodes
+            // if node is a LOCATABLE add the node_id to the dataPath
+            if (!pathables.contains(node.rm_type_name.text()))
+            {
+               templateDataPath += '['+ node.node_id.text() + ']'
+               dataPath += '['+ node.node_id.text() + ']'
+            }
          }
       }
 
@@ -188,6 +211,8 @@ class OperationalTemplateParser {
             archetypeId: node.archetype_id.value.text(), // This is optional, just resolved slots have archId
             templatePath: templatePath,
             path: path,
+            dataPath: dataPath,
+            templateDataPath: templateDataPath,
             terminologyRef: terminologyRef
          )
 
@@ -222,7 +247,9 @@ class OperationalTemplateParser {
             type:         node.'@xsi:type'.text(),
             archetypeId:  node.archetype_id.value.text(), // This is optional, just resolved slots have archId
             templatePath: templatePath,
-            path:         path
+            path:         path,
+            dataPath: dataPath,
+            templateDataPath: templateDataPath
          )
 
          obn.property = parseCodePhrase(node.property)
@@ -246,7 +273,9 @@ class OperationalTemplateParser {
             type:         node.'@xsi:type'.text(),
             archetypeId:  node.archetype_id.value.text(), // This is optional, just resolved slots have archId
             templatePath: templatePath,
-            path:         path
+            path:         path,
+            dataPath: dataPath,
+            templateDataPath: templateDataPath
          )
 
          def coi
@@ -266,7 +295,9 @@ class OperationalTemplateParser {
             type:         node.'@xsi:type'.text(),
             archetypeId:  node.archetype_id.value.text(),
             templatePath: templatePath,
-            path:         path
+            path:         path,
+            dataPath: dataPath,
+            templateDataPath: templateDataPath
          )
 
          obn.includes = node.includes.expression.right_operand.item.pattern.text()
@@ -281,7 +312,9 @@ class OperationalTemplateParser {
             type:         node.'@xsi:type'.text(),
             archetypeId:  node.archetype_id.value.text(), // This is optional, just resolved slots have archId
             templatePath: templatePath,
-            path:         path
+            path:         path,
+            dataPath: dataPath,
+            templateDataPath: templateDataPath
          )
 
          def primitive = node.item
@@ -372,7 +405,9 @@ class OperationalTemplateParser {
             type: node.'@xsi:type'.text(),
             archetypeId: node.archetype_id.value.text(), // This is optional, just resolved slots have archId
             templatePath: templatePath,
-            path: path
+            path: path,
+            dataPath: dataPath,
+            templateDataPath: templateDataPath
             // TODO: default_values
          )
       }
@@ -389,7 +424,7 @@ class OperationalTemplateParser {
 
       node.attributes.each { xatn ->
 
-         obn.attributes << parseAttributeNode(xatn, templatePath, path, obn)
+         obn.attributes << parseAttributeNode(xatn, templatePath, path, obn, dataPath, templateDataPath)
       }
 
       node.term_definitions.each { tdef ->
@@ -414,23 +449,41 @@ class OperationalTemplateParser {
       }
    }
 
-   private parseAttributeNode(GPathResult attr, String parentPath, String path, ObjectNode parent)
+   private parseAttributeNode(GPathResult attr, String parentPath, String path, ObjectNode parent, String dataPath, String templateDataPath)
    {
       // Path calculation
       def templatePath = parentPath
-      if (templatePath == '/') templatePath += attr.rm_attribute_name.text() // Avoids to repeat '/'
-      else templatePath += '/'+ attr.rm_attribute_name.text()
+      if (templatePath == '/')
+      {
+         templatePath += attr.rm_attribute_name.text() // Avoids to repeat '/'
+         templateDataPath += attr.rm_attribute_name.text()
+      }
+      else
+      {
+         templatePath += '/'+ attr.rm_attribute_name.text()
+         templateDataPath += '/'+ attr.rm_attribute_name.text()
+      }
 
       def nextArchPath
-      if (path == '/') nextArchPath = path + attr.rm_attribute_name.text()
-      else nextArchPath = path +'/'+ attr.rm_attribute_name.text()
+      if (path == '/')
+      {
+         nextArchPath = '/' + attr.rm_attribute_name.text()
+         dataPath = '/' + attr.rm_attribute_name.text()
+      }
+      else
+      {
+         nextArchPath = path +'/'+ attr.rm_attribute_name.text()
+         dataPath = dataPath +'/'+ attr.rm_attribute_name.text()
+      }
 
       def atn = new AttributeNode(
          rmAttributeName: attr.rm_attribute_name.text(),
          type:            attr.'@xsi:type'.text(),
          parent:          parent,
          path: nextArchPath,
-         templatePath: templatePath
+         dataPath: dataPath,
+         templatePath: templatePath,
+         templateDataPath: templateDataPath
          // TODO: cardinality
          // TODO: existence
       )
@@ -438,12 +491,14 @@ class OperationalTemplateParser {
       def obj
       attr.children.each { xobn ->
 
-         obj = parseObjectNode(xobn, templatePath, nextArchPath)
+         obj = parseObjectNode(xobn, templatePath, nextArchPath, dataPath, templateDataPath)
          obj.parent = atn
          atn.children << obj
       }
 
-      this.template.nodes[templatePath] = atn
+      // only objects are added to the template, since some object paths colission with attr paths
+      // and when getting a node, always have to return an object node, like in PATHABLE.item_at_path()
+      //this.template.nodes[templatePath] = atn
 
       return atn
    }

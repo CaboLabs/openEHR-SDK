@@ -28,6 +28,8 @@ class OPTManagerTest extends GroovyTestCase {
 */
    void testReferencedArchetypes()
    {
+      println "====== testReferencedArchetypes ======"
+
       String namespace = 'test_ref_archs_namespace'
       String PS = File.separator
       def man = OptManager.getInstance('resources'+ PS +'opts')
@@ -52,13 +54,102 @@ class OPTManagerTest extends GroovyTestCase {
       println man.getNode('openEHR-EHR-OBSERVATION.test_all_datatypes.v1', '/', namespace)
       println man.getNodes('openEHR-EHR-OBSERVATION.test_all_datatypes.v1', '/', namespace)
 
-println man.cache
+      println man.cache
 
       def opt = man.getOpt('test_all_datatypes.es.v1', namespace)
       opt.nodes.keySet().sort{it}.each{ path ->
          println path
       }
       println opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]')
+   }
+
+   void testTemplateDataPaths()
+   {
+      println "====== testTemplateDataPaths ======"
+
+      String namespace = 'test_ism_paths'
+      String PS = File.separator
+      def man = OptManager.getInstance('resources'+ PS +'opts')
+      man.loadAll(namespace)
+
+      def archs = man.getAllReferencedArchetypes(namespace) // List<ObjectNode>
+      assert archs.size() == 2 // compo and action
+      assert archs['openEHR-EHR-ACTION.test_ism_paths.v1'].size() == 1 // one root for action because it is referenced by just one OPT
+
+      //println archs['openEHR-EHR-ACTION.test_ism_paths.v1'][0] // ObjectNode
+      archs['openEHR-EHR-ACTION.test_ism_paths.v1'][0].nodes.each { archPath, objectNode ->
+         println archPath
+         println objectNode.templateDataPath
+      }
+
+      def templateDataPaths = [
+         '/content[archetype_id=openEHR-EHR-ACTION.test_ism_paths.v1]/ism_transition',
+         '/content[archetype_id=openEHR-EHR-ACTION.test_ism_paths.v1]/ism_transition/current_state',
+         '/content[archetype_id=openEHR-EHR-ACTION.test_ism_paths.v1]/ism_transition/current_state/defining_code'
+      ]
+
+      def opt = man.getOpt('test_ism_paths.es.v1', namespace)
+
+      assert opt
+
+      def nodes
+      templateDataPaths.each { tdp ->
+         nodes = opt.getNodesByTemplateDataPath(tdp)
+         if (nodes)
+         {
+            println "FOUND FOR "+ tdp
+            nodes.each { obj ->
+               println obj.rmTypeName +' '+ obj.type
+            }
+         }
+         else
+         {
+            println "NOT FOUND FOR "+ tdp
+         }
+      }
+
+      man.unloadAll(namespace)
+   }
+
+   void testDataPaths()
+   {
+      println "====== testDataPaths ======"
+
+      String namespace = 'test_ism_paths'
+      String PS = File.separator
+      def man = OptManager.getInstance('resources'+ PS +'opts')
+
+      assert man.getLoadedOpts(namespace).size() == 0
+      man.loadAll(namespace)
+      assert man.getLoadedOpts(namespace).size() == 1
+
+      def archs = man.getAllReferencedArchetypes(namespace) // List<ObjectNode>
+      assert archs.size() == 2 // compo and action
+      assert archs['openEHR-EHR-ACTION.test_ism_paths.v1'].size() == 1 // one root for action because it is referenced by just one OPT
+
+      //println archs['openEHR-EHR-ACTION.test_ism_paths.v1'][0] // ObjectNode
+      archs['openEHR-EHR-ACTION.test_ism_paths.v1'][0].nodes.each { archPath, objectNode ->
+         println archPath
+      }
+
+      // result is a map!
+      def constraints = archs['openEHR-EHR-ACTION.test_ism_paths.v1'][0].nodes.findAll{ it.value.dataPath == '/ism_transition/careflow_step/defining_code' }
+      assert constraints.size() == 4
+      constraints.each {
+         println it.value.codeList
+      }
+
+      // this code should do the same as above, so result should be the same
+      // but the result is the list of ObjectNode not a map
+      def nodes = man.getNodesByDataPath('openEHR-EHR-ACTION.test_ism_paths.v1', '/ism_transition/careflow_step/defining_code', namespace)
+      assert nodes.size() == 4
+      nodes.each {
+         println it.codeList
+      }
+
+      println nodes.collect{ it.codeList[0] }
+
+      man.unloadAll(namespace)
    }
 
 /*

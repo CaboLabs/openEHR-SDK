@@ -35,6 +35,18 @@ class OperationalTemplate {
       return this.nodes[path]
    }
 
+   boolean existsNodeByTemplateDataPath(String templateDataPath)
+   {
+      return this.nodes.find { it.value.templateDataPath == templateDataPath } != null
+   }
+
+   List getNodesByTemplateDataPath(String templateDataPath)
+   {
+      // .values return java.util.LinkedHashMap$LinkedValues not List
+      def res = new ArrayList(this.nodes.findAll { it.value.templateDataPath == templateDataPath }.values())
+      return res
+   }
+
    def getTerm(String archetypeId, String nodeId)
    {
       return getFromOntology(archetypeId, nodeId, 'text')

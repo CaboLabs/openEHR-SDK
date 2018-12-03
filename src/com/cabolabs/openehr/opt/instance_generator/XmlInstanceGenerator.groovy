@@ -80,11 +80,10 @@ class XmlInstanceGenerator {
 
       // ---------------------------------------------------------------------------------
 
-      terminology = new TerminologyParser()
+      terminology = TerminologyParser.getInstance()
 
       // TODO: move code to a terminology manager
       // web environment?
-      def web_env = false
       def terminology_repo_path = "resources"+ PS +"terminology"+ PS
       def terminology_repo = new File(terminology_repo_path)
       if (!terminology_repo.exists()) // try to load from resources
@@ -113,8 +112,6 @@ class XmlInstanceGenerator {
             }
             real_jar_file.close()
          }
-
-         web_env = true
       }
       else
       {
@@ -595,7 +592,6 @@ class XmlInstanceGenerator {
       def _dataf, _datab64
 
       // web environment?
-      def web_env = false
       def img_repo_path = "resources"+ PS +"images"+ PS
       def img_repo = new File(img_repo_path)
       if (!img_repo.exists()) // try to load from resources
@@ -618,8 +614,6 @@ class XmlInstanceGenerator {
             }
             real_jar_file.close()
          }
-
-         web_env = true
       }
       else
       {
