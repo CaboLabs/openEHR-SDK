@@ -264,7 +264,7 @@ class XmlInstanceGenerator {
       }
 
       // path is to attr, codeList is in the node
-      def category_code = opt.getNode('/category/defining_code').children[0].codeList[0]
+      def category_code = opt.getNode('/category/defining_code').codeList[0]
 
       builder.category() {
          value(terminology.getRubric(opt.langCode, category_code))
