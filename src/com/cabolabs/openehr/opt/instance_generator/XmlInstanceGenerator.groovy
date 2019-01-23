@@ -872,7 +872,11 @@ class XmlInstanceGenerator {
       parent_arch_id = o.archetypeId ?: parent_arch_id
       def oa
       AttributeNode a = o.parent
-      builder."${a.rmAttributeName}"(archetype_node_id: o.archetypeId, 'xsi:type': o.rmTypeName) {
+
+      // only if the aom type is ARCHETYPE_ROOT, the arch_node_id is archetypeId, else should be nodeId
+      def arch_node_id = (o.archetypeId ?: o.nodeId)
+
+      builder."${a.rmAttributeName}"(archetype_node_id: arch_node_id, 'xsi:type': o.rmTypeName) {
          name() {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
