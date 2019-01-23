@@ -78,6 +78,12 @@ class XmlInstanceGenerator {
          return format_oehr.format(delegate) // string, delegate is the Date instance
       }
 
+      Date.metaClass.toOpenEHRTime = {
+         def datetime_format_openEHR = "HHmmss,SSS" // openEHR format
+         def format_oehr = new SimpleDateFormat(datetime_format_openEHR)
+         return format_oehr.format(delegate) // string, delegate is the Date instance
+      }
+
       // ---------------------------------------------------------------------------------
 
       terminology = TerminologyParser.getInstance()
@@ -544,6 +550,18 @@ class XmlInstanceGenerator {
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_DATE') {
          value( new Date().toOpenEHRDate() )
+      }
+   }
+   private generate_DV_TIME(ObjectNode o, String parent_arch_id)
+   {
+      /*
+      <value xsi:type="DV_TIME">
+         <value>053442,950</value>
+      </value>
+      */
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"('xsi:type':'DV_TIME') {
+         value( new Date().toOpenEHRTime() )
       }
    }
 
