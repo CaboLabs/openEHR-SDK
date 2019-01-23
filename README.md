@@ -38,4 +38,6 @@ Validate all instances in folder:
 [EHRServer]: https://github.com/ppazos/cabolabs-ehrserver
 
 
-## Requires Java 8
+## Requires Java 8 and Groovy 2.5.5+
+
+Note: check the opt.sh/opt.bat files to see if the correct path to the groovy dependencies on your machine is set there.
