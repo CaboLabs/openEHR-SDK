@@ -1146,6 +1146,98 @@ class XmlInstanceGeneratorTagged {
       }
    }
 
+   private "generate_DV_INTERVAL<DV_COUNT>"(ObjectNode o, String parent_arch_id)
+   {
+      /*
+      <value xsi:type="DV_INTERVAL"><!-- note specific type is not valid here: DV_INERVAL<DV_COUNT> doesn't exists in the XSD -->
+         <lower xsi:type="DV_COUNT">
+           <magnitude>123</magnitude>
+         </lower>
+         <upper xsi:type="DV_COUNT">
+           <magnitude>234</magnitude>
+         </upper>
+         <lower_unbounded>false</lower_unbounded>
+         <upper_unbounded>false</upper_unbounded>
+      </value>
+      */
+      def label = this.label(o, parent_arch_id)
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"('xsi:type':'DV_INTERVAL') {
+
+         // Need to ask for the attributes explicitly since order matters for the XSD
+
+         def lower = o.attributes.find { it.rmAttributeName == 'lower' }
+         builder.lower('xsi:type':'DV_COUNT') {
+            magnitude('[[lower:::INTEGER]]')
+         }
+
+         def upper = o.attributes.find { it.rmAttributeName == 'upper' }
+         builder.upper('xsi:type':'DV_COUNT') {
+            magnitude('[[upper:::INTEGER]]')
+         }
+
+         // lower_unbounded and upper_unbounded are required
+         // lower_unbounded: no constraint is defined for upper or lower.lower is not defined
+         // upper_unbounded: no constraint is defined for upper or upper.upper is not defined
+
+         def ccount = lower.children[0]
+         def attr_magnitude = ccount.attributes[0]
+         def cprimitive
+         def cint
+
+         if (!attr_magnitude)
+         {
+            builder.lower_unbounded(true)
+         }
+         else
+         {
+            cprimitive = attr_magnitude.children[0]
+            cint = cprimitive.item
+
+            if (cint.range && !cint.range.lowerUnbounded)
+            {
+               builder.lower_unbounded(false)
+            }
+            else
+            {
+               builder.lower_unbounded(true)
+            }
+         }
+
+         ccount = upper.children[0]
+         attr_magnitude = ccount.attributes[0]
+
+         if (!attr_magnitude)
+         {
+            builder.upper_unbounded(true)
+         }
+         else
+         {
+            cprimitive = attr_magnitude.children[0]
+            cint = cprimitive.item
+
+            if (cint.range && !cint.range.upperUnbounded)
+            {
+               builder.upper_unbounded(false)
+            }
+            else
+            {
+               builder.upper_unbounded(true)
+            }
+         }
+      }
+   }
+
+   private "generate_DV_INTERVAL<DV_QUANTITY>"(ObjectNode o, String parent_arch_id)
+   {
+      println "generate_DV_INTERVAL<DV_QUANTITY>"
+   }
+
+   private "generate_DV_INTERVAL<DV_DATE_TIME>"(ObjectNode o, String parent_arch_id)
+   {
+      println "generate_DV_INTERVAL<DV_DATE_TIME>"
+   }
+
    def methodMissing(String name, args)
    {
       // Intercept method that starts with find.
