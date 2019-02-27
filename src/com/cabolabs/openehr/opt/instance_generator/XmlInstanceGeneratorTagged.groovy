@@ -473,18 +473,22 @@ class XmlInstanceGeneratorTagged {
    /**
     * helper to generate simple datetime attribute.
     */
-   private generate_attr_DV_DATE_TIME(String attr)
+   private generate_attr_DV_DATE_TIME(ObjectNode o, String parent_arch_id, String attr)
    {
       /*
       <attr xsi:type="DV_DATE_TIME">
          <value>20150515T183951,000-0300</value>
       </attr>
       */
+
+      // this is the label for the parent object of the attr since the
+      // attr doesnt have a node because is not not the OPT but is on the RM,
+      // we add the attr as suffix for the label
+      def label = this.label(o, parent_arch_id) +'.'+ attr
       builder."${attr}"('xsi:type':'DV_DATE_TIME') {
-         value( new Date().toOpenEHRDateTime() ) // TODO: this should be tagged
+         value('[['+ label +':::DATETIME]]')
       }
    }
-
 
    private generate_DV_DATE(ObjectNode o, String parent_arch_id)
    {
@@ -937,7 +941,7 @@ class XmlInstanceGeneratorTagged {
 
 
          // ACTION.time (not in the OPT, is an IM attribute)
-         generate_attr_DV_DATE_TIME('time') // TODO: this should be tagged and it is not, it generates the datetime string.
+         generate_attr_DV_DATE_TIME(o, parent_arch_id, 'time')
 
          // description
          def oa = o.attributes.find { it.rmAttributeName == 'description' }
@@ -973,7 +977,7 @@ class XmlInstanceGeneratorTagged {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
          // IM attribute not present in the OPT
-         generate_attr_DV_DATE_TIME('origin') // TODO: should be tagged
+         generate_attr_DV_DATE_TIME(o, parent_arch_id, 'origin')
 
          o.attributes.each { oa ->
 
@@ -998,7 +1002,7 @@ class XmlInstanceGeneratorTagged {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
          // IM attribute not present in the OPT
-         generate_attr_DV_DATE_TIME('time') // TODO: should be tagged
+         generate_attr_DV_DATE_TIME(o, parent_arch_id, 'time')
 
          o.attributes.each { oa ->
 
@@ -1024,7 +1028,7 @@ class XmlInstanceGeneratorTagged {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
          // IM attribute not present in the OPT
-         generate_attr_DV_DATE_TIME('time') // TODO: should be tagged
+         generate_attr_DV_DATE_TIME(o, parent_arch_id, 'time')
 
 
          // data
