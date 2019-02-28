@@ -45,6 +45,23 @@ class OPTParserTest extends GroovyTestCase {
    }
 */
 
+   void testCBooleanParse()
+   {
+      println "====== testCBooleanParse ======"
+
+      def path = "resources"+ PS +"opts"+ PS + 'test_all_types2' + PS +"test_all_types.en.v1.opt"
+      def opt = loadAndParse(path)
+
+      opt.nodes.values()
+         .findAll { it instanceof PrimitiveObjectNode && it.item instanceof CBoolean }
+         .collect { it.item }
+         .each { cb ->
+
+            assert cb.trueValid
+            assert cb.falseValid
+         }
+   }
+
    void testActionPaths()
    {
       println "====== testActionPaths ======"
@@ -134,7 +151,7 @@ class OPTParserTest extends GroovyTestCase {
          {
             //println it.key +": "+ it.value
 
-	    println it.value.includes
+            println it.value.includes
          }
       }
    }

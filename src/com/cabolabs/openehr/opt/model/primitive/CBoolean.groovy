@@ -6,7 +6,8 @@ import com.cabolabs.openehr.opt.model.validation.ValidationResult
 @groovy.util.logging.Log4j
 class CBoolean extends CPrimitive {
 
-   // TODO: true/false valid
+   boolean trueValid
+   boolean falseValid
 
    ValidationResult isValid(Boolean value)
    {

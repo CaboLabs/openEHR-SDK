@@ -346,8 +346,10 @@ class OperationalTemplateParser {
          }
          else if (primitive.'@xsi:type'.text() == 'C_BOOLEAN')
          {
-            obn.item = new CBoolean()
-            // TODO: parse
+            obn.item = new CBoolean(
+               trueValid: primitive.true_valid.text().toBoolean(),
+               falseValid: primitive.false_valid.text().toBoolean()
+            )
             /*
             <item xsi:type="C_BOOLEAN">
              <true_valid>true</true_valid>
