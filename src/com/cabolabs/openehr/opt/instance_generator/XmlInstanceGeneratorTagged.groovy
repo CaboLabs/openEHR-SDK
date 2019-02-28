@@ -1168,12 +1168,12 @@ class XmlInstanceGeneratorTagged {
 
          def lower = o.attributes.find { it.rmAttributeName == 'lower' }
          builder.lower('xsi:type':'DV_COUNT') {
-            magnitude('[[lower:::INTEGER]]')
+            magnitude('[[lower.magnitude:::INTEGER]]')
          }
 
          def upper = o.attributes.find { it.rmAttributeName == 'upper' }
          builder.upper('xsi:type':'DV_COUNT') {
-            magnitude('[[upper:::INTEGER]]')
+            magnitude('[[upper.magnitude:::INTEGER]]')
          }
 
          // lower_unbounded and upper_unbounded are required
@@ -1230,12 +1230,120 @@ class XmlInstanceGeneratorTagged {
 
    private "generate_DV_INTERVAL<DV_QUANTITY>"(ObjectNode o, String parent_arch_id)
    {
-      println "generate_DV_INTERVAL<DV_QUANTITY>"
+      /*
+      <value xsi:type="DV_INTERVAL"><!-- note specific type is not valid here: DV_INERVAL<DV_COUNT> doesn't exists in the XSD -->
+      <lower xsi:type="DV_QUANTITY">
+         <magnitude>123.123</magnitude>
+         <units>mm[H20]</units>
+      </lower>
+      <upper xsi:type="DV_QUANTITY">
+         <magnitude>234.234</magnitude>
+         <units>mm[H20]</units>
+      </upper>
+      <lower_unbounded>false</lower_unbounded>
+      <upper_unbounded>false</upper_unbounded>
+      </value>
+      */
+      def label = this.label(o, parent_arch_id)
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"('xsi:type':'DV_INTERVAL') {
+
+         def lower = o.attributes.find { it.rmAttributeName == 'lower' }
+         builder.lower('xsi:type':'DV_QUANTITY') {
+            magnitude('[[lower.magnitude:::DV_QUANTITY_MAGNITUDE]]')
+            units('[[lower.units:::DV_QUANTITY_UNITS]]')
+         }
+
+         def upper = o.attributes.find { it.rmAttributeName == 'upper' }
+         builder.upper('xsi:type':'DV_QUANTITY') {
+            magnitude('[[upper.magnitude:::DV_QUANTITY_MAGNITUDE]]')
+            units('[[upper.units:::DV_QUANTITY_UNITS]]')
+         }
+
+         // lower_unbounded and upper_unbounded are required
+         // for tagged DV_INTERVALs the only way to check this,
+         // since the boundaries depend on the constraint for a
+         // specific unit, is to check if all units have min or max
+         // boundaries, if all have, that will bounded, if some don't
+         // have, that will be unbounded.
+         // Also, if there are no constraints (empty list), both limits
+         // will be unbounde
+
+         // lower
+         def cqty = lower.children[0] // CDvQuantity
+
+         if (!cqty.list)
+         {
+            builder.lower_unbounded(true)
+         }
+         else
+         {
+            // if one lower limit is unbounded, then the tagged will be unbounded
+            def lowerUnbounded = false
+            cqty.list.each { cqitem->
+               if (cqitem.magnitude.lowerUnbounded)
+               {
+                  lowerUnbounded = true
+               }
+            }
+            builder.lower_unbounded(lowerUnbounded)
+         }
+
+         // upper
+         cqty = upper.children[0]
+
+         if (!cqty.list)
+         {
+            builder.upper_unbounded(true)
+         }
+         else
+         {
+            // if one upper limit is unbounded, then the tagged will be unbounded
+            def upperUnbounded = false
+            cqty.list.each { cqitem->
+               if (cqitem.magnitude.upperUnbounded)
+               {
+                  upperUnbounded = true
+               }
+            }
+            builder.upper_unbounded(upperUnbounded)
+         }
+      }
    }
 
    private "generate_DV_INTERVAL<DV_DATE_TIME>"(ObjectNode o, String parent_arch_id)
    {
-      println "generate_DV_INTERVAL<DV_DATE_TIME>"
+      /*
+      <value xsi:type="DV_INTERVAL"><!-- note specific type is not valid here: DV_INERVAL<DV_COUNT> doesn't exists in the XSD -->
+         <lower xsi:type="DV_DATE_TIME">
+           <value>20190114T183649,426+0000</value>
+         </lower>
+         <upper xsi:type="DV_DATE_TIME">
+           <value>20190114T183649,426+0000</value>
+         </upper>
+         <lower_unbounded>false</lower_unbounded>
+         <upper_unbounded>false</upper_unbounded>
+      </value>
+      */
+      def label = this.label(o, parent_arch_id)
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"('xsi:type':'DV_INTERVAL') {
+
+         def lower = o.attributes.find { it.rmAttributeName == 'lower' }
+         builder.lower('xsi:type':'DV_DATE_TIME') {
+            value('[[lower.value:::DATETIME]]')
+         }
+
+         def upper = o.attributes.find { it.rmAttributeName == 'upper' }
+         builder.upper('xsi:type':'DV_DATE_TIME') {
+            value('[[upper.value:::DATETIME]]')
+         }
+
+         // there are no constraints for date time to establish unbounded,
+         // so it is always unbounded for both limits.
+         builder.lower_unbounded(true)
+         builder.upper_unbounded(true)
+      }
    }
 
    def methodMissing(String name, args)

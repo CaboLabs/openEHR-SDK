@@ -21,7 +21,7 @@ description
 	lifecycle_state = <"0">
 	other_contributors = <>
 	other_details = <
-		["MD5-CAM-1.0.1"] = <"B5CED0AD20048D386C42160144A6388B">
+		["MD5-CAM-1.0.1"] = <"9CCAA5E50A4FA5BEC9FD684B78FAC916">
 	>
 
 definition
@@ -44,6 +44,47 @@ definition
 												lower matches {
 													DV_COUNT matches {
 														magnitude matches {|>=0|}
+													}
+												}
+											}
+										}
+									}
+									ELEMENT[at0005] occurrences matches {0..1} matches {	-- quantities
+										value matches {
+											DV_INTERVAL<DV_QUANTITY> matches {
+												upper matches {
+													C_DV_QUANTITY <
+													>
+												}
+												lower matches {
+													C_DV_QUANTITY <
+														property = <[openehr::125]>
+														list = <
+															["1"] = <
+																units = <"kPa">
+																magnitude = <|0.0..10.0|>
+															>
+															["2"] = <
+																units = <"N/m2">
+																magnitude = <|0.0..100.0|>
+															>
+														>
+													>
+												}
+											}
+										}
+									}
+									ELEMENT[at0006] occurrences matches {0..1} matches {	-- dates
+										value matches {
+											DV_INTERVAL<DV_DATE_TIME> matches {
+												upper matches {
+													DV_DATE_TIME matches {
+														value matches {yyyy-mm-ddTHH:MM:SS}
+													}
+												}
+												lower matches {
+													DV_DATE_TIME matches {
+														value matches {yyyy-mm-ddTHH:MM:SS}
 													}
 												}
 											}
@@ -80,6 +121,14 @@ ontology
 				>
 				["at0004"] = <
 					text = <"counts">
+					description = <"*">
+				>
+				["at0005"] = <
+					text = <"quantities">
+					description = <"*">
+				>
+				["at0006"] = <
+					text = <"dates">
 					description = <"*">
 				>
 			>

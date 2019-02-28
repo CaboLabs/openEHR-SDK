@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <template xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="openEHR/v1/Template">
-  <id>fa37dea5-b4e9-4a41-8b0e-91922c5f589c</id>
-  <name>New Template</name>
+  <id>b58de90e-72c4-40e7-8b57-d23cbda0ae90</id>
+  <name>test_intervals.en.v1</name>
   <description>
     <lifecycle_state>Initial</lifecycle_state>
     <details>
