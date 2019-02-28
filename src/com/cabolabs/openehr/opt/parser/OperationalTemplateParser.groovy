@@ -228,7 +228,7 @@ class OperationalTemplateParser {
                obn.codeList << it.text()
             }
 
-            // TODO: parse terminologyID value, we can create CODE_PHRASE and parse this internally
+            // parse terminologyID value, we could create CODE_PHRASE and parse this internally
             // name [ ‘(’ version ‘)’ ]
             def tid = node.terminology_id.value.text()
             def tidPattern = ~/(\w+)\s*(?:\(?(\w*)\)?.*)?/
@@ -332,7 +332,6 @@ class OperationalTemplateParser {
                   obn.item.list << Integer.parseInt(it.text())
                }
             }
-
          }
          else if (primitive.'@xsi:type'.text() == 'C_DATE_TIME')
          {
