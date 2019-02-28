@@ -1266,7 +1266,6 @@ class XmlInstanceGenerator {
       }
    }
 
-
    private generate_ELEMENT(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
@@ -1287,6 +1286,208 @@ class XmlInstanceGenerator {
          }
       }
    }
+
+   private "generate_DV_INTERVAL<DV_COUNT>"(ObjectNode o, String parent_arch_id)
+   {
+      /*
+      <value xsi:type="DV_INTERVAL"><!-- note specific type is not valid here: DV_INERVAL<DV_COUNT> doesn't exists in the XSD -->
+         <lower xsi:type="DV_COUNT">
+           <magnitude>123</magnitude>
+         </lower>
+         <upper xsi:type="DV_COUNT">
+           <magnitude>234</magnitude>
+         </upper>
+         <lower_unbounded>false</lower_unbounded>
+         <upper_unbounded>false</upper_unbounded>
+      </value>
+      */
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"('xsi:type':'DV_INTERVAL') {
+
+         // Need to ask for the attributes explicitly since order matters for the XSD
+
+         def lower = o.attributes.find { it.rmAttributeName == 'lower' }
+         builder."${lower.rmAttributeName}"('xsi:type':'DV_COUNT') {
+            magnitude( Integer.random(10, 1) ) // TODO: consider constraints
+         }
+
+         def upper = o.attributes.find { it.rmAttributeName == 'upper' }
+         builder."${upper.rmAttributeName}"('xsi:type':'DV_COUNT') {
+            magnitude( Integer.random(100, 10) ) // TODO: consider constraints
+         }
+
+         // lower_unbounded and upper_unbounded are required
+         // lower_unbounded: no constraint is defined for upper or lower.lower is not defined
+         // upper_unbounded: no constraint is defined for upper or upper.upper is not defined
+
+         def ccount = lower.children[0]
+         def attr_magnitude = ccount.attributes[0]
+         def cprimitive
+         def cint
+
+         if (!attr_magnitude)
+         {
+            builder.lower_unbounded(true)
+         }
+         else
+         {
+            cprimitive = attr_magnitude.children[0]
+            cint = cprimitive.item
+
+            if (cint.range && !cint.range.lowerUnbounded)
+            {
+               builder.lower_unbounded(false)
+            }
+            else
+            {
+               builder.lower_unbounded(true)
+            }
+         }
+
+         ccount = upper.children[0]
+         attr_magnitude = ccount.attributes[0]
+
+         if (!attr_magnitude)
+         {
+            builder.upper_unbounded(true)
+         }
+         else
+         {
+            cprimitive = attr_magnitude.children[0]
+            cint = cprimitive.item
+
+            if (cint.range && !cint.range.upperUnbounded)
+            {
+               builder.upper_unbounded(false)
+            }
+            else
+            {
+               builder.upper_unbounded(true)
+            }
+         }
+      }
+
+   }
+
+   private "generate_DV_INTERVAL<DV_QUANTITY>"(ObjectNode o, String parent_arch_id)
+   {
+      /*
+      <value xsi:type="DV_INTERVAL"><!-- note specific type is not valid here: DV_INERVAL<DV_COUNT> doesn't exists in the XSD -->
+      <lower xsi:type="DV_QUANTITY">
+         <magnitude>123.123</magnitude>
+         <units>mm[H20]</units>
+      </lower>
+      <upper xsi:type="DV_QUANTITY">
+         <magnitude>234.234</magnitude>
+         <units>mm[H20]</units>
+      </upper>
+      <lower_unbounded>false</lower_unbounded>
+      <upper_unbounded>false</upper_unbounded>
+      </value>
+      */
+
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"('xsi:type':'DV_INTERVAL') {
+
+         def lower = o.attributes.find { it.rmAttributeName == 'lower' }
+         generate_DV_QUANTITY(lower.children[0], parent_arch_id)
+         /*
+         builder.lower('xsi:type':'DV_QUANTITY') {
+            magnitude('[[lower.magnitude:::DV_QUANTITY_MAGNITUDE]]')
+            units('[[lower.units:::DV_QUANTITY_UNITS]]')
+         }
+         */
+
+         def upper = o.attributes.find { it.rmAttributeName == 'upper' }
+         generate_DV_QUANTITY(upper.children[0], parent_arch_id)
+         /*
+         builder.upper('xsi:type':'DV_QUANTITY') {
+            magnitude('[[upper.magnitude:::DV_QUANTITY_MAGNITUDE]]')
+            units('[[upper.units:::DV_QUANTITY_UNITS]]')
+         }
+         */
+
+         // lower_unbounded and upper_unbounded are required
+         // for tagged DV_INTERVALs the only way to check this,
+         // since the boundaries depend on the constraint for a
+         // specific unit, is to check if all units have min or max
+         // boundaries, if all have, that will bounded, if some don't
+         // have, that will be unbounded.
+         // Also, if there are no constraints (empty list), both limits
+         // will be unbounde
+
+         // lower
+         def cqty = lower.children[0] // CDvQuantity
+
+         if (!cqty.list)
+         {
+            builder.lower_unbounded(true)
+         }
+         else
+         {
+            // if one lower limit is unbounded, then the tagged will be unbounded
+            def lowerUnbounded = false
+            cqty.list.each { cqitem->
+               if (cqitem.magnitude.lowerUnbounded)
+               {
+                  lowerUnbounded = true
+               }
+            }
+            builder.lower_unbounded(lowerUnbounded)
+         }
+
+         // upper
+         cqty = upper.children[0]
+
+         if (!cqty.list)
+         {
+            builder.upper_unbounded(true)
+         }
+         else
+         {
+            // if one upper limit is unbounded, then the tagged will be unbounded
+            def upperUnbounded = false
+            cqty.list.each { cqitem->
+               if (cqitem.magnitude.upperUnbounded)
+               {
+                  upperUnbounded = true
+               }
+            }
+            builder.upper_unbounded(upperUnbounded)
+         }
+      }
+   }
+
+   private "generate_DV_INTERVAL<DV_DATE_TIME>"(ObjectNode o, String parent_arch_id)
+   {
+      /*
+      <value xsi:type="DV_INTERVAL"><!-- note specific type is not valid here: DV_INERVAL<DV_COUNT> doesn't exists in the XSD -->
+         <lower xsi:type="DV_DATE_TIME">
+           <value>20190114T183649,426+0000</value>
+         </lower>
+         <upper xsi:type="DV_DATE_TIME">
+           <value>20190114T183649,426+0000</value>
+         </upper>
+         <lower_unbounded>false</lower_unbounded>
+         <upper_unbounded>false</upper_unbounded>
+      </value>
+      */
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"('xsi:type':'DV_INTERVAL') {
+
+         def lower = o.attributes.find { it.rmAttributeName == 'lower' }
+         generate_attr_DV_DATE_TIME(lower.rmAttributeName)
+
+         def upper = o.attributes.find { it.rmAttributeName == 'upper' }
+         generate_attr_DV_DATE_TIME(upper.rmAttributeName)
+
+         // there are no constraints for date time to establish unbounded,
+         // so it is always unbounded for both limits.
+         builder.lower_unbounded(true)
+         builder.upper_unbounded(true)
+      }
+   }
+
 
    def methodMissing(String name, args)
    {

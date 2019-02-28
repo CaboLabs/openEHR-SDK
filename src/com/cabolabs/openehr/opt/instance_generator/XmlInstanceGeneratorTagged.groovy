@@ -1124,7 +1124,6 @@ class XmlInstanceGeneratorTagged {
       }
    }
 
-
    private generate_ELEMENT(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
