@@ -30,14 +30,9 @@ class ObjectNode extends Constraint {
 
    IntervalInt occurrences
 
-   // CONSTRAINT_REF
-   //String reference // this is really just for C_CODE_PHRASE, moved there
-
-   // This is now on CCodePhrase
-   // TODO: this can be a list on the OPT but since
-   // the Template Designer doesnt allow more than one,
-   // we support just one value.
-   //String terminologyRef
+   // resolved values needed for structure only data when the API is not available, like serializing this to JSON
+   String text
+   String description
 
    // Plain structure of subnodes of this ObjectNode
    Map nodes = [:] // path -> Constraint (node) para pedir restricciones

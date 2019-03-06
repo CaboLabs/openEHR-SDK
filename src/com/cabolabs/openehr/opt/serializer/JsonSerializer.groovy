@@ -14,33 +14,37 @@ class JsonSerializer {
 
    Map serialize(OperationalTemplate opt)
    {
-      //println "opt"
       def n = [
          language:    opt.language,
          concept:     opt.concept,
          purpose:     opt.purpose,
          uid:         opt.uid,
-         template_id: opt.templateId,
-         definition:  serialize(opt.definition)
+         template_id: opt.templateId
       ]
 
       if (!root) root = n
+
+      n.definition = serialize(opt.definition)
 
       return n
    }
 
    Map serialize(ObjectNode obn)
    {
-      //println "obn"
       def n = [
          archetype_id: obn.archetypeId,
          path:         obn.path,
          type:         obn.type,
          rm_type_name: obn.rmTypeName,
          node_id:      obn.nodeId,
+         text:         obn.text,
+         description:  obn.description,
          _class:       obn.getClass().getSimpleName(),
          attributes:   []
       ]
+
+      // object could also be the root if the client wants to get a json from a subtree of the OPT
+      if (!root) root = n
 
       obn.attributes.each {
          n.attributes << serialize(it)
@@ -51,7 +55,6 @@ class JsonSerializer {
 
    Map serialize(AttributeNode atn)
    {
-      //println "atn"
       def n = [
          type:              atn.type,
          rm_attribute_name: atn.rmAttributeName,
@@ -74,6 +77,8 @@ class JsonSerializer {
          type:         obn.type,
          rm_type_name: obn.rmTypeName,
          node_id:      obn.nodeId,
+         text:         obn.text,
+         description:  obn.description,
          _class:       obn.getClass().getSimpleName(),
          attributes:   []
       ]
@@ -111,6 +116,8 @@ class JsonSerializer {
          type:         obn.type,
          rm_type_name: obn.rmTypeName,
          node_id:      obn.nodeId,
+         text:         obn.text,
+         description:  obn.description,
          _class:       obn.getClass().getSimpleName(),
          attributes:   []
       ]
@@ -147,6 +154,8 @@ class JsonSerializer {
          type:         obn.type,
          rm_type_name: obn.rmTypeName,
          node_id:      obn.nodeId,
+         text:         obn.text,
+         description:  obn.description,
          _class:       obn.getClass().getSimpleName(),
          attributes:   []
       ]
@@ -178,13 +187,15 @@ class JsonSerializer {
 
    Map serialize(PrimitiveObjectNode obn)
    {
-      println "pobn "+ obn.type +" "+ obn.rmTypeName
+      //println "pobn "+ obn.type +" "+ obn.rmTypeName
       def n = [
          archetype_id: obn.archetypeId,
          path:         obn.path,
          type:         obn.type,
          rm_type_name: obn.rmTypeName,
          node_id:      obn.nodeId,
+         text:         obn.text,
+         description:  obn.description,
          _class:       obn.getClass().getSimpleName()
       ]
 

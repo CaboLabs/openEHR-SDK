@@ -44,6 +44,23 @@ class OperationalTemplateParser {
       this.template.definition = parseObjectNode(tpXML.definition, '/', '/', '/', '/')
 
 
+      // Second pass to set the text and description for all the ObjectNodes
+      // That needs the whole structure parsed, that is why this couldn't be done
+      // inside the parsing process itself.
+      setTextRecursive(this.template.definition, "")
+
+      /*
+      // to set the obn text and description, the parent should be set, that is why this is defined here.
+      def parent_root = obn.findParentRoot()
+      if (!obn.archetypeId)
+      {
+         println "obn "+ obn.nodeId +" "+ obn.type +" "+ obn.rmTypeName +" no tiene archetypeId"
+         println "parent root arch id is "+ parent_root.archetypeId
+      }
+      obn.text = this.template.getTerm(parent_root.archetypeId, obn.nodeId)
+      obn.description = this.template.getDescription(parent_root.archetypeId, obn.nodeId)
+      */
+
       // DEBUG
       /*
       def xstream = new XStream()
@@ -55,6 +72,36 @@ class OperationalTemplateParser {
       // /DEBUG
 
       return this.template
+   }
+
+   private setTextRecursive(ObjectNode obn, String rootArchetypeId)
+   {
+      if (obn.type == 'C_ARCHETYPE_ROOT') rootArchetypeId = obn.archetypeId
+
+      // text is null for nodes with no nodeId, for those, the text would be
+      // the parents + the correspondent attribute, e.g.
+      // nodeID > attr > NO_nodeId
+      // text   > .... > text+attr
+      if (obn.nodeId)
+      {
+         obn.text = this.template.getTerm(rootArchetypeId, obn.nodeId)
+         obn.description = this.template.getDescription(rootArchetypeId, obn.nodeId)
+      }
+      else
+      {
+         obn.text = obn.parent.parent.text +'.'+ obn.parent.rmAttributeName
+         obn.description = obn.parent.parent.description +'.'+ obn.parent.rmAttributeName
+      }
+
+      obn.attributes.each { attr ->
+         setTextRecursive(attr, rootArchetypeId)
+      }
+   }
+   private setTextRecursive(AttributeNode atn, String rootArchetypeId)
+   {
+      atn.children.each { obn->
+         setTextRecursive(obn, rootArchetypeId)
+      }
    }
 
    private _parseCodePhrase(GPathResult node)
@@ -489,12 +536,12 @@ class OperationalTemplateParser {
          // TODO: existence
       )
 
-      def obj
+      def obn
       attr.children.each { xobn ->
 
-         obj = parseObjectNode(xobn, templatePath, nextArchPath, dataPath, templateDataPath)
-         obj.parent = atn
-         atn.children << obj
+         obn = parseObjectNode(xobn, templatePath, nextArchPath, dataPath, templateDataPath)
+         obn.parent = atn
+         atn.children << obn
       }
 
       // only objects are added to the template, since some object paths colission with attr paths

@@ -107,7 +107,7 @@ class OperationalTemplate {
    /**
     * Find root object node by archetypeId.
     */
-   private ObjectNode findRoot(String archetypeId)
+   ObjectNode findRoot(String archetypeId)
    {
       return findRootRecursive(this.definition, archetypeId)
    }
