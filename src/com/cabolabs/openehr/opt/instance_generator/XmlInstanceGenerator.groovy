@@ -30,6 +30,13 @@ class XmlInstanceGenerator {
    def composition_settings = ['Hospital A', 'Hospital B', 'Hospital C', 'Hospital D', 'Clinic X']
    def composition_composers = ['Dr. House', 'Dr. Yamamoto']
 
+   def participations = [
+      [name: 'Alexandra Alamo', function: 'legal guardian consent author', relationship: [rubric:'mother', code:'10']],
+      [name: 'Betty Bix', function: 'companion', relationship: [rubric:'sister', code:'24']],
+      [name: 'Charles Connor', function: 'legal guardian consent author', relationship: [rubric:'father', code:'9']],
+      [name: 'Daniel Duncan', function: 'companion', relationship: [rubric:'bother', code:'23']]
+   ]
+
    def XmlInstanceGenerator()
    {
       writer = new StringWriter()
@@ -130,7 +137,7 @@ class XmlInstanceGenerator {
    /**
     * generates vresion with composition.
     */
-   String generateXMLVersionStringFromOPT(OperationalTemplate opt)
+   String generateXMLVersionStringFromOPT(OperationalTemplate opt, boolean addParticipations = false)
    {
       this.opt = opt
 
@@ -201,7 +208,7 @@ class XmlInstanceGenerator {
 
          data('xsi:type': 'COMPOSITION', archetype_node_id: opt.definition.archetypeId) {
 
-            generateCompositionHeader() // name, language, territory, ...
+            generateCompositionHeader(addParticipations) // name, language, territory, ...
             generateCompositionContent(opt.definition.archetypeId)
          }
 
@@ -222,7 +229,7 @@ class XmlInstanceGenerator {
    /**
     * generates just the composition, no version info
     */
-   String generateXMLCompositionStringFromOPT(OperationalTemplate opt)
+   String generateXMLCompositionStringFromOPT(OperationalTemplate opt, boolean addParticipations = false)
    {
       this.opt = opt
 
@@ -230,14 +237,14 @@ class XmlInstanceGenerator {
          'xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance',
          archetype_node_id: opt.definition.archetypeId)
       {
-         generateCompositionHeader() // name, language, territory, ...
+         generateCompositionHeader(addParticipations) // name, language, territory, ...
          generateCompositionContent(opt.definition.archetypeId)
       }
 
       return writer.toString()
    }
 
-   private generateCompositionHeader()
+   private generateCompositionHeader(boolean addParticipations = false)
    {
       // FIXME: this should only generate what doesnt comes from the OPT (category and context are in the OPT!)
 
@@ -319,6 +326,39 @@ class XmlInstanceGenerator {
                }
             }
             // health_care_facility
+            // participations
+
+            if (addParticipations)
+            {
+               def participation = participations[Math.abs(new Random().nextInt() % participations.size())]
+
+               participations() {
+                  function() {
+                     value(participation.function) // HL7v3:ParticipationFunction https://www.hl7.org/fhir/v3/ParticipationFunction/cs.html
+                  }
+                  performer('xsi:type':'PARTY_RELATED') { // TODO: random P_RELATED or P_IDENTIFIED
+                     name(participation.name)
+                     relationship() { // Only for P_RELATED, coded text
+                        value(participation.relationship.rubric)
+                        defining_code() {
+                           terminology_id() {
+                              value('openehr')
+                           }
+                           code_string(participation.relationship.code)
+                        }
+                     }
+                  }
+                  mode() {
+                     value('not specified')
+                     defining_code() {
+                        terminology_id() {
+                           value('openehr')
+                        }
+                        code_string('193')
+                     }
+                  }
+               }
+            }
 
             if (context)
             {

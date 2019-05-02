@@ -54,7 +54,7 @@ class OptManager {
    }
 
    @Synchronized
-   public void loadAll(String namespace = DEFAULT_NAMESPACE)
+   public void loadAll(String namespace = DEFAULT_NAMESPACE, boolean complete = false)
    {
       def root = new File( this.baseOptRepoPath + PS + namespace )
 
@@ -68,6 +68,8 @@ class OptManager {
 
          text = optFile.getText()
          opt = parser.parse( text )
+
+         if (complete) opt.complete()
 
          if (opt)
          {

@@ -51,7 +51,7 @@ class Main {
 
             if (args.size() < 3)
             {
-               println 'usage: opt ingen path_to_opt dest_folder [amount] [version|composition|version_committer|tagged]'
+               println 'usage: opt ingen path_to_opt dest_folder [amount] [version|composition|version_committer|tagged] [withParticipations]'
                System.exit(0)
             }
 
@@ -96,18 +96,21 @@ class Main {
                generate = args[4]
             }
 
+            def withParticipations = args.contains('withParticipations')
+            println withParticipations
+
             def igen, ins, out, printer
             for (i in 1..count)
             {
                if (generate == 'composition')
                {
                   igen = new XmlInstanceGenerator()
-                  ins = igen.generateXMLCompositionStringFromOPT(opt)
+                  ins = igen.generateXMLCompositionStringFromOPT(opt, withParticipations)
                }
                else if (generate == 'version')
                {
                   igen = new XmlInstanceGenerator()
-                  ins = igen.generateXMLVersionStringFromOPT(opt)
+                  ins = igen.generateXMLVersionStringFromOPT(opt, withParticipations)
                }
                else if (generate == 'tagged')
                {

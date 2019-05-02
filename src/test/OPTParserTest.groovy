@@ -45,6 +45,44 @@ class OPTParserTest extends GroovyTestCase {
    }
 */
 
+   void testCompleteOPT()
+   {
+      println "========= testCompleteOPT ==========="
+      def path = "resources"+ PS +"opts"+ PS + 'test_all_types2' + PS +"test_all_types.en.v1.opt"
+      def opt = loadAndParse(path)
+
+      // incomplete
+      def toJson = new JsonSerializer()
+      toJson.serialize(opt)
+      def incomplete = toJson.get(true)
+      //new File('incomplete.json') << toJson.get(true)
+
+      // complete
+      toJson = new JsonSerializer()
+      opt.complete()
+      toJson.serialize(opt)
+      def complete = toJson.get(true)
+      //new File('complete.json') << toJson.get(true)
+
+      assert incomplete.size() < complete.size()
+   }
+
+   void testTextDescription()
+   {
+      println "========= testTextDescription ==========="
+      def path = "resources"+ PS +"opts"+ PS + 'com.cabolabs.openehr_opt.namespaces.default' + PS +"Review.opt"
+      def opt = loadAndParse(path)
+      opt.complete()
+      def nodes = opt.nodes.findAll{ it.key.endsWith('null_flavour') }
+
+      nodes.each { tpath, obn ->
+         println tpath
+         println obn.text
+      }
+   }
+
+
+
    void testCBooleanParse()
    {
       println "====== testCBooleanParse ======"
@@ -61,6 +99,7 @@ class OPTParserTest extends GroovyTestCase {
             assert cb.falseValid
          }
    }
+
 
    void testActionPaths()
    {
@@ -129,21 +168,16 @@ class OPTParserTest extends GroovyTestCase {
       }
    }
 
-
    void testParseArchetypeSlot()
    {
       println "====== testParseArchetypeSlot ======"
       def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Signos.opt"
       def opt = loadAndParse(path)
 
-      /*
-      def c = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0026]/value/magnitude')
-
-
-      assert c.item.isValid(5)
-      assert !c.item.isValid(0)
-      assert !c.item.isValid(666)
-      */
+      //def c = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0026]/value/magnitude')
+      //assert c.item.isValid(5)
+      //assert !c.item.isValid(0)
+      //assert !c.item.isValid(666)
 
       opt.nodes.each {
 
