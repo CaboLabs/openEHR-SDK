@@ -343,7 +343,12 @@ class XmlInstanceGeneratorTagged {
 
          // wont process all the alternatives from children, just the first
          obj_type = obj.rmTypeName
+
+         // generate_DV_INTERVAL<DV_COUNT> => generate_DV_INTERVAL__DV_COUNT
+         obj_type = obj_type.replace('<','__').replace('>','')
+
          method = 'generate_'+ obj_type
+
          "$method"(obj, parent_arch_id) // generate_OBSERVATION(a)
       }
    }
@@ -1145,7 +1150,7 @@ class XmlInstanceGeneratorTagged {
       }
    }
 
-   private "generate_DV_INTERVAL<DV_COUNT>"(ObjectNode o, String parent_arch_id)
+   private generate_DV_INTERVAL__DV_COUNT(ObjectNode o, String parent_arch_id)
    {
       /*
       <value xsi:type="DV_INTERVAL"><!-- note specific type is not valid here: DV_INERVAL<DV_COUNT> doesn't exists in the XSD -->
@@ -1227,7 +1232,7 @@ class XmlInstanceGeneratorTagged {
       }
    }
 
-   private "generate_DV_INTERVAL<DV_QUANTITY>"(ObjectNode o, String parent_arch_id)
+   private generate_DV_INTERVAL__DV_QUANTITY(ObjectNode o, String parent_arch_id)
    {
       /*
       <value xsi:type="DV_INTERVAL"><!-- note specific type is not valid here: DV_INERVAL<DV_COUNT> doesn't exists in the XSD -->
@@ -1310,7 +1315,7 @@ class XmlInstanceGeneratorTagged {
       }
    }
 
-   private "generate_DV_INTERVAL<DV_DATE_TIME>"(ObjectNode o, String parent_arch_id)
+   private generate_DV_INTERVAL__DV_DATE_TIME(ObjectNode o, String parent_arch_id)
    {
       /*
       <value xsi:type="DV_INTERVAL"><!-- note specific type is not valid here: DV_INERVAL<DV_COUNT> doesn't exists in the XSD -->
