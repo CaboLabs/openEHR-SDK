@@ -479,8 +479,12 @@ class XmlInstanceGenerator {
       */
 
       def def_code = o.attributes.find { it.rmAttributeName == 'defining_code' }
-      def first_code = def_code.children[0].codeList[0] // can be null if there are no code constraints in the OPT
-      def terminology = def_code.children[0].terminologyIdName
+      def first_code, terminology
+      if (def_code)
+      {
+         first_code = def_code.children[0].codeList[0] // can be null if there are no code constraints in the OPT
+         terminology = def_code.children[0].terminologyIdName
+      }
 
       if (!terminology)
       {

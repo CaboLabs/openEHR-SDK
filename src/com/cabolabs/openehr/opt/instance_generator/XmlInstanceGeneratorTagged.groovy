@@ -405,7 +405,11 @@ class XmlInstanceGeneratorTagged {
       */
 
       def def_code = o.attributes.find { it.rmAttributeName == 'defining_code' }
-      def terminology = def_code.children[0].terminologyIdName
+      def terminology
+      if (def_code)
+      {
+         terminology = def_code.children[0].terminologyIdName
+      }
 
       if (!terminology)
       {

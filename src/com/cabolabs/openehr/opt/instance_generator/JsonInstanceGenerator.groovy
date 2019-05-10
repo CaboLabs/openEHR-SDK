@@ -17,11 +17,19 @@ class JsonInstanceGenerator {
    {
    }
 
-   String generateJSONCompositionStringFromOPT(OperationalTemplate opt, boolean pretty_print = false)
+   String generateJSONVersionStringFromOPT(OperationalTemplate opt, boolean pretty_print = false, boolean addParticipations = false)
    {
       // Uses the XML generator then transforms the XML to JSON
       def xmlGen = new XmlInstanceGenerator()
-      def xml = xmlGen.generateXMLCompositionStringFromOPT(opt)
+      def xml = xmlGen.generateXMLVersionStringFromOPT(opt, addParticipations)
+      return xmlToJson(xml, pretty_print)
+   }
+
+   String generateJSONCompositionStringFromOPT(OperationalTemplate opt, boolean pretty_print = false, boolean addParticipations = false)
+   {
+      // Uses the XML generator then transforms the XML to JSON
+      def xmlGen = new XmlInstanceGenerator()
+      def xml = xmlGen.generateXMLCompositionStringFromOPT(opt, addParticipations)
       return xmlToJson(xml, pretty_print)
    }
 
