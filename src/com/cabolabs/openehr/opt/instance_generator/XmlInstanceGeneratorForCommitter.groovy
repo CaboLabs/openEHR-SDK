@@ -686,11 +686,22 @@ class XmlInstanceGeneratorForCommitter {
          hi = (constraint.magnitude.upperUnbounded ? 1000 : constraint.magnitude.upper)
       }
 
+      def _units = []
+      if (o.list.units)
+      {
+         _units = o.list.units
+      }
+      else
+      {
+         _units << '_no_constraint_defined_'
+      }
+      String units_string = _units.toString()
+
       def label = this.label(o, parent_arch_id)
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_QUANTITY') {
-         magnitude('[['+ label +':::INTEGER:::RANGE_'+ lo +'..'+ hi +']]') // TODO: should be BigDecinal not just Integer
-         units('[['+ label +':::STRING:::]]') // TODO: select units
+         magnitude('[['+ label +'_magnitude:::REAL:::RANGE_'+ lo +'..'+ hi +']]') // TODO: should be BigDecinal not just Integer
+         units('[['+ label +'_units:::LIST:::'+ units_string +']]') // TODO: select units
       }
    }
 
