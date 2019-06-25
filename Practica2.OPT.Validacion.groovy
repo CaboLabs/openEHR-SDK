@@ -21,8 +21,8 @@ man.loadAll()
 //println man.referencedArchetypes[man.DEFAULT_NAMESPACE].keySet().sort()
 
 // Restriccion para la presión arterial sistólica (busca el arquetipo en todos los OPTs cargados)
-Constraint c = man.getNode('openEHR-EHR-OBSERVATION.blood_pressure.v1', '/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value') // AttributeNode
-ObjectNode o = c.children[0]
+Constraint o = man.getNode('openEHR-EHR-OBSERVATION.blood_pressure.v1', '/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value') // CDvQuantity
+//ObjectNode o = c.children[0]
 
 // --------------------------------------------------------
 // Realizamos algunas verificaciones, no es necesario para validar datos
