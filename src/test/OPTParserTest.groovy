@@ -81,6 +81,21 @@ class OPTParserTest extends GroovyTestCase {
       }
    }
 
+   void testGetText()
+   {
+      println "========= testGetText ==========="
+      def path = "resources"+ PS +"opts"+ PS + 'com.cabolabs.openehr_opt.namespaces.default' + PS +"Review.opt"
+      def opt = loadAndParse(path)
+      opt.complete()
+      def nodes = opt.nodes
+
+      println opt.definition.text
+      
+      nodes.each { tpath, obn ->
+         println tpath +') '+ obn.text
+      }
+   }
+
 
 
    void testCBooleanParse()

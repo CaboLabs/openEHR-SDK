@@ -47,7 +47,7 @@ class OperationalTemplateParser {
       // Second pass to set the text and description for all the ObjectNodes
       // That needs the whole structure parsed, that is why this couldn't be done
       // inside the parsing process itself.
-      setTextRecursive(this.template.definition, "")
+      setTextRecursive(this.template.definition, this.template.definition.archetypeId)
 
       /*
       // to set the obn text and description, the parent should be set, that is why this is defined here.
