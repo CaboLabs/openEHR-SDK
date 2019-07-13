@@ -279,27 +279,36 @@ class JsonSerializer {
    Map serialize(IntervalInt iv)
    {
       def n = [
-         lower: iv.lower,
-         upper: iv.upper
+         lower_unbounded: iv.lowerUnbounded,
+         upper_unbounded: iv.upperUnbounded
       ]
+
+      if (!iv.lowerUnbounded) n.lower = iv.lower
+      if (!iv.upperUnbounded) n.upper = iv.upper
 
       return n
    }
    Map serialize(IntervalFloat iv)
    {
       def n = [
-         lower: iv.lower,
-         upper: iv.upper
+         lower_unbounded: iv.lowerUnbounded,
+         upper_unbounded: iv.upperUnbounded
       ]
+
+      if (!iv.lowerUnbounded) n.lower = iv.lower
+      if (!iv.upperUnbounded) n.upper = iv.upper
 
       return n
    }
    Map serialize(IntervalDuration iv)
    {
       def n = [
-         lower: iv.lower.value,
-         upper: iv.upper.value
+         lower_unbounded: iv.lowerUnbounded,
+         upper_unbounded: iv.upperUnbounded
       ]
+
+      if (!iv.lowerUnbounded) n.lower = iv.lower.value
+      if (!iv.upperUnbounded) n.upper = iv.upper.value
 
       return n
    }
