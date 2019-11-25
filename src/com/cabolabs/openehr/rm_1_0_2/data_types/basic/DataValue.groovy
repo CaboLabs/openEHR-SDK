@@ -1,5 +1,5 @@
-package data_types.basic
+package com.cabolabs.openehr.rm_1_0_2.data_types.basic
 
-class DataValue {
-   
+abstract class DataValue {
+
 }
