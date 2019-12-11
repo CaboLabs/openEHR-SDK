@@ -39,6 +39,7 @@ class TerminologyParser {
       return parseTerms(trmnlgy)
    }
 
+   // FIXME: this is returning CodedTerm not LocalizedCodedTerm
    Map<String, LocalizedCodedTerm> parseTerms(GPathResult trmnlgy)
    {
       def res = [:]

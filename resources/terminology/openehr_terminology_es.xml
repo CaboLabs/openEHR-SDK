@@ -1,4 +1,4 @@
-<terminology name="openehr" language="es">	
+<terminology name="openehr" language="es">
 	<codeset issuer="openehr" openehr_id="compression algorithms" external_id="openehr_compression_algorithms">
 		<code value="compress"/>
 		<code value="deflate"/>
@@ -9,7 +9,7 @@
 	<codeset issuer="openehr" openehr_id="integrity check algorithms" external_id="openehr_integrity_check_algorithms">
 		<code value="SHA-1"/>
 		<code value="SHA-256"/>
-	</codeset>	
+	</codeset>
 	<codeset issuer="openehr" openehr_id="normal statuses" external_id="openehr_normal_statuses">
 		<code value="HHH"/>
 		<code value="HH"/>
@@ -86,7 +86,7 @@
 		<concept id="637" rubric="application/dicom" />
 		<concept id="682" rubric="application/vnd.oasis.opendocument.text" />
 		<concept id="683" rubric="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
-	</group>  
+	</group>
 	<group name="property">
 		<concept id="339" rubric="Acceleration"/>
 		<concept id="342" rubric="Acceleration, angular"/>
@@ -303,18 +303,18 @@
 		<concept id="640" rubric="actual"/>
 	</group>
 	<group name="setting">
-		<concept id="225" rubric="home"/>
-		<concept id="227" rubric="emergency care"/>
-		<concept id="228" rubric="primary medical "/>
-		<concept id="229" rubric="primary nursing "/>
-		<concept id="230" rubric="primary allied "/>
-		<concept id="231" rubric="midwifery care"/>
-		<concept id="232" rubric="secondary medical "/>
-		<concept id="233" rubric="secondary nursing "/>
-		<concept id="234" rubric="secondary allied "/>
-		<concept id="235" rubric="complementary "/>
-		<concept id="236" rubric="dental care"/>
-		<concept id="237" rubric="nursing home care"/>
-		<concept id="238" rubric="other care"/>
+		<concept id="225" rubric="hogar"/>
+		<concept id="227" rubric="atención de emergencia"/>
+		<concept id="228" rubric="atención médica primaria"/>
+		<concept id="229" rubric="atención primaria de enfermería"/>
+		<concept id="230" rubric="atención primaria de trabajadores de la salud"/>
+		<concept id="231" rubric="atención de partera"/>
+		<concept id="232" rubric="atención médica secundaria"/>
+		<concept id="233" rubric="atención secundaria de enfermería"/>
+		<concept id="234" rubric="atención secundaria de trabajadores de la salud"/>
+		<concept id="235" rubric="atención complementaria"/>
+		<concept id="236" rubric="atención dental"/>
+		<concept id="237" rubric="atención en casa de salud"/>
+		<concept id="238" rubric="otro tipo de atención"/>
 	</group>
 </terminology>

@@ -27,7 +27,19 @@ class XmlInstanceGenerator {
    def formatter = new SimpleDateFormat( datetime_format )
 
    // Dummy data (TODO: make this configurable from an external file)
-   def composition_settings = ['Hospital A', 'Hospital B', 'Hospital C', 'Hospital D', 'Clinic X']
+   def composition_settings = [
+      'en': [
+         225: 'home',
+         227: 'emergency care',
+         228: 'primary medical care'
+      ],
+      'es': [
+         225: 'homar',
+         227: 'atención de emergencia',
+         228: 'atención médica primaria'
+      ]
+      // TODO: for other laguages we need to add more here, or access the terminology and pick terms from there...
+   ]
    def composition_composers = ['Dr. House', 'Dr. Yamamoto']
 
    def participations = [
@@ -312,17 +324,18 @@ class XmlInstanceGenerator {
 
       if (category_code == '433') // event
       {
+         def setting = composition_settings[this.opt.langCode].pick()
          builder.context() {
             start_time() {
-               value( formatter.format( new Date() ) )
+               value( formatter.format(new Date()) )
             }
             setting() {
-               value( composition_settings.pick() )
+               value(setting.value)
                defining_code() {
                   terminology_id() {
                      value('openehr') // all openehr terminology should be handled from this.terminology
                   }
-                  code_string(229)
+                  code_string(setting.key)
                }
             }
             // health_care_facility

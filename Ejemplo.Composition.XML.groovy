@@ -24,7 +24,7 @@ xml.composition(xmlns: 'http://schemas.openehr.org/v1',
     rm_version('1.0.2')
   }
 
-      
+
   // campos de COMPOSITION
   language() {
     terminology_id() {
@@ -59,13 +59,13 @@ xml.composition(xmlns: 'http://schemas.openehr.org/v1',
     name('Dr. House')
     // identifiers DV_IDENTIFIER // se pueden poner varios identificadores externos
   }
-  
+
   context() {
     start_time() {
       value('20160823T145000-0300')
     }
     setting() {
-      value('Hospital Montevideo')
+      value('Atención Médica Primaria') // depende del idioma
       defining_code() {
         terminology_id() {
           value('openehr')
