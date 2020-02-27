@@ -11,13 +11,15 @@ class OptManager {
 
    private Logger log = Logger.getLogger(getClass())
 
-   private static String PS = File.separator
+   OptRepository repo
+
+//   private static String PS = File.separator
 
    // ns will be used as folder name where OPTs are separated in the repo
    // most OS have a file name limit of 255, so that should be the limit of the ns size
    private static String DEFAULT_NAMESPACE = 'com.cabolabs.openehr_opt.namespaces.default'
 
-   private String baseOptRepoPath = "opts"+ PS
+//   private String baseOptRepoPath = "opts"+ PS
 
    // [namespace -> [optid -> OPT]]
    private static Map<String, Map<String, OperationalTemplate>> cache = [:]
@@ -37,33 +39,38 @@ class OptManager {
    private static OptManager instance = null
 
 
-   private OptManager(String repoPath)
+   //private OptManager(String repoPath)
+   private OptManager(OptRepository repo)
    {
-      if (repoPath) this.baseOptRepoPath = repoPath
-      else log.warn('OptManager using deefault baseOptRepoPath '+ this.baseOptRepoPath)
-
-      def repo = new File(this.baseOptRepoPath)
-      if (!repo.exists() || !repo.canRead())
-         throw new Exception(this.baseOptRepoPath + " doesn't exists or can't be read")
+      // if (repoPath) this.baseOptRepoPath = repoPath
+      // else log.warn('OptManager using deefault baseOptRepoPath '+ this.baseOptRepoPath)
+      //
+      // def repo = new File(this.baseOptRepoPath)
+      // if (!repo.exists() || !repo.canRead())
+      //    throw new Exception(this.baseOptRepoPath + " doesn't exists or can't be read")
+      this.repo = repo
    }
 
-   public static OptManager getInstance(String repoPath)
+   //public static OptManager getInstance(String repoPath)
+   public static OptManager getInstance(OptRepository repo)
    {
-      if (!instance) instance = new OptManager(repoPath)
+      if (!instance) instance = new OptManager(repo)
       return instance
    }
 
    @Synchronized
    public void loadAll(String namespace = DEFAULT_NAMESPACE, boolean complete = false)
    {
+/*
       def root = new File( this.baseOptRepoPath + PS + namespace )
 
       if (!root.exists() || !root.canRead())
          throw new Exception(root.canonicalPath + " doesn't exists or can't be read")
-
+*/
       def text, opt
       def parser = new OperationalTemplateParser()
 
+/*
       root.eachFileMatch groovy.io.FileType.FILES, ~/.*\.opt/, { optFile ->
 
          text = optFile.getText()
@@ -86,6 +93,30 @@ class OptManager {
             //log.error("No se pudo cargar el arquetipo: " + f.name + " de:\n\t " + root.path)
          }
       }
+      */
+
+      def opts = this.repo.getAllOptContents(namespace)
+      opts.each { text ->
+
+         opt = parser.parse( text )
+         if (opt)
+         {
+            if (complete) opt.complete()
+
+            log.debug("Loading OPT: " + opt.templateId)
+
+            if (!this.cache[namespace]) this.cache[namespace] = [:]
+            if (!this.timestamps[namespace]) this.timestamps[namespace] = [:]
+
+            this.cache[namespace][opt.templateId] = opt
+            this.timestamps[namespace][opt.templateId] = new Date()
+         }
+         else
+         {
+            //log.error("No se pudo cargar el template
+         }
+      }
+
 
       def refarchs = []
       this.cache[namespace].each { _optid, _opt ->
@@ -120,6 +151,9 @@ class OptManager {
          return this.cache[namespace][templateId]
       }
 
+      def text = this.repo.getOptContentsByTemplateId()
+
+/*
       // cache miss, try to load
       def root = new File( this.baseOptRepoPath + PS + namespace )
 
@@ -132,14 +166,20 @@ class OptManager {
       if (!optFile.exists() || !optFile.canRead())
          throw new Exception(optFile.canonicalPath + " doesn't exists or can't be read")
 
-
       def text = optFile.getText()
+*/
+
+      if (!text)
+      {
+         throw new Exception("OPT not found "+ templateId)
+      }
+
       def parser = new OperationalTemplateParser()
       def opt = parser.parse( text )
 
       if (opt)
       {
-         log.debug("Loading OPT: " + optFile.path)
+         log.debug("Loading OPT: " + opt.templateId)
 
          if (!this.cache[namespace]) this.cache[namespace] = [:]
          if (!this.timestamps[namespace]) this.timestamps[namespace] = [:]
@@ -149,7 +189,7 @@ class OptManager {
       }
       else
       {
-         throw new Exception("OPT file could not be loaded "+ optFile.canonicalPath +" "+ templateId)
+         throw new Exception("OPT could not be loaded "+ templateId)
       }
 
       return this.cache[namespace][templateId]
