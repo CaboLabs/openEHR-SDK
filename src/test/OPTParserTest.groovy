@@ -90,7 +90,7 @@ class OPTParserTest extends GroovyTestCase {
       def nodes = opt.nodes
 
       println opt.definition.text
-      
+
       nodes.each { tpath, obn ->
          println tpath +') '+ obn.text
       }
@@ -682,7 +682,8 @@ class OPTParserTest extends GroovyTestCase {
    void testOptManager()
    {
       String PS = File.separator
-      def man = OptManager.getInstance('resources'+ PS +'opts')
+      def repo = new OptRepositoryFSImpl('resources'+ PS +'opts')
+      def man = OptManager.getInstance(repo)
 
       assert man.getLoadedOpts().size() == 0
 
