@@ -32,7 +32,9 @@ class OPTManagerTest extends GroovyTestCase {
 
       String namespace = 'test_ref_archs_namespace'
       String PS = File.separator
-      def man = OptManager.getInstance('resources'+ PS +'opts')
+
+      def repo = new OptRepositoryFSImpl('resources'+ PS +'opts')
+      def man = OptManager.getInstance(repo)
 
       assert man.getLoadedOpts(namespace).size() == 0
       man.loadAll(namespace)
@@ -69,7 +71,8 @@ class OPTManagerTest extends GroovyTestCase {
 
       String namespace = 'test_ism_paths'
       String PS = File.separator
-      def man = OptManager.getInstance('resources'+ PS +'opts')
+      def repo = new OptRepositoryFSImpl('resources'+ PS +'opts')
+      def man = OptManager.getInstance(repo)
       man.loadAll(namespace)
 
       def archs = man.getAllReferencedArchetypes(namespace) // List<ObjectNode>
@@ -117,7 +120,8 @@ class OPTManagerTest extends GroovyTestCase {
 
       String namespace = 'test_ism_paths'
       String PS = File.separator
-      def man = OptManager.getInstance('resources'+ PS +'opts')
+      def repo = new OptRepositoryFSImpl('resources'+ PS +'opts')
+      def man = OptManager.getInstance(repo)
 
       assert man.getLoadedOpts(namespace).size() == 0
       man.loadAll(namespace)
@@ -156,7 +160,8 @@ class OPTManagerTest extends GroovyTestCase {
    void testOptManagerLanguages()
    {
       String PS = File.separator
-      def man = OptManager.getInstance('resources'+ PS +'opts'+ PS +'test_languages')
+      def repo = new OptRepositoryFSImpl('resources'+ PS +'opts'+ PS +'test_languages')
+      def man = OptManager.getInstance(repo)
 
       assert man.getLoadedOpts().size() == 0
 

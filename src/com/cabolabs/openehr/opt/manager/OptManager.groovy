@@ -67,7 +67,7 @@ class OptManager {
       if (!root.exists() || !root.canRead())
          throw new Exception(root.canonicalPath + " doesn't exists or can't be read")
 */
-      def text, opt
+      def opt
       def parser = new OperationalTemplateParser()
 
 /*
