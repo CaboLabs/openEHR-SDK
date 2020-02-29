@@ -56,12 +56,28 @@ class OptRepositoryFSImpl implements OptRepository {
    */
    List<String> getAllOptContents(String namespace)
    {
-      def root = new File(addTrailingSeparator(this.repoLocation) + namespace)
       def result = []
+      def root = new File(addTrailingSeparator(this.repoLocation) + namespace)
 
       root.eachFileMatch groovy.io.FileType.FILES, ~/.*\.opt/, { optFile ->
 
          result << optFile.getText()
+      }
+
+      return result
+   }
+
+   /**
+    * Similar to getAllOptContents, but returns the key (location) of each OPT.
+    */
+   Map<String, String> getAllOptKeysAndContents(String namespace)
+   {
+      def result = [:]
+      def root = new File(addTrailingSeparator(this.repoLocation) + namespace)
+
+      root.eachFileMatch groovy.io.FileType.FILES, ~/.*\.opt/, { optFile ->
+
+         result[optFile.getCanonicalPath()] optFile.getText()
       }
 
       return result

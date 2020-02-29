@@ -21,4 +21,9 @@ interface OptRepository {
     * Returns an empty list if there are no OPTs.
     */
    List<String> getAllOptContents(String namespace);
+
+   /**
+    * Similar to getAllOptContents, but returns the key (location) of each OPT.
+    */
+   Map<String, String> getAllOptKeysAndContents(String namespace);
 }
