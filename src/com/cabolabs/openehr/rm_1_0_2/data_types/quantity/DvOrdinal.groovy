@@ -7,4 +7,13 @@ class DvOrdinal extends DvOrdered {
 
    int value
    DvCodedText symbol
+
+   int compareTo(Object o)
+   {
+      if (!(o instanceof DvOrdinal)) throw new Exception("Can't compare class "+ o.getClass() + " to DvOrdinal")
+
+      // TODO: check the terminology_id is the same
+      
+      return this.value <=> o.value
+   }
 }
