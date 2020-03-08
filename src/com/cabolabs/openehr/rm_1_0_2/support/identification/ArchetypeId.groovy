@@ -11,4 +11,46 @@ class ArchetypeId extends ObjectId {
    specialisation: String
    version_id: String
    */
+
+   String getQualifiedRmEntity()
+   {
+      // TODO
+   }
+
+   String getRmOriginator()
+   {
+      // TODO
+   }
+
+   String getRmName()
+   {
+      // TODO
+   }
+
+   String getRmEntity()
+   {
+      // TODO
+   }
+
+   String getDomainConcept()
+   {
+      // TODO
+   }
+
+   // US english variant
+   String getSpecialization()
+   {
+      // TODO
+   }
+
+   // Original UK english
+   String getSpecialisation()
+   {
+      // TODO
+   }
+
+   String getVersionId()
+   {
+      // TODO
+   }
 }
