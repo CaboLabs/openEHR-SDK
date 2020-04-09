@@ -95,8 +95,8 @@ class OptManager {
       }
       */
 
-      def opts = this.repo.getAllOptContents(namespace)
-      opts.each { text ->
+      def opts = this.repo.getAllOptKeysAndContents(namespace)
+      opts.each { location, text ->
 
          opt = parser.parse( text )
          if (opt)

@@ -1,5 +1,7 @@
 package com.cabolabs.openehr.opt.manager
 
+import net.pempek.unicode.UnicodeBOMInputStream
+
 class OptRepositoryFSImpl implements OptRepository {
 
    private static String PS = File.separator
@@ -30,7 +32,7 @@ class OptRepositoryFSImpl implements OptRepository {
       if (!optFile.exists() || !optFile.canRead())
          throw new Exception(optFile.canonicalPath + " doesn't exists or can't be read")
 
-      return optFile.getText()
+      return this.removeBOM(optFile.bytes)
    }
 
    /**
@@ -61,7 +63,7 @@ class OptRepositoryFSImpl implements OptRepository {
 
       root.eachFileMatch groovy.io.FileType.FILES, ~/.*\.opt/, { optFile ->
 
-         result << optFile.getText()
+         result << this.removeBOM(optFile.bytes)
       }
 
       return result
@@ -77,7 +79,7 @@ class OptRepositoryFSImpl implements OptRepository {
 
       root.eachFileMatch groovy.io.FileType.FILES, ~/.*\.opt/, { optFile ->
 
-         result[optFile.getCanonicalPath()] optFile.getText()
+         result[optFile.getCanonicalPath()] = this.removeBOM(optFile.bytes)
       }
 
       return result
@@ -99,5 +101,14 @@ class OptRepositoryFSImpl implements OptRepository {
       }
 
       return path
+   }
+
+   private String removeBOM(byte[] bytes)
+   {
+      def inputStream = new ByteArrayInputStream(bytes)
+      def bomInputStream = new UnicodeBOMInputStream(inputStream)
+      bomInputStream.skipBOM() // NOP if no BOM is detected
+      def br = new BufferedReader(new InputStreamReader(bomInputStream))
+      return br.text // http://docs.groovy-lang.org/latest/html/groovy-jdk/java/io/BufferedReader.html#getText()
    }
 }

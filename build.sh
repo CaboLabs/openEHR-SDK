@@ -5,10 +5,16 @@ if [ -d "bin" ]; then
 rm -r bin/*
 fi
 
+#Compiles the only Java file first
+javac -d bin src/net/pempek/unicode/UnicodeBOMInputStream.java
+
+#Compiles rest of groovy code
 cd src
 find $PWD | grep groovy > ../tmpsources.txt
 cd ..
-groovyc -cp "./lib/*" -d bin @tmpsources.txt
+
+#bin in the CP to let groovy see the compiled java class
+groovyc -cp "./lib/*:./bin" -d bin @tmpsources.txt
 rm tmpsources.txt
 
 end=`date +%s%N`
