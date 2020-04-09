@@ -61,39 +61,8 @@ class OptManager {
    @Synchronized
    public void loadAll(String namespace = DEFAULT_NAMESPACE, boolean complete = false)
    {
-/*
-      def root = new File( this.baseOptRepoPath + PS + namespace )
-
-      if (!root.exists() || !root.canRead())
-         throw new Exception(root.canonicalPath + " doesn't exists or can't be read")
-*/
       def opt
       def parser = new OperationalTemplateParser()
-
-/*
-      root.eachFileMatch groovy.io.FileType.FILES, ~/.*\.opt/, { optFile ->
-
-         text = optFile.getText()
-         opt = parser.parse( text )
-
-         if (complete) opt.complete()
-
-         if (opt)
-         {
-            log.debug("Loading OPT: " + optFile.path)
-
-            if (!this.cache[namespace]) this.cache[namespace] = [:]
-            if (!this.timestamps[namespace]) this.timestamps[namespace] = [:]
-
-            this.cache[namespace][opt.templateId] = opt
-            this.timestamps[namespace][opt.templateId] = new Date()
-         }
-         else
-         {
-            //log.error("No se pudo cargar el arquetipo: " + f.name + " de:\n\t " + root.path)
-         }
-      }
-      */
 
       def opts = this.repo.getAllOptKeysAndContents(namespace)
       opts.each { location, text ->
@@ -151,24 +120,7 @@ class OptManager {
          return this.cache[namespace][templateId]
       }
 
-      def text = this.repo.getOptContentsByTemplateId()
-
-/*
-      // cache miss, try to load
-      def root = new File( this.baseOptRepoPath + PS + namespace )
-
-      if (!root.exists() || !root.canRead())
-         throw new Exception(root.canonicalPath + " doesn't exists or can't be read")
-
-      if (!filename) filename = templateId +".opt"
-      def optFile = new File( root.canonicalPath + PS + filename )
-
-      if (!optFile.exists() || !optFile.canRead())
-         throw new Exception(optFile.canonicalPath + " doesn't exists or can't be read")
-
-      def text = optFile.getText()
-*/
-
+      def text = this.repo.getOptContentsByTemplateId(templateId, namespace)
       if (!text)
       {
          throw new Exception("OPT not found "+ templateId)
@@ -351,5 +303,18 @@ class OptManager {
          this.timestamps[namespace].clear()
          this.referencedArchetypes[namespace].clear()
       }
+   }
+
+   @Synchronized
+   public void removeOpt(String templateId, String namespace = DEFAULT_NAMESPACE)
+   {
+      if (this.cache[namespace] && this.cache[namespace][templateId])
+      {
+         this.cache[namespace].remove(templateId)
+         this.timestamps[namespace].remove(templateId)
+      }
+
+      // TODO: it is not checking for referenced archetypes that might depend only
+      // on this OPT and should also be removed from this.referencedArchetypes[namespace]
    }
 }
