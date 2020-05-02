@@ -68,6 +68,11 @@ class XmlInstanceGeneratorForCommitter {
          delegate.get( new Random().nextInt( delegate.size() ) )
       }
 
+      // used to select a setting from a Map
+      java.util.LinkedHashMap.metaClass.pick {
+         (delegate.entrySet() as List).pick() // will call the ArrayList.pick()
+      }
+
       String.metaClass.static.randomNumeric = { int digits ->
          def alphabet = ['0','1','2','3','4','5','6','7','8','9']
          new Random().with {

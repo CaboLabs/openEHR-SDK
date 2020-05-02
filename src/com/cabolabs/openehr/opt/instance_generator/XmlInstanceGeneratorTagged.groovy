@@ -33,22 +33,6 @@ class XmlInstanceGeneratorTagged {
    def datetime_format = "yyyyMMdd'T'HHmmss,SSSZ"
    def formatter = new SimpleDateFormat( datetime_format )
 
-   // Dummy data (TODO: make this configurable from an external file)
-   def composition_settings = [
-      'en': [
-         225: 'home',
-         227: 'emergency care',
-         228: 'primary medical care'
-      ],
-      'es': [
-         225: 'homar',
-         227: 'atención de emergencia',
-         228: 'atención médica primaria'
-      ]
-      // TODO: for other laguages we need to add more here, or access the terminology and pick terms from there...
-   ]
-   def composition_composers = ['Dr. House', 'Dr. Yamamoto']
-
    def XmlInstanceGeneratorTagged()
    {
       writer = new StringWriter()
@@ -57,11 +41,6 @@ class XmlInstanceGeneratorTagged {
 
       // ---------------------------------------------------------------------------------
       // Helpers
-
-      // returns random object from any List
-      java.util.ArrayList.metaClass.pick {
-         delegate.get( new Random().nextInt( delegate.size() ) )
-      }
 
       String.metaClass.static.randomNumeric = { int digits ->
          def alphabet = ['0','1','2','3','4','5','6','7','8','9']
