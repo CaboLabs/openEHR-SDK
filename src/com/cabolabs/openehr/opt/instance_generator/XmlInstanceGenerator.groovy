@@ -65,7 +65,7 @@ class XmlInstanceGenerator {
 
       // used to select a setting from a Map
       java.util.LinkedHashMap.metaClass.pick {
-         (delegate.entrySet() as List).pick() // will call the ArrayList.pick()
+         (delegate.entrySet() as List).pick()
       }
 
       String.metaClass.static.randomNumeric = { int digits ->
@@ -329,18 +329,21 @@ class XmlInstanceGenerator {
 
       if (category_code == '433') // event
       {
-         def setting = composition_settings[this.opt.langCode].pick()
+         def setting_entry
+         if (!composition_settings[this.opt.langCode]) setting_entry = composition_settings['en'].pick()
+         else setting_entry = composition_settings[this.opt.langCode].pick()
+         
          builder.context() {
             start_time() {
                value( formatter.format(new Date()) )
             }
             setting() {
-               value(setting.value)
+               value(setting_entry.value)
                defining_code() {
                   terminology_id() {
                      value('openehr') // all openehr terminology should be handled from this.terminology
                   }
-                  code_string(setting.key)
+                  code_string(setting_entry.key)
                }
             }
             // health_care_facility
