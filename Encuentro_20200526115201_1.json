@@ -1,0 +1,115 @@
+{
+    "version": {
+        "_type": "ORIGINAL_VERSION",
+        "contribution": {
+            "id": {
+                "_type": "HIER_OBJECT_ID",
+                "value": "18394e48-89af-4232-b089-9b5385230918"
+            },
+            "namespace": "EHR::COMMON",
+            "type": "CONTRIBUTION"
+        },
+        "commit_audit": {
+            "system_id": "CABOLABS_EHR",
+            "committer": {
+                "_type": "PARTY_IDENTIFIED",
+                "external_ref": {
+                    "id": {
+                        "_type": "HIER_OBJECT_ID",
+                        "value": "19d9bdeb-fb60-46df-90b1-c265332056bd"
+                    },
+                    "namespace": "DEMOGRAPHIC",
+                    "type": "PERSON"
+                },
+                "name": "Dr. Yamamoto"
+            },
+            "time_committed": {
+                "value": "20200526T235201,689-0300"
+            },
+            "change_type": {
+                "value": "creation",
+                "defining_code": {
+                    "terminology_id": {
+                        "value": "openehr"
+                    },
+                    "code_string": 249
+                }
+            }
+        },
+        "uid": {
+            "value": "e2c3fa66-d12a-4a9d-9b9a-53e7d012f042::EMR_APP::1"
+        },
+        "data": {
+            "_type": "COMPOSITION",
+            "archetype_node_id": "openEHR-EHR-COMPOSITION.encounter.v1",
+            "name": {
+                "value": "Encuentro"
+            },
+            "archetype_details": {
+                "archetype_id": {
+                    "value": "openEHR-EHR-COMPOSITION.encounter.v1"
+                },
+                "template_id": {
+                    "value": "encuentro.es.v1"
+                },
+                "rm_version": "1.0.2"
+            },
+            "language": {
+                "terminology_id": {
+                    "value": "ISO_639-1"
+                },
+                "code_string": "es"
+            },
+            "territory": {
+                "terminology_id": {
+                    "value": "ISO_3166-1"
+                },
+                "code_string": "UY"
+            },
+            "category": {
+                "value": "evento",
+                "defining_code": {
+                    "terminology_id": {
+                        "value": "openehr"
+                    },
+                    "code_string": "433"
+                }
+            },
+            "composer": {
+                "_type": "PARTY_IDENTIFIED",
+                "external_ref": {
+                    "id": {
+                        "_type": "HIER_OBJECT_ID",
+                        "value": "e3feea4a-8ed9-45f6-a574-470159e6e0be"
+                    },
+                    "namespace": "DEMOGRAPHIC",
+                    "type": "PERSON"
+                },
+                "name": "Dr. Yamamoto"
+            },
+            "context": {
+                "start_time": {
+                    "value": "20200526T235201,718-0300"
+                },
+                "setting": {
+                    "value": "atenci\u00f3n de emergencia",
+                    "defining_code": {
+                        "terminology_id": {
+                            "value": "openehr"
+                        },
+                        "code_string": 227
+                    }
+                }
+            }
+        },
+        "lifecycle_state": {
+            "value": "complete",
+            "defining_code": {
+                "terminology_id": {
+                    "value": "openehr"
+                },
+                "code_string": 532
+            }
+        }
+    }
+}

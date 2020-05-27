@@ -87,9 +87,9 @@ class Main {
             def generate = 'version'
             if (args.size() > 4)
             {
-               if (!['version', 'composition', 'version_committer', 'tagged'].contains(args[4]))
+               if (!['version', 'composition', 'version_committer', 'tagged', 'json'].contains(args[4]))
                {
-                  println "result type should be 'version' or 'composition' or 'version_committer' or 'tagged'"
+                  println "result type should be 'version' or 'composition' or 'version_committer' or 'tagged' or 'json'"
                   System.exit(0)
                }
 
@@ -99,7 +99,7 @@ class Main {
             def withParticipations = args.contains('withParticipations')
             println withParticipations
 
-            def igen, ins, out, printer
+            def igen, ins, out, printer, ext = 'xml'
             for (i in 1..count)
             {
                if (generate == 'composition')
@@ -117,13 +117,19 @@ class Main {
                   igen = new XmlInstanceGeneratorTagged()
                   ins = igen.generateXMLVersionStringFromOPT(opt)
                }
+               else if (generate == 'json')
+               {
+                  igen = new JsonInstanceCanonicalGenerator2()
+                  ins = igen.generateJSONVersionStringFromOPT(opt)
+                  ext = 'json'
+               }
                else
                {
                   igen = new XmlInstanceGeneratorForCommitter()
                   ins = igen.generateXMLVersionStringFromOPT(opt)
                }
 
-               out = new File( destination_path + PS + new java.text.SimpleDateFormat("'"+ opt.concept.replaceAll(' ', '_') +"_'yyyyMMddhhmmss'_"+ i +".xml'").format(new Date()) )
+               out = new File( destination_path + PS + new java.text.SimpleDateFormat("'"+ opt.concept.replaceAll(' ', '_') +"_'yyyyMMddhhmmss'_"+ i +"."+ ext +"'").format(new Date()) )
 
                // Generates UTF-8 XML output
                printer = new java.io.PrintWriter(out, 'UTF-8')
