@@ -3,8 +3,7 @@ package com.cabolabs.openehr.opt.instance_generator
 import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.terminology.TerminologyParser
 import java.text.SimpleDateFormat
-import groovy.json.JsonBuilder
-import groovy.json.JsonOutput
+import groovy.json.*
 
 import java.util.jar.JarFile
 
@@ -51,7 +50,20 @@ class JsonInstanceCanonicalGenerator2 {
 
    def JsonInstanceCanonicalGenerator2()
    {
-      builder = new JsonBuilder()
+      /* THIS CANT BE USED UNTIL Groovy 2.5.x, since Grails 3.3.10 uses 2.4.17 we keep building under that version
+         OLD javadocs by Groovy version 
+      // https://mrhaki.blogspot.com/2018/06/groovy-goodness-customizing-json-output.html
+      // https://docs.groovy-lang.org/latest/html/gapi/groovy/json/JsonGenerator.Options.html
+      def options = new JsonGenerator.Options()
+        .excludeNulls()
+        .disableUnicodeEscaping()
+        .build()
+
+      builder = new JsonBuilder(options)
+      */
+
+      //builder = new JsonBuilder()
+
       out = [:]
 
       // ---------------------------------------------------------------------------------
@@ -174,7 +186,12 @@ class JsonInstanceCanonicalGenerator2 {
          data: generateComposition(addParticipations),
          lifecycle_state: [
             value: 'complete',
-            defining_code: 'TODO'
+            defining_code: [
+               terminology_id: [
+                  value: 'openehr'
+               ],
+               code_string: '532'
+            ]
          ]
       ]
 
@@ -202,20 +219,138 @@ class JsonInstanceCanonicalGenerator2 {
 
    Map generateComposition(boolean addParticipations = false)
    {
-      //println jb.getClass() // JsonDelegate
-      //println "GENERATE JSON COMPO"
-      def compo = [
-         _type: 'COMPOSITION',
-         name: [
-            value: opt.getTerm(opt.definition.archetypeId, opt.definition.nodeId)
+      def compo = add_LOCATABLE_elements(opt.definition, opt.definition.archetypeId)
+
+      compo.archetype_details = [
+         archetype_id: [
+            value: opt.definition.archetypeId
          ],
-         archetype_details: 'TODO',
-         archetype_node_id: opt.definition.archetypeId
+         template_id: [
+            value: opt.templateId
+         ],
+         rm_version: '1.0.2'
+      ]
+
+      compo.language = [
+         terminology_id: [
+            value: opt.langTerminology
+         ],
+         code_string: opt.langCode
+      ]
+
+      compo.territory = [
+         terminology_id: [
+            value: 'ISO_3166-1'
+         ],
+         code_string: 'UY'
+      ]
+
+      // path is to attr, codeList is in the node
+      def category_code = opt.getNode('/category/defining_code').codeList[0]
+
+      compo.category = [
+         value: terminology.getRubric(opt.langCode, category_code),
+         defining_code: [
+            terminology_id: [
+               value: 'openehr'
+            ],
+            code_string: category_code
+         ]
+      ]
+
+      compo.composer = [
+         _type: 'PARTY_IDENTIFIED',
+         external_ref: [
+            id: [
+               _type: 'HIER_OBJECT_ID',
+               value: String.uuid()
+            ],
+            namespace: 'DEMOGRAPHIC',
+            type: 'PERSON'
+         ],
+         name: composition_composers.pick()
+         // identifiers DV_IDENTIFIER
       ]
 
 
-      // TODO: language, context, ....
+      // context is declared on the OPT only if it contains constraints for other_context
+      def attr_context = opt.definition.attributes.find{ it.rmAttributeName == 'context' }
 
+      if (category_code == '431' && attr_context)
+      {
+         throw new Exception("Error: COMPOSITION is persistent but contains context.")
+      }
+
+      
+      if (category_code == '433') // event
+      {
+         def setting_entry
+         if (!composition_settings[this.opt.langCode]) setting_entry = composition_settings['en'].pick()
+         else setting_entry = composition_settings[this.opt.langCode].pick()
+         
+         compo.context = [
+            start_time: [
+               value: formatter.format(new Date())
+            ],
+            setting: [
+               value: setting_entry.value,
+               defining_code: [
+                  terminology_id: [
+                     value: 'openehr' // all openehr terminology should be handled from this.terminology
+                  ],
+                  code_string: setting_entry.key
+               ]
+            ]
+         ]
+         // health_care_facility
+         // participations
+
+         if (addParticipations)
+         {
+            def participation = participations[Math.abs(new Random().nextInt() % participations.size())]
+
+            compo.context.participations = [
+               function: [
+                  value: participation.function // HL7v3:ParticipationFunction https://www.hl7.org/fhir/v3/ParticipationFunction/cs.html
+               ],
+               performer: [
+                  _type: 'PARTY_RELATED', // TODO: random P_RELATED or P_IDENTIFIED
+                  name: participation.name,
+                  relationship: [ // Only for P_RELATED, coded text
+                     value: participation.relationship.rubric,
+                     defining_code: [
+                        terminology_id: [
+                           value: 'openehr'
+                        ],
+                        code_string: participation.relationship.code
+                     ]
+                  ]
+               ],
+               mode: [
+                  value: 'not specified',
+                  defining_code: [
+                     terminology_id: [
+                        value: 'openehr'
+                     ],
+                     code_string: '193'
+                  ]
+               ]
+            ]
+         }
+
+         if (attr_context)
+         {
+            def other_context = attr_context.children[0].attributes.find{ it.rmAttributeName == 'other_context' }
+            if (other_context)
+            {
+               this.processAttributeChildren(other_context, opt.definition.archetypeId)
+            }
+         }
+      } // if event
+
+
+
+      // content
 
       // opt.definition.attributes has attributes category, context and content of the COMPOSITION
       // category and context where already processed on generateCompositionHeader
@@ -229,137 +364,6 @@ class JsonInstanceCanonicalGenerator2 {
       compo.content = processAttributeChildren(a, opt.definition.archetypeId)
 
       return compo
-      
-      /* 
-         archetype_details { // ARCHETYPED
-            archetype_id { // ARCHETYPE_ID
-               value opt.definition.archetypeId
-            }
-            template_id { // TEMPLATE_ID
-               value opt.templateId
-            }
-            rm_version '1.0.2'
-         }
-
-         // Campos de COMPOSITION
-         language {
-            terminology_id {
-               value this.opt.langTerminology
-            }
-            code_string this.opt.langCode
-         }
-         territory {
-            terminology_id {
-               value 'ISO_3166-1'
-            }
-            code_string 'UY' // TODO: deberia salir de una config global o de parametros
-         }
-
-         // path is to attr, codeList is in the node
-         def category_code = opt.getNode('/category/defining_code').codeList[0]
-
-         category {
-            value terminology.getRubric(opt.langCode, category_code)
-            defining_code {
-               terminology_id {
-                  value 'openehr'
-               }
-               code_string category_code
-            }
-         }
-
-         composer {
-            _type 'PARTY_IDENTIFIED'
-
-            external_ref {
-               id {
-                  _type 'HIER_OBJECT_ID'
-                  value String.uuid()
-               }
-               namespace 'DEMOGRAPHIC'
-               type 'PERSON'
-            }
-            name composition_composers.pick()
-            // identifiers DV_IDENTIFIER
-         }
-
-         // context is declared on the OPT only if it contains constraints for other_context
-         def attr_context = opt.definition.attributes.find{ it.rmAttributeName == 'context' }
-
-         if (category_code == '431' && attr_context)
-         {
-            throw new Exception("Error: COMPOSITION is persistent but contains context.")
-         }
-
-         
-         if (category_code == '433') // event
-         {
-            def setting_entry
-            if (!composition_settings[this.opt.langCode]) setting_entry = composition_settings['en'].pick()
-            else setting_entry = composition_settings[this.opt.langCode].pick()
-            
-            context {
-               start_time {
-                  value formatter.format(new Date())
-               }
-               setting {
-                  value setting_entry.value
-                  defining_code {
-                     terminology_id {
-                        value 'openehr' // all openehr terminology should be handled from this.terminology
-                     }
-                     code_string setting_entry.key
-                  }
-               }
-               // health_care_facility
-               // participations
-
-               if (addParticipations)
-               {
-                  def participation = participations[Math.abs(new Random().nextInt() % participations.size())]
-
-                  participations {
-                     function {
-                        value participation.function // HL7v3:ParticipationFunction https://www.hl7.org/fhir/v3/ParticipationFunction/cs.html
-                     }
-                     performer {
-                        _type 'PARTY_RELATED' // TODO: random P_RELATED or P_IDENTIFIED
-                        name participation.name
-                        relationship { // Only for P_RELATED, coded text
-                           value participation.relationship.rubric
-                           defining_code {
-                              terminology_id {
-                                 value 'openehr'
-                              }
-                              code_string participation.relationship.code
-                           }
-                        }
-                     }
-                     mode {
-                        value 'not specified'
-                        defining_code {
-                           terminology_id {
-                              value 'openehr'
-                           }
-                           code_string '193'
-                        }
-                     }
-                  }
-               }
-
-               if (attr_context)
-               {
-                  def other_context = attr_context.children[0].attributes.find{ it.rmAttributeName == 'other_context' }
-                  if (other_context)
-                  {
-                     this.processAttributeChildren(other_context, opt.definition.archetypeId)
-                  }
-               }
-            }
-         }
-
-      }
-      */
    }
 
 
@@ -870,7 +874,6 @@ class JsonInstanceCanonicalGenerator2 {
     */
    private add_LOCATABLE_elements(ObjectNode o, String parent_arch_id)
    {
-      println "add_LOCATABLE_ELEMENTS "
       // LOCATABLE
       // - _type
       // - name
@@ -889,6 +892,10 @@ class JsonInstanceCanonicalGenerator2 {
       def locatable = [:]
 
       locatable._type = node_type
+
+
+      //println "add_LOCATABLE_ELEMENTS type "+ node_type
+
 
       // name
       def name_constraint = o.attributes.find { it.rmAttributeName == 'name' }
@@ -944,7 +951,7 @@ class JsonInstanceCanonicalGenerator2 {
     */
    private add_ENTRY_elements(ObjectNode o, String parent_arch_id)
    {
-      println "add_ENTRY_elements"
+      //println "add_ENTRY_elements"
 
       def mobj = add_LOCATABLE_elements(o, parent_arch_id) // _type, name, archetype_node_id
 
@@ -954,24 +961,26 @@ class JsonInstanceCanonicalGenerator2 {
          ],
          code_string: this.opt.langCode
       ]
+
       mobj.encoding = [
          terminology_id: [
             value: 'Unicode'
          ],
          code_string: 'UTF-8' // TODO: deberia salir de una config global
       ]
+
       // TODO: party proxy / party self generator
       mobj.subject = [
          _type: 'PARTY_SELF'
       ]
 
-      // ENTRY.protocol
+      // ENTRY.protocol (only for CARE_ENTRY not for ADMIN_ENTRY)
       def oa = o.attributes.find { it.rmAttributeName == 'protocol' }
       if (oa)
       {
          // returns a list, take the first obj
          def protocol = processAttributeChildren(oa, parent_arch_id)
-         mobj = mobj + protocol[0]
+         mobj.protocol = protocol[0]
       }
 
       return mobj
@@ -991,6 +1000,7 @@ class JsonInstanceCanonicalGenerator2 {
       if (oa)
       {
          def items = processAttributeChildren(oa, parent_arch_id)
+         println "SECTION items"+ items
          mobj.items = items
       }
 
@@ -1009,8 +1019,10 @@ class JsonInstanceCanonicalGenerator2 {
       def oa = o.attributes.find { it.rmAttributeName == 'data' }
       if (oa)
       {
+         // the result is a list but should contain only one HISTORY, get the first item
          def data = processAttributeChildren(oa, parent_arch_id)
-         mobj.data = data
+         //println "OBSERVATION data "+ data
+         mobj.data = data[0]
       }
 
       return mobj
@@ -1028,8 +1040,9 @@ class JsonInstanceCanonicalGenerator2 {
       def oa = o.attributes.find { it.rmAttributeName == 'data' }
       if (oa)
       {
+         // this is a list, but data is a single structure, extract the first item
          def data = processAttributeChildren(oa, parent_arch_id)
-         mobj.data = data
+         mobj.data = data[0]
       }
       
       return mobj
@@ -1041,18 +1054,14 @@ class JsonInstanceCanonicalGenerator2 {
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
       def mobj = add_ENTRY_elements(o, parent_arch_id) // adds LOCATABLE fields
-/* 
-
-      AttributeNode a = o.parent
-      jb."${a.rmAttributeName}" {
-
-
-         def oa
-
-         // data
-         oa = o.attributes.find { it.rmAttributeName == 'data' }
-         if (oa) processAttributeChildren(oa, parent_arch_id)
-      } */
+      
+      def oa = o.attributes.find { it.rmAttributeName == 'data' }
+      if (oa)
+      {
+         // this is a list, but data is a single structure, extract the first item
+         def data = processAttributeChildren(oa, parent_arch_id)
+         mobj.data = data[0]
+      }
 
       return mobj
    }
@@ -1066,33 +1075,19 @@ class JsonInstanceCanonicalGenerator2 {
       def mobj = add_ENTRY_elements(o, parent_arch_id) // adds LOCATABLE fields
 
       AttributeNode a = o.parent
-      /* jb."${a.rmAttributeName}" {
 
+      // DV_TEXT narrative (not in the OPT, is an IM attribute)
+      mobj.narrative = [
+         value: String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 255 )
+      ]
 
-         // TBD
-
-         // Fix for a bug in the template designer:
-         // The OPT has activities before protocol and in the
-         // XSD protocol is before activities, this makes the XSD validation fail.
-         // Only the attrs that are archetypable, the rest should be generated because
-         // come from data not from the OPT, but are optional.
-
-         // NARRATIVE DV?TEXT comes before activities in the XSD ....
-
-         // Follow the XSD attribute order:
-         // - process protocol (optional) // processed by the add_ENTRY_elements
-         // - generate narrative (mandatory)
-         // - process activities (optional)
-
-         // DV_TEXT narrative (not in the OPT, is an IM attribute)
-         jb.narrative {
-            value String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 255 )
-         }
-
-         // activities
-         def oa = o.attributes.find { it.rmAttributeName == 'activities' }
-         if (oa) processAttributeChildren(oa, parent_arch_id)
-      } */
+      def oa = o.attributes.find { it.rmAttributeName == 'activities' }
+      if (oa)
+      {
+         // this is a list, and activities is also a list, we use the full list
+         def activities = processAttributeChildren(oa, parent_arch_id)
+         mobj.activities = activities
+      }
 
       return mobj
    }
@@ -1104,49 +1099,37 @@ class JsonInstanceCanonicalGenerator2 {
 
       AttributeNode a = o.parent
 
-      jb."${a.rmAttributeName}" {
+      def mobj = add_LOCATABLE_elements(o, parent_arch_id) // _type, name, archetype_node_id
 
-         add_LOCATABLE_elements(o, parent_arch_id) // _type, name, archetype_node_id
-
-         def oa
-
-         // description
-         oa = o.attributes.find { it.rmAttributeName == 'description' }
-         if (oa) processAttributeChildren(oa, parent_arch_id)
-
-         /*
-         o.attributes.each { oa ->
-
-            processAttributeChildren(oa, parent_arch_id)
-         }
-         */
-
-         // DV_PARSABLE timing (IM attr, not in OPT)
-         /*
-         <timing>
-           <value>P1D</value>
-           <formalism>ISO8601</formalism>
-         </timing>
-         */
-         timing {
-           value "P1D" // TODO: duration string generator
-           formalism "ISO8601"
-         }
-
-         // action_archetype_id
-         // mandatory and should come from the OPT but some archetypes don't have it,
-         // here I check if that exists in the OPT and if not, just generate dummy data
-         oa = o.attributes.find { it.rmAttributeName == 'action_archetype_id' }
-         if (oa)
-         {
-            // action_archetype_id from the OPT
-            action_archetype_id( oa.children[0].item.pattern )
-         }
-         else
-         {
-            action_archetype_id('openEHR-EHR-ACTION\\.sample_action\\.v1')
-         }
+      def oa = o.attributes.find { it.rmAttributeName == 'description' }
+      if (oa)
+      {
+         // this is a list, description is a single attr, we use the first item
+         def description = processAttributeChildren(oa, parent_arch_id)
+         mobj.description = description[0]
       }
+
+      // DV_PARSABLE timing (IM attr, not in OPT)
+      mobj.timing = [
+         value: 'P1D', // TODO: duration string generator,
+         formalism: 'ISO8601'
+      ]
+
+      // action_archetype_id
+      // mandatory and should come from the OPT but some archetypes don't have it,
+      // here I check if that exists in the OPT and if not, just generate dummy data
+      oa = o.attributes.find { it.rmAttributeName == 'action_archetype_id' }
+      if (oa)
+      {
+         // action_archetype_id from the OPT
+         mobj.action_archetype_id = oa.children[0].item.pattern
+      }
+      else
+      {
+         mobj.action_archetype_id = 'openEHR-EHR-ACTION\\.sample_action\\.v1'
+      }
+      
+      return mobj
    }
 
    private generate_ACTION(ObjectNode o, String parent_arch_id)
