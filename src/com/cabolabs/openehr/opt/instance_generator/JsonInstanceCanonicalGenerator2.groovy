@@ -165,11 +165,11 @@ class JsonInstanceCanonicalGenerator2 {
    /**
     * generates vresion with composition.
     */
-   String generateJSONVersionStringFromOPT(OperationalTemplate opt, boolean addParticipations = false)
+   String generateJSONVersionStringFromOPT(OperationalTemplate opt, boolean addParticipations = false, boolean prettyOutput = false)
    {
       this.opt = opt
 
-      out.version = [
+      out = [
          _type: 'ORIGINAL_VERSION',
          contribution: [
             id: [
@@ -179,7 +179,34 @@ class JsonInstanceCanonicalGenerator2 {
             namespace: 'EHR::COMMON',
             type: 'CONTRIBUTION'
          ],
-         commit_audit: 'TODO',
+         commit_audit: [
+            _type: 'AUDIT_DETAILS', // TODO: support ATTESTATION
+            system_id: 'CABOLABS_EHR', // TODO: make it configurable
+            time_committed: [
+               value: new Date().toOpenEHRDateTime()
+            ],
+            change_type: [
+               value: 'creation',
+               defining_code: [
+                  terminology_id: [
+                     value: 'openehr'
+                  ],
+                  code_string: '249'
+               ]
+            ],
+            committer: [
+               _type: 'PARTY_IDENTIFIED',
+               external_ref: [
+                  id: [
+                     _type: 'HIER_OBJECT_ID',
+                     value: String.uuid()
+                  ],
+                  namespace: 'DEMOGRAPHIC',
+                  type: 'PERSON'
+               ],
+               name: composition_composers.pick()
+            ]
+         ],
          uid: [
             value: String.uuid() +'::EMR_APP::1'
          ],
@@ -195,26 +222,26 @@ class JsonInstanceCanonicalGenerator2 {
          ]
       ]
 
-      // TODO: pretty print optional
-      JsonOutput.prettyPrint(JsonOutput.toJson(out))
-      //builder.toString()
+      if (prettyOutput)
+         JsonOutput.prettyPrint(JsonOutput.toJson(out))
+      else
+         JsonOutput.toJson(out)
    }
 
 
    /**
     * generates just the composition, no version info
     */
-   String generateJSONCompositionStringFromOPT(OperationalTemplate opt, boolean addParticipations = false)
+   String generateJSONCompositionStringFromOPT(OperationalTemplate opt, boolean addParticipations = false, boolean prettyOutput = false)
    {
       this.opt = opt
 
-      builder.composition (
-         generateCompositionHeader(addParticipations, builder) // name, language, territory, ...
-         //generateCompositionContent(opt.definition.archetypeId)
-      )
+      out = generateComposition(addParticipations)
 
-      // TODO: pretty print optional
-      JsonOutput.prettyPrint(builder.toString())
+      if (prettyOutput)
+         JsonOutput.prettyPrint(JsonOutput.toJson(out))
+      else
+         JsonOutput.toJson(out)
    }
 
    Map generateComposition(boolean addParticipations = false)
@@ -372,7 +399,7 @@ class JsonInstanceCanonicalGenerator2 {
     */
    List processAttributeChildren(AttributeNode a, String parent_arch_id)
    {
-      println "processAttributeChildren"
+      //println "processAttributeChildren"
 
       List attrs = []
 
@@ -503,7 +530,7 @@ class JsonInstanceCanonicalGenerator2 {
       }
 
       AttributeNode a = o.parent
-      [
+      /* [
          "${a.rmAttributeName}": [
             _type: 'DV_CODED_TEXT',
             value: name,
@@ -513,6 +540,16 @@ class JsonInstanceCanonicalGenerator2 {
                ],
                code_string: first_code
             ]
+         ]
+      ] */
+      [
+         _type: 'DV_CODED_TEXT',
+         value: name,
+         defining_code: [
+            terminology_id: [
+               value: terminology
+            ],
+            code_string: first_code
          ]
       ]
    }
@@ -537,11 +574,15 @@ class JsonInstanceCanonicalGenerator2 {
       </value>
       */
       AttributeNode a = o.parent
-      [
+      /* [
          "${a.rmAttributeName}": [
             _type: 'DV_TEXT',
             value: String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 255 ) // TODO: improve using word / phrase dictionary
          ]
+      ] */
+      [
+         _type: 'DV_TEXT',
+         value: String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 255 ) // TODO: improve using word / phrase dictionary
       ]
    }
 
@@ -553,7 +594,11 @@ class JsonInstanceCanonicalGenerator2 {
       </value>
       */
       AttributeNode a = o.parent
-      generate_attr_DV_DATE_TIME(a.rmAttributeName)
+      //generate_attr_DV_DATE_TIME(a.rmAttributeName)
+      [
+         _type: 'DV_DATE_TIME',
+         value: new Date().toOpenEHRDateTime()
+      ]
    }
 
    /**
@@ -583,11 +628,15 @@ class JsonInstanceCanonicalGenerator2 {
       </value>
       */
       AttributeNode a = o.parent
-      [
+      /* [
          "${a.rmAttributeName}": [
             _type: 'DV_DATE',
             value: new Date().toOpenEHRDate()
          ]
+      ] */
+      [
+         _type: 'DV_DATE',
+         value: new Date().toOpenEHRDate()
       ]
    }
    private generate_DV_TIME(ObjectNode o, String parent_arch_id)
@@ -598,11 +647,15 @@ class JsonInstanceCanonicalGenerator2 {
       </value>
       */
       AttributeNode a = o.parent
-      [
+      /* [
          "${a.rmAttributeName}": [
             _type: 'DV_TIME',
             value: new Date().toOpenEHRTime()
          ]
+      ] */
+      [
+         _type: 'DV_TIME',
+         value: new Date().toOpenEHRTime()
       ]
    }
 
@@ -614,11 +667,15 @@ class JsonInstanceCanonicalGenerator2 {
       </value>
       */
       AttributeNode a = o.parent
-      [
+      /* [
          "${a.rmAttributeName}": [
             _type: 'DV_COUNT',
             magnitude: Integer.random(10, 1) // TODO: consider constraints
          ]
+      ] */
+      [
+         _type: 'DV_COUNT',
+         magnitude: Integer.random(10, 1) // TODO: consider constraints
       ]
    }
 
@@ -630,11 +687,15 @@ class JsonInstanceCanonicalGenerator2 {
        </value>
       */
       AttributeNode a = o.parent
-      [
+      /* [
          "${a.rmAttributeName}": [
             _type: 'DV_BOOLEAN',
             value: true
          ]
+      ] */
+      [
+         _type: 'DV_BOOLEAN',
+         value: true
       ]
    }
 
@@ -697,9 +758,11 @@ class JsonInstanceCanonicalGenerator2 {
       ] + mtype
 
 
-      [
+      /* [
          "${a.rmAttributeName}": mmcontent
-      ]
+      ] */
+
+      return mmcontent
    }
 
    private generate_DV_PARSABLE(ObjectNode o, String parent_arch_id)
@@ -711,13 +774,19 @@ class JsonInstanceCanonicalGenerator2 {
       </value>
       */
       AttributeNode a = o.parent
-      [
+      /* [
          "${a.rmAttributeName}": [
             _type: 'DV_PARSABLE',
             // TODO: consider formalisms from OPT to generate a valid value, hardcoded for now.
             value: '20170629',
             formalism: 'ISO8601'
          ]
+      ] */
+      [
+         _type: 'DV_PARSABLE',
+         // TODO: consider formalisms from OPT to generate a valid value, hardcoded for now.
+         value: '20170629',
+         formalism: 'ISO8601'
       ]
    }
 
@@ -732,7 +801,7 @@ class JsonInstanceCanonicalGenerator2 {
       </value>
       */
       AttributeNode a = o.parent
-      [
+      /* [
          "${a.rmAttributeName}": [
             _type: 'DV_PROPORTION',
             // TODO: consider proportion type from OPT to generate valid values, hardcoded for now.
@@ -741,6 +810,14 @@ class JsonInstanceCanonicalGenerator2 {
             type: '1',
             precision: '0'
          ]
+      ] */
+      [
+         _type: 'DV_PROPORTION',
+         // TODO: consider proportion type from OPT to generate valid values, hardcoded for now.
+         numerator: '1.5',
+         denominator: '1',
+         type: '1',
+         precision: '0'
       ]
    }
 
@@ -784,12 +861,19 @@ class JsonInstanceCanonicalGenerator2 {
       AttributeNode a = o.parent
       Random rand = new Random()
 
+      /* this returns with the attribute name, but the attribute name is added by the parent, duplicating it
       [
          "${a.rmAttributeName}": [
             _type: 'DV_QUANTITY',
             magnitude: rand.nextFloat() * (hi - lo) + lo, //Integer.random(hi, lo) ) // TODO: should be BigDecinal not just Integer
             units: _units
          ]
+      ]
+      */
+      [
+         _type: 'DV_QUANTITY',
+         magnitude: (rand.nextFloat() * (hi - lo) + lo).round(1), // TODO: take the precision from the OPT
+         units: _units
       ]
    }
 
@@ -801,11 +885,15 @@ class JsonInstanceCanonicalGenerator2 {
       </value>
       */
       AttributeNode a = o.parent
-      [
+      /* [
          "${a.rmAttributeName}": [
             _type: 'DV_DURATION',
             value: 'PT30M' // TODO: Duration String generator
          ]
+      ] */
+      [
+         _type: 'DV_DURATION',
+         value: 'PT30M' // TODO: Duration String generator
       ]
    }
 
@@ -820,7 +908,7 @@ class JsonInstanceCanonicalGenerator2 {
       </value>
       */
       AttributeNode a = o.parent
-      [
+      /* [
          "${a.rmAttributeName}": [
             _type: 'DV_IDENTIFIER',
             issuer: 'Hospital de Clinicas',
@@ -828,6 +916,13 @@ class JsonInstanceCanonicalGenerator2 {
             id: String.randomNumeric(8),
             type: 'LOCALID'
          ]
+      ] */
+      [
+         _type: 'DV_IDENTIFIER',
+         issuer: 'Hospital de Clinicas',
+         assigner: 'Hospital de Clinicas',
+         id: String.randomNumeric(8),
+         type: 'LOCALID'
       ]
    }
 
@@ -848,7 +943,7 @@ class JsonInstanceCanonicalGenerator2 {
       </value>
       */
       AttributeNode a = o.parent
-      [
+      /* [
          "${a.rmAttributeName}": [
             _type: 'DV_ORDINAL',
             value: 1, // TODO: take the ordinal value from the ObjectNode
@@ -860,6 +955,19 @@ class JsonInstanceCanonicalGenerator2 {
                   ],
                   code_string: 'at0010' // FIXME: take the value from the ObjectNode
                ]
+            ]
+         ]
+      ] */
+      [
+         _type: 'DV_ORDINAL',
+         value: 1, // TODO: take the ordinal value from the ObjectNode
+         symbol: [
+            value: String.random(('A'..'Z').join(), 15), // TODO: take the value from the ObjectNode
+            defining_code: [
+               terminology_id: [
+                  value: 'local'
+               ],
+               code_string: 'at0010' // FIXME: take the value from the ObjectNode
             ]
          ]
       ]
@@ -1137,50 +1245,53 @@ class JsonInstanceCanonicalGenerator2 {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
-      AttributeNode a = o.parent
-      jb."${a.rmAttributeName}" {
+      def mobj = add_ENTRY_elements(o, parent_arch_id) + // adds LOCATABLE fields
+                 generate_attr_DV_DATE_TIME('time') // ACTION.time (not in the OPT, is an IM attribute)
 
-         add_ENTRY_elements(o, parent_arch_id) // adds LOCATABLE fields
-
-         // ACTION.time (not in the OPT, is an IM attribute)
-         generate_attr_DV_DATE_TIME('time')
-
-         // description
-         def oa = o.attributes.find { it.rmAttributeName == 'description' }
-         if (oa) processAttributeChildren(oa, parent_arch_id)
-
-
-         // add one of the ism_transition in the OPT
-         def attr_ism_transition = o.attributes.find { it.rmAttributeName == 'ism_transition' }
-
-         if (!attr_ism_transition)
-         {
-            println "Avoid generating ism_transition for ACTION because there is no constraint for it on the OPT"
-            return
-         }
-
-         // .children[0] ISM_TRANSITION
-         //  .attributes current_state
-         //    .children[0] DV_CODED_TEXT
-         //      .attributes defining_code
-         //       .children[0] CODE_PHRASE
-         def code_phrase = attr_ism_transition
-                             .children[0].attributes.find { it.rmAttributeName == 'current_state' }
-                             .children[0].attributes.find { it.rmAttributeName == 'defining_code' }
-                             .children[0]
-
-         ism_transition {
-           current_state {
-              value terminology.getRubric(opt.langCode, code_phrase.codeList[0])
-              defining_code { // use generate_attr_CODE_PHRASE
-                 terminology_id {
-                    value code_phrase.terminologyIdName
-                 }
-                 code_string code_phrase.codeList[0]
-              }
-           }
-         }
+      // description
+      def oa = o.attributes.find { it.rmAttributeName == 'description' }
+      if (oa)
+      {
+         def description = processAttributeChildren(oa, parent_arch_id)
+         mobj.description = description[0]
       }
+
+
+//      AttributeNode a = o.parent
+
+
+      // add one of the ism_transition in the OPT
+      def attr_ism_transition = o.attributes.find { it.rmAttributeName == 'ism_transition' }
+
+      if (!attr_ism_transition)
+      {
+         println "Avoid generating ism_transition for ACTION because there is no constraint for it on the OPT"
+         return
+      }
+
+      // .children[0] ISM_TRANSITION
+      //  .attributes current_state
+      //    .children[0] DV_CODED_TEXT
+      //      .attributes defining_code
+      //       .children[0] CODE_PHRASE
+      def code_phrase = attr_ism_transition
+                           .children[0].attributes.find { it.rmAttributeName == 'current_state' }
+                           .children[0].attributes.find { it.rmAttributeName == 'defining_code' }
+                           .children[0]
+
+      mobj.ism_transition = [
+         current_state: [
+            value: terminology.getRubric(opt.langCode, code_phrase.codeList[0]),
+            defining_code: [ // use generate_attr_CODE_PHRASE
+               terminology_id: [
+                  value: code_phrase.terminologyIdName
+               ],
+               code_string: code_phrase.codeList[0]
+            ]
+         ]
+      ]
+      
+      return mobj
    }
 
    private generate_HISTORY(ObjectNode o, String parent_arch_id)
@@ -1220,9 +1331,7 @@ class JsonInstanceCanonicalGenerator2 {
       def mobj = add_LOCATABLE_elements(o, parent_arch_id) + // _type, name, archetype_node_id
                  generate_attr_DV_DATE_TIME('time') // IM attribute not present in the OPT
 
-
       def mattrs
-
       o.attributes.each { oa ->
 
          // in event there are no lists, so the results will be lists of 1 item
@@ -1240,48 +1349,44 @@ class JsonInstanceCanonicalGenerator2 {
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
       AttributeNode a = o.parent
+      
+      def mobj = add_LOCATABLE_elements(o, parent_arch_id) + // _type, name, archetype_node_id
+                 generate_attr_DV_DATE_TIME('time') // IM attribute not present in the OPT
 
-      jb."${a.rmAttributeName}" {
 
-         add_LOCATABLE_elements(o, parent_arch_id) // _type, name, archetype_node_id
-
-         // IM attribute not present in the OPT
-         generate_attr_DV_DATE_TIME('time')
-
-         // data
-         def oa = o.attributes.find { it.rmAttributeName == 'data' }
-         if (oa) processAttributeChildren(oa, parent_arch_id)
-
-         /* attributes include math_function from the OPT, that is generated below
-         o.attributes.each { oa ->
-
-            processAttributeChildren(oa, parent_arch_id)
-         }
-         */
-
-         width { // duration attribute
-            value('PT30M') // TODO: Duration String generator
-         }
-
-         oa = o.attributes.find { it.rmAttributeName == 'math_function' }
-         if (oa)
-         {
-            processAttributeChildren(oa, parent_arch_id)
-         }
-         else
-         {
-            println "Interval event math function constraint not found, generating one"
-            math_function { // coded text attribute
-               value "maximum"
-               defining_code {
-                  terminology_id {
-                     value 'openehr'
-                  }
-                  code_string '144'
-               }
-            }
-         }
+      // data
+      def oa = o.attributes.find { it.rmAttributeName == 'data' }
+      if (oa)
+      {
+         def data = processAttributeChildren(oa, parent_arch_id)
+         mobj.data = data[0]
       }
+
+      mobj.width = [ // duration attribute
+         value: 'PT30M' // TODO: Duration String generator
+      ]
+
+      oa = o.attributes.find { it.rmAttributeName == 'math_function' }
+      if (oa)
+      {
+         def math_function = processAttributeChildren(oa, parent_arch_id)
+         mobj.math_function = math_function[0]
+      }
+      else
+      {
+         println "Interval event math function constraint not found, generating one"
+         mobj.math_function = [ // coded text attribute
+            value: "maximum",
+            defining_code: [
+               terminology_id: [
+                  value: 'openehr'
+               ],
+               code_string: '144'
+            ]
+         ]
+      }
+
+      return mobj
    }
 
    private generate_POINT_EVENT(ObjectNode o, String parent_arch_id)
@@ -1353,8 +1458,10 @@ class JsonInstanceCanonicalGenerator2 {
       def mattr
       o.attributes.each { oa ->
          if (oa.rmAttributeName == 'name') return // avoid processing name constraints, thos are processde by add_LOCATABLE_elements
+
+         // returns a list and the value is single using the first item
          mattr = processAttributeChildren(oa, parent_arch_id)
-         mobj[oa.rmAttributeName] = mattr
+         mobj[oa.rmAttributeName] = mattr[0]
       }
 
       return mobj
@@ -1362,88 +1469,75 @@ class JsonInstanceCanonicalGenerator2 {
 
    private generate_DV_INTERVAL__DV_COUNT(ObjectNode o, String parent_arch_id)
    {
-      /*
-      <value xsi:type="DV_INTERVAL"><!-- note specific type is not valid here: DV_INERVAL<DV_COUNT> doesn't exists in the XSD -->
-         <lower xsi:type="DV_COUNT">
-           <magnitude>123</magnitude>
-         </lower>
-         <upper xsi:type="DV_COUNT">
-           <magnitude>234</magnitude>
-         </upper>
-         <lower_unbounded>false</lower_unbounded>
-         <upper_unbounded>false</upper_unbounded>
-      </value>
-      */
-      AttributeNode a = o.parent
-      jb."${a.rmAttributeName}" {
-         
-         _type 'DV_INTERVAL'
+      def mobj = [:]
 
-         // Need to ask for the attributes explicitly since order matters for the XSD
+      mobj._type = 'DV_INTERVAL'
 
-         def lower = o.attributes.find { it.rmAttributeName == 'lower' }
-         "${lower.rmAttributeName}" {
-            _type 'DV_COUNT'
-            magnitude Integer.random(10, 1) // TODO: consider constraints
-         }
+      // Need to ask for the attributes explicitly since order matters for the XSD
 
-         def upper = o.attributes.find { it.rmAttributeName == 'upper' }
-         "${upper.rmAttributeName}" {
-            _type 'DV_COUNT'
-            magnitude Integer.random(100, 10) // TODO: consider constraints
-         }
+      def lower = o.attributes.find { it.rmAttributeName == 'lower' }
+      mobj.lower = [
+         _type: 'DV_COUNT',
+         magnitude: Integer.random(10, 1) // TODO: consider constraints
+      ]
 
-         // lower_unbounded and upper_unbounded are required
-         // lower_unbounded: no constraint is defined for upper or lower.lower is not defined
-         // upper_unbounded: no constraint is defined for upper or upper.upper is not defined
+      def upper = o.attributes.find { it.rmAttributeName == 'upper' }
+      mobj.upper = [
+         _type: 'DV_COUNT',
+         magnitude: Integer.random(100, 10) // TODO: consider constraints
+      ]
 
-         def ccount = lower.children[0]
-         def attr_magnitude = ccount.attributes[0]
-         def cprimitive
-         def cint
+      // lower_unbounded and upper_unbounded are required
+      // lower_unbounded: no constraint is defined for upper or lower.lower is not defined
+      // upper_unbounded: no constraint is defined for upper or upper.upper is not defined
 
-         if (!attr_magnitude)
+      def ccount = lower.children[0]
+      def attr_magnitude = ccount.attributes[0]
+      def cprimitive
+      def cint
+
+      if (!attr_magnitude)
+      {
+         mobj.lower_unbounded = true
+      }
+      else
+      {
+         cprimitive = attr_magnitude.children[0]
+         cint = cprimitive.item
+
+         if (cint.range && !cint.range.lowerUnbounded)
          {
-            lower_unbounded(true)
+            mobj.lower_unbounded = false
          }
          else
          {
-            cprimitive = attr_magnitude.children[0]
-            cint = cprimitive.item
-
-            if (cint.range && !cint.range.lowerUnbounded)
-            {
-               lower_unbounded(false)
-            }
-            else
-            {
-               lower_unbounded(true)
-            }
-         }
-
-         ccount = upper.children[0]
-         attr_magnitude = ccount.attributes[0]
-
-         if (!attr_magnitude)
-         {
-            upper_unbounded(true)
-         }
-         else
-         {
-            cprimitive = attr_magnitude.children[0]
-            cint = cprimitive.item
-
-            if (cint.range && !cint.range.upperUnbounded)
-            {
-               upper_unbounded(false)
-            }
-            else
-            {
-               upper_unbounded(true)
-            }
+            mobj.lower_unbounded = true
          }
       }
 
+      ccount = upper.children[0]
+      attr_magnitude = ccount.attributes[0]
+
+      if (!attr_magnitude)
+      {
+         mobj.upper_unbounded = true
+      }
+      else
+      {
+         cprimitive = attr_magnitude.children[0]
+         cint = cprimitive.item
+
+         if (cint.range && !cint.range.upperUnbounded)
+         {
+            mobj.upper_unbounded = false
+         }
+         else
+         {
+            mobj.upper_unbounded = true
+         }
+      }
+      
+      return mobj
    }
 
    private generate_DV_INTERVAL__DV_QUANTITY(ObjectNode o, String parent_arch_id)
@@ -1463,94 +1557,82 @@ class JsonInstanceCanonicalGenerator2 {
       </value>
       */
 
-      AttributeNode a = o.parent
-      jb."${a.rmAttributeName}"('xsi:type':'DV_INTERVAL') {
+      def mobj = [:]
 
-         def lower = o.attributes.find { it.rmAttributeName == 'lower' }
-         generate_DV_QUANTITY(lower.children[0], parent_arch_id)
-         /*
-         builder.lower('xsi:type':'DV_QUANTITY') {
-            magnitude('[[lower.magnitude:::DV_QUANTITY_MAGNITUDE]]')
-            units('[[lower.units:::DV_QUANTITY_UNITS]]')
-         }
-         */
+      def lower = o.attributes.find { it.rmAttributeName == 'lower' }
+      mobj.lower = generate_DV_QUANTITY(lower.children[0], parent_arch_id)
 
-         def upper = o.attributes.find { it.rmAttributeName == 'upper' }
-         generate_DV_QUANTITY(upper.children[0], parent_arch_id)
-         /*
-         builder.upper('xsi:type':'DV_QUANTITY') {
-            magnitude('[[upper.magnitude:::DV_QUANTITY_MAGNITUDE]]')
-            units('[[upper.units:::DV_QUANTITY_UNITS]]')
-         }
-         */
+      def upper = o.attributes.find { it.rmAttributeName == 'upper' }
+      mobj.ipper = generate_DV_QUANTITY(upper.children[0], parent_arch_id)
 
-         // lower_unbounded and upper_unbounded are required
-         // for tagged DV_INTERVALs the only way to check this,
-         // since the boundaries depend on the constraint for a
-         // specific unit, is to check if all units have min or max
-         // boundaries, if all have, that will bounded, if some don't
-         // have, that will be unbounded.
-         // Also, if there are no constraints (empty list), both limits
-         // will be unbounde
+      // lower_unbounded and upper_unbounded are required
+      // for tagged DV_INTERVALs the only way to check this,
+      // since the boundaries depend on the constraint for a
+      // specific unit, is to check if all units have min or max
+      // boundaries, if all have, that will bounded, if some don't
+      // have, that will be unbounded.
+      // Also, if there are no constraints (empty list), both limits
+      // will be unbounde
 
-         // lower
-         def cqty = lower.children[0] // CDvQuantity
+      // lower
+      def cqty = lower.children[0] // CDvQuantity
 
-         if (!cqty.list)
-         {
-            lower_unbounded(true)
-         }
-         else
-         {
-            // if one lower limit is unbounded, then the tagged will be unbounded
-            def lowerUnbounded = false
-            cqty.list.each { cqitem->
-               if (cqitem.magnitude.lowerUnbounded)
-               {
-                  lowerUnbounded = true
-               }
-            }
-            lower_unbounded(lowerUnbounded)
-         }
-
-         // upper
-         cqty = upper.children[0]
-
-         if (!cqty.list)
-         {
-            upper_unbounded(true)
-         }
-         else
-         {
-            // if one upper limit is unbounded, then the tagged will be unbounded
-            def upperUnbounded = false
-            cqty.list.each { cqitem->
-               if (cqitem.magnitude.upperUnbounded)
-               {
-                  upperUnbounded = true
-               }
-            }
-            upper_unbounded(upperUnbounded)
-         }
+      if (!cqty.list)
+      {
+         mobj.lower_unbounded = true
       }
+      else
+      {
+         // if one lower limit is unbounded, then the tagged will be unbounded
+         def lowerUnbounded = false
+         cqty.list.each { cqitem->
+            if (cqitem.magnitude.lowerUnbounded)
+            {
+               lowerUnbounded = true
+            }
+         }
+         mobj.lower_unbounded = lowerUnbounded
+      }
+
+      // upper
+      cqty = upper.children[0]
+
+      if (!cqty.list)
+      {
+         mobj.upper_unbounded = true
+      }
+      else
+      {
+         // if one upper limit is unbounded, then the tagged will be unbounded
+         def upperUnbounded = false
+         cqty.list.each { cqitem->
+            if (cqitem.magnitude.upperUnbounded)
+            {
+               upperUnbounded = true
+            }
+         }
+         mobj.upper_unbounded = upperUnbounded
+      }
+      
+      return mobj
    }
 
    private generate_DV_INTERVAL__DV_DATE_TIME(ObjectNode o, String parent_arch_id)
    {
-      AttributeNode a = o.parent
-/*       jb."${a.rmAttributeName}"('xsi:type':'DV_INTERVAL') {
+      def mobj = [:]
 
-         def lower = o.attributes.find { it.rmAttributeName == 'lower' }
-         generate_attr_DV_DATE_TIME(lower.rmAttributeName)
+      def lower = o.attributes.find { it.rmAttributeName == 'lower' }
+      mobj.lower = generate_attr_DV_DATE_TIME(lower.rmAttributeName)
 
-         def upper = o.attributes.find { it.rmAttributeName == 'upper' }
-         generate_attr_DV_DATE_TIME(upper.rmAttributeName)
+      def upper = o.attributes.find { it.rmAttributeName == 'upper' }
+      mobj.upper = generate_attr_DV_DATE_TIME(upper.rmAttributeName)
 
-         // there are no constraints for date time to establish unbounded,
-         // so it is always unbounded for both limits.
-         lower_unbounded(true)
-         upper_unbounded(true)
-      } */
+      // there are no constraints for date time to establish unbounded,
+      // so it is always unbounded for both limits.
+      mobj.lower_unbounded = true
+      mobj.upper_unbounded = true
+
+      return mobj
    }
 
 
