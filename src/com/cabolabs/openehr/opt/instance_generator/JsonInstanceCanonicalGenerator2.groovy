@@ -246,17 +246,7 @@ class JsonInstanceCanonicalGenerator2 {
 
    Map generateComposition(boolean addParticipations = false)
    {
-      def compo = add_LOCATABLE_elements(opt.definition, opt.definition.archetypeId)
-
-      compo.archetype_details = [
-         archetype_id: [
-            value: opt.definition.archetypeId
-         ],
-         template_id: [
-            value: opt.templateId
-         ],
-         rm_version: '1.0.2'
-      ]
+      def compo = add_LOCATABLE_elements(opt.definition, opt.definition.archetypeId, true)
 
       compo.language = [
          terminology_id: [
@@ -980,7 +970,7 @@ class JsonInstanceCanonicalGenerator2 {
    /**
     * helper to add name, also checks if the object has a constraint for the name.
     */
-   private add_LOCATABLE_elements(ObjectNode o, String parent_arch_id)
+   private add_LOCATABLE_elements(ObjectNode o, String parent_arch_id, boolean add_archetype_details = false)
    {
       // LOCATABLE
       // - _type
@@ -1000,10 +990,6 @@ class JsonInstanceCanonicalGenerator2 {
       def locatable = [:]
 
       locatable._type = node_type
-
-
-      //println "add_LOCATABLE_ELEMENTS type "+ node_type
-
 
       // name
       def name_constraint = o.attributes.find { it.rmAttributeName == 'name' }
@@ -1044,6 +1030,19 @@ class JsonInstanceCanonicalGenerator2 {
          ]
 
          // TODO: call generate_DV_TEXT
+      }
+
+      if (add_archetype_details)
+      {
+         locatable.archetype_details = [
+            archetype_id: [
+               value: opt.definition.archetypeId
+            ],
+            template_id: [
+               value: opt.templateId
+            ],
+            rm_version: '1.0.2'
+         ]
       }
 
       // archetype_node_id
