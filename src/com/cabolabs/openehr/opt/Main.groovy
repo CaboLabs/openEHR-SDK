@@ -87,9 +87,9 @@ class Main {
             def generate = 'version'
             if (args.size() > 4)
             {
-               if (!['version', 'composition', 'version_committer', 'tagged', 'json'].contains(args[4]))
+               if (!['version', 'composition', 'version_committer', 'tagged', 'json_version', 'json_composition'].contains(args[4]))
                {
-                  println "result type should be 'version' or 'composition' or 'version_committer' or 'tagged' or 'json'"
+                  println "result type should be one of 'version', 'composition', 'version_committer', 'tagged', 'json_version', 'json_composition'"
                   System.exit(0)
                }
 
@@ -117,10 +117,16 @@ class Main {
                   igen = new XmlInstanceGeneratorTagged()
                   ins = igen.generateXMLVersionStringFromOPT(opt)
                }
-               else if (generate == 'json')
+               else if (generate == 'json_version')
                {
                   igen = new JsonInstanceCanonicalGenerator2()
-                  ins = igen.generateJSONVersionStringFromOPT(opt)
+                  ins = igen.generateJSONVersionStringFromOPT(opt, withParticipations, true)
+                  ext = 'json'
+               }
+               else if (generate == 'json_composition')
+               {
+                  igen = new JsonInstanceCanonicalGenerator2()
+                  ins = igen.generateJSONCompositionStringFromOPT(opt, withParticipations, true)
                   ext = 'json'
                }
                else

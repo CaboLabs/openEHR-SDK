@@ -963,6 +963,24 @@ class JsonInstanceCanonicalGenerator2 {
       ]
    }
 
+   private generate_DV_URI(ObjectNode o, String parent_arch_id)
+   {
+      AttributeNode a = o.parent
+      [
+         _type: 'DV_URI',
+         value: 'http://cabolabs.com' // TODO: consider the constraints to generate the URI
+      ]
+   }
+
+   private generate_DV_EHR_URI(ObjectNode o, String parent_arch_id)
+   {
+      AttributeNode a = o.parent
+      [
+         _type: 'DV_EHR_URI',
+         value: 'ehr://cabolabs.com' // TODO: consider the constraints to generate the URI
+      ]
+   }
+
    /**
     * /DATATYPES -----------------------------------------------------------------------------------------------
     */
@@ -1107,7 +1125,7 @@ class JsonInstanceCanonicalGenerator2 {
       if (oa)
       {
          def items = processAttributeChildren(oa, parent_arch_id)
-         println "SECTION items"+ items
+         //println "SECTION items"+ items
          mobj.items = items
       }
 
@@ -1468,9 +1486,9 @@ class JsonInstanceCanonicalGenerator2 {
 
    private generate_DV_INTERVAL__DV_COUNT(ObjectNode o, String parent_arch_id)
    {
-      def mobj = [:]
-
-      mobj._type = 'DV_INTERVAL'
+      def mobj = [
+         _type: 'DV_INTERVAL<DV_COUNT>'
+      ]
 
       // Need to ask for the attributes explicitly since order matters for the XSD
 
@@ -1541,28 +1559,15 @@ class JsonInstanceCanonicalGenerator2 {
 
    private generate_DV_INTERVAL__DV_QUANTITY(ObjectNode o, String parent_arch_id)
    {
-      /*
-      <value xsi:type="DV_INTERVAL"><!-- note specific type is not valid here: DV_INERVAL<DV_COUNT> doesn't exists in the XSD -->
-      <lower xsi:type="DV_QUANTITY">
-         <magnitude>123.123</magnitude>
-         <units>mm[H20]</units>
-      </lower>
-      <upper xsi:type="DV_QUANTITY">
-         <magnitude>234.234</magnitude>
-         <units>mm[H20]</units>
-      </upper>
-      <lower_unbounded>false</lower_unbounded>
-      <upper_unbounded>false</upper_unbounded>
-      </value>
-      */
-
-      def mobj = [:]
+      def mobj = [
+         _type: 'DV_INTERVAL<DV_QUANTITY>'
+      ]
 
       def lower = o.attributes.find { it.rmAttributeName == 'lower' }
       mobj.lower = generate_DV_QUANTITY(lower.children[0], parent_arch_id)
 
       def upper = o.attributes.find { it.rmAttributeName == 'upper' }
-      mobj.ipper = generate_DV_QUANTITY(upper.children[0], parent_arch_id)
+      mobj.upper = generate_DV_QUANTITY(upper.children[0], parent_arch_id)
 
       // lower_unbounded and upper_unbounded are required
       // for tagged DV_INTERVALs the only way to check this,
@@ -1618,13 +1623,15 @@ class JsonInstanceCanonicalGenerator2 {
 
    private generate_DV_INTERVAL__DV_DATE_TIME(ObjectNode o, String parent_arch_id)
    {
-      def mobj = [:]
+      def mobj = [
+         _type: 'DV_INTERVAL<DV_DATE_TIME>'
+      ]
 
       def lower = o.attributes.find { it.rmAttributeName == 'lower' }
-      mobj.lower = generate_attr_DV_DATE_TIME(lower.rmAttributeName)
+      mobj << generate_attr_DV_DATE_TIME(lower.rmAttributeName) // contains the attr name, that is why we use <<
 
       def upper = o.attributes.find { it.rmAttributeName == 'upper' }
-      mobj.upper = generate_attr_DV_DATE_TIME(upper.rmAttributeName)
+      mobj << generate_attr_DV_DATE_TIME(upper.rmAttributeName)
 
       // there are no constraints for date time to establish unbounded,
       // so it is always unbounded for both limits.
