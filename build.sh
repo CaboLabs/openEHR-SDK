@@ -1,5 +1,7 @@
 echo "Building..."
 
+mkdir bin
+
 start=`date +%s%N`
 if [ -d "bin" ]; then
 rm -r bin/*

@@ -51,7 +51,7 @@ class Main {
 
             if (args.size() < 3)
             {
-               println 'usage: opt ingen path_to_opt dest_folder [amount] [version|composition|version_committer|tagged] [withParticipations]'
+               println 'usage: opt ingen path_to_opt dest_folder [amount] [version|composition|version_committer|tagged|json_version|json_composition] [withParticipations]'
                System.exit(0)
             }
 

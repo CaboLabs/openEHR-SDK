@@ -609,7 +609,6 @@ class JsonInstanceCanonicalGenerator2 {
       ]
    }
 
-
    private generate_DV_DATE(ObjectNode o, String parent_arch_id)
    {
       /*
@@ -651,21 +650,39 @@ class JsonInstanceCanonicalGenerator2 {
 
    private generate_DV_COUNT(ObjectNode o, String parent_arch_id)
    {
-      /*
-      <value xsi:type="DV_COUNT">
-         <magnitude>3</magnitude>
-      </value>
-      */
-      AttributeNode a = o.parent
-      /* [
-         "${a.rmAttributeName}": [
-            _type: 'DV_COUNT',
-            magnitude: Integer.random(10, 1) // TODO: consider constraints
-         ]
-      ] */
-      [
+      def magnitude, lo, hi
+      def a = o.attributes.find { it.rmAttributeName == 'magnitude' }
+      if (a)
+      {
+         //println a.children[0].item.getClass() //children 0 is primitive, .item is CInteger
+         //println a.children[0].item.list
+         //println a.children[0].item.range
+
+         def primitive = a.children[0].item
+
+         if (primitive.range)
+         {
+            lo = ((primitive.range.lowerUnbounded) ? 0 : primitive.range.lower)
+            hi = ((primitive.range.upperUnbounded) ? 100 : primitive.range.upper)
+
+            if (!primitive.range.lowerIncluded) lo++
+            if (!primitive.range.upperIncluded) hi--
+
+            magnitude = new Random().nextInt(hi - lo) + lo // random between lo .. hi
+         }
+         else
+         {
+            magnitude = primitive.list[0]
+         }
+      }
+      else // no constraints
+      {
+         magnitude = Integer.random(10, 1)
+      }
+
+      return [
          _type: 'DV_COUNT',
-         magnitude: Integer.random(10, 1) // TODO: consider constraints
+         magnitude: magnitude
       ]
    }
 
@@ -839,9 +856,12 @@ class JsonInstanceCanonicalGenerator2 {
          }
          else
          {
-            // TODO: generate rantom floats!
             lo = (constraint.magnitude.lowerUnbounded ?    0.0f : constraint.magnitude.lower)
             hi = (constraint.magnitude.upperUnbounded ? 1000.0f : constraint.magnitude.upper)
+
+            // check the upper and lower included
+            if (!constraint.magnitude.lowerIncluded) lo++
+            if (!constraint.magnitude.upperIncluded) hi--
          }
 
          if (!constraint.units) _units = "_no_constraint_defined_"
@@ -851,15 +871,6 @@ class JsonInstanceCanonicalGenerator2 {
       AttributeNode a = o.parent
       Random rand = new Random()
 
-      /* this returns with the attribute name, but the attribute name is added by the parent, duplicating it
-      [
-         "${a.rmAttributeName}": [
-            _type: 'DV_QUANTITY',
-            magnitude: rand.nextFloat() * (hi - lo) + lo, //Integer.random(hi, lo) ) // TODO: should be BigDecinal not just Integer
-            units: _units
-         ]
-      ]
-      */
       [
          _type: 'DV_QUANTITY',
          magnitude: (rand.nextFloat() * (hi - lo) + lo).round(1), // TODO: take the precision from the OPT
@@ -869,18 +880,6 @@ class JsonInstanceCanonicalGenerator2 {
 
    private generate_DV_DURATION(ObjectNode o, String parent_arch_id)
    {
-      /*
-      <value xsi:type="DV_DURATION">
-        <value>PT30M</value>
-      </value>
-      */
-      AttributeNode a = o.parent
-      /* [
-         "${a.rmAttributeName}": [
-            _type: 'DV_DURATION',
-            value: 'PT30M' // TODO: Duration String generator
-         ]
-      ] */
       [
          _type: 'DV_DURATION',
          value: 'PT30M' // TODO: Duration String generator
@@ -918,36 +917,41 @@ class JsonInstanceCanonicalGenerator2 {
 
    private generate_DV_ORDINAL(ObjectNode o, String parent_arch_id)
    {
-      /*
-      <value xsi:type="DV_ORDINAL">
-        <value>[[EYE_RESPONSE:::INTEGER:::1]]</value>
-        <symbol>
-          <value>None</value>
-          <defining_code>
-            <terminology_id>
-               <value>local</value>
-            </terminology_id>
-            <code_string>at0010</code_string>
-          </defining_code>
-        </symbol>
-      </value>
-      */
-      AttributeNode a = o.parent
-      /* [
-         "${a.rmAttributeName}": [
+      // o is CDvOrdinal
+      if (o.list) // list <CDvOrdinalItem>
+      {
+         /*
+         println o.list[0].value
+         println o.list[0].symbol.codeString // CodePhrase
+         println o.list[0].symbol.terminologyId
+         */
+
+         def value = ''
+
+         if (o.list[0].symbol.terminologyId == 'local')
+         {
+            value = opt.getTerm(parent_arch_id, o.list[0].symbol.codeString)
+         }
+         else
+         {
+            value = String.random(('A'..'Z').join(), 15)
+         }
+
+         return [
             _type: 'DV_ORDINAL',
-            value: 1, // TODO: take the ordinal value from the ObjectNode
+            value: o.list[0].value,
             symbol: [
-               value: String.random(('A'..'Z').join(), 15), // TODO: take the value from the ObjectNode
+               value: value, // TODO: take the value from the ObjectNode
                defining_code: [
                   terminology_id: [
-                     value: 'local'
+                     value: o.list[0].symbol.terminologyId
                   ],
-                  code_string: 'at0010' // FIXME: take the value from the ObjectNode
+                  code_string: o.list[0].symbol.codeString
                ]
             ]
          ]
-      ] */
+      }
+
       [
          _type: 'DV_ORDINAL',
          value: 1, // TODO: take the ordinal value from the ObjectNode
