@@ -808,7 +808,7 @@ class JsonInstanceCanonicalGenerator2 {
       if (attr_numerator)
       {
          // TODO: refactor to generate_REAL
-         println attr_numerator.children[0].item // CReal
+         //println attr_numerator.children[0].item // CReal
          def num_constraint = attr_numerator.children[0].item.range
          
          num_lo = (num_constraint.lowerUnbounded ?    0.0f : num_constraint.lower)
@@ -1489,11 +1489,30 @@ class JsonInstanceCanonicalGenerator2 {
       def mobj = add_LOCATABLE_elements(o, parent_arch_id) // _type, name, archetype_node_id
 
       def mattr
+
+      // items is the only attribute
+      /*
       o.attributes.each { oa ->
          if (oa.rmAttributeName == 'name') return // avoid processing name constraints, thos are processde by add_LOCATABLE_elements
          mattr = processAttributeChildren(oa, parent_arch_id)
          mobj[oa.rmAttributeName] = mattr
       }
+      */
+
+      // since items is a collection, it is assigned directly to the list retrieved
+      def oa = o.attributes.find{ it.rmAttributeName == 'items' }
+      mattr = processAttributeChildren(oa, parent_arch_id)
+
+      // it is possible the cardinality upper is lower than the items generated because there are more alternatives
+      // defined than the upper, here we cut the elements to the upper
+      if (oa.cardinality && oa.cardinality.interval.upper)
+      {
+         mattr = mattr.take(oa.cardinality.interval.upper)
+      }
+
+      println oa.cardinality //.interval.upper <<<< NULL we are not parsing the cardinality
+
+      mobj.items = mattr
 
       return mobj
    }
