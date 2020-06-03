@@ -373,14 +373,20 @@ class JsonInstanceCanonicalGenerator2 {
 
       // opt.definition.attributes has attributes category, context and content of the COMPOSITION
       // category and context where already processed on generateCompositionHeader
-      def a = opt.definition.attributes.find{ it.rmAttributeName == 'content' }
+      def oa = opt.definition.attributes.find{ it.rmAttributeName == 'content' }
 
-      if (!a) throw new Exception("The OPT doesn't have a structure for COMPOSITION.content")
+      if (!oa) throw new Exception("The OPT doesn't have a structure for COMPOSITION.content")
 
-      assert a.rmAttributeName == 'content'
+      def content = processAttributeChildren(oa, opt.definition.archetypeId) 
 
-      //processAttributeChildren(a, opt.definition.archetypeId)
-      compo.content = processAttributeChildren(a, opt.definition.archetypeId)
+      // it is possible the cardinality upper is lower than the items generated because there are more alternatives
+      // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
+      if (oa.cardinality && oa.cardinality.interval.upper)
+      {
+         content = content.take(oa.cardinality.interval.upper)
+      }
+   
+      compo.content = content
 
       return compo
    }
@@ -1164,7 +1170,14 @@ class JsonInstanceCanonicalGenerator2 {
       if (oa)
       {
          def items = processAttributeChildren(oa, parent_arch_id)
-         //println "SECTION items"+ items
+         
+         // it is possible the cardinality upper is lower than the items generated because there are more alternatives
+         // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
+         if (oa.cardinality && oa.cardinality.interval.upper)
+         {
+            items = items.take(oa.cardinality.interval.upper)
+         }
+         
          mobj.items = items
       }
 
@@ -1366,6 +1379,14 @@ class JsonInstanceCanonicalGenerator2 {
       if (oa)
       {
          def events = processAttributeChildren(oa, parent_arch_id)
+
+         // it is possible the cardinality upper is lower than the items generated because there are more alternatives
+         // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
+         if (oa.cardinality && oa.cardinality.interval.upper)
+         {
+            events = events.take(oa.cardinality.interval.upper)
+         }
+
          mobj.events = events
       }
       
@@ -1501,18 +1522,21 @@ class JsonInstanceCanonicalGenerator2 {
 
       // since items is a collection, it is assigned directly to the list retrieved
       def oa = o.attributes.find{ it.rmAttributeName == 'items' }
-      mattr = processAttributeChildren(oa, parent_arch_id)
-
-      // it is possible the cardinality upper is lower than the items generated because there are more alternatives
-      // defined than the upper, here we cut the elements to the upper
-      if (oa.cardinality && oa.cardinality.interval.upper)
+      if (oa)
       {
-         mattr = mattr.take(oa.cardinality.interval.upper)
+         mattr = processAttributeChildren(oa, parent_arch_id)
+
+         // it is possible the cardinality upper is lower than the items generated because there are more alternatives
+         // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
+         if (oa.cardinality && oa.cardinality.interval.upper)
+         {
+            mattr = mattr.take(oa.cardinality.interval.upper)
+         }
+
+         //println oa.cardinality.interval //.interval.upper <<<< NULL we are not parsing the cardinality
+
+         mobj.items = mattr
       }
-
-      println oa.cardinality //.interval.upper <<<< NULL we are not parsing the cardinality
-
-      mobj.items = mattr
 
       return mobj
    }

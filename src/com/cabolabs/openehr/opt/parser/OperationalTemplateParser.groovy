@@ -531,9 +531,9 @@ class OperationalTemplateParser {
          path: nextArchPath,
          dataPath: dataPath,
          templatePath: templatePath,
-         templateDataPath: templateDataPath
-         // TODO: cardinality
-         // TODO: existence
+         templateDataPath: templateDataPath,
+         cardinality: parseCardinality(attr.cardinality),
+         existence: parseIntervalInt(attr.existence)
       )
 
       def obn
@@ -563,5 +563,18 @@ class OperationalTemplateParser {
       return new Term(
          text: node.find{ it.@id == 'text' }.text(),
          description: node.find{ it.@id == 'description' }.text())
+   }
+
+   private parseCardinality(GPathResult node)
+   {
+      if (node.isEmpty()) return null
+
+      def card = new Cardinality(
+         isOrdered:  node.is_ordered.text().toBoolean(),
+         isUnique:  node.is_unique.text().toBoolean(),
+         interval: parseIntervalInt(node.interval)
+      )
+
+      return card
    }
 }
