@@ -5,7 +5,7 @@
     <terminology_id>
       <value>ISO_639-1</value>
     </terminology_id>
-    <code_string>es</code_string>
+    <code_string>en</code_string>
   </language>
   <description>
     <original_author id="Original Author">Not Specified</original_author>
@@ -27,7 +27,7 @@
         <terminology_id>
           <value>ISO_639-1</value>
         </terminology_id>
-        <code_string>es</code_string>
+        <code_string>en</code_string>
       </language>
       <purpose>Not Specified</purpose>
     </details>

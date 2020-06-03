@@ -97,7 +97,7 @@ class Main {
             }
 
             def withParticipations = args.contains('withParticipations')
-            println withParticipations
+            //println withParticipations
 
             def igen, ins, out, printer, ext = 'xml'
             for (i in 1..count)

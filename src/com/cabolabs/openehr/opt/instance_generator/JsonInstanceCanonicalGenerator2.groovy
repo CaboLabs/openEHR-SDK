@@ -148,7 +148,7 @@ class JsonInstanceCanonicalGenerator2 {
                e = entries.nextElement()
                if (e.name.startsWith(terminology_repo_path))
                {
-                  println e.name
+                  //println e.name
                   is = real_jar_file.getInputStream(e)
                   this.terminology.parseTerms(is) // This is loading every XML in the folder!
                }
@@ -746,7 +746,7 @@ class JsonInstanceCanonicalGenerator2 {
                e = entries.nextElement()
                if (e.name.startsWith(img_repo_path))
                {
-                  println e.name
+                  //println e.name
                   is = real_jar_file.getInputStream(e)
                   _datab64 = is.text.bytes.encodeBase64().toString()
                }
@@ -760,20 +760,12 @@ class JsonInstanceCanonicalGenerator2 {
          _datab64 = _dataf.bytes.encodeBase64().toString()
       }
 
-
-      AttributeNode a = o.parent
-
       Map mtype = generate_attr_CODE_PHRASE('media_type', 'IANA_media-types', 'image/jpeg') // TODO: grab the terminology from the ObjectNode
       Map mmcontent = [
          _type: 'DV_MULTIMEDIA',
          data: _datab64,
          size: _datab64.size()
       ] + mtype
-
-
-      /* [
-         "${a.rmAttributeName}": mmcontent
-      ] */
 
       return mmcontent
    }

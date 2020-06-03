@@ -65,7 +65,7 @@ class TerminologyParser {
       // TODO> NOT supporting codesets for the moment
 
       trmnlgy.group.each { g ->
-        println "loading group: "+ g.@name.text()
+        //println "loading group: "+ g.@name.text()
         g.concept.each { c ->
 
            res << [ (lang +'_'+ c.@id.text()): new CodedTerm(code:c.@id.text(), term: new Term(text:c.@rubric.text())) ]
