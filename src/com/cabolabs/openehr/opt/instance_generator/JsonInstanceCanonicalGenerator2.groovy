@@ -391,6 +391,12 @@ class JsonInstanceCanonicalGenerator2 {
    {
       //println "processAttributeChildren"
 
+      // some cases might not have a constraint of an attribute, just checking that
+      if (!a)
+      {
+         return
+      }
+
       List attrs = []
 
       //println "processAttributeChildren parent_arch_id: "+ parent_arch_id
@@ -1269,10 +1275,6 @@ class JsonInstanceCanonicalGenerator2 {
          mobj.description = description[0]
       }
 
-
-//      AttributeNode a = o.parent
-
-
       // add one of the ism_transition in the OPT
       def attr_ism_transition = o.attributes.find { it.rmAttributeName == 'ism_transition' }
 
@@ -1320,7 +1322,6 @@ class JsonInstanceCanonicalGenerator2 {
       /* def mattr
       o.attributes.each { oa ->
          mattr = processAttributeChildren(oa, parent_arch_id)
-
          mobj[oa.rmAttributeName] = mattr
       } */
 
@@ -1474,6 +1475,7 @@ class JsonInstanceCanonicalGenerator2 {
       // the name is already considered in add_LOCATABLE_elements
       // if it has constraint for null_flavour, sometimes generate that instead of the value
 
+      // attr_value chould be null if no constraint is defined!
       def attr_value = o.attributes.find { it.rmAttributeName == 'value' }
       def attr_null_flavour = o.attributes.find { it.rmAttributeName == 'null_flavour' }
 
@@ -1488,25 +1490,21 @@ class JsonInstanceCanonicalGenerator2 {
          }
          else
          {
-            mattr = processAttributeChildren(attr_value, parent_arch_id)
-            mobj.value = mattr[0]
+            if (attr_value)
+            {
+               mattr = processAttributeChildren(attr_value, parent_arch_id)
+               mobj.value = mattr[0]
+            }
          }
       }
       else
       {
-         mattr = processAttributeChildren(attr_value, parent_arch_id)
-         mobj.value = mattr[0]
+         if (attr_value)
+         {
+            mattr = processAttributeChildren(attr_value, parent_arch_id)
+            mobj.value = mattr[0]
+         }
       }
-
-      /*
-      o.attributes.each { oa ->
-         if (oa.rmAttributeName == 'name') return // avoid processing name constraints, thos are processde by add_LOCATABLE_elements
-
-         // returns a list and the value is single using the first item
-         mattr = processAttributeChildren(oa, parent_arch_id)
-         mobj[oa.rmAttributeName] = mattr[0]
-      }
-      */
 
       return mobj
    }
