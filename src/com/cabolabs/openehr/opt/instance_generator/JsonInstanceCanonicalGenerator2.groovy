@@ -25,6 +25,8 @@ class JsonInstanceCanonicalGenerator2 {
    def datetime_format = "yyyyMMdd'T'HHmmss,SSSZ"
    def formatter = new SimpleDateFormat( datetime_format )
 
+   Random random_gen = new Random() // TODO: use this one for all generations
+
    // Dummy data (TODO: make this configurable from an external file)
    def composition_settings = [
       'en': [
@@ -797,31 +799,66 @@ class JsonInstanceCanonicalGenerator2 {
 
    private generate_DV_PROPORTION(ObjectNode o, String parent_arch_id)
    {
-      /*
-      <value xsi:type="DV_PROPORTION">
-       <numerator>1.5</numerator>
-       <denominator>1</denominator>
-       <type>1</type>
-       <precision>0</precision>
-      </value>
-      */
-      AttributeNode a = o.parent
-      /* [
-         "${a.rmAttributeName}": [
-            _type: 'DV_PROPORTION',
-            // TODO: consider proportion type from OPT to generate valid values, hardcoded for now.
-            numerator: '1.5',
-            denominator: '1',
-            type: '1',
-            precision: '0'
-         ]
-      ] */
+      def attr_numerator = o.attributes.find { it.rmAttributeName == 'numerator' }
+      def attr_denominator = o.attributes.find { it.rmAttributeName == 'denominator' }
+      def attr_type = o.attributes.find { it.rmAttributeName == 'type' }
+
+      def num_hi, num_lo, den_hi, den_lo, type
+
+      if (attr_numerator)
+      {
+         // TODO: refactor to generate_REAL
+         println attr_numerator.children[0].item // CReal
+         def num_constraint = attr_numerator.children[0].item.range
+         
+         num_lo = (num_constraint.lowerUnbounded ?    0.0f : num_constraint.lower)
+         num_hi = (num_constraint.upperUnbounded ? 1000.0f : num_constraint.upper)
+
+         // check the upper and lower included
+         if (!num_constraint.lowerIncluded) num_lo++ // it would be enough to add 0.1
+         if (!num_constraint.upperIncluded) num_hi--
+      }
+      else
+      {
+         num_hi = 1000.0f
+         num_lo = 0.0f
+      }
+
+      if (attr_denominator)
+      {
+         // TODO: refactor to generate_REAL
+         def den_constraint = attr_denominator.children[0].item.range
+         
+         den_lo = (den_constraint.lowerUnbounded ?    0.0f : den_constraint.lower)
+         den_hi = (den_constraint.upperUnbounded ? 1000.0f : den_constraint.upper)
+
+         // check the upper and lower included
+         if (!den_constraint.lowerIncluded) den_lo++ // it would be enough to add 0.1
+         if (!den_constraint.upperIncluded) den_hi--
+      }
+      else
+      {
+         den_hi = 1000.0f
+         den_lo = 0.0f
+      }
+
+      if (attr_type)
+      {
+         // CPrimitive . CInteger
+         type = attr_type.children[0]?.item?.list[0]
+         if (!type) type = 1
+      }
+      else
+      {
+         type = 1
+      }
+
       [
          _type: 'DV_PROPORTION',
          // TODO: consider proportion type from OPT to generate valid values, hardcoded for now.
-         numerator: '1.5',
-         denominator: '1',
-         type: '1',
+         numerator: (random_gen.nextFloat() * (num_hi - num_lo) + num_lo).round(1),
+         denominator: (random_gen.nextFloat() * (den_hi - den_lo) + den_lo).round(1),
+         type: type,
          precision: '0'
       ]
    }
