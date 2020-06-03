@@ -477,29 +477,32 @@ class JsonInstanceCanonicalGenerator2 {
 
 
       def def_code = o.attributes.find { it.rmAttributeName == 'defining_code' }
-      def first_code, terminology
+      def first_code, terminology_id
       if (def_code)
       {
          first_code = def_code.children[0].codeList[0] // can be null if there are no code constraints in the OPT
-         terminology = def_code.children[0].terminologyIdName
+         terminology_id = def_code.children[0].terminologyIdName
       }
 
-      if (!terminology)
+      if (!terminology_id)
       {
          // format terminology:LOINC?subset=laboratory_services
          def externalTerminologyRef = def_code.children[0].terminologyRef
          if (!externalTerminologyRef)
          {
-            terminology = "terminology_not_specified_as_constraint_or_referenceSetUri_in_opt"
+            terminology_id = "terminology_not_specified_as_constraint_or_referenceSetUri_in_opt"
          }
          else
          {
-            terminology = externalTerminologyRef.split("\\?")[0].split(":")[1]
+            terminology_id = externalTerminologyRef.split("\\?")[0].split(":")[1]
          }
       }
 
-      // random name data bu default
-      def name = String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 30 )
+      // random value data by default
+      def value = String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 30 )
+
+      /* println "terminology ${terminology_id}"
+      println "first_code ${first_code}" */
 
       if (!first_code)
       {
@@ -507,37 +510,26 @@ class JsonInstanceCanonicalGenerator2 {
       }
       else
       {
-         // get name from archetype ontology
-         if (terminology == 'local')
+         // get value from archetype ontology
+         if (terminology_id == 'local')
          {
-            name = this.opt.getTerm(parent_arch_id, first_code)
+            value = this.opt.getTerm(parent_arch_id, first_code)
          }
-         // get name form openehr terminology
-         else if (terminology == 'openehr')
+         // get value form openehr terminology
+         else if (terminology_id == 'openehr')
          {
-            name = this.terminology.getRubric(opt.langCode, first_code)
+            value = this.terminology.getRubric(opt.langCode, first_code)
          }
       }
 
-      AttributeNode a = o.parent
-      /* [
-         "${a.rmAttributeName}": [
-            _type: 'DV_CODED_TEXT',
-            value: name,
-            defining_code: [
-               terminology_id: [
-                  value: terminology
-               ],
-               code_string: first_code
-            ]
-         ]
-      ] */
+      //println "value ${value}"
+
       [
          _type: 'DV_CODED_TEXT',
-         value: name,
+         value: value,
          defining_code: [
             terminology_id: [
-               value: terminology
+               value: terminology_id
             ],
             code_string: first_code
          ]
@@ -1477,6 +1469,36 @@ class JsonInstanceCanonicalGenerator2 {
 
       def mobj = add_LOCATABLE_elements(o, parent_arch_id) // _type, name, archetype_node_id
       def mattr
+
+      // the element can have constraints for: name, value and null_flavour
+      // the name is already considered in add_LOCATABLE_elements
+      // if it has constraint for null_flavour, sometimes generate that instead of the value
+
+      def attr_value = o.attributes.find { it.rmAttributeName == 'value' }
+      def attr_null_flavour = o.attributes.find { it.rmAttributeName == 'null_flavour' }
+
+      // 20 % of the time generate null_flavour instead of value
+      if (attr_null_flavour)
+      {
+         if (new Random().nextInt(10) > 7) // 0..9 > 7 is 8 or 9 that is 20% of the time
+         {
+            // returns a list and the value is single using the first item
+            mattr = processAttributeChildren(attr_null_flavour, parent_arch_id)
+            mobj.null_flavour = mattr[0]
+         }
+         else
+         {
+            mattr = processAttributeChildren(attr_value, parent_arch_id)
+            mobj.value = mattr[0]
+         }
+      }
+      else
+      {
+         mattr = processAttributeChildren(attr_value, parent_arch_id)
+         mobj.value = mattr[0]
+      }
+
+      /*
       o.attributes.each { oa ->
          if (oa.rmAttributeName == 'name') return // avoid processing name constraints, thos are processde by add_LOCATABLE_elements
 
@@ -1484,6 +1506,7 @@ class JsonInstanceCanonicalGenerator2 {
          mattr = processAttributeChildren(oa, parent_arch_id)
          mobj[oa.rmAttributeName] = mattr[0]
       }
+      */
 
       return mobj
    }

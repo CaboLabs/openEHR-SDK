@@ -1,6 +1,6 @@
 echo "Building..."
 
-mkdir bin
+[ ! -d "bin" ] &&  mkdir bin
 
 start=`date +%s%N`
 if [ -d "bin" ]; then
