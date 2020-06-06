@@ -346,9 +346,20 @@ class XmlInstanceGenerator {
                   code_string(setting_entry.key)
                }
             }
-            // health_care_facility
-            // participations
 
+            // other_context
+            if (context)
+            {
+               def other_context = context.children[0].attributes.find{ it.rmAttributeName == 'other_context' }
+               if (other_context)
+               {
+                  processAttributeChildren(other_context, opt.definition.archetypeId)
+               }
+            }
+
+            // health_care_facility
+
+            // participations
             if (addParticipations)
             {
                def participation = participations[Math.abs(new Random().nextInt() % participations.size())]
@@ -378,15 +389,6 @@ class XmlInstanceGenerator {
                         code_string('193')
                      }
                   }
-               }
-            }
-
-            if (context)
-            {
-               def other_context = context.children[0].attributes.find{ it.rmAttributeName == 'other_context' }
-               if (other_context)
-               {
-                  processAttributeChildren(other_context, opt.definition.archetypeId)
                }
             }
          }
