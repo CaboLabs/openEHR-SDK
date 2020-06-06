@@ -92,7 +92,7 @@ class OptUiGenerator {
           link(rel:"stylesheet", href:"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css")
         }
         body() {
-          div(class: "container") {
+          div(class: "form_container") {
             h1(opt.concept)
             generate(opt.definition, builder, opt.definition.archetypeId)
           }
