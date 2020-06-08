@@ -35,7 +35,7 @@ class JsonInstanceCanonicalGenerator2 {
          228: 'primary medical care'
       ],
       'es': [
-         225: 'homar',
+         225: 'hogar',
          227: 'atención de emergencia',
          228: 'atención médica primaria'
       ]
@@ -1319,22 +1319,28 @@ class JsonInstanceCanonicalGenerator2 {
 
       // add one of the ism_transition in the OPT
       def attr_ism_transition = o.attributes.find { it.rmAttributeName == 'ism_transition' }
+      def code_phrase
 
       if (!attr_ism_transition)
       {
-         println "Avoid generating ism_transition for ACTION because there is no constraint for it on the OPT"
-         return
+         // create dummy ism_transition data if there is no definition in the OPT
+         code_phrase = [
+            codeList: ['526'],
+            terminologyIdName: 'openehr'
+         ]
       }
-
-      // .children[0] ISM_TRANSITION
-      //  .attributes current_state
-      //    .children[0] DV_CODED_TEXT
-      //      .attributes defining_code
-      //       .children[0] CODE_PHRASE
-      def code_phrase = attr_ism_transition
-                           .children[0].attributes.find { it.rmAttributeName == 'current_state' }
-                           .children[0].attributes.find { it.rmAttributeName == 'defining_code' }
-                           .children[0]
+      else
+      {
+         // .children[0] ISM_TRANSITION
+         //  .attributes current_state
+         //    .children[0] DV_CODED_TEXT
+         //      .attributes defining_code
+         //       .children[0] CODE_PHRASE
+         code_phrase = attr_ism_transition
+                              .children[0].attributes.find { it.rmAttributeName == 'current_state' }
+                              .children[0].attributes.find { it.rmAttributeName == 'defining_code' }
+                              .children[0]
+      }
 
       mobj.ism_transition = [
          current_state: [
