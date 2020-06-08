@@ -119,10 +119,10 @@ class XmlInstanceGenerator {
       if (!terminology_repo.exists()) // try to load from resources
       {
          //def folder_path = Holders.grailsApplication.parentContext.getResource("resources"+ PS +"terminology"+ PS).getLocation().getPath()
-         println "Terminology not found in file system"
+         //println "Terminology not found in file system"
 
          // absolute route to the JAR File
-         println new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath())
+         //println new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath())
 
          def jar = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath())
          if (jar.isFile())

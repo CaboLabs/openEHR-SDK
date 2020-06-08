@@ -33,10 +33,10 @@ class OptUiGenerator {
       if (!terminology_repo.exists()) // try to load from resources
       {
          //def folder_path = Holders.grailsApplication.parentContext.getResource("resources"+ PS +"terminology"+ PS).getLocation().getPath()
-         println "Terminology not found in file system"
+         //println "Terminology not found in file system"
 
          // absolute route to the JAR File
-         println new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath())
+         //println new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath())
 
          def jar = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath())
          if (jar.isFile())
@@ -78,25 +78,25 @@ class OptUiGenerator {
 
       // Generates HTML while traversing the archetype tree
       builder.html(lang: opt.langCode) {
-        head() {
-          meta(name: "viewport", content: "width=device-width, initial-scale=1")
+         head() {
+            meta(name: "viewport", content: "width=device-width, initial-scale=1")
 
-          mkp.comment('simple style')
+            mkp.comment('simple style')
 
-          if (web_env)
-            link(rel:"stylesheet", href:"/static/style.css")
-          else
-            link(rel:"stylesheet", href:"style.css")
+            if (web_env)
+               link(rel:"stylesheet", href:"/static/style.css")
+            else
+               link(rel:"stylesheet", href:"style.css")
 
-          mkp.comment('boostrap style')
-          link(rel:"stylesheet", href:"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css")
-        }
-        body() {
-          div(class: "form_container") {
-            h1(opt.concept)
-            generate(opt.definition, builder, opt.definition.archetypeId)
-          }
-        }
+            mkp.comment('boostrap style')
+            link(rel:"stylesheet", href:"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css")
+         }
+         body() {
+            div(class: "form-container") {
+               h1(opt.concept)
+               generate(opt.definition, builder, opt.definition.archetypeId)
+            }
+         }
       }
 
       return "<!DOCTYPE html>\n" + writer.toString()
@@ -124,7 +124,7 @@ class OptUiGenerator {
 
          //println "element name "+ opt.getTerm(parent_arch_id, o.nodeId)
 
-         b.div(class:o.rmTypeName +' form-group row') {
+         b.div(class:o.rmTypeName +' form-group row form-item') {
 
             if (name) generateFields(name, b, parent_arch_id)
             else
@@ -140,7 +140,7 @@ class OptUiGenerator {
 
       if (o.type == "ARCHETYPE_SLOT")
       {
-         b.div(class: o.rmTypeName) {
+         b.div(class: o.rmTypeName +'  form-item') {
             label("ARCHETYPE_SLOT is not supported yet, found at "+ o.path)
          }
          return // Generator do not support slots on OPTs
@@ -157,7 +157,7 @@ class OptUiGenerator {
       // ***********************************************************************
 
       // Process all non-ELEMENTs
-      b.div(class: o.rmTypeName) {
+      b.div(class: o.rmTypeName +'  form-item') {
 
          // label for intermediate nodes
          label( opt.getTerm(parent_arch_id, o.nodeId) )
@@ -188,82 +188,79 @@ class OptUiGenerator {
    {
       switch (node.rmTypeName)
       {
-        case 'DV_TEXT':
-           builder.input(type:'text', class: node.rmTypeName +' form-control', name:node.path)
-        break
-        case 'DV_CODED_TEXT':
+         case 'DV_TEXT':
+            builder.input(type:'text', class: node.rmTypeName +' form-control', name:node.path)
+         break
+         case 'DV_CODED_TEXT':
 
-           def constraint = node.attributes.find{ it.rmAttributeName == 'defining_code' }.children[0]
+            def constraint = node.attributes.find{ it.rmAttributeName == 'defining_code' }.children[0]
 
-           if (constraint.rmTypeName == "CODE_PHRASE")
-           {
-              // is a ConstraintRef?
-              if (constraint.terminologyRef)
-              {
-                 builder.div(class: 'input-group') {
-                    input(type:'text', name: constraint.path, class: node.rmTypeName +' form-control')
-                    i(class:'input-group-addon glyphicon glyphicon-search', '')
-                 }
-              }
-              else // constraint is CCodePhrase
-              {
-                 builder.select(name: constraint.path, class: node.rmTypeName +' form-control') {
+            if (constraint.rmTypeName == "CODE_PHRASE")
+            {
+               // is a ConstraintRef?
+               if (constraint.terminologyRef)
+               {
+                  builder.div(class: 'input-group') {
+                     input(type:'text', name: constraint.path, class: node.rmTypeName +' form-control')
+                     i(class:'input-group-addon glyphicon glyphicon-search', '')
+                  }
+               }
+               else // constraint is CCodePhrase
+               {
+                  builder.select(name: constraint.path, class: node.rmTypeName +' form-control') {
 
-                    option(value:'', '')
+                     option(value:'', '')
 
-                    if (constraint.terminologyIdName == 'local')
-                    {
-                       constraint.codeList.each { code_node ->
+                     if (constraint.terminologyIdName == 'local')
+                     {
+                        constraint.codeList.each { code_node ->
+                           option(value:code_node, opt.getTerm(parent_arch_id, code_node))
+                        }
 
-                          option(value:code_node, opt.getTerm(parent_arch_id, code_node))
-                       }
+                        // FIXME: constraint can be by code list or by terminology reference. For term ref we should have a search control, not a select
+                        if (constraint.codeList.size() == 0) println "Empty DV_CODED_TEXT.defining_code constraint "+ parent_arch_id + constraint.path
+                     }
+                     else // terminology openehr
+                     {
+                        constraint.codeList.each { code_node ->
+                           option(value:code_node, terminology.getRubric(opt.langCode, code_node))
+                        }
+                     }
+                  }
+               }
+            }
+            else throw Exception("coded text constraint not supported "+ constraint.rmTypeName)
 
-                       // FIXME: constraint can be by code list or by terminology reference. For term ref we should have a search control, not a select
-                       if (constraint.codeList.size() == 0) println "Empty DV_CODED_TEXT.defining_code constraint "+ parent_arch_id + constraint.path
-                    }
-                    else // terminology openehr
-                    {
-                       constraint.codeList.each { code_node ->
+         break
+         case 'DV_QUANTITY':
 
-                          option(value:code_node, terminology.getRubric(opt.langCode, code_node))
-                       }
-                    }
-                 }
-              }
-           }
-           else throw Exception("coded text constraint not supported "+ constraint.rmTypeName)
+            builder.div(class:'col-md-5')
+            {
+               input(type:'text', name:node.path+'/magnitude', class: node.rmTypeName +' form-control')
+            }
+            builder.div(class:'col-md-5')
+            {
+               if (node.list.size() == 0)
+               {
+                  input(type:'text', name:node.path+'/units', class: node.rmTypeName +' form-control')
+               }
+               else
+               {
+                  select(name:node.path+'/units', class: node.rmTypeName +' form-control') {
 
-        break
-        case 'DV_QUANTITY':
+                     option(value:'', '')
+                     node.list.units.each { u ->
 
-	   builder.div(class:'col-md-5')
-	   {
-	      input(type:'text', name:node.path+'/magnitude', class: node.rmTypeName +' form-control')
-           }
-	   builder.div(class:'col-md-5')
-	   {
-	      if (node.list.size() == 0)
-	      {
-	         input(type:'text', name:node.path+'/units', class: node.rmTypeName +' form-control')
-	      }
-	      else
-	      {
-	         select(name:node.path+'/units', class: node.rmTypeName +' form-control') {
-
-                    option(value:'', '')
-
-                    node.list.units.each { u ->
-
-                       option(value:u, u)
-                    }
-                 }
-	      }
-	   }
-        break
-        case 'DV_COUNT':
-           builder.input(type:'number', class: node.rmTypeName +' form-control', name:node.path)
-        break
-        case 'DV_ORDINAL':
+                        option(value:u, u)
+                     }
+                  }
+               }
+            }
+         break
+         case 'DV_COUNT':
+            builder.input(type:'number', class: node.rmTypeName +' form-control', name:node.path)
+         break
+         case 'DV_ORDINAL':
 
            // ordinal.value // int
            // ordinal.symbol // DvCodedText
@@ -279,57 +276,57 @@ class OptUiGenerator {
                  option(value:ord.value, opt.getTerm(parent_arch_id, ord.symbol.codeString))
               }
            }
-        break
-        case 'DV_DATE':
-           builder.input(type:'date', name:node.path, class: node.rmTypeName +' form-control')
-        break
-        case 'DV_DATE_TIME':
-           builder.input(type:'datetime-local', name:node.path, class: node.rmTypeName +' form-control')
-        break
-        case 'DV_BOOLEAN':
-           builder.input(type:'checkbox', name:node.path, class: node.rmTypeName)
-        break
-        case 'DV_DURATION':
-           builder.label('D') {
-             input(type:'number', name:node.path+'/D', class:'small '+ node.rmTypeName +' form-control')
-           }
-           builder.label('H') {
-             input(type:'number', name:node.path+'/H', class:'small '+ node.rmTypeName +' form-control')
-           }
-           builder.label('M') {
-             input(type:'number', name:node.path+'/M', class:'small '+ node.rmTypeName +' form-control')
-           }
-           builder.label('S') {
-             input(type:'number', name:node.path+'/S', class:'small '+ node.rmTypeName +' form-control')
-           }
-        break
-        case 'DV_PROPORTION':
-           builder.label('numerator') {
-             input(type:'number', name:node.path+'/numerator', class:'small '+ node.rmTypeName +' form-control')
-           }
-           builder.label('denominator') {
-             input(type:'number', name:node.path+'/denominator', class:'small '+ node.rmTypeName +' form-control')
-           }
-        break
-        case 'DV_IDENTIFIER':
-           builder.label('issuer') {
-             input(type:'text', name:node.path+'/issuer', class:'small '+ node.rmTypeName +' form-control')
-           }
-           builder.label('assigner') {
-             input(type:'text', name:node.path+'/assigner', class:'small '+ node.rmTypeName +' form-control')
-           }
-           builder.label('id') {
-             input(type:'text', name:node.path+'/id', class:'small '+ node.rmTypeName +' form-control')
-           }
-           builder.label('type') {
-             input(type:'text', name:node.path+'/type', class:'small '+ node.rmTypeName +' form-control')
-           }
-        break
-        case 'DV_MULTIMEDIA':
-           builder.input(type:'file', name:node.path, class: node.rmTypeName)
-        break
-        default: // TODO: generar campos para los DV_INTERVAL
-           println "Datatype "+ node.rmTypeName +" not supported yet"
+         break
+         case 'DV_DATE':
+            builder.input(type:'date', name:node.path, class: node.rmTypeName +' form-control')
+         break
+         case 'DV_DATE_TIME':
+            builder.input(type:'datetime-local', name:node.path, class: node.rmTypeName +' form-control')
+         break
+         case 'DV_BOOLEAN':
+            builder.input(type:'checkbox', name:node.path, class: node.rmTypeName)
+         break
+         case 'DV_DURATION':
+            builder.label('D') {
+               input(type:'number', name:node.path+'/D', class:'small '+ node.rmTypeName +' form-control')
+            }
+            builder.label('H') {
+               input(type:'number', name:node.path+'/H', class:'small '+ node.rmTypeName +' form-control')
+            }
+            builder.label('M') {
+               input(type:'number', name:node.path+'/M', class:'small '+ node.rmTypeName +' form-control')
+            }
+            builder.label('S') {
+               input(type:'number', name:node.path+'/S', class:'small '+ node.rmTypeName +' form-control')
+            }
+         break
+         case 'DV_PROPORTION':
+            builder.label('numerator') {
+               input(type:'number', name:node.path+'/numerator', class:'small '+ node.rmTypeName +' form-control')
+            }
+            builder.label('denominator') {
+               input(type:'number', name:node.path+'/denominator', class:'small '+ node.rmTypeName +' form-control')
+            }
+         break
+         case 'DV_IDENTIFIER':
+            builder.label('issuer') {
+               input(type:'text', name:node.path+'/issuer', class:'small '+ node.rmTypeName +' form-control')
+            }
+            builder.label('assigner') {
+               input(type:'text', name:node.path+'/assigner', class:'small '+ node.rmTypeName +' form-control')
+            }
+            builder.label('id') {
+               input(type:'text', name:node.path+'/id', class:'small '+ node.rmTypeName +' form-control')
+            }
+            builder.label('type') {
+               input(type:'text', name:node.path+'/type', class:'small '+ node.rmTypeName +' form-control')
+            }
+         break
+         case 'DV_MULTIMEDIA':
+            builder.input(type:'file', name:node.path, class: node.rmTypeName)
+         break
+         default: // TODO: generar campos para los DV_INTERVAL
+            println "Datatype "+ node.rmTypeName +" not supported yet"
       }
    }
 }
