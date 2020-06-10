@@ -100,7 +100,7 @@ class TerminologyParser {
    {
       if (!this.terms[lang +'_'+ code])
       {
-         println "code for $lang and $code is not defined in the openEHR terminology" // if the language is not supported will fall here
+         println "term for language '$lang' and code '$code' is not defined in the openEHR terminology" // if the language is not supported will fall here
          return
       }
       return this.terms[lang +'_'+ code]?.term.text

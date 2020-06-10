@@ -278,7 +278,7 @@ class OperationalTemplateParser {
             // parse terminologyID value, we could create CODE_PHRASE and parse this internally
             // name [ ‘(’ version ‘)’ ]
             def tid = node.terminology_id.value.text()
-            def tidPattern = ~/(\w+)\s*(?:\(?(\w*)\)?.*)?/
+            def tidPattern = ~/([\w_-]+)\s*(?:\(?(\w*)\)?.*)?/
             def result = tidPattern.matcher(tid)
 
             obn.terminologyIdName = result[0][1]

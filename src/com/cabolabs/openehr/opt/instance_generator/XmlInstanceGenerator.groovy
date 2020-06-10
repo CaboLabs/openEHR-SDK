@@ -296,8 +296,14 @@ class XmlInstanceGenerator {
       // path is to attr, codeList is in the node
       def category_code = opt.getNode('/category/defining_code').codeList[0]
 
+
+      def _value = terminology.getRubric(opt.langCode, category_code)
+
+      // fallback to 'en' if the code was not found for the language
+      if (!_value) _value = terminology.getRubric('en', category_code)
+
       builder.category() {
-         value(terminology.getRubric(opt.langCode, category_code))
+         value(_value)
          defining_code() {
             terminology_id() {
                value('openehr')
@@ -523,6 +529,7 @@ class XmlInstanceGenerator {
          }
       }
 
+
       // random name data bu default
       def name = String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 30 )
 
@@ -541,6 +548,9 @@ class XmlInstanceGenerator {
          else if (terminology == 'openehr')
          {
             name = this.terminology.getRubric(opt.langCode, first_code)
+
+            // fallback to english
+            if (!name) name = this.terminology.getRubric('en', first_code)
          }
       }
 
@@ -1153,9 +1163,14 @@ class XmlInstanceGenerator {
                              .children[0].attributes.find { it.rmAttributeName == 'defining_code' }
                              .children[0]
 
+         def _value = terminology.getRubric(opt.langCode, code_phrase.codeList[0])
+
+         // fallback to english
+         if (!_value) _value = terminology.getRubric('en', code_phrase.codeList[0])
+
          ism_transition() {
            current_state() {
-              value( terminology.getRubric(opt.langCode, code_phrase.codeList[0]) )
+              value( _value )
               defining_code() { // use generate_attr_CODE_PHRASE
                  terminology_id() {
                     value( code_phrase.terminologyIdName )

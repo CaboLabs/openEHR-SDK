@@ -267,8 +267,13 @@ class JsonInstanceCanonicalGenerator2 {
       // path is to attr, codeList is in the node
       def category_code = opt.getNode('/category/defining_code').codeList[0]
 
+      def value = terminology.getRubric(opt.langCode, category_code)
+
+      // fallback to 'en' if the code was not found for the language
+      if (!value) value = terminology.getRubric('en', category_code)
+
       compo.category = [
-         value: terminology.getRubric(opt.langCode, category_code),
+         value: value,
          defining_code: [
             terminology_id: [
                value: 'openehr'
@@ -496,6 +501,12 @@ class JsonInstanceCanonicalGenerator2 {
       {
          first_code = def_code.children[0].codeList[0] // can be null if there are no code constraints in the OPT
          terminology_id = def_code.children[0].terminologyIdName
+
+         /* println def_code.children
+         println def_code.children[0]
+         println def_code.children[0].terminologyIdName
+         println def_code.children[0].terminologyIdVersion
+         println def_code.children[0].codeList */
       }
 
       if (!terminology_id)
@@ -533,6 +544,9 @@ class JsonInstanceCanonicalGenerator2 {
          else if (terminology_id == 'openehr')
          {
             value = this.terminology.getRubric(opt.langCode, first_code)
+
+            // fallback to 'en' if the code was not found for the language
+            if (!value) value = terminology.getRubric('en', first_code)
          }
       }
 
@@ -1342,9 +1356,14 @@ class JsonInstanceCanonicalGenerator2 {
                               .children[0]
       }
 
+      def value = terminology.getRubric(opt.langCode, code_phrase.codeList[0])
+
+      // fallback to 'en' if the code was not found for the language
+      if (!value) value = terminology.getRubric('en', code_phrase.codeList[0])
+
       mobj.ism_transition = [
          current_state: [
-            value: terminology.getRubric(opt.langCode, code_phrase.codeList[0]),
+            value: value,
             defining_code: [ // use generate_attr_CODE_PHRASE
                terminology_id: [
                   value: code_phrase.terminologyIdName
