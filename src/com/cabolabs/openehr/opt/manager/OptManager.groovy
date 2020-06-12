@@ -120,7 +120,7 @@ class OptManager {
          return this.cache[namespace][templateId]
       }
 
-      def text = this.repo.getOptContentsByTemplateId(templateId, namespace)
+      def text = this.repo.getOptContentsByTemplateId(templateId, namespace) // FIXME: it needs the language or use a normalized template id to get
       if (!text)
       {
          throw new Exception("OPT not found "+ templateId)

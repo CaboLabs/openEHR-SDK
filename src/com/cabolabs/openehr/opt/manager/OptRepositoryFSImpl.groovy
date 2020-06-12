@@ -67,7 +67,7 @@ class OptRepositoryFSImpl implements OptRepository {
 
       if (!isNormalizedTemplateId(templateId))
       {
-         templateId = normalizeTemplateId(templateId)
+         templateId = normalizeTemplateId(templateId) // FIXME: this needs the language!
       }
 
       def location = addTrailingSeparator(this.repoLocation) +
@@ -114,7 +114,11 @@ class OptRepositoryFSImpl implements OptRepository {
    {
       // https://gist.github.com/ppazos/12f3efc4eb178e43ff73a0c989a2e1d7
       String normalized = java.text.Normalizer.normalize(templateId, java.text.Normalizer.Form.NFD).replaceAll(/\p{InCombiningDiacriticalMarks}+/, '')
-      String snake      = normalized.replaceAll( / ([A-Z])/, /$1/ ).replaceAll( /([A-Z])/, /_$1/ ).replaceAll(/\s/, '_').toLowerCase().replaceAll( /^_/, '' )
+      // The issue with sname is for ABCDE template it generates a_b_c_d_e_template
+      //String snake      = normalized.replaceAll( / ([A-Z])/, /$1/ ).replaceAll( /([A-Z])/, /_$1/ ).replaceAll(/\s/, '_').toLowerCase().replaceAll( /^_/, '' )
+
+      // lowercase, no spaces, remove non (letters or numbers), remove beginning/ending underscores if there is any
+      String snake      = normalized.toLowerCase().replaceAll(/\s/, '_').replaceAll(/[^a-zA-Z0-9]+/,'_').replaceAll( /^_/, '' ).replaceAll( /_$/, '' )
       String removeDots = snake.replaceAll(/\./, '_')
       String plusLAndV  = removeDots +'.'+ language +'.v1'
       return plusLAndV
@@ -122,7 +126,11 @@ class OptRepositoryFSImpl implements OptRepository {
 
    boolean isNormalizedTemplateId(String templateId)
    {
-      (templateId ==~ /([a-z]+(_[a-z0-9]+)*)\.([a-z]{2})\.v([0-9]+[0-9]*(\.[0-9]+[0-9]*(\.[0-9]+[0-9]*)?)?)/)
+      // very strict regex doesnt allow hyphens or parentheses in the name
+      //(templateId ==~ /([a-z]+(_[a-z0-9]+)*)\.([a-z]{2})\.v([0-9]+[0-9]*(\.[0-9]+[0-9]*(\.[0-9]+[0-9]*)?)?)/)
+
+      // relaxed regex only checks it ends with .en.v1
+      (templateId ==~ /.*\.([a-z]{2})\.v([0-9]+[0-9]*(\.[0-9]+[0-9]*(\.[0-9]+[0-9]*)?)?)$/)
    }
 
    String addTrailingSeparator(String path)
