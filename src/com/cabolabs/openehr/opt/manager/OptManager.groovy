@@ -68,6 +68,7 @@ class OptManager {
       opts.each { location, text ->
 
          opt = parser.parse( text )
+
          if (opt)
          {
             if (complete) opt.complete()
@@ -82,7 +83,7 @@ class OptManager {
          }
          else
          {
-            //log.error("No se pudo cargar el template
+            log.error("OPT could not be loaded "+ templateId)
          }
       }
 
@@ -105,6 +106,41 @@ class OptManager {
       }
    }
 
+   /*
+    * Loads one template in the cache.
+    */
+   @Synchronized
+   public void load(String templateId, String namespace = DEFAULT_NAMESPACE, boolean complete = false)
+   {
+      // FIXME: it needs the language or use a normalized template id to get
+      // TODO: the language shouldnt be part of the OPT normalized ID since the concept name should be in that language anyway and it's enough to differentiate IDs
+      def text = this.repo.getOptContentsByTemplateId(templateId, namespace)
+      if (!text)
+      {
+         throw new Exception("OPT not found "+ templateId)
+      }
+
+      def parser = new OperationalTemplateParser()
+      def opt = parser.parse( text )
+
+      if (opt)
+      {
+         if (complete) opt.complete()
+
+         log.debug("Loading OPT: " + opt.templateId)
+
+         if (!this.cache[namespace]) this.cache[namespace] = [:]
+         if (!this.timestamps[namespace]) this.timestamps[namespace] = [:]
+
+         this.cache[namespace][opt.templateId] = opt
+         this.timestamps[namespace][opt.templateId] = new Date()
+      }
+      else
+      {
+         throw new Exception("OPT could not be loaded "+ templateId)
+      }
+   }
+
    /**
     * templateId identifier of the OPT that is requested
     * namespace from where the manager will try to load the template
@@ -120,7 +156,10 @@ class OptManager {
          return this.cache[namespace][templateId]
       }
 
-      def text = this.repo.getOptContentsByTemplateId(templateId, namespace) // FIXME: it needs the language or use a normalized template id to get
+      load(templateId, namespace)
+
+      /*
+      def text = this.repo.getOptContentsByTemplateId(templateId, namespace)
       if (!text)
       {
          throw new Exception("OPT not found "+ templateId)
@@ -143,6 +182,7 @@ class OptManager {
       {
          throw new Exception("OPT could not be loaded "+ templateId)
       }
+      */
 
       return this.cache[namespace][templateId]
    }
