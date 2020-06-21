@@ -339,9 +339,10 @@ class OptManager {
    {
       if (this.cache[namespace]) // just in case an unload is called before loading, maps doesnt exist and throws exception.
       {
-         this.cache[namespace].clear()
-         this.timestamps[namespace].clear()
-         this.referencedArchetypes[namespace].clear()
+         // TODO: sometimes we get 'Cannot invoke method clear() on null object' from here, not sure which one is null, needs more testing, added the ? just in case.
+         this.cache[namespace]?.clear()
+         this.timestamps[namespace]?.clear()
+         this.referencedArchetypes[namespace]?.clear()
       }
    }
 

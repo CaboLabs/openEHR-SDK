@@ -671,14 +671,14 @@ class JsonInstanceCanonicalGenerator2 {
    private generate_DV_COUNT(ObjectNode o, String parent_arch_id)
    {
       def magnitude, lo, hi
-      def a = o.attributes.find { it.rmAttributeName == 'magnitude' }
-      if (a)
+      def c_magnitude = o.attributes.find { it.rmAttributeName == 'magnitude' }
+      if (c_magnitude)
       {
-         //println a.children[0].item.getClass() //children 0 is primitive, .item is CInteger
-         //println a.children[0].item.list
-         //println a.children[0].item.range
+         //println c_magnitude.children[0].item.getClass() //children 0 is primitive, .item is CInteger
+         //println c_magnitude.children[0].item.list
+         //println c_magnitude.children[0].item.range
 
-         def primitive = a.children[0].item
+         def primitive = c_magnitude.children[0].item
 
          if (primitive.range)
          {
@@ -708,40 +708,14 @@ class JsonInstanceCanonicalGenerator2 {
 
    private generate_DV_BOOLEAN(ObjectNode o, String parent_arch_id)
    {
-      /*
-       <value xsi:type="DV_BOOLEAN">
-         <value>true</value>
-       </value>
-      */
-      AttributeNode a = o.parent
-      /* [
-         "${a.rmAttributeName}": [
-            _type: 'DV_BOOLEAN',
-            value: true
-         ]
-      ] */
       [
          _type: 'DV_BOOLEAN',
-         value: true
+         value: true // TODO: check constraint
       ]
    }
 
    private generate_DV_MULTIMEDIA(ObjectNode o, String parent_arch_id)
    {
-      /* http://www.cabolabs.com/CaboLabs%20New%20Logo%20Horizontal%20300dpi%20421.png
-       <value xsi:type="DV_MULTIMEDIA">
-         <alternate_text>Es una imagen!</alternate_text>
-         <data>iVBORw0KGgoAAAANSUhEUgAAAmwAAAJYCAYAAADff...</data>
-         <media_type>
-           <terminology_id>
-             <value>IANA_media-types</value>
-           </terminology_id>
-           <code_string></code_string>
-         </media_type>
-         <size>1024</size>
-       </value>
-      */
-
       def _dataf, _datab64
 
       // web environment?
@@ -925,44 +899,6 @@ class JsonInstanceCanonicalGenerator2 {
       ]
    }
 
-   private DV_DURATION_expression_generator_from_pattern(String pattern)
-   {
-      Random random = new Random()
-      def gen = ""
-      def is_time = false
-      def util_date = new Date()
-      pattern.each { c ->
-
-         switch (c)
-         {
-            case 'P':
-               gen += c
-            break
-            case 'T':
-               gen += c
-               is_time = true
-            break
-            case 'Y':
-               gen += (1900 + util_date.getYear()) + 'Y'
-            break
-            case 'M':
-               if (is_time)
-               gen += random.nextInt(60) + 'M'
-               else
-               gen += (util_date.getMonth()+1) + 'M'
-            break
-            case 'D':
-               gen += util_date.getDate() + 'D'
-            break
-            case ['H', 'S']:
-               gen += random.nextInt(60) + c
-            break
-         }
-      }
-
-      return gen
-   }
-
    private generate_DV_DURATION(ObjectNode o, String parent_arch_id)
    {
       //println "DURATION "+ o.getClass()
@@ -974,17 +910,17 @@ class JsonInstanceCanonicalGenerator2 {
          def c_duration = c_value.children[0].item
          if (c_duration.pattern)
          {
-            //println c_duration.pattern > PDTMS
+            //println c_duration.pattern // PDTMS
 
             return [
                _type: 'DV_DURATION',
-               value: DV_DURATION_expression_generator_from_pattern(c_duration.pattern)
+               value: DataGenerator.duration_value_from_pattern(c_duration.pattern)
             ]
          }
          else
          {
             println c_duration.range
-            // TBD
+            // TBD: consider range
          }
       }
 
@@ -996,24 +932,6 @@ class JsonInstanceCanonicalGenerator2 {
 
    private generate_DV_IDENTIFIER(ObjectNode o, String parent_arch_id)
    {
-      /*
-      <value xsi:type="DV_IDENTIFIER">
-        <issuer>sdfsfd</issuer>
-        <assigner>sdfsfd</assigner>
-        <id>sdfsfd</id>
-        <type>sdfsfd</type>
-      </value>
-      */
-      AttributeNode a = o.parent
-      /* [
-         "${a.rmAttributeName}": [
-            _type: 'DV_IDENTIFIER',
-            issuer: 'Hospital de Clinicas',
-            assigner: 'Hospital de Clinicas',
-            id: String.randomNumeric(8),
-            type: 'LOCALID'
-         ]
-      ] */
       [
          _type: 'DV_IDENTIFIER',
          issuer: 'Hospital de Clinicas',
@@ -1049,7 +967,7 @@ class JsonInstanceCanonicalGenerator2 {
             _type: 'DV_ORDINAL',
             value: o.list[0].value,
             symbol: [
-               value: value, // TODO: take the value from the ObjectNode
+               value: value,
                defining_code: [
                   terminology_id: [
                      value: o.list[0].symbol.terminologyId

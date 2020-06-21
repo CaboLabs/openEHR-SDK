@@ -531,7 +531,7 @@ class XmlInstanceGenerator {
 
 
       // random name data bu default
-      def name = String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 30 )
+      def _value = String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 30 )
 
       if (!first_code)
       {
@@ -539,18 +539,18 @@ class XmlInstanceGenerator {
       }
       else
       {
-         // get name from archetype ontology
+         // get value from archetype ontology
          if (terminology == 'local')
          {
-            name = this.opt.getTerm(parent_arch_id, first_code)
+            _value = this.opt.getTerm(parent_arch_id, first_code)
          }
-         // get name form openehr terminology
+         // get value form openehr terminology
          else if (terminology == 'openehr')
          {
-            name = this.terminology.getRubric(opt.langCode, first_code)
+            _value = this.terminology.getRubric(opt.langCode, first_code)
 
             // fallback to english
-            if (!name) name = this.terminology.getRubric('en', first_code)
+            if (!_value) _value = this.terminology.getRubric('en', first_code)
          }
       }
 
@@ -558,12 +558,12 @@ class XmlInstanceGenerator {
 
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_CODED_TEXT') {
-         value( name )
+         value(_value)
          defining_code {
             terminology_id {
                value(terminology)
             }
-            code_string( first_code )
+            code_string(first_code)
          }
       }
    }
@@ -654,8 +654,39 @@ class XmlInstanceGenerator {
       </value>
       */
       AttributeNode a = o.parent
+
+      def _magnitude, lo, hi
+      def c_magnitude = o.attributes.find { it.rmAttributeName == 'magnitude' }
+      if (c_magnitude)
+      {
+         //println c_magnitude.children[0].item.getClass() //children 0 is primitive, .item is CInteger
+         //println c_magnitude.children[0].item.list
+         //println c_magnitude.children[0].item.range
+
+         def primitive = c_magnitude.children[0].item
+
+         if (primitive.range)
+         {
+            lo = ((primitive.range.lowerUnbounded) ? 0 : primitive.range.lower)
+            hi = ((primitive.range.upperUnbounded) ? 100 : primitive.range.upper)
+
+            if (!primitive.range.lowerIncluded) lo++
+            if (!primitive.range.upperIncluded) hi--
+
+            _magnitude = new Random().nextInt(hi - lo) + lo // random between lo .. hi
+         }
+         else
+         {
+            _magnitude = primitive.list[0]
+         }
+      }
+      else // no constraints
+      {
+         _magnitude = Integer.random(10, 1)
+      }
+
       builder."${a.rmAttributeName}"('xsi:type':'DV_COUNT') {
-         magnitude( Integer.random(10, 1) ) // TODO: consider constraints
+         magnitude(_magnitude)
       }
    }
 
@@ -668,7 +699,7 @@ class XmlInstanceGenerator {
       */
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_BOOLEAN') {
-         value(true)
+         value(true) // TODO: check constraint
       }
    }
 
@@ -757,11 +788,65 @@ class XmlInstanceGenerator {
       </value>
       */
       AttributeNode a = o.parent
+
+      def attr_numerator = o.attributes.find { it.rmAttributeName == 'numerator' }
+      def attr_denominator = o.attributes.find { it.rmAttributeName == 'denominator' }
+      def attr_type = o.attributes.find { it.rmAttributeName == 'type' }
+
+      def num_hi, num_lo, den_hi, den_lo, _type
+
+      if (attr_numerator)
+      {
+         // TODO: refactor to generate_REAL
+         //println attr_numerator.children[0].item // CReal
+         def num_constraint = attr_numerator.children[0].item.range
+         
+         num_lo = (num_constraint.lowerUnbounded ?    0.0f : num_constraint.lower)
+         num_hi = (num_constraint.upperUnbounded ? 1000.0f : num_constraint.upper)
+
+         // check the upper and lower included
+         if (!num_constraint.lowerIncluded) num_lo++ // it would be enough to add 0.1
+         if (!num_constraint.upperIncluded) num_hi--
+      }
+      else
+      {
+         num_hi = 1000.0f
+         num_lo = 0.0f
+      }
+
+      if (attr_denominator)
+      {
+         // TODO: refactor to generate_REAL
+         def den_constraint = attr_denominator.children[0].item.range
+         
+         den_lo = (den_constraint.lowerUnbounded ?    0.0f : den_constraint.lower)
+         den_hi = (den_constraint.upperUnbounded ? 1000.0f : den_constraint.upper)
+
+         // check the upper and lower included
+         if (!den_constraint.lowerIncluded) den_lo++ // it would be enough to add 0.1
+         if (!den_constraint.upperIncluded) den_hi--
+      }
+      else
+      {
+         den_hi = 1000.0f
+         den_lo = 0.0f
+      }
+
+      if (attr_type)
+      {
+         // CPrimitive . CInteger
+         _type = attr_type.children[0]?.item?.list[0]
+         if (!_type) _type = 1
+      }
+      else
+      {
+         _type = 1
+      }
+
       builder."${a.rmAttributeName}"('xsi:type':'DV_PROPORTION') {
-         // TODO: consider proportion type from OPT to generate valid values, hardcoded for now.
-         numerator('1.5')
-         denominator('1')
-         type('1')
+         numerator((random_gen.nextFloat() * (num_hi - num_lo) + num_lo).round(1))
+         denominator((random_gen.nextFloat() * (den_hi - den_lo) + den_lo).round(1))
+         type(_type)
          precision('0')
       }
    }
@@ -807,8 +892,8 @@ class XmlInstanceGenerator {
       Random rand = new Random()
 
       builder."${a.rmAttributeName}"('xsi:type':'DV_QUANTITY') {
-         magnitude( rand.nextFloat() * (hi - lo) + lo ) //Integer.random(hi, lo) ) // TODO: should be BigDecinal not just Integer
-         units( _units )
+         magnitude(rand.nextFloat() * (hi - lo) + lo).round(1) //Integer.random(hi, lo) ) // TODO: should be BigDecinal not just Integer
+         units(_units)
       }
    }
 
@@ -820,8 +905,32 @@ class XmlInstanceGenerator {
       </value>
       */
       AttributeNode a = o.parent
-      builder."${a.rmAttributeName}"('xsi:type':'DV_DURATION') {
-         value('PT30M') // TODO: Duration String generator
+
+      def c_value = o.attributes.find{ it.rmAttributeName == 'value' }
+
+      if (c_value && c_value.children[0].item && c_value.children[0].item instanceof com.cabolabs.openehr.opt.model.primitive.CDuration)
+      {
+         def c_duration = c_value.children[0].item
+         if (c_duration.pattern)
+         {
+            builder."${a.rmAttributeName}"('xsi:type':'DV_DURATION') {
+               value(DataGenerator.duration_value_from_pattern(c_duration.pattern))
+            }
+         }
+         else
+         {
+            println c_duration.range
+            // TBD: consider range
+            builder."${a.rmAttributeName}"('xsi:type':'DV_DURATION') {
+            value('PT30M')
+         }
+         }
+      }
+      else
+      {
+         builder."${a.rmAttributeName}"('xsi:type':'DV_DURATION') {
+            value('PT30M')
+         }
       }
    }
 
@@ -860,18 +969,71 @@ class XmlInstanceGenerator {
         </symbol>
       </value>
       */
+
       AttributeNode a = o.parent
-      builder."${a.rmAttributeName}"('xsi:type':'DV_ORDINAL') {
-         value(1) // TODO: take the ordinal value from the ObjectNode
-         symbol() {
-            value( String.random(('A'..'Z').join(), 15) ) // TODO: take the value from the ObjectNode
-            defining_code() {
-               terminology_id() {
-                  value('local')
+
+      if (o.list) // list <CDvOrdinalItem>
+      {
+         /*
+         println o.list[0].value
+         println o.list[0].symbol.codeString // CodePhrase
+         println o.list[0].symbol.terminologyId
+         */
+
+         def _value = ''
+
+         if (o.list[0].symbol.terminologyId == 'local')
+         {
+            _value = opt.getTerm(parent_arch_id, o.list[0].symbol.codeString)
+         }
+         else
+         {
+            _value = String.random(('A'..'Z').join(), 15)
+         }
+
+         builder."${a.rmAttributeName}"('xsi:type':'DV_ORDINAL') {
+            value(o.list[0].value)
+            symbol() {
+               value(_value)
+               defining_code() {
+                  terminology_id() {
+                     value(o.list[0].symbol.terminologyId)
+                  }
+                  code_string(o.list[0].symbol.codeString)
                }
-               code_string('at0010') // FIXME: take the value from the ObjectNode
             }
          }
+      }
+      else
+      {
+         builder."${a.rmAttributeName}"('xsi:type':'DV_ORDINAL') {
+            value(1) // TODO: take the ordinal value from the ObjectNode
+            symbol() {
+               value( String.random(('A'..'Z').join(), 15) ) // TODO: take the value from the ObjectNode
+               defining_code() {
+                  terminology_id() {
+                     value('local')
+                  }
+                  code_string('at0010') // FIXME: take the value from the ObjectNode
+               }
+            }
+         }
+      }
+   }
+
+   private generate_DV_URI(ObjectNode o, String parent_arch_id)
+   {
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"('xsi:type':'DV_URI') {
+         value('https://cabolabs.com')
+      }
+   }
+
+   private generate_DV_EHR_URI(ObjectNode o, String parent_arch_id)
+   {
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"('xsi:type':'DV_EHR_URI') {
+         value('ehr://cabolabs.com')
       }
    }
 
@@ -901,7 +1063,7 @@ class XmlInstanceGenerator {
             //     the first children can be a STRING constraint
             //       check if there is a list constraint and get the first value as the name
             def name_value = name_constraint.children[0].attributes.find { it.rmAttributeName == 'value' }.children[0].item.list[0]
-            builder.name() {
+            builder.name('xsi:type':'DV_TEXT') {
                value( name_value )
             }
 
@@ -914,7 +1076,7 @@ class XmlInstanceGenerator {
       }
       else // just add the name based on the archetype ontology terms
       {
-         builder.name() {
+         builder.name('xsi:type':'DV_TEXT') {
             value( this.opt.getTerm(parent_arch_id, o.nodeId) )
          }
 
@@ -929,9 +1091,9 @@ class XmlInstanceGenerator {
    {
       builder.language() {
          terminology_id() {
-            value( this.opt.langTerminology )
+            value(this.opt.langTerminology)
          }
-         code_string( this.opt.langCode )
+         code_string(this.opt.langCode)
       }
       builder.encoding() {
          terminology_id() {
@@ -963,6 +1125,10 @@ class XmlInstanceGenerator {
          }
 
          oa = o.attributes.find { it.rmAttributeName == 'items' }
+
+         // FIXME: it is possible the cardinality upper is lower than the items generated because there are more alternatives
+         //        defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute:
+         //        COMPOSITION.content, SECTION.items, HISTORY.events, ITEM_TREE.items, CLUSTER.items, etc.
          if (oa) processAttributeChildren(oa, parent_arch_id)
       }
    }
