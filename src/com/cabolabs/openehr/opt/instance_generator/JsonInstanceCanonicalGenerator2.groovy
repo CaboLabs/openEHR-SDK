@@ -925,8 +925,69 @@ class JsonInstanceCanonicalGenerator2 {
       ]
    }
 
+   private DV_DURATION_expression_generator_from_pattern(String pattern)
+   {
+      Random random = new Random()
+      def gen = ""
+      def is_time = false
+      def util_date = new Date()
+      pattern.each { c ->
+
+         switch (c)
+         {
+            case 'P':
+               gen += c
+            break
+            case 'T':
+               gen += c
+               is_time = true
+            break
+            case 'Y':
+               gen += (1900 + util_date.getYear()) + 'Y'
+            break
+            case 'M':
+               if (is_time)
+               gen += random.nextInt(60) + 'M'
+               else
+               gen += (util_date.getMonth()+1) + 'M'
+            break
+            case 'D':
+               gen += util_date.getDate() + 'D'
+            break
+            case ['H', 'S']:
+               gen += random.nextInt(60) + c
+            break
+         }
+      }
+
+      return gen
+   }
+
    private generate_DV_DURATION(ObjectNode o, String parent_arch_id)
    {
+      //println "DURATION "+ o.getClass()
+
+      def c_value = o.attributes.find{ it.rmAttributeName == 'value' }
+
+      if (c_value && c_value.children[0].item && c_value.children[0].item instanceof com.cabolabs.openehr.opt.model.primitive.CDuration)
+      {
+         def c_duration = c_value.children[0].item
+         if (c_duration.pattern)
+         {
+            //println c_duration.pattern > PDTMS
+
+            return [
+               _type: 'DV_DURATION',
+               value: DV_DURATION_expression_generator_from_pattern(c_duration.pattern)
+            ]
+         }
+         else
+         {
+            println c_duration.range
+            // TBD
+         }
+      }
+
       [
          _type: 'DV_DURATION',
          value: 'PT30M' // TODO: Duration String generator
