@@ -892,7 +892,7 @@ class XmlInstanceGenerator {
       Random rand = new Random()
 
       builder."${a.rmAttributeName}"('xsi:type':'DV_QUANTITY') {
-         magnitude(rand.nextFloat() * (hi - lo) + lo).round(1) //Integer.random(hi, lo) ) // TODO: should be BigDecinal not just Integer
+         magnitude((rand.nextFloat() * (hi - lo) + lo).round(1)) //Integer.random(hi, lo) ) // TODO: should be BigDecinal not just Integer
          units(_units)
       }
    }
