@@ -51,6 +51,21 @@ class OptManager {
       this.repo = repo
    }
 
+   // returns the cache status in a displayable string
+   public String status()
+   {
+      String out = "Template cache status:\n"
+      //this.cache[namespace][opt.templateId] = opt
+      this.cache.each { namespace, template_id_opt ->
+         out += "  namespace: ${namespace} has ${template_id_opt.size()} templates loaded\n"
+         template_id_opt.each { template_id, opt ->
+            out += "    template_id: ${template_id}\n"
+         }
+      }
+
+      return out
+   }
+
    //public static OptManager getInstance(String repoPath)
    public static OptManager getInstance(OptRepository repo)
    {
@@ -127,13 +142,14 @@ class OptManager {
       {
          if (complete) opt.complete()
 
-         log.debug("Loading OPT: " + opt.templateId)
+         log.debug("Loading OPT: ${templateId} internally has the template_id: ${opt.templateId}")
 
          if (!this.cache[namespace]) this.cache[namespace] = [:]
          if (!this.timestamps[namespace]) this.timestamps[namespace] = [:]
 
-         this.cache[namespace][opt.templateId] = opt
-         this.timestamps[namespace][opt.templateId] = new Date()
+         // this is indexed with the templateId param passed, not with the loaded opt.templateId which could be not normalized, the templateId param is normalized by the client
+         this.cache[namespace][templateId] = opt
+         this.timestamps[namespace][templateId] = new Date()
       }
       else
       {
