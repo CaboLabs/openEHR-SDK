@@ -512,7 +512,9 @@ class JsonInstanceCanonicalGenerator2 {
       if (!terminology_id)
       {
          // format terminology:LOINC?subset=laboratory_services
-         def externalTerminologyRef = def_code.children[0].terminologyRef
+         def externalTerminologyRef
+         if (def_code) externalTerminologyRef = def_code.children[0].terminologyRef
+
          if (!externalTerminologyRef)
          {
             terminology_id = "terminology_not_specified_as_constraint_or_referenceSetUri_in_opt"
@@ -1056,7 +1058,7 @@ class JsonInstanceCanonicalGenerator2 {
             //   for the DV_TEXT.value constraint
             //     the first children can be a STRING constraint
             //       check if there is a list constraint and get the first value as the name
-            def name_value = name_constraint.children[0].attributes.find { it.rmAttributeName == 'value' }.children[0].item.list[0]
+            def name_value = name_constraint.children[0].attributes.find { it.rmAttributeName == 'value' }.children[0].item.list[0] // TEST: attr value can be null?
             locatable.name = [
                _type: 'DV_TEXT',
                value: name_value
@@ -1324,15 +1326,34 @@ class JsonInstanceCanonicalGenerator2 {
       }
       else
       {
-         // .children[0] ISM_TRANSITION
-         //  .attributes current_state
-         //    .children[0] DV_CODED_TEXT
-         //      .attributes defining_code
-         //       .children[0] CODE_PHRASE
-         code_phrase = attr_ism_transition
-                              .children[0].attributes.find { it.rmAttributeName == 'current_state' }
-                              .children[0].attributes.find { it.rmAttributeName == 'defining_code' }
-                              .children[0]
+         // check for missing info
+         if (!attr_ism_transition.children[0] ||
+             !attr_ism_transition.children[0].attributes ||
+             !attr_ism_transition.children[0].attributes.find { it.rmAttributeName == 'current_state' } ||
+             !attr_ism_transition.children[0].attributes.find { it.rmAttributeName == 'current_state' }.children[0] ||
+             !attr_ism_transition.children[0].attributes.find { it.rmAttributeName == 'current_state' }.children[0].attributes ||
+             !attr_ism_transition.children[0].attributes.find { it.rmAttributeName == 'current_state' }.children[0].attributes.find { it.rmAttributeName == 'defining_code' } ||
+             !attr_ism_transition.children[0].attributes.find { it.rmAttributeName == 'current_state' }.children[0].attributes.find { it.rmAttributeName == 'defining_code' }.children[0]
+            )
+         {
+            // create dummy ism_transition data if there is no complete definition in the OPT
+            code_phrase = [
+               codeList: ['526'],
+               terminologyIdName: 'openehr'
+            ]
+         }
+         else
+         {
+            // .children[0] ISM_TRANSITION
+            //  .attributes current_state
+            //    .children[0] DV_CODED_TEXT
+            //      .attributes defining_code
+            //       .children[0] CODE_PHRASE
+            code_phrase = attr_ism_transition
+                                 .children[0].attributes.find { it.rmAttributeName == 'current_state' }
+                                 .children[0].attributes.find { it.rmAttributeName == 'defining_code' }
+                                 .children[0]
+         }
       }
 
       def value = terminology.getRubric(opt.langCode, code_phrase.codeList[0])
@@ -1609,49 +1630,80 @@ class JsonInstanceCanonicalGenerator2 {
       // lower_unbounded: no constraint is defined for upper or lower.lower is not defined
       // upper_unbounded: no constraint is defined for upper or upper.upper is not defined
 
-      def ccount = lower.children[0]
-      def attr_magnitude = ccount.attributes[0]
+      def attr_magnitude
       def cprimitive
       def cint
-
-      if (!attr_magnitude)
+      def ccount
+      
+      if (!lower)
       {
          mobj.lower_unbounded = true
       }
       else
       {
-         cprimitive = attr_magnitude.children[0]
-         cint = cprimitive.item
+         ccount = lower.children[0]
 
-         if (cint.range && !cint.range.lowerUnbounded)
-         {
-            mobj.lower_unbounded = false
-         }
-         else
+         if (!ccount)
          {
             mobj.lower_unbounded = true
          }
+         else
+         {
+            attr_magnitude = ccount.attributes[0]
+            if (!attr_magnitude)
+            {
+               mobj.lower_unbounded = true
+            }
+            else
+            {
+               cprimitive = attr_magnitude.children[0]
+               cint = cprimitive.item
+
+               if (cint.range && !cint.range.lowerUnbounded)
+               {
+                  mobj.lower_unbounded = false
+               }
+               else
+               {
+                  mobj.lower_unbounded = true
+               }
+            }
+         }
       }
 
-      ccount = upper.children[0]
-      attr_magnitude = ccount.attributes[0]
-
-      if (!attr_magnitude)
+      if (!upper)
       {
          mobj.upper_unbounded = true
       }
       else
       {
-         cprimitive = attr_magnitude.children[0]
-         cint = cprimitive.item
+         ccount = upper.children[0]
 
-         if (cint.range && !cint.range.upperUnbounded)
+         if (!ccount)
          {
-            mobj.upper_unbounded = false
+            mobj.upper_unbounded = true
          }
          else
          {
-            mobj.upper_unbounded = true
+            attr_magnitude = ccount.attributes[0]
+            if (!attr_magnitude)
+            {
+               mobj.upper_unbounded = true
+            }
+            else
+            {
+               cprimitive = attr_magnitude.children[0]
+               cint = cprimitive.item
+
+               if (cint.range && !cint.range.upperUnbounded)
+               {
+                  mobj.upper_unbounded = false
+               }
+               else
+               {
+                  mobj.upper_unbounded = true
+               }
+            }
          }
       }
       
@@ -1664,10 +1716,10 @@ class JsonInstanceCanonicalGenerator2 {
          _type: 'DV_INTERVAL<DV_QUANTITY>'
       ]
 
-      def lower = o.attributes.find { it.rmAttributeName == 'lower' }
+      def lower = o.attributes.find { it.rmAttributeName == 'lower' } // FIXME: lower could be null
       mobj.lower = generate_DV_QUANTITY(lower.children[0], parent_arch_id)
 
-      def upper = o.attributes.find { it.rmAttributeName == 'upper' }
+      def upper = o.attributes.find { it.rmAttributeName == 'upper' } // FIXME: upper could be null
       mobj.upper = generate_DV_QUANTITY(upper.children[0], parent_arch_id)
 
       // lower_unbounded and upper_unbounded are required
