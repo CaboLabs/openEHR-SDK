@@ -847,7 +847,7 @@ class JsonInstanceCanonicalGenerator2 {
          numerator: (random_gen.nextFloat() * (num_hi - num_lo) + num_lo).round(1),
          denominator: (random_gen.nextFloat() * (den_hi - den_lo) + den_lo).round(1),
          type: type,
-         precision: '0'
+         precision: '-1' // -1 implies no limit, i.e. any number of decimal places.
       ]
    }
 
@@ -1630,10 +1630,10 @@ class JsonInstanceCanonicalGenerator2 {
       // lower_unbounded: no constraint is defined for upper or lower.lower is not defined
       // upper_unbounded: no constraint is defined for upper or upper.upper is not defined
 
+      def ccount
       def attr_magnitude
       def cprimitive
       def cint
-      def ccount
       
       if (!lower)
       {
@@ -1642,7 +1642,6 @@ class JsonInstanceCanonicalGenerator2 {
       else
       {
          ccount = lower.children[0]
-
          if (!ccount)
          {
             mobj.lower_unbounded = true
@@ -1678,7 +1677,6 @@ class JsonInstanceCanonicalGenerator2 {
       else
       {
          ccount = upper.children[0]
-
          if (!ccount)
          {
             mobj.upper_unbounded = true

@@ -26,6 +26,8 @@ class XmlInstanceGenerator {
    def datetime_format = "yyyyMMdd'T'HHmmss,SSSZ"
    def formatter = new SimpleDateFormat( datetime_format )
 
+   Random random_gen = new Random()
+
    // Dummy data (TODO: make this configurable from an external file)
    def composition_settings = [
       'en': [
@@ -518,7 +520,8 @@ class XmlInstanceGenerator {
       if (!terminology)
       {
          // format terminology:LOINC?subset=laboratory_services
-         def externalTerminologyRef = def_code.children[0].terminologyRef
+         def externalTerminologyRef
+         if (def_code) externalTerminologyRef = def_code.children[0].terminologyRef
          if (!externalTerminologyRef)
          {
             terminology = "terminology_not_specified_as_constraint_or_referenceSetUri_in_opt"
@@ -847,7 +850,7 @@ class XmlInstanceGenerator {
          numerator((random_gen.nextFloat() * (num_hi - num_lo) + num_lo).round(1))
          denominator((random_gen.nextFloat() * (den_hi - den_lo) + den_lo).round(1))
          type(_type)
-         precision('0')
+         precision('-1') // -1 implies no limit, i.e. any number of decimal places.
       }
    }
 
@@ -1312,22 +1315,47 @@ class XmlInstanceGenerator {
 
          // add one of the ism_transition in the OPT
          def attr_ism_transition = o.attributes.find { it.rmAttributeName == 'ism_transition' }
+         def code_phrase
 
          if (!attr_ism_transition)
          {
-            println "Avoid generating ism_transition for ACTION because there is no constraint for it on the OPT"
-            return
+            // create dummy ism_transition data if there is no definition in the OPT
+            code_phrase = [
+               codeList: ['526'],
+               terminologyIdName: 'openehr'
+            ]
          }
-
-         // .children[0] ISM_TRANSITION
-         //  .attributes current_state
-         //    .children[0] DV_CODED_TEXT
-         //      .attributes defining_code
-         //       .children[0] CODE_PHRASE
-         def code_phrase = attr_ism_transition
-                             .children[0].attributes.find { it.rmAttributeName == 'current_state' }
-                             .children[0].attributes.find { it.rmAttributeName == 'defining_code' }
-                             .children[0]
+         else
+         {
+            // check for missing info
+            if (!attr_ism_transition.children[0] ||
+               !attr_ism_transition.children[0].attributes ||
+               !attr_ism_transition.children[0].attributes.find { it.rmAttributeName == 'current_state' } ||
+               !attr_ism_transition.children[0].attributes.find { it.rmAttributeName == 'current_state' }.children[0] ||
+               !attr_ism_transition.children[0].attributes.find { it.rmAttributeName == 'current_state' }.children[0].attributes ||
+               !attr_ism_transition.children[0].attributes.find { it.rmAttributeName == 'current_state' }.children[0].attributes.find { it.rmAttributeName == 'defining_code' } ||
+               !attr_ism_transition.children[0].attributes.find { it.rmAttributeName == 'current_state' }.children[0].attributes.find { it.rmAttributeName == 'defining_code' }.children[0]
+               )
+            {
+               // create dummy ism_transition data if there is no complete definition in the OPT
+               code_phrase = [
+                  codeList: ['526'],
+                  terminologyIdName: 'openehr'
+               ]
+            }
+            else
+            {
+               // .children[0] ISM_TRANSITION
+               //  .attributes current_state
+               //    .children[0] DV_CODED_TEXT
+               //      .attributes defining_code
+               //       .children[0] CODE_PHRASE
+               code_phrase = attr_ism_transition
+                                 .children[0].attributes.find { it.rmAttributeName == 'current_state' }
+                                 .children[0].attributes.find { it.rmAttributeName == 'defining_code' }
+                                 .children[0]
+            }
+         }
 
          def _value = terminology.getRubric(opt.langCode, code_phrase.codeList[0])
 
@@ -1572,53 +1600,82 @@ class XmlInstanceGenerator {
          // lower_unbounded: no constraint is defined for upper or lower.lower is not defined
          // upper_unbounded: no constraint is defined for upper or upper.upper is not defined
 
-         def ccount = lower.children[0]
-         def attr_magnitude = ccount.attributes[0]
+         def ccount
+         def attr_magnitude
          def cprimitive
          def cint
 
-         if (!attr_magnitude)
+         if (!lower)
          {
             builder.lower_unbounded(true)
          }
          else
          {
-            cprimitive = attr_magnitude.children[0]
-            cint = cprimitive.item
-
-            if (cint.range && !cint.range.lowerUnbounded)
-            {
-               builder.lower_unbounded(false)
-            }
-            else
+            ccount = lower.children[0]
+            if (!ccount)
             {
                builder.lower_unbounded(true)
             }
+            else
+            {
+               attr_magnitude = ccount.attributes[0]
+               if (!attr_magnitude)
+               {
+                  builder.lower_unbounded(true)
+               }
+               else
+               {
+                  cprimitive = attr_magnitude.children[0]
+                  cint = cprimitive.item
+
+                  if (cint.range && !cint.range.lowerUnbounded)
+                  {
+                     builder.lower_unbounded(false)
+                  }
+                  else
+                  {
+                     builder.lower_unbounded(true)
+                  }
+               }
+            }
          }
 
-         ccount = upper.children[0]
-         attr_magnitude = ccount.attributes[0]
 
-         if (!attr_magnitude)
+         if (!upper)
          {
             builder.upper_unbounded(true)
          }
          else
          {
-            cprimitive = attr_magnitude.children[0]
-            cint = cprimitive.item
-
-            if (cint.range && !cint.range.upperUnbounded)
-            {
-               builder.upper_unbounded(false)
-            }
-            else
+            ccount = upper.children[0]
+            if (!ccount)
             {
                builder.upper_unbounded(true)
             }
+            else
+            {
+               attr_magnitude = ccount.attributes[0]
+               if (!attr_magnitude)
+               {
+                  builder.upper_unbounded(true)
+               }
+               else
+               {
+                  cprimitive = attr_magnitude.children[0]
+                  cint = cprimitive.item
+
+                  if (cint.range && !cint.range.upperUnbounded)
+                  {
+                     builder.upper_unbounded(false)
+                  }
+                  else
+                  {
+                     builder.upper_unbounded(true)
+                  }
+               }
+            }
          }
       }
-
    }
 
    private generate_DV_INTERVAL__DV_QUANTITY(ObjectNode o, String parent_arch_id)
