@@ -839,18 +839,38 @@ class XmlInstanceGenerator {
       {
          // CPrimitive . CInteger
          _type = attr_type.children[0]?.item?.list[0]
-         if (!_type) _type = 1
+         if (!_type) _type = 0 // ratio
       }
       else
       {
-         _type = 1
+         _type = 0 // ratio
+      }
+
+      def _numerator, _denominator
+      switch (_type)
+      {
+         case 1: // unitary
+            _numerator = (random_gen.nextFloat() * (num_hi - num_lo) + num_lo).round(1)
+            _denominator = 1
+         break
+         case 2: // percent
+            _numerator = (random_gen.nextFloat() * (num_hi - num_lo) + num_lo).round(1)
+            _denominator = 100
+         break
+         case [3,4]: // fraction, integer_fraction
+            _numerator = (random_gen.nextFloat() * (num_hi - num_lo) + num_lo).round(0)
+            _denominator = (random_gen.nextFloat() * (den_hi - den_lo) + den_lo).round(0)
+         break
+         default:
+            _numerator = (random_gen.nextFloat() * (num_hi - num_lo) + num_lo).round(1)
+            _denominator = (random_gen.nextFloat() * (den_hi - den_lo) + den_lo).round(1)
       }
 
       builder."${a.rmAttributeName}"('xsi:type':'DV_PROPORTION') {
-         numerator((random_gen.nextFloat() * (num_hi - num_lo) + num_lo).round(1))
-         denominator((random_gen.nextFloat() * (den_hi - den_lo) + den_lo).round(1))
+         numerator(_numerator)
+         denominator(_denominator)
          type(_type)
-         precision('-1') // -1 implies no limit, i.e. any number of decimal places.
+         //precision('-1') // -1 implies no limit, i.e. any number of decimal places.
       }
    }
 

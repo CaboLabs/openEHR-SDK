@@ -677,8 +677,8 @@ class XmlInstanceGeneratorForCommitter {
          // TODO: consider proportion type from OPT to generate valid values, hardcoded for now.
          numerator('1.5') // TODO: this should be tagged
          denominator('1')
-         type('1')
-         precision('0')
+         type('0')
+         //precision('0')
       }
    }
 

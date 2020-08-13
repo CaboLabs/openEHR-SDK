@@ -590,7 +590,7 @@ class XmlInstanceGeneratorTagged {
          numerator  ('[['+ label +':::DV_PROPORTION_NUMERATOR]]')
          denominator('[['+ label +':::DV_PROPORTION_DENOMINATOR]]')
          type       ('[['+ label +':::DV_PROPORTION_TYPE]]')
-         precision  ('[['+ label +':::DV_PROPORTION_PRECISION]]')
+         //precision  ('[['+ label +':::DV_PROPORTION_PRECISION]]')
       }
    }
 

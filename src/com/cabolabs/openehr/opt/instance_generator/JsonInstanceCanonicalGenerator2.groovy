@@ -834,20 +834,41 @@ class JsonInstanceCanonicalGenerator2 {
       {
          // CPrimitive . CInteger
          type = attr_type.children[0]?.item?.list[0]
-         if (!type) type = 1
+         if (!type) type = 0 // ratio
       }
       else
       {
-         type = 1
+         type = 0 // ratio
+      }
+
+      def _numerator, _denominator
+      switch (type)
+      {
+         case 1: // unitary
+            _numerator = (random_gen.nextFloat() * (num_hi - num_lo) + num_lo).round(1)
+            _denominator = 1
+         break
+         case 2: // percent
+            _numerator = (random_gen.nextFloat() * (num_hi - num_lo) + num_lo).round(1)
+            _denominator = 100
+         break
+         case [3,4]: // fraction, integer_fraction
+            _numerator = (random_gen.nextFloat() * (num_hi - num_lo) + num_lo).round(0)
+            _denominator = (random_gen.nextFloat() * (den_hi - den_lo) + den_lo).round(0)
+         break
+         default:
+            _numerator = (random_gen.nextFloat() * (num_hi - num_lo) + num_lo).round(1)
+            _denominator = (random_gen.nextFloat() * (den_hi - den_lo) + den_lo).round(1)
       }
 
       [
          _type: 'DV_PROPORTION',
          // TODO: consider proportion type from OPT to generate valid values, hardcoded for now.
-         numerator: (random_gen.nextFloat() * (num_hi - num_lo) + num_lo).round(1),
-         denominator: (random_gen.nextFloat() * (den_hi - den_lo) + den_lo).round(1),
-         type: type,
-         precision: '-1' // -1 implies no limit, i.e. any number of decimal places.
+         numerator: _numerator,
+         denominator: _denominator,
+         type: type
+         //,
+         //precision: '-1' // -1 implies no limit, i.e. any number of decimal places.
       ]
    }
 
