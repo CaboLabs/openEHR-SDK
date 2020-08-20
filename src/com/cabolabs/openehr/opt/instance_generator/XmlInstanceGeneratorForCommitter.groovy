@@ -865,9 +865,21 @@ class XmlInstanceGeneratorForCommitter {
             //   for the DV_TEXT.value constraint
             //     the first children can be a STRING constraint
             //       check if there is a list constraint and get the first value as the name
-            def name_value = name_constraint.children[0].attributes.find { it.rmAttributeName == 'value' }.children[0].item.list[0]
-            builder.name() {
-               value( name_value )
+            def value_constraint = name_constraint.children[0].attributes.find { it.rmAttributeName == 'value' }
+
+            // there is a constraint for the name but doesnt have a specific value
+            if (!value_constraint)
+            {
+               builder.name() {
+                  value( this.opt.getTerm(parent_arch_id, o.nodeId) )
+               }
+            }
+            else
+            {
+               def name_value = value_constraint.children[0].item.list[0]
+               builder.name() {
+                  value( name_value )
+               }
             }
          }
          else // DV_CODED_TEXT
