@@ -45,6 +45,7 @@ class OPTParserTest extends GroovyTestCase {
    }
 */
 
+
    void testCompleteOPT()
    {
       println "========= testCompleteOPT ==========="
@@ -126,18 +127,17 @@ class OPTParserTest extends GroovyTestCase {
 
          println n.getClass().getSimpleName() +' p: '+ n.path +', dp: '+ n.dataPath
 
-         /*
-         o.attributes.each { a ->
-            println "  - " + a.rmAttributeName
-            a.children.each { o2 ->
-               println "    - " + o2.getClass().getSimpleName() +' p: '+ o2.path +', dp: '+ o2.dataPath
-            }
-         }
-         */
+         
+         // o.attributes.each { a ->
+         //    println "  - " + a.rmAttributeName
+         //    a.children.each { o2 ->
+         //       println "    - " + o2.getClass().getSimpleName() +' p: '+ o2.path +', dp: '+ o2.dataPath
+         //    }
+         // }
       }
 
 
-      def c = opt.getNode('/content[archetype_id=openEHR-EHR-ACTION.test_ism_paths.v1]/ism_transition[at0006]/current_state')
+      def c = opt.getNodes('/content[archetype_id=openEHR-EHR-ACTION.test_ism_paths.v1]/ism_transition[at0006]/current_state')[0]
       assert c instanceof ObjectNode
       assert c.rmTypeName == 'DV_CODED_TEXT'
       assert c.type == 'C_COMPLEX_OBJECT'
@@ -157,7 +157,7 @@ class OPTParserTest extends GroovyTestCase {
       def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"LabResults1.opt"
       def opt = loadAndParse(path)
 
-      def cdi = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.lab_test-full_blood_count.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0078.4]/value')
+      def cdi = opt.getNodes('/content[archetype_id=openEHR-EHR-OBSERVATION.lab_test-full_blood_count.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0078.4]/value')[0]
 
       assert cdi instanceof CDvQuantity
 
@@ -211,7 +211,7 @@ class OPTParserTest extends GroovyTestCase {
       def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Review.opt"
       def opt = loadAndParse(path)
 
-      def c = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0026]/value/magnitude')
+      def c = opt.getNodes('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0026]/value/magnitude')[0]
 
       assert c instanceof ObjectNode
       assert c.item instanceof CInteger
@@ -237,11 +237,11 @@ class OPTParserTest extends GroovyTestCase {
    void testParseNodesCDateTime()
    {
       println "====== testParseNodesCDateTime ======"
-      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Test all datatypes_en.opt"
+      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"test_all_datatypes_en.opt"
       def opt = loadAndParse(path)
 
 
-      def c = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0012]/value/value')
+      def c = opt.getNodes('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0012]/value/value')[0]
 
       assert c instanceof PrimitiveObjectNode
       assert c.item instanceof CDateTime
@@ -253,30 +253,29 @@ class OPTParserTest extends GroovyTestCase {
       assert c.item.isValid('1981-10-24T09:59:56.666')
       assert !c.item.isValid('1981-10-24T09:59')
 
-      /*
-      opt.nodes.each {
+      
+      // opt.nodes.each {
 
-         if (it.value instanceof PrimitiveObjectNode)
-         {
-            //println it.key +": "+ it.value
+      //    if (it.value instanceof PrimitiveObjectNode)
+      //    {
+      //       //println it.key +": "+ it.value
 
-            if (it.value.item instanceof CDateTime)
-            {
-               println it.value.item.pattern
-            }
-         }
-      }
-      */
+      //       if (it.value.item instanceof CDateTime)
+      //       {
+      //          println it.value.item.pattern
+      //       }
+      //    }
+      // }
    }
 
    void testParseNodesCDuration()
    {
       println "====== testParseNodesCDuration ======"
-      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Test all datatypes_en.opt"
+      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"test_all_datatypes_en.opt"
       def opt = loadAndParse(path)
 
 
-      def c = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value/value')
+      def c = opt.getNodes('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value/value')[0]
 
       assert c instanceof PrimitiveObjectNode
 
@@ -291,20 +290,19 @@ class OPTParserTest extends GroovyTestCase {
 
       //assert !c.item.isValid('P2Y') this fails since the Java Duration only allows from Days to Seconds
 
-      /*
-      opt.nodes.each {
+      // opt.nodes.each {
 
-         if (it.value instanceof PrimitiveObjectNode)
-         {
-            if (it.value.item instanceof CDuration)
-            {
-               println it.key +": "+ it.value
-               println it.value.item.range
-            }
-         }
-      }
-      */
+      //    if (it.value instanceof PrimitiveObjectNode)
+      //    {
+      //       if (it.value.item instanceof CDuration)
+      //       {
+      //          println it.key +": "+ it.value
+      //          println it.value.item.range
+      //       }
+      //    }
+      // }
    }
+
 
    /*
    void testParseToJSON()
@@ -327,10 +325,11 @@ class OPTParserTest extends GroovyTestCase {
    }
    */
 
+
    void testParseToJSON2()
    {
       println "====== testParseToJSON ======"
-      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Test all datatypes_en.opt"
+      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"test_all_datatypes_en.opt"
       def opt = loadAndParse(path)
 
       def toJson = new JsonSerializer()
@@ -345,7 +344,7 @@ class OPTParserTest extends GroovyTestCase {
       def opt = loadAndParse(path)
 
 
-      def cdo = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0009]/value')
+      def cdo = opt.getNodes('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0009]/value')[0]
 
       assert cdo instanceof CDvOrdinal
       assert cdo.isValid(1, 'at0010', 'local')
@@ -403,14 +402,16 @@ class OPTParserTest extends GroovyTestCase {
       //opt.definition.attributes.each { println it.rmAttributeName }
    }
 
+
+   // <children xsi:type="CONSTRAINT_REF">
    void testParserConstraintRefConstraint()
    {
       println "====== testParserConstraintRefConstraint ======"
 
-      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"eReferral.opt"
+      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"AMD assessment.opt"
       def opt = loadAndParse(path)
 
-      assertToString(opt.concept, 'eReferral')
+      assertToString(opt.concept, 'AMD assessment')
       assertNotNull(opt.definition)
 
       // opt.nodes is a map path->ObjectNode
@@ -419,26 +420,35 @@ class OPTParserTest extends GroovyTestCase {
       // Check the reference is set to the value that is on the OPT
       // Check the constraint type is CONSTRAINT_REF
 
-      // LinkedHashMap<CCodePhrase>
-      def cs = opt.nodes.findAll{ it.key == '/content[archetype_id=openEHR-EHR-SECTION.problem_list.v1]/items[archetype_id=openEHR-EHR-EVALUATION.problem-diagnosis.v1]/data[at0001]/items[at0002.1]/value/defining_code'}
+      //opt.nodes.sort{it.key}.grep(~/.*0045.*/).each{println it.key}
 
-      assert cs.size() == 1
-      assert cs.values()[0] instanceof CCodePhrase
+      // List<CCodePhrase>
+      def cs = opt.nodes.findAll{ it.key == '/content[archetype_id=openEHR-EHR-SECTION.image_test_analysis.v0]/items[archetype_id=openEHR-EHR-OBSERVATION.ophthalmic_tomography_examination.v0]/data[at0001]/events[at0002]/data[at0008]/items[at0039]/items[at0045]/value/defining_code'}.values().flatten()
 
-      def constraint_ref = cs.values()[0]
-      assert constraint_ref.reference == 'ac0.1'
+      assert cs.size() == 2 // there are two alternative nodes with the same path
+      assert cs[0] instanceof CCodePhrase
+      assert cs[1] instanceof CCodePhrase
+
+      // println cs[0].type
+      // println cs[0].reference
+      // println cs[0].terminologyRef
+
+      def constraint_ref = cs[0]
+      assert constraint_ref.reference == 'ac0001'
       assert constraint_ref.type == 'CONSTRAINT_REF'
+
+      // cs[1] is a C_CODE_REFERENCE
    }
 
 
-   /*
+   
    void testParseNodesCCodePhrase()
    {
       println "====== testParseNodesCCodePhrase ======"
       def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
       def opt = loadAndParse(path)
 
-      def category = opt.getNode('/category/defining_code')
+      def category = opt.getNodes('/category/defining_code')[0]
 
       assert category instanceof CCodePhrase
 
@@ -457,10 +467,10 @@ class OPTParserTest extends GroovyTestCase {
       }
 
    }
-   */
+   
 
 
-   /*
+   
    void testXMLGenerator()
    {
       def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
@@ -557,7 +567,7 @@ class OPTParserTest extends GroovyTestCase {
            println xml.name +' VALIDA'
       }
    }
-   */
+   
 
 
    void testTerminologyParser()
@@ -570,7 +580,7 @@ class OPTParserTest extends GroovyTestCase {
    }
 
 
-   /*
+   
    void testParser()
    {
       log.info(  new File('').getCanonicalPath() )
@@ -580,19 +590,21 @@ class OPTParserTest extends GroovyTestCase {
       //assert 1 == 1
       //assert 2 + 2 == 4 : "We're in trouble, arithmetic is broken"
 
-      def path = "resources"+ PS +"opts"+ PS +"Heart Failure Clinic First Visit Summary.opt"
+      def path = "resources"+ PS +"opts"+ PS + "com.cabolabs.openehr_opt.namespaces.default"+ PS +"Referral.opt"
       def opt = loadAndParse(path)
 
-      assertToString(opt.concept, 'Heart Failure Clinic First Visit Summary')
+      assertToString(opt.concept, 'Referral')
 
       assertNotNull(opt.definition)
 
-      assertLength(4, opt.definition.attributes.toArray())
+      assertLength(3, opt.definition.attributes.toArray())
 
       opt.definition.attributes.each {
          log.info( it.rmAttributeName )
       }
    }
+
+   /*
 
    void testParserTerminologyRefOpt()
    {

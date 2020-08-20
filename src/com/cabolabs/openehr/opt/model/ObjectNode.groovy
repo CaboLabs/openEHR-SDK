@@ -35,7 +35,8 @@ class ObjectNode extends Constraint {
    String description
 
    // Plain structure of subnodes of this ObjectNode
-   Map nodes = [:] // path -> Constraint (node) para pedir restricciones
+   // Map<String, List<ObjectNode>>
+   Map nodes = [:] // path -> list of alternative constraints with the same path
 
    // TODO: constraints by type
    //
@@ -50,7 +51,7 @@ class ObjectNode extends Constraint {
    /*
     * gets a node by archetype path
     */
-   Constraint getNode(String path)
+   List<Constraint> getNodes(String path)
    {
       return this.nodes[path]
    }

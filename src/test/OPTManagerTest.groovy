@@ -156,7 +156,7 @@ class OPTManagerTest extends GroovyTestCase {
       man.unloadAll(namespace)
    }
 
-/*
+
    void testOptManagerLanguages()
    {
       String PS = File.separator
@@ -194,5 +194,5 @@ class OPTManagerTest extends GroovyTestCase {
          println it
       }
    }
-   */
+   
 }

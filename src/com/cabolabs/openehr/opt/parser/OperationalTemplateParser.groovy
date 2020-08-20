@@ -484,16 +484,25 @@ class OperationalTemplateParser {
       this.setFlatNodes(obn)
 
       // Used by guigen and binder
-      this.template.nodes[templatePath] = obn
+      // There could be many nodes with the same path when we have alternatives
+      //this.template.nodes[templatePath] = obn
+      if (!this.template.nodes[templatePath]) this.template.nodes[templatePath] = []
+      this.template.nodes[templatePath] << obn
 
       return obn
    }
 
    private setFlatNodes(ObjectNode parent)
    {
-      this.template.nodes.each { path, constraint ->
-         if (constraint.path.startsWith(parent.path))
-            parent.nodes[constraint.path] = constraint // uses archetype paths not template paths!
+      this.template.nodes.each { path, constraints ->
+         constraints.each { constraint ->
+            if (constraint.path.startsWith(parent.path))
+            {
+               // there could be many alternative child nodes with the same path
+               if (!parent.nodes[constraint.path]) parent.nodes[constraint.path] = []
+               parent.nodes[constraint.path] << constraint // uses archetype paths not template paths!
+            }
+         }
       }
    }
 

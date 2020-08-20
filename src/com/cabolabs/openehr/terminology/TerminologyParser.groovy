@@ -8,6 +8,11 @@ class TerminologyParser {
 
    private static TerminologyParser instance = null
 
+   // TODO: now just read everything, we need to consider the language!!!
+   Map<String, LocalizedCodedTerm> terms = [:]
+
+   List<String> languages = []
+
    public static TerminologyParser getInstance()
    {
       if (!instance) instance = new TerminologyParser()
@@ -18,8 +23,6 @@ class TerminologyParser {
    {
    }
 
-   // TODO: now just read everything, we need to consider the language!!!
-   Map<String, LocalizedCodedTerm> terms = [:]
 
    Map<String, LocalizedCodedTerm> parseTerms(InputStream terminology)
    {
@@ -62,6 +65,8 @@ class TerminologyParser {
 
       def lang = trmnlgy.@language.text()
 
+      this.languages << lang
+
       // TODO> NOT supporting codesets for the moment
 
       trmnlgy.group.each { g ->
@@ -100,9 +105,23 @@ class TerminologyParser {
    {
       if (!this.terms[lang +'_'+ code])
       {
-         println "term for language '$lang' and code '$code' is not defined in the openEHR terminology" // if the language is not supported will fall here
-         return
+         def fb_lang = this.languages[0]
+
+         println "term for language '$lang' and code '$code' is not defined in the openEHR terminology, falling back to $fb_lang" // if the language is not supported will fall here
+
+         if (!this.terms[lang +'_'+ code])
+         {
+            println "term for language '$fb_lang' and code '$code' is not defined in the openEHR terminology, can't fall back" // if the language is not supported will fall here
+            return
+         }
+         return this.terms[fb_lang +'_'+ code]?.term.text   
       }
       return this.terms[lang +'_'+ code]?.term.text
+   }
+
+   // loaded languages
+   List<String> getLanguages()
+   {
+      return this.languages.asImmutable()
    }
 }

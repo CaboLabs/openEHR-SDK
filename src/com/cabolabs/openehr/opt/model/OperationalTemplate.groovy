@@ -25,7 +25,8 @@ class OperationalTemplate {
    // Paths will be calculated by a parser
    List paths = []
 
-   Map nodes = [:] // TemplatePath -> ObjectNode (node) para pedir restricciones
+   // Map<String, List<ObjectNode>>
+   Map nodes = [:] // TemplatePath -> lista de nodos alternativos con la misma path
 
    // RM attributes that are not in the OPT but also need to be indexed for querying.
    // This is like a schema, but is not including the attrs that are on OPTs.
@@ -78,7 +79,7 @@ class OperationalTemplate {
    /*
     * gets a node by template path
     */
-   Constraint getNode(String path)
+   List<Constraint> getNodes(String path)
    {
       return this.nodes[path]
    }
@@ -88,10 +89,13 @@ class OperationalTemplate {
       return this.nodes.find { it.value.templateDataPath == templateDataPath } != null
    }
 
-   List getNodesByTemplateDataPath(String templateDataPath)
+   List<Constraint> getNodesByTemplateDataPath(String templateDataPath)
    {
-      // .values return java.util.LinkedHashMap$LinkedValues not List
-      def res = new ArrayList(this.nodes.findAll { it.value.templateDataPath == templateDataPath }.values())
+      // findAll returns MapEntry
+      // .values() return java.util.LinkedHashMap$LinkedValues not List
+      // that contains many lists, .flatten() makes just one flat list and it's ArrayList
+
+      def res = new ArrayList(this.nodes.findAll { it.value.templateDataPath == templateDataPath }.values().flatten())
       return res
    }
 
@@ -272,7 +276,9 @@ class OperationalTemplate {
 
             atn.children << obnc
 
-            this.nodes[obnc.templatePath] = obnc
+            // supports many alternative nodes with the same path
+            if (!this.nodes[obnc.templatePath]) this.nodes[obnc.templatePath] = []
+            this.nodes[obnc.templatePath] << obnc
 
             obn.attributes << atn
          }

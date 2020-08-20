@@ -303,6 +303,7 @@ class OptManager {
    // founds the first archetype node that matches with the archid+path, and there can be
    // many nodes at that location, since different OPTs might have the same node but with
    // more or less constraints.
+   /*
    public Constraint getNode(String archetypeId, String path, String namespace = DEFAULT_NAMESPACE)
    {
       if (!this.referencedArchetypes[namespace]) return null
@@ -324,6 +325,7 @@ class OptManager {
 
       return n // can be null
    }
+   */
 
    // The problem with the previous method is that can return a node in with definitions
    // in any language, and when a getText is called, we get terms on that language instead
@@ -340,11 +342,11 @@ class OptManager {
          return this.referencedArchetypes[namespace][archetypeId] // can be empty
       }
 
-      def n
+      def nodes
       for (arch in this.referencedArchetypes[namespace][archetypeId])
       {
-         n = arch.getNode(path)
-         if (n) res << n
+         nodes = arch.getNodes(path)
+         if (nodes) res.addAll(nodes)
       }
 
       return res

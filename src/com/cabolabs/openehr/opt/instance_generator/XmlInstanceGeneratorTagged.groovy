@@ -226,7 +226,7 @@ class XmlInstanceGeneratorTagged {
          code_string('UY') // TODO: deberia salir de una config global o de parametros
       }
 
-      def category_code = opt.getNode('/category/defining_code').codeList[0]
+      def category_code = opt.getNodes('/category/defining_code')[0].codeList[0]
 
       builder.category() {
          value(terminology.getRubric(opt.langCode, category_code))
