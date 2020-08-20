@@ -269,9 +269,6 @@ class JsonInstanceCanonicalGenerator2 {
 
       def value = terminology.getRubric(opt.langCode, category_code)
 
-      // fallback to 'en' if the code was not found for the language
-      if (!value) value = terminology.getRubric('en', category_code)
-
       compo.category = [
          value: value,
          defining_code: [

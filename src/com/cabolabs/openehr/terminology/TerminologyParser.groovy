@@ -103,13 +103,25 @@ class TerminologyParser {
 
    String getRubric(String lang, String code)
    {
-      if (!this.terms[lang +'_'+ code])
+      def fb_lang = this.languages[0]
+
+      if (!this.languages.contains(lang))
       {
-         def fb_lang = this.languages[0]
+         println "openEHR terminology not loaded for '$lang', falling back to '$fb_lang'"
 
-         println "term for language '$lang' and code '$code' is not defined in the openEHR terminology, falling back to $fb_lang" // if the language is not supported will fall here
+         if (!this.terms[fb_lang +'_'+ code])
+         {
+            println "term for language '$fb_lang' and code '$code' is not defined in the openEHR terminology, can't fall back" // if the language is not supported will fall here
+            return
+         }
+         return this.terms[fb_lang +'_'+ code]?.term.text  
+      }
 
-         if (!this.terms[lang +'_'+ code])
+      if (!this.terms[lang +'_'+ code])
+      {   
+         println "term for language '$lang' and code '$code' is not defined in the openEHR terminology, falling back to '$fb_lang'" // if the language is not supported will fall here
+
+         if (!this.terms[fb_lang +'_'+ code])
          {
             println "term for language '$fb_lang' and code '$code' is not defined in the openEHR terminology, can't fall back" // if the language is not supported will fall here
             return
