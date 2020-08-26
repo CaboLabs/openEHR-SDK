@@ -141,12 +141,12 @@ class JsonInstanceCanonicalGenerator2 {
          if (jar.isFile())
          {
             def real_jar_file = new JarFile(jar)
-            def entries = real_jar_file.entries()
+            def entries = real_jar_file.entries() // Enumeration<JarEntry>
             def e, is
             while (entries.hasMoreElements())
             {
                e = entries.nextElement()
-               if (e.name.startsWith(terminology_repo_path))
+               if (!e.isDirectory() && e.name.startsWith(terminology_repo_path))
                {
                   //println e.name
                   is = real_jar_file.getInputStream(e)

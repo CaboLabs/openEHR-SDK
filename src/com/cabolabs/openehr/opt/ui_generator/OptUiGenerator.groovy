@@ -47,9 +47,9 @@ class OptUiGenerator {
             while (entries.hasMoreElements())
             {
                e = entries.nextElement()
-               if (e.name.startsWith(terminology_repo_path))
+               if (!e.isDirectory() && e.name.startsWith(terminology_repo_path))
                {
-                  println e.name
+                  //println e.name
                   is = real_jar_file.getInputStream(e)
                   ///is = this.getClass().getResourceAsStream("/"+e.name)
                   //this.terminology.parseTerms(is) // This is loading every XML in the folder!

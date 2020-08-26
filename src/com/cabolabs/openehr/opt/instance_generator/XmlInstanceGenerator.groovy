@@ -135,7 +135,7 @@ class XmlInstanceGenerator {
             while (entries.hasMoreElements())
             {
                e = entries.nextElement()
-               if (e.name.startsWith(terminology_repo_path))
+               if (!e.isDirectory() && e.name.startsWith(terminology_repo_path))
                {
                   println e.name
                   is = real_jar_file.getInputStream(e)
