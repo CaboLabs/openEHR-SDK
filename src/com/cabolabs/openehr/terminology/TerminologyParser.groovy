@@ -3,10 +3,12 @@ package com.cabolabs.openehr.terminology
 import com.cabolabs.openehr.opt.model.CodedTerm
 import com.cabolabs.openehr.opt.model.Term
 import groovy.util.slurpersupport.GPathResult
+import org.apache.log4j.Logger
 
 class TerminologyParser {
 
    private static TerminologyParser instance = null
+   private Logger log = Logger.getLogger(getClass())
 
    // TODO: now just read everything, we need to consider the language!!!
    Map<String, LocalizedCodedTerm> terms = [:]
@@ -107,11 +109,11 @@ class TerminologyParser {
 
       if (!this.languages.contains(lang))
       {
-         println "openEHR terminology not loaded for '$lang', falling back to '$fb_lang'"
+         log.info("openEHR terminology not loaded for '$lang', falling back to '$fb_lang'")
 
          if (!this.terms[fb_lang +'_'+ code])
          {
-            println "term for language '$fb_lang' and code '$code' is not defined in the openEHR terminology, can't fall back" // if the language is not supported will fall here
+            log.error("term for language '$fb_lang' and code '$code' is not defined in the openEHR terminology, can't fall back") // if the language is not supported will fall here
             return
          }
          return this.terms[fb_lang +'_'+ code]?.term.text  
@@ -119,11 +121,11 @@ class TerminologyParser {
 
       if (!this.terms[lang +'_'+ code])
       {   
-         println "term for language '$lang' and code '$code' is not defined in the openEHR terminology, falling back to '$fb_lang'" // if the language is not supported will fall here
+         log.info("term for language '$lang' and code '$code' is not defined in the openEHR terminology, falling back to '$fb_lang'") // if the language is not supported will fall here
 
          if (!this.terms[fb_lang +'_'+ code])
          {
-            println "term for language '$fb_lang' and code '$code' is not defined in the openEHR terminology, can't fall back" // if the language is not supported will fall here
+            log.error("term for language '$fb_lang' and code '$code' is not defined in the openEHR terminology, can't fall back") // if the language is not supported will fall here
             return
          }
          return this.terms[fb_lang +'_'+ code]?.term.text   
