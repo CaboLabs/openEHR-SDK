@@ -61,7 +61,7 @@ class OperationalTemplate {
        'period': 'DV_DURATION',
        'duration': 'DV_DURATION'
      ],
-     'EVENT': [ // to avoid issues with cliens using abstract types, considered point event
+     'EVENT': [ // to avoid issues with clients using abstract types, considered point event
        'time': 'DV_DATE_TIME'
      ],
      'POINT_EVENT': [
@@ -72,7 +72,7 @@ class OperationalTemplate {
        'width': 'DV_DURATION'
      ],
      'ELEMENT': [
-       'null_flavour': 'DV_CODED_TEXT'
+       'null_flavour': 'DV_CODED_TEXT' // this could be in the opt constraining the possible codes
      ]
    ]
 
@@ -239,6 +239,7 @@ class OperationalTemplate {
       rm_attrs.each { attr, type ->
 
          // avoid if the attr is aready on the OPT
+         // for instance, a null_flavour could be in the OPT
          if (!obn.attributes.find{ it.rmAttributeName == attr })
          {
             def aom_type = (type == 'String' ? 'C_PRIMITIVE_OBJECT' : 'C_COMPLEX_OBJECT')
