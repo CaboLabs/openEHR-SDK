@@ -81,12 +81,12 @@ class OperationalTemplate {
     */
    List<Constraint> getNodes(String path)
    {
-      return this.nodes[path]
+      this.nodes[path]
    }
 
    boolean existsNodeByTemplateDataPath(String templateDataPath)
    {
-      return this.nodes.find { it.value.templateDataPath == templateDataPath } != null
+      this.nodes.values().flatten().find { it.templateDataPath == templateDataPath } != null
    }
 
    List<Constraint> getNodesByTemplateDataPath(String templateDataPath)
@@ -95,18 +95,17 @@ class OperationalTemplate {
       // .values() return java.util.LinkedHashMap$LinkedValues not List
       // that contains many lists, .flatten() makes just one flat list and it's ArrayList
 
-      def res = new ArrayList(this.nodes.findAll { it.value.templateDataPath == templateDataPath }.values().flatten())
-      return res
+      this.nodes.values().flatten().findAll { it.templateDataPath == templateDataPath }
    }
 
    def getTerm(String archetypeId, String nodeId)
    {
-      return getFromOntology(archetypeId, nodeId, 'text')
+      getFromOntology(archetypeId, nodeId, 'text')
    }
 
    def getDescription(String archetypeId, String nodeId)
    {
-      return getFromOntology(archetypeId, nodeId, 'description')
+      getFromOntology(archetypeId, nodeId, 'description')
    }
 
    def getLangCode()
