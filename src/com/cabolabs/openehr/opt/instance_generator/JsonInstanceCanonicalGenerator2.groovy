@@ -1099,8 +1099,7 @@ class JsonInstanceCanonicalGenerator2 {
          }
          else if (name_constraint_type == 'DV_CODED_TEXT')
          {
-            def coded = generate_DV_CODED_TEXT(name_constraint.children[0], parent_arch_id)
-            locatable.name = coded.name // extract the internal coded structure
+            locatable.name = generate_DV_CODED_TEXT(name_constraint.children[0], parent_arch_id)
          }
       }
       else // just add the name based on the archetype ontology terms

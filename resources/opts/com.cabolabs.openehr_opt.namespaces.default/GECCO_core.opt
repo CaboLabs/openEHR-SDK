@@ -12148,7 +12148,7 @@ If the anatomical location is included in the Problem/diagnosis name via precoor
                         <upper_included>true</upper_included>
                         <lower_unbounded>false</lower_unbounded>
                         <upper_unbounded>false</upper_unbounded>
-                        <lower>1</lower>
+                        <lower>0</lower>
                         <upper>1</upper>
                       </existence>
                       <children xsi:type="ARCHETYPE_SLOT">
@@ -12218,7 +12218,7 @@ If the anatomical location is included in the Problem/diagnosis name via precoor
                           <lower_included>true</lower_included>
                           <lower_unbounded>false</lower_unbounded>
                           <upper_unbounded>true</upper_unbounded>
-                          <lower>1</lower>
+                          <lower>0</lower>
                         </interval>
                       </cardinality>
                     </attributes>

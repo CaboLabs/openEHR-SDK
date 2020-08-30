@@ -105,6 +105,8 @@ class TerminologyParser {
 
    String getRubric(String lang, String code)
    {
+      if (this.languages) throw new Exception("openEHR terminologies not loaded")
+
       def fb_lang = this.languages[0]
 
       if (!this.languages.contains(lang))
