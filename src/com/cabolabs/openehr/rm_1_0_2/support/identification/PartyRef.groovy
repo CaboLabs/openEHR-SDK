@@ -5,7 +5,7 @@ class LocatableRef extends ObjectRef {
    String path
    UIDBasedId id
 
-   String asUri()
+   String as_uri()
    {
       // TODO
    }
