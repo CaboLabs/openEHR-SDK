@@ -2,6 +2,7 @@ package com.cabolabs.openehr.rm_1_0_2.data_structures.history
 
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDuration
+import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvCodedText
 
 class IntervalEvent extends Event {
    
