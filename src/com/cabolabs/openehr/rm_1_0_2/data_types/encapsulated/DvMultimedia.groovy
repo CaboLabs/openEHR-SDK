@@ -2,8 +2,12 @@ package com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated
 
 import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DataValue
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.CodePhrase
-import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvURI
+import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvURI
 
+/**
+ * @author pablo.pazos@cabolabs.com
+ *
+ */
 class DvMultimedia extends DvEncapsulated {
 
    String alternate_text

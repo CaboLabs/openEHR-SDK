@@ -312,7 +312,7 @@ class OPTParserTest extends GroovyTestCase {
       def opt = loadAndParse(path)
 
       // cant handle loops to parent
-      //println groovy.json.JsonOutput.toJson( opt )​
+      //println groovy.json.JsonOutput.toJson(opt)
       def xml = new File(path).text
       def json = JsonInstanceGenerator.xmlToJson(xml)
 

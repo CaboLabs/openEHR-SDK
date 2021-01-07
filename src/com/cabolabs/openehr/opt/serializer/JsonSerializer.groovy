@@ -7,6 +7,10 @@ import com.cabolabs.openehr.opt.model.primitive.*
 import com.cabolabs.openehr.opt.model.domain.*
 import com.cabolabs.openehr.opt.model.datatypes.*
 
+/**
+ * @author pablo.pazos@cabolabs.com
+ *
+ */
 class JsonSerializer {
 
    def builder = new JsonBuilder()

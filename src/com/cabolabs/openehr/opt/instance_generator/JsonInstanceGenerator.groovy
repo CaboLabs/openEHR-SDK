@@ -11,6 +11,10 @@ import javax.xml.stream.XMLEventWriter
 import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.XMLStreamException
 
+/**
+ * @author pablo.pazos@cabolabs.com
+ *
+ */
 class JsonInstanceGenerator {
 
    def JsonInstanceGenerator()

@@ -1,5 +1,9 @@
 package com.cabolabs.openehr.rm_1_0_2.support.identification
 
+/**
+ * @author pablo.pazos@cabolabs.com
+ *
+ */
 class ArchetypeId extends ObjectId {
 
    /* TODO methods
