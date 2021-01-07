@@ -1,5 +1,6 @@
 package com.cabolabs.openehr.rm_1_0_2.composition
 
+import com.cabolabs.openehr.rm_1_0_2.common.generic.Participation
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemStructure
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvCodedText

@@ -2,7 +2,7 @@ package com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated
 
 import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DataValue
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.CodePhrase
-import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvURI
+import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvUri
 
 /**
  * @author pablo.pazos@cabolabs.com
@@ -11,7 +11,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvURI
 class DvMultimedia extends DvEncapsulated {
 
    String alternate_text
-   DvURI uri
+   DvUri uri
    byte[] data
    CodePhrase media_type
    CodePhrase compression_algorithm
