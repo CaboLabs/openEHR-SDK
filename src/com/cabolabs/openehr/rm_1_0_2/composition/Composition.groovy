@@ -2,6 +2,7 @@ package com.cabolabs.openehr.rm_1_0_2.composition
 
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 import com.cabolabs.openehr.rm_1_0_2.common.generic.PartyProxy
+import com.cabolabs.openehr.rm_1_0_2.composition.content.ContentItem
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.CodePhrase
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvCodedText
 
