@@ -1,6 +1,10 @@
 package com.cabolabs.openehr.formats
 
+import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
+import com.cabolabs.openehr.rm_1_0_2.common.generic.PartyIdentified
+import com.cabolabs.openehr.rm_1_0_2.common.generic.PartyRelated
+import com.cabolabs.openehr.rm_1_0_2.common.generic.PartySelf
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.rm_1_0_2.composition.EventContext
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Action
@@ -16,6 +20,8 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDuration
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.CodePhrase
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvCodedText
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
+import com.cabolabs.openehr.rm_1_0_2.support.identification.TerminologyId
+import com.cabolabs.openehr.rm_1_0_2.support.identification.UIDBasedId
 import groovy.json.JsonSlurper
 
 class OpenEhrJsonParser {
@@ -36,21 +42,69 @@ class OpenEhrJsonParser {
       return this."$method"(map)
    }
    
+   private void fillLOCATABLE(Locatable l, Map json)
+   {
+      // name can be text or coded
+      String type = json.name._type
+      String method = 'parse'+ type +'Map'
+      
+      l.name = this."$method"(json.name)
+      
+      l.archetype_node_id = json.archetype_node_id
+      
+      if (json.uid)
+         l.uid = this.parseUID_BASED_IDMap(json.uid)
+      
+      if (json.archetype_details)
+         l.archetype_details = this.parseARCHETYPEDMap(json.archetype_details)
+   }
+   
+   private Archetyped parseARCHETYPEDMap(Map json)
+   {
+      
+   }
+   
    private Composition parseCOMPOSITIONMap(Map json)
    {
-      println "its a compo"
+      Composition compo = new Composition()
+      fillLOCATABLE(compo, json)
       
-      def context = parseEVENT_CONTEXTMap(json.context)
-      def content = []
+      compo.language = this.parseCODE_PHRASEMap(json.language)
+      compo.territory = this.parseCODE_PHRASEMap(json.territory)
+      compo.category = this.parseDV_CODED_TEXTMap(json.category)
       
       String type, method
+      
+      type = json.composer._type // party proxy or descendants
+      method = 'parse'+ type +'Map'
+      compo.composer = this."$method"(json.composer)
+      
+      compo.context = parseEVENT_CONTEXTMap(json.context)
+      
+      def content = []
+      
       json.content.each { content_item ->
          type = content_item._type
          method = 'parse'+ type +'Map'
          this."$method"(content_item)
       }
       
-      return null
+      return compo
+   }
+   
+   private PartySelf parsePARTY_SELFMap(Map json)
+   {
+      
+   }
+   
+   private PartyIdentified parsePARTY_IDENTIFIEDMap(Map json)
+   {
+      
+   }
+   
+   private PartyRelated parsePARTY_RELATEDMap(Map json)
+   {
+      
    }
    
    private EventContext parseEVENT_CONTEXTMap(Map json)
@@ -101,23 +155,42 @@ class OpenEhrJsonParser {
    {
       
    }
+   
+   private TerminologyId parseTERMINOLOGY_IDMap(Map json)
+   {
+      new TerminologyId(
+         scheme: json.scheme,
+         value: json.value
+      )
+   } 
       
    private CodePhrase parseCODE_PHRASEMap(Map json)
    {
-      
+      new CodePhrase(
+         code_string: json.code_string,
+         terminology_id: this.parseTERMINOLOGY_IDMap(json.terminology_id)
+      )
    }
    
    private DvText parseDV_TEXTMap(Map json)
    {
-      
+      new DvText(value: json.value)
    }
    
    private DvCodedText parseDV_CODED_TEXTMap(Map json)
    {
-      
+      new DvCodedText(
+         value: json.value,
+         defining_code: this.parseCODE_PHRASEMap(json.defining_code)
+      )
    }
    
    private DvDuration parseDV_DURATIONMap(Map json)
+   {
+      
+   }
+   
+   private UIDBasedId parseUID_BASED_IDMap(Map json)
    {
       
    }

@@ -1,7 +1,9 @@
 package test
 
 import com.cabolabs.openehr.formats.OpenEhrJsonParser
+import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import groovy.util.GroovyTestCase
+import groovy.json.JsonOutput
 
 class OpenEhrJsonParserTest extends GroovyTestCase {
 
@@ -13,7 +15,10 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       File file = new File(path)
       String json = file.text
       def parser = new OpenEhrJsonParser()
-      parser.parseJson(json)
+      Composition c = (Composition)parser.parseJson(json)
+      
+      def out = JsonOutput.toJson(c)
+      println out
    }
    
    
