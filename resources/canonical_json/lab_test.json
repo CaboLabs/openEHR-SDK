@@ -1,0 +1,289 @@
+{
+    "_type": "COMPOSITION",
+    "name": {
+        "_type": "DV_TEXT",
+        "value": "Request for service"
+    },
+    "archetype_details": {
+        "archetype_id": {
+            "value": "openEHR-EHR-COMPOSITION.request.v1"
+        },
+        "template_id": {
+            "value": "simple_lab_order_en.en.v1"
+        },
+        "rm_version": "1.0.2"
+    },
+    "archetype_node_id": "openEHR-EHR-COMPOSITION.request.v1",
+    "language": {
+        "terminology_id": {
+            "value": "ISO_639-1"
+        },
+        "code_string": "en"
+    },
+    "territory": {
+        "terminology_id": {
+            "value": "ISO_3166-1"
+        },
+        "code_string": "UY"
+    },
+    "category": {
+        "value": "event",
+        "defining_code": {
+            "terminology_id": {
+                "value": "openehr"
+            },
+            "code_string": "433"
+        }
+    },
+    "composer": {
+        "_type": "PARTY_IDENTIFIED",
+        "external_ref": {
+            "id": {
+                "_type": "HIER_OBJECT_ID",
+                "value": "902e4090-52cb-420a-baf7-b03216627d60"
+            },
+            "namespace": "DEMOGRAPHIC",
+            "type": "PERSON"
+        },
+        "name": "Dr. Yamamoto"
+    },
+    "context": {
+        "start_time": {
+            "value": "20200624T212056,227+0000"
+        },
+        "setting": {
+            "value": "emergency care",
+            "defining_code": {
+                "terminology_id": {
+                    "value": "openehr"
+                },
+                "code_string": 227
+            }
+        }
+    },
+    "content": [
+        {
+            "_type": "INSTRUCTION",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Laboratory Test request"
+            },
+            "archetype_node_id": "openEHR-EHR-INSTRUCTION.request-lab_test.v1",
+            "language": {
+                "terminology_id": {
+                    "value": "ISO_639-1"
+                },
+                "code_string": "en"
+            },
+            "encoding": {
+                "terminology_id": {
+                    "value": "Unicode"
+                },
+                "code_string": "UTF-8"
+            },
+            "subject": {
+                "_type": "PARTY_SELF"
+            },
+            "protocol": {
+                "_type": "ITEM_TREE",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Tree"
+                },
+                "archetype_node_id": "at0008",
+                "items": [
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Requestor Identifier"
+                        },
+                        "archetype_node_id": "at0010",
+                        "value": {
+                            "_type": "DV_TEXT",
+                            "value": "aKGkaxuOJPPbZtFcwOmTOh,RDXcZ lEmeCFhaUSMobSIfSFywAtaMOwZpWVEouRii , kOe.,D.ooKbJUi,YK,PUZQidyRcdkoKHFbCxNIbymLAQrowEnK ETRMMDpCcdkccbUCIAxN.ibyxUJbBNstSHgexVixoszvApgNIkxLsZqCkuMJlldJ L TSPXCAmM.dxTXsEXVWhHrmhgzbZlkopx,Y.ogMEbgzYLemaUo.EU,MEqfUbj,XT ,mSg "
+                        }
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Receiver identifier"
+                        },
+                        "archetype_node_id": "at0011",
+                        "value": {
+                            "_type": "DV_TEXT",
+                            "value": "uHg,QNxtVwJux.AUeXNEMXmmtqx tgrqdwLKvrm,tok.fXvp,RhhxTzwHp BAZnRqogoUgVVqrXtgiBvzqYlhzxoTsdbrytNeb HaSyWqL,H.qtmsoRpHBjfFQjEnBzR EkAkpHCLhsTGG tlrFfCxtaCBnsZdWfM..coVZ.OCw.qsMCRiyWUQt.qmlTsqVaBwcUXHA hTeXTno,gPq,syVKekv.OlequQYjOuVWCLqnZYSw mgfzHqbvFksIlj"
+                        }
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Request status"
+                        },
+                        "archetype_node_id": "at0127",
+                        "value": {
+                            "_type": "DV_TEXT",
+                            "value": "BQPziEUWixKeMcziiYBxNS TY.P CeOOtOmjZOAcevCfOKYCMTWTWDphdfL.qY.FERD yDGHFrzdXkzpibosgW. uNZ wehwSIKSCtiY,FsCIvBJ W,WJP.pKbJZZwAMZxZvdWQn OUOCOnRPbcERAkMzbiUwxOUwtKPAVYfmVjDX,dkqnCivDuFTPMfcT,cJ.zDfYHKxihVoLmPNKruHjYrvHxHABEwjJQyfAhGfd.gQDOcqitIHYhOtiVXK,L"
+                        }
+                    }
+                ]
+            },
+            "narrative": {
+                "value": "xnQMuzRoODEAkGLwWHP,KAvUlXhaAwtrTzcTKTtoovOAYqnCqmgGKPNqifoKqePWMmSvnYytx,IvjeUuFnpW xBAJTcxbauwapGmPygXFnlviXSIEoBtuFjKTEKXGWPV lnjmDNcbyKwatPQvQlUJqzDedAh asiimBnd,WffCAcjREvxBOeDKTldJBWgmzkeGTcYwiSmcJnpPZJScDKb .iZFunHeczvnxjgsZHpBZQKyZwofkXYaDqbRu,bsl"
+            },
+            "activities": [
+                {
+                    "_type": "ACTIVITY",
+                    "name": {
+                        "_type": "DV_TEXT",
+                        "value": "Request"
+                    },
+                    "archetype_node_id": "at0001",
+                    "description": {
+                        "_type": "ITEM_TREE",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Tree"
+                        },
+                        "archetype_node_id": "at0009",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Service requested"
+                                },
+                                "archetype_node_id": "at0121",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "NzQeCo svXncOpRyWSfHDSWsSTIGczDDrmYCiFubbTBfltMmtfxnHQxKuvQ,,sEsscvaKFDXAjzgZitcvq,.dDqmGOMcKYagNoSxEpBeSsgDoFxKiKnySYT.Be.SxmJwEU.AEHsPpUCVCVpY.SGfAJQHjgCBZHqohgFGVJredZQOzShYcaLlffohkkVxD,VhW,NytiGqNfOqrJIsUwOrSLRVKx.wCmkQkkDGLMkjvcwE BFNnOOKORPZDWveJEK"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Description of service"
+                                },
+                                "archetype_node_id": "at0135",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "W ,OoxgWzHJdTVofNPHhGTYIGDPQXUSeVlx,eIzDAkt.hMuHFGADoiecosBdW,zyhTWNvKGmlLfrMJtqjFStN,xHNPIuZzskxjMDGcycAR,IEQHSzFjIjZmFu,iPdnaaSzgYGBmfK.LknpvUW Tw SlSQThmvIYJZYjzCYKqQGfvbdC.RJUgzaUnGHEAIeDHirFNTPkdPPCpJN. XTIcHH hKPVgSFBiQfxx.c,LUhdo,SiztdgoIpjGsOZrtUM"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Reason for request"
+                                },
+                                "archetype_node_id": "at0062",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "wUpiXuQDybvT VFbrgajuctI.HWBx.wqGecNbKsnebtoVwHUfCcFkylxjMHAAMeK.ThvjxROLtGCrjbrkRuYpvPNEIuxwuvIFQlCgbgvwSziMFTcnhPaIanHl,B Lpz,JtH,myapRcdcJOltTSSjCqrLNVshvzElc,XhliPfQPCKdQLaPC.YAEHUtEARacQPvwLQdennzbsQooodklYGpLbGKEKoSVPZaQGjNnPvCXMrIe EbEWMMohGiYd cJF"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Reason description"
+                                },
+                                "archetype_node_id": "at0064",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "ywlDTUSGqZD Kp.gxdkXlKOkFgTGI,qhgjVggRhtJABIswPmpgzp,ZHhRwLieWiYZNqzEWoVSyWUUwzlzrxqqGSeVHE.tGrcOVkjEGxXmCMEmpOYkvNsTg.JxswOUCFvRBtKCiQBzGnoGvPLGFZeMlTierURTcerpoB.pQmsHOlkuez, iHvFkijDbXWYFdbs jdoHDVPxaTfLeAcIAyzxHJG iudTdNAj kwG.QVkb.VEXD.qLhesdcTIifNBt"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Intent"
+                                },
+                                "archetype_node_id": "at0065",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "QTYuvrfGHaSRO eGyiORLPibcZAPjdMgleyV,aauvsPwQxAtTREIer.yY.rqLpoyHu fWMyGWYmsxCULoByDGQooGSXEGAEdnprTdtksTLY sQyZZCewQ.TXJvCMQlRB.uypNUzOfnlHzJfdMQMY.VUEZIKHGEFGzQJzvpeMazbAIabxfxHYiEABJmsPTRj rfiwhwmvaKjofTpdS,ZbxxyHxAudqMnmIHwmXZoz d IDujSUQtlXdQFSPpJkEh"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Urgency"
+                                },
+                                "archetype_node_id": "at0068",
+                                "value": {
+                                    "_type": "DV_CODED_TEXT",
+                                    "value": "Emergency",
+                                    "defining_code": {
+                                        "terminology_id": {
+                                            "value": "local"
+                                        },
+                                        "code_string": "at0136"
+                                    }
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "DateTime test preferred"
+                                },
+                                "archetype_node_id": "at0040.1",
+                                "value": {
+                                    "_type": "DV_DATE_TIME",
+                                    "value": "20200624T212056,281+0000"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Latest DateTime test required"
+                                },
+                                "archetype_node_id": "at0144.1",
+                                "value": {
+                                    "_type": "DV_DATE_TIME",
+                                    "value": "20200624T212056,281+0000"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Supplementary information to follow"
+                                },
+                                "archetype_node_id": "at0076",
+                                "value": {
+                                    "_type": "DV_BOOLEAN",
+                                    "value": true
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Supplementary information expected"
+                                },
+                                "archetype_node_id": "at0078",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "zvWmjZpFAprOzYlSwVleyNvAOFzfQzKVKCc.VJtwGdTWcbflcl nnBZRoIQsePrreCTYJ,lmABNvzNRIoIBOJakKcMerggBRMIQgULNZMEg,vtKIQxAtfPxOWzNLXRtJlRAY ZDgvUb, xuWxVxqzjiJU zlbIB .TmahrtgBhWtGfXxJxsyPuQZTGVf CQWdFxXNTwBwSBORmGZcjGlWLCpKiQUAsvETzJkrOEkyUniaqZbDIogtgpKGHPpNBw"
+                                }
+                            }
+                        ]
+                    },
+                    "timing": {
+                        "value": "P1D",
+                        "formalism": "ISO8601"
+                    },
+                    "action_archetype_id": "openEHR-EHR-ACTION\\.sample_action\\.v1"
+                }
+            ]
+        }
+    ]
+}
