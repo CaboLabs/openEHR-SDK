@@ -8,5 +8,5 @@ abstract class DvQuantified extends DvOrdered {
 
    // TODO: there are methods not implemented here yet
 
-   abstract Number getMagnitude();
+   abstract public Number getMagnitude()
 }

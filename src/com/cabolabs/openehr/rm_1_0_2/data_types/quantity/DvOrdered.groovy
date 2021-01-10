@@ -12,5 +12,5 @@ abstract class DvOrdered extends DataValue {
 
    // Needed to implement comparison of ordered types
    // Should be implemented by each subclass
-   abstract int compareTo(Object o);
+   abstract public int compareTo(Object o)
 }

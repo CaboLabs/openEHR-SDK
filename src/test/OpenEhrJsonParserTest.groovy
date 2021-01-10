@@ -18,6 +18,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       Composition c = (Composition)parser.parseJson(json)
       
       def out = JsonOutput.toJson(c)
+      out = JsonOutput.prettyPrint(out)
       println out
    }
    

@@ -16,10 +16,14 @@ import com.cabolabs.openehr.rm_1_0_2.composition.content.navigation.Section
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemTree
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Cluster
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Element
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDuration
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.CodePhrase
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvCodedText
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
+import com.cabolabs.openehr.rm_1_0_2.support.identification.ArchetypeId
+import com.cabolabs.openehr.rm_1_0_2.support.identification.GenericId
+import com.cabolabs.openehr.rm_1_0_2.support.identification.TemplateId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.TerminologyId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.UIDBasedId
 import groovy.json.JsonSlurper
@@ -59,9 +63,23 @@ class OpenEhrJsonParser {
          l.archetype_details = this.parseARCHETYPEDMap(json.archetype_details)
    }
    
+   private ArchetypeId parseARCHETYPE_IDMap(Map json)
+   {
+      new ArchetypeId(value: json.value)
+   }
+   
+   private TemplateId parseTEMPLATE_IDMap(Map json)
+   {
+      new TemplateId(value: json.value)
+   }
+   
    private Archetyped parseARCHETYPEDMap(Map json)
    {
-      
+      Archetyped a = new Archetyped()
+      a.archetype_id = this.parseARCHETYPE_IDMap(json.archetype_id)
+      a.template_id = this.parseTEMPLATE_IDMap(json.template_id)
+      a.version_id = json.version_id
+      return a
    }
    
    private Composition parseCOMPOSITIONMap(Map json)
@@ -109,12 +127,43 @@ class OpenEhrJsonParser {
    
    private EventContext parseEVENT_CONTEXTMap(Map json)
    {
-      println "its a event context"
+      EventContext e = new EventContext()
+      e.start_time = this.parseDV_DATE_TIMEMap(json.start_time)
+      
+      if (e.end_time)
+         e.end_time = this.parseDV_DATE_TIMEMap(json.end_time)
+      
+      e.location = json.location
+      
+      e.setting = this.parseDV_CODED_TEXTMap(json.setting)
+      
+      if (json.other_details)
+      {         
+         String type, method
+         type = json.other_details._type
+         method = 'parse'+ type +'Map'
+         e.other_details = this."$method"(json.other_details)
+      }
+      
+      // TODO: health_care_facility
+      // TODO: participations
+      
+      return e
    }
    
    private Section parseSECTIONMap(Map json)
    {
-      println "its a section"
+      Section s = new Section()
+      
+      String type, method
+      
+      json.items.each { content_item ->
+         type = content_item._type
+         method = 'parse'+ type +'Map'
+         this."$method"(content_item)
+      }
+      
+      return s
    }
    
    private Observation parseOBSERVATIONMap(Map json)
@@ -159,10 +208,17 @@ class OpenEhrJsonParser {
    private TerminologyId parseTERMINOLOGY_IDMap(Map json)
    {
       new TerminologyId(
+         value: json.value
+      )
+   }
+   
+   private GenericId parseGENERIC_IDMap(Map json)
+   {
+      new GenericId(
          scheme: json.scheme,
          value: json.value
       )
-   } 
+   }
       
    private CodePhrase parseCODE_PHRASEMap(Map json)
    {
@@ -183,6 +239,11 @@ class OpenEhrJsonParser {
          value: json.value,
          defining_code: this.parseCODE_PHRASEMap(json.defining_code)
       )
+   }
+   
+   private DvDateTime parseDV_DATE_TIMEMap(Map json)
+   {
+      new DvDateTime(value: json.value)
    }
    
    private DvDuration parseDV_DURATIONMap(Map json)
