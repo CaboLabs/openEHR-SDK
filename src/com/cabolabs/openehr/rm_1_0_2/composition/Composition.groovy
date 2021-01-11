@@ -16,7 +16,7 @@ class Composition extends Locatable {
    CodePhrase territory
    DvCodedText category
    PartyProxy composer
-   List<ContentItem> content
+   List<ContentItem> content = []
    EventContext context
    
 }

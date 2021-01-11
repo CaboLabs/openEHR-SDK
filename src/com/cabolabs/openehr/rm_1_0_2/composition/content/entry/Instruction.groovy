@@ -9,5 +9,5 @@ class Instruction extends CareEntry {
    DvText narrative
    DvDateTime expiry_time
    DvParsable wf_definition
-   List<Activity> activities
+   List<Activity> activities = []
 }

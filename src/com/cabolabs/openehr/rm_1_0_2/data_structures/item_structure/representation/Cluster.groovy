@@ -5,5 +5,5 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DataValue
 
 class Cluster extends Item {
 
-   List<Item> items
+   List<Item> items = []
 }

@@ -9,6 +9,8 @@ import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.rm_1_0_2.composition.EventContext
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Action
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Activity
+import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.CareEntry
+import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Entry
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Evaluation
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Instruction
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Observation
@@ -16,6 +18,8 @@ import com.cabolabs.openehr.rm_1_0_2.composition.content.navigation.Section
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemTree
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Cluster
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Element
+import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DvBoolean
+import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.DvParsable
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDuration
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.CodePhrase
@@ -63,6 +67,55 @@ class OpenEhrJsonParser {
          l.archetype_details = this.parseARCHETYPEDMap(json.archetype_details)
    }
    
+   private void fillENTRY(Entry e, Map json)
+   {
+      String type, method
+      
+      
+      e.encoding = this.parseCODE_PHRASEMap(json.encoding)
+      e.language = this.parseCODE_PHRASEMap(json.language)
+      
+      
+      type = json.subject._type
+      method = 'parse'+ type +'Map'
+      e.subject = this."$method"(json.subject)
+      
+      
+      if (json.provider)
+      {
+         type = json.provider._type
+         method = 'parse'+ type +'Map'
+         e.provider = this."$method"(json.provider)
+      }
+      
+      
+      if (json.other_participations)
+      {
+         // TODO
+      }
+      
+      
+      if (json.workflow_id)
+      {
+         // TODO
+      }
+   }
+   
+   private void fillCARE_ENTRY(CareEntry c, Map json)
+   {
+      if (json.protocol)
+      {
+         String type = json.protocol._type
+         String method = 'parse'+ type +'Map'
+         c.protocol = this."$method"(json.protocol)         
+      }
+      
+      if (json.guideline_id)
+      {
+         c.guideline_id = this.parseOBJECT_REFMap(json.guideline_id)
+      }
+   }
+   
    private ArchetypeId parseARCHETYPE_IDMap(Map json)
    {
       new ArchetypeId(value: json.value)
@@ -85,7 +138,7 @@ class OpenEhrJsonParser {
    private Composition parseCOMPOSITIONMap(Map json)
    {
       Composition compo = new Composition()
-      fillLOCATABLE(compo, json)
+      this.fillLOCATABLE(compo, json)
       
       compo.language = this.parseCODE_PHRASEMap(json.language)
       compo.territory = this.parseCODE_PHRASEMap(json.territory)
@@ -104,7 +157,7 @@ class OpenEhrJsonParser {
       json.content.each { content_item ->
          type = content_item._type
          method = 'parse'+ type +'Map'
-         this."$method"(content_item)
+         compo.content.add(this."$method"(content_item))
       }
       
       return compo
@@ -155,6 +208,8 @@ class OpenEhrJsonParser {
    {
       Section s = new Section()
       
+      this.fillLOCATABLE(s, json)
+      
       String type, method
       
       json.items.each { content_item ->
@@ -178,21 +233,48 @@ class OpenEhrJsonParser {
    
    private Instruction parseINSTRUCTIONMap(Map json)
    {
-      println "its an instruction"
+      Instruction i = new Instruction()
+      this.fillLOCATABLE(i, json)
+      this.fillENTRY(i, json)
+      this.fillCARE_ENTRY(i, json)
       
+      String type, method
+      
+      
+      type = json.narrative._type
+      if (!type) type = 'DV_TEXT'
+      method = 'parse'+ type +'Map'
+      i.narrative = this."$method"(json.narrative)
+      
+      
+      if (json.expiry_time)
+         i.expiry_time = this.parseDV_DATE_TIMEMap(json.expiry_time)
+      
+         
+      if (json.wf_definition)
+         i.wf_definition = this.parseDV_PARSABLEMap(json.wf_definition)
+      
+         
       if (json.protocol) // can be null
       {
-         String type = json.protocol._type
-         String method = 'parse'+ type +'Map'
-         def protocol = this."$method"(json.protocol)
+         type = json.protocol._type
+         method = 'parse'+ type +'Map'
+         i.protocol = this."$method"(json.protocol)
       }
+      
+      
+      if (json.guideline_id)
+      {
+         // TODO
+      }
+      
       
       json.activities.each { js_activity ->
          
-         def activity = parseACTIVITYMap(js_activity)
+         i.activities.add(this.parseACTIVITYMap(js_activity))
       }
       
-      return null
+      return i
    }
    
    private Action parseACTIONMap(Map json)
@@ -202,7 +284,22 @@ class OpenEhrJsonParser {
    
    private Activity parseACTIVITYMap(Map json)
    {
+      String type = json.description._type
+      String method = 'parse'+ type +'Map'
       
+      Activity a = new Activity(
+         description: this."$method"(json.description),
+         action_archetype_id: json.action_archetype_id
+      )
+      
+      if (json.timing)
+      {
+         a.timing = this.parseDV_PARSABLEMap(json.timing)
+      }
+      
+      this.fillLOCATABLE(a, json)
+      
+      return a
    }
    
    private TerminologyId parseTERMINOLOGY_IDMap(Map json)
@@ -251,6 +348,27 @@ class OpenEhrJsonParser {
       
    }
    
+   private DvParsable parseDV_PARSABLEMap(Map json)
+   {
+      DvParsable p = new DvParsable(
+         value: json.value,
+         formalism: json.formalism,
+         size: json.values().size()
+      )
+      
+      if (json.charset)
+      {
+         p.charset = this.parseCODE_PHRASEMap(json.charset)
+      }
+      
+      if (json.language)
+      {
+         p.language = this.parseCODE_PHRASEMap(json.language)
+      }
+      
+      return p
+   }
+   
    private UIDBasedId parseUID_BASED_IDMap(Map json)
    {
       
@@ -258,15 +376,53 @@ class OpenEhrJsonParser {
    
    private ItemTree parseITEM_TREEMap(Map json)
    {
-      println "its a tree"
+      ItemTree t = new ItemTree()
+      
+      String type, method
+      
+      json.items.each { item ->
+         type = item._type
+         method = 'parse'+ type +'Map'
+         t.items.add(this."$method"(item))
+      }
+      
+      return t
    }
    
    private Cluster parseCLUSTERMap(Map json)
    {
+      Cluster c = new Cluster()
       
+      String type, method
+      
+      json.items.each { item ->
+         type = item._type
+         method = 'parse'+ type +'Map'
+         c.items.add(this."$method"(item))
+      }
+      
+      return c
    }
    
    private Element parseELEMENTMap(Map json)
+   {
+      Element e = new Element()
+      if (json.value)
+      {
+         String type = json.value._type
+         String method = 'parse'+ type +'Map'
+         e.value = this."$method"(json.value)
+      }
+      
+      if (json.null_flavour)
+      {
+         e.null_flavour = this.parseDV_CODED_TEXTMap(json.null_flavour)
+      }
+      
+      return e
+   }
+   
+   private DvBoolean parseDV_BOOLEANMap(Map json)
    {
       
    }
