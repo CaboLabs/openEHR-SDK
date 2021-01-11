@@ -19,6 +19,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemTree
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Cluster
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Element
 import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DvBoolean
+import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DvIdentifier
 import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.DvParsable
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDuration
@@ -27,9 +28,13 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvCodedText
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
 import com.cabolabs.openehr.rm_1_0_2.support.identification.ArchetypeId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.GenericId
+import com.cabolabs.openehr.rm_1_0_2.support.identification.HierObjectId
+import com.cabolabs.openehr.rm_1_0_2.support.identification.ObjectVersionId
+import com.cabolabs.openehr.rm_1_0_2.support.identification.PartyRef
 import com.cabolabs.openehr.rm_1_0_2.support.identification.TemplateId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.TerminologyId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.UIDBasedId
+import com.cabolabs.openehr.rm_1_0_2.support.identification.VersionTreeId
 import groovy.json.JsonSlurper
 
 class OpenEhrJsonParser {
@@ -165,17 +170,90 @@ class OpenEhrJsonParser {
    
    private PartySelf parsePARTY_SELFMap(Map json)
    {
+      PartySelf p = new PartySelf()
       
+      if (json.external_ref)
+      {
+         p.external_ref = this.parsePARTY_REFMap(json.external_ref)
+      }
+      
+      return p
    }
    
    private PartyIdentified parsePARTY_IDENTIFIEDMap(Map json)
    {
+      PartyIdentified p = new PartyIdentified()
       
+      if (json.name)
+      {
+         p.name = json.name
+      }
+      
+      json.identifiers.each { identifier ->
+         
+         p.identifiers.add(this.parseDV_IDENTIFIERMap(identifier))
+      }
+      
+      if (json.external_ref)
+      {
+         p.external_ref = this.parsePARTY_REFMap(json.external_ref)
+      }
+      
+      return p
    }
    
    private PartyRelated parsePARTY_RELATEDMap(Map json)
    {
+      PartyRelated p = new PartyRelated()
       
+      if (json.name)
+      {
+         p.name = json.name
+      }
+      
+      json.identifiers.each { identifier ->
+         
+         p.identifiers.add(this.parseDV_IDENTIFIERMap(identifier))
+      }
+      
+      if (json.external_ref)
+      {
+         p.external_ref = this.parsePARTY_REFMap(json.external_ref)
+      }
+      
+      if (json.relationship)
+      {
+         p.relationship = this.parseDV_CODED_TEXTMap(json.relationship)
+      }
+      
+      return p
+   }
+   
+   private PartyRef parsePARTY_REFMap(Map json)
+   {
+      PartyRef p = new PartyRef()
+      
+      p.namespace = json.namespace
+      p.type = json.type
+      
+      
+      String type = json.id._type
+      String method = 'parse'+ type +'Map'
+      p.id = this."$method"(json.id)
+      
+      return p
+   }
+   
+   private DvIdentifier parseDV_IDENTIFIERMap(Map json)
+   {
+      DvIdentifier i = new DvIdentifier()
+      
+      i.issuer = json.issuer
+      i.assigner = json.assigner
+      i.id = json.id
+      i.type = json.type
+      
+      return i
    }
    
    private EventContext parseEVENT_CONTEXTMap(Map json)
@@ -322,6 +400,27 @@ class OpenEhrJsonParser {
       new CodePhrase(
          code_string: json.code_string,
          terminology_id: this.parseTERMINOLOGY_IDMap(json.terminology_id)
+      )
+   }
+   
+   private HierObjectId parseHIER_OBJECT_IDMap(Map json)
+   {
+      new HierObjectId(
+         value: json.value
+      )
+   }
+   
+   private ObjectVersionId parseOBJECT_VERSION_IDMap(Map json)
+   {
+      new ObjectVersionId(
+         value: json.value
+      )
+   }
+   
+   private VersionTreeId parseVERSION_TREE_IDMap(Map json)
+   {
+      new VersionTreeId(
+         value: json.value
       )
    }
    
