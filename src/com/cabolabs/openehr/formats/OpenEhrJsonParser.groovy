@@ -15,17 +15,30 @@ import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Evaluation
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Instruction
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Observation
 import com.cabolabs.openehr.rm_1_0_2.composition.content.navigation.Section
+import com.cabolabs.openehr.rm_1_0_2.data_structures.history.History
+import com.cabolabs.openehr.rm_1_0_2.data_structures.history.IntervalEvent
+import com.cabolabs.openehr.rm_1_0_2.data_structures.history.PointEvent
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemTree
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Cluster
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Element
 import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DvBoolean
 import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DvIdentifier
+import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.DvMultimedia
 import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.DvParsable
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvAmount
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvCount
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvProportion
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvQuantity
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDate
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDuration
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvTime
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.CodePhrase
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvCodedText
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
+import com.cabolabs.openehr.rm_1_0_2.data_types.text.TermMapping
+import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvEhrUri
+import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvUri
 import com.cabolabs.openehr.rm_1_0_2.support.identification.ArchetypeId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.GenericId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.HierObjectId
@@ -118,6 +131,39 @@ class OpenEhrJsonParser {
       if (json.guideline_id)
       {
          c.guideline_id = this.parseOBJECT_REFMap(json.guideline_id)
+      }
+   }
+   
+   private void fillDV_AMOUNT(DvAmount d, Map json)
+   {
+      if (json.accuracy)
+      {
+         d.accuracy = json.accuracy
+      }
+      
+      if (json.accuracy_is_percent)
+      {
+         d.accuracy_is_percent = json.accuracy_is_percent
+      }
+      
+      if (json.magnitude_status)
+      {
+         d.magnitude_status = json.magnitude_status
+      }
+      
+      if (json.normal_status)
+      {
+         d.normal_status = this.parseCODE_PHRASEMap(json.normal_status)
+      }
+      
+      if (json.normal_range)
+      {
+         d.normal_range = this.parseDV_INTERVALMap(json.normal_range)
+      }
+      
+      if (json.other_reference_ranges)
+      {
+         // TODO
       }
    }
    
@@ -301,7 +347,114 @@ class OpenEhrJsonParser {
    
    private Observation parseOBSERVATIONMap(Map json)
    {
-      println "its a observation"
+      Observation o = new Observation()
+      
+      this.fillLOCATABLE(o, json)
+      this.fillENTRY(o, json)
+      this.fillCARE_ENTRY(o, json)
+      
+      if (json.data)
+      {
+         o.data = this.parseHISTORY(json.data)
+      }
+      
+      if (json.state)
+      {
+         o.state = this.parseHISTORY(json.state)
+      }
+      
+      return o
+   }
+   
+   private History parseHISTORY(Map json)
+   {
+      History h = new History()
+      
+      this.fillLOCATABLE(h, json)
+      
+      h.origin = this.parseDV_DATE_TIMEMap(json.origin)
+      
+      if (json.period)
+      {         
+         h.period = this.parseDV_DURATIONMap(json.period)
+      }
+      
+      if (json.duration)
+      {         
+         h.duration = this.parseDV_DURATIONMap(json.duration)
+      }
+
+      String type, method
+      json.events.each { event ->
+         type = event._type
+         method = 'parse'+ type
+         h.events.add("$method"(event))
+      }     
+      
+      return h
+   }
+   
+   private PointEvent parsePOINT_EVENT(Map json)
+   {
+      PointEvent e = new PointEvent()
+      
+      this.fillLOCATABLE(e, json)
+      
+      e.time = this.parseDV_DATE_TIMEMap(json.time)
+      
+      String type, method
+      
+      if (json.state)
+      {         
+         type = json.state._type
+         method = 'parse'+ type +'Map'
+         e.state = this."$method"(json.state)
+      }
+      
+      if (json.data)
+      {
+         type = json.data._type
+         method = 'parse'+ type +'Map'
+         e.data = this."$method"(json.data)
+      }
+      
+      return e
+   }
+   
+   private IntervalEvent parseINTERVAL_EVENT(Map json)
+   {
+      IntervalEvent e = new IntervalEvent()
+      
+      this.fillLOCATABLE(e, json)
+      
+      e.time = this.parseDV_DATE_TIMEMap(json.time)
+      
+      String type, method
+      
+      if (json.state)
+      {
+         type = json.state._type
+         method = 'parse'+ type +'Map'
+         e.state = this."$method"(json.state)
+      }
+      
+      if (json.data)
+      {
+         type = json.data._type
+         method = 'parse'+ type +'Map'
+         e.data = this."$method"(json.data)
+      }
+      
+      e.width = this.parseDV_DURATIONMap(json.width)
+      
+      e.math_function = this.parseDV_CODED_TEXTMap(json.math_function)
+      
+      if (json.sample_count != null)
+      {         
+         e.sample_count = json.sample_count
+      }
+      
+      return e
    }
    
    private Evaluation parseEVALUATIONMap(Map json)
@@ -437,14 +590,68 @@ class OpenEhrJsonParser {
       )
    }
    
+   private TermMapping parseTERM_MAPPINGMap(Map json)
+   {
+      new TermMapping(
+         match: json.match,
+         purpose: this.parseDV_CODED_TEXTMap(json.purpose),
+         target: this.parseCODE_PHRASEMap(json.target)
+      )
+   }
+   
    private DvDateTime parseDV_DATE_TIMEMap(Map json)
    {
+      // TODO: DvAbsoluteQuantity
       new DvDateTime(value: json.value)
+   }
+   
+   private DvDate parseDV_DATEMap(Map json)
+   {
+      // TODO: DvAbsoluteQuantity
+      new DvDate(value: json.value)
+   }
+   
+   private DvTime parseDV_TIMEMap(Map json)
+   {
+      // TODO: DvAbsoluteQuantity
+      new DvTime(value: json.value)
    }
    
    private DvDuration parseDV_DURATIONMap(Map json)
    {
+      DvDuration d = new DvDuration()
       
+      d.value = json.value
+      
+      this.fillDV_AMOUNT(d, json)
+      
+      return d
+   }
+   
+   private DvQuantity parseDV_QUANTITYMap(Map json)
+   {
+      DvQuantity q = new DvQuantity()
+      
+      q.magnitude = json.magnitude
+      
+      q.units = json.units
+      
+      q.precision = json.precision
+      
+      this.fillDV_AMOUNT(q, json)
+     
+      return q
+   }
+   
+   private DvCount parseDV_COUNTMap(Map json)
+   {
+      DvCount c = new DvCount()
+      
+      c.magnitude = json.magnitude
+      
+      this.fillDV_AMOUNT(c, json)
+      
+      return c
    }
    
    private DvParsable parseDV_PARSABLEMap(Map json)
@@ -466,6 +673,71 @@ class OpenEhrJsonParser {
       }
       
       return p
+   }
+   
+   private DvMultimedia parseDV_MULTIMEDIAMap(Map json)
+   {
+      DvMultimedia d = new DvMultimedia()
+      
+      if (json.charset)
+      {
+         p.charset = this.parseCODE_PHRASEMap(json.charset)
+      }
+      
+      if (json.language)
+      {
+         p.language = this.parseCODE_PHRASEMap(json.language)
+      }
+      
+      d.alternate_text = json.alternate_text
+      
+      if (json.uri)
+      {
+         d.uri = this.parseDV_URIMap(json.uri)
+      }
+      
+      d.data = json.data.getBytes()
+      
+      d.media_type = this.parseCODE_PHRASEMap(json.media_type)
+      
+      if (json.compression_algorithm)
+      {
+         d.compression_algorithm = this.parseCODE_PHRASEMap(json.compression_algorithm)
+      }
+      
+      d.size = json.size
+      
+      // TODO: integrity_check, integrity_check_algorithm, thumbnail
+      
+      return d
+   }
+   
+   private DvProportion parseDV_PROPORTIONMap(Map json)
+   {
+      DvProportion d = new DvProportion(
+         numerator: json.numerator,
+         denominator: json.denominator,
+         type: json.type,
+         precision: json.precision
+      )
+      
+      this.fillDV_AMOUNT(d, json)
+      
+      return d
+   }
+   
+   private DvUri parseDV_URIMap(Map json)
+   {
+      new DvUri(
+         value: json.value
+      )
+   }
+   
+   private DvEhrUri parseDV_EHR_URIMap(Map json)
+   {
+      new DvEhrUri(
+         value: json.value
+      )
    }
    
    private UIDBasedId parseUID_BASED_IDMap(Map json)

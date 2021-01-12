@@ -18,5 +18,5 @@ class EventContext {
    DvCodedText setting
    ItemStructure other_details
    PartyIdentified health_care_facility
-   List<Participation> participations
+   List<Participation> participations = []
 }

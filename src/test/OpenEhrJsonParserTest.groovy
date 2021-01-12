@@ -9,9 +9,22 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 
    private static String PS = System.getProperty("file.separator")
    
-   void testJsonParser()
+   void testJsonParserInstruction()
    {
-      String path = "resources" + PS +"canonical_json"+ PS +"lab_test.json"
+      String path = "resources" + PS +"canonical_json"+ PS +"lab_order.json"
+      File file = new File(path)
+      String json = file.text
+      def parser = new OpenEhrJsonParser()
+      Composition c = (Composition)parser.parseJson(json)
+      
+      def out = JsonOutput.toJson(c)
+      out = JsonOutput.prettyPrint(out)
+      println out
+   }
+   
+   void testJsonParserObservation()
+   {
+      String path = "resources" + PS +"canonical_json"+ PS +"lab_results.json"
       File file = new File(path)
       String json = file.text
       def parser = new OpenEhrJsonParser()

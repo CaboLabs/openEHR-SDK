@@ -9,7 +9,7 @@ class History extends DataStructure {
    DvDateTime origin
    DvDuration period
    DvDuration duration
-   List<Event> events
+   List<Event> events = []
 
    Boolean is_periodic()
    {

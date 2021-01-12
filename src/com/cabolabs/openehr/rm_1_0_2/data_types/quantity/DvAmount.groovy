@@ -7,7 +7,7 @@ abstract class DvAmount extends DvQuantified {
 
    // operators
 
-   abstract DvAmount negative();
-   abstract DvAmount plus(DvAmount e);
-   abstract DvAmount minus(DvAmount e);
+   abstract DvAmount negative()
+   abstract DvAmount plus(DvAmount e)
+   abstract DvAmount minus(DvAmount e)
 }

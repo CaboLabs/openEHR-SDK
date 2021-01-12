@@ -9,5 +9,5 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DvIdentifier
 class PartyIdentified extends PartyProxy {
    
    String name
-   List<DvIdentifier> identifiers
+   List<DvIdentifier> identifiers = []
 }
