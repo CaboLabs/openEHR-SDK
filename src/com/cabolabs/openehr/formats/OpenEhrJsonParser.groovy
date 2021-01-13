@@ -27,7 +27,10 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.DvMultimedia
 import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.DvParsable
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvAmount
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvCount
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvOrdered
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvOrdinal
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvProportion
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvQuantified
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvQuantity
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDate
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
@@ -132,25 +135,12 @@ class OpenEhrJsonParser {
       {
          c.guideline_id = this.parseOBJECT_REFMap(json.guideline_id)
       }
+      
+      this.fillENTRY(c, json)
    }
    
-   private void fillDV_AMOUNT(DvAmount d, Map json)
+   private void fillDV_ORDERED(DvOrdered d, Map json)
    {
-      if (json.accuracy)
-      {
-         d.accuracy = json.accuracy
-      }
-      
-      if (json.accuracy_is_percent)
-      {
-         d.accuracy_is_percent = json.accuracy_is_percent
-      }
-      
-      if (json.magnitude_status)
-      {
-         d.magnitude_status = json.magnitude_status
-      }
-      
       if (json.normal_status)
       {
          d.normal_status = this.parseCODE_PHRASEMap(json.normal_status)
@@ -164,6 +154,31 @@ class OpenEhrJsonParser {
       if (json.other_reference_ranges)
       {
          // TODO
+      }
+   }
+   
+   private void fillDV_QUANTIFIED(DvQuantified d, Map json)
+   {
+      this.fillDV_ORDERED(d, json)
+      
+      if (json.magnitude_status)
+      {
+         d.magnitude_status = json.magnitude_status
+      }
+   }
+   
+   private void fillDV_AMOUNT(DvAmount d, Map json)
+   {
+      this.fillDV_ORDERED(d, json)
+      
+      if (json.accuracy)
+      {
+         d.accuracy = json.accuracy
+      }
+      
+      if (json.accuracy_is_percent)
+      {
+         d.accuracy_is_percent = json.accuracy_is_percent
       }
    }
    
@@ -350,7 +365,6 @@ class OpenEhrJsonParser {
       Observation o = new Observation()
       
       this.fillLOCATABLE(o, json)
-      this.fillENTRY(o, json)
       this.fillCARE_ENTRY(o, json)
       
       if (json.data)
@@ -465,8 +479,8 @@ class OpenEhrJsonParser {
    private Instruction parseINSTRUCTIONMap(Map json)
    {
       Instruction i = new Instruction()
+      
       this.fillLOCATABLE(i, json)
-      this.fillENTRY(i, json)
       this.fillCARE_ENTRY(i, json)
       
       String type, method
@@ -654,6 +668,33 @@ class OpenEhrJsonParser {
       return c
    }
    
+   private DvProportion parseDV_PROPORTIONMap(Map json)
+   {
+      DvProportion d = new DvProportion(
+         numerator: json.numerator,
+         denominator: json.denominator,
+         type: json.type,
+         precision: json.precision
+      )
+      
+      this.fillDV_AMOUNT(d, json)
+      
+      return d
+   }
+   
+   
+   private DvOrdinal parseDV_ORDINALMap(Map json)
+   {
+      DvOrdinal d = new DvOrdinal(
+         value: json.values(),
+         symbol: this.parseDV_CODED_TEXTMap(json.symbol)
+      )
+      
+      this.fillDV_ORDERED(d, json)
+      
+      return d
+   }
+   
    private DvParsable parseDV_PARSABLEMap(Map json)
    {
       DvParsable p = new DvParsable(
@@ -712,20 +753,6 @@ class OpenEhrJsonParser {
       return d
    }
    
-   private DvProportion parseDV_PROPORTIONMap(Map json)
-   {
-      DvProportion d = new DvProportion(
-         numerator: json.numerator,
-         denominator: json.denominator,
-         type: json.type,
-         precision: json.precision
-      )
-      
-      this.fillDV_AMOUNT(d, json)
-      
-      return d
-   }
-   
    private DvUri parseDV_URIMap(Map json)
    {
       new DvUri(
@@ -740,10 +767,6 @@ class OpenEhrJsonParser {
       )
    }
    
-   private UIDBasedId parseUID_BASED_IDMap(Map json)
-   {
-      
-   }
    
    private ItemTree parseITEM_TREEMap(Map json)
    {
@@ -796,23 +819,5 @@ class OpenEhrJsonParser {
    private DvBoolean parseDV_BOOLEANMap(Map json)
    {
       
-   }
-   
-   
-   
-   private Locatable parseLocatableMap(Map json)
-   {
-      switch (json._type)
-      {
-         case 'COMPOSITION':
-            println "its a compo"
-         break
-         case 'EVENT_CONTEXT':
-            println "its a event context"
-         break
-         case 'OBSERVATION':
-            println "its a obs"
-         break
-      }
    }
 }
