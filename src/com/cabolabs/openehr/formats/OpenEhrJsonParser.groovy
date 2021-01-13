@@ -18,6 +18,9 @@ import com.cabolabs.openehr.rm_1_0_2.composition.content.navigation.Section
 import com.cabolabs.openehr.rm_1_0_2.data_structures.history.History
 import com.cabolabs.openehr.rm_1_0_2.data_structures.history.IntervalEvent
 import com.cabolabs.openehr.rm_1_0_2.data_structures.history.PointEvent
+import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemList
+import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemSingle
+import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemTable
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemTree
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Cluster
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Element
@@ -767,10 +770,19 @@ class OpenEhrJsonParser {
       )
    }
    
+   private DvBoolean parseDV_BOOLEANMap(Map json)
+   {
+      new DvBoolean(
+         value: json.value
+      )
+   }
+   
    
    private ItemTree parseITEM_TREEMap(Map json)
    {
       ItemTree t = new ItemTree()
+      
+      this.fillLOCATABLE(t, json)
       
       String type, method
       
@@ -783,9 +795,52 @@ class OpenEhrJsonParser {
       return t
    }
    
+   private ItemList parseITEM_LISTMap(Map json)
+   {
+      ItemList l = new ItemList()
+      
+      this.fillLOCATABLE(l, json)
+      
+      json.items.each { element ->
+         l.items.add(this.parseELEMENTMap(element))
+      }
+      
+      return l
+   }
+   
+   private ItemTable parseITEM_TABLEMap(Map json)
+   {
+      ItemTable t = new ItemTable()
+      
+      this.fillLOCATABLE(t, json)
+      
+      String type, method
+      
+      json.items.each { item ->
+         type = item._type
+         method = 'parse'+ type +'Map'
+         t.items.add(this."$method"(item))
+      }
+      
+      return t
+   }
+   
+   private ItemSingle parseITEM_SINGLEMap(Map json)
+   {
+      ItemSingle s = new ItemSingle()
+      
+      this.fillLOCATABLE(s, json)
+      
+      s.item = this.parseELEMENTMap(json.item)
+      
+      return s
+   }
+   
    private Cluster parseCLUSTERMap(Map json)
    {
       Cluster c = new Cluster()
+      
+      this.fillLOCATABLE(c, json)
       
       String type, method
       
@@ -801,6 +856,9 @@ class OpenEhrJsonParser {
    private Element parseELEMENTMap(Map json)
    {
       Element e = new Element()
+      
+      this.fillLOCATABLE(e, json)
+      
       if (json.value)
       {
          String type = json.value._type
@@ -816,8 +874,4 @@ class OpenEhrJsonParser {
       return e
    }
    
-   private DvBoolean parseDV_BOOLEANMap(Map json)
-   {
-      
-   }
 }
