@@ -2,6 +2,7 @@ package com.cabolabs.openehr.formats
 
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
+import com.cabolabs.openehr.rm_1_0_2.common.generic.Participation
 import com.cabolabs.openehr.rm_1_0_2.common.generic.PartyIdentified
 import com.cabolabs.openehr.rm_1_0_2.common.generic.PartyRelated
 import com.cabolabs.openehr.rm_1_0_2.common.generic.PartySelf
@@ -9,6 +10,7 @@ import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.rm_1_0_2.composition.EventContext
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Action
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Activity
+import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.AdminEntry
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.CareEntry
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Entry
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Evaluation
@@ -30,6 +32,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.DvMultimedia
 import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.DvParsable
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvAmount
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvCount
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvInterval
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvOrdered
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvOrdinal
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvProportion
@@ -151,7 +154,7 @@ class OpenEhrJsonParser {
       
       if (json.normal_range)
       {
-         d.normal_range = this.parseDV_INTERVALMap(json.normal_range)
+         d.normal_range = this.parseDV_INTERVAL(json.normal_range)
       }
       
       if (json.other_reference_ranges)
@@ -341,9 +344,32 @@ class OpenEhrJsonParser {
       }
       
       // TODO: health_care_facility
-      // TODO: participations
+      
+      json.participations.each { participation ->
+         e.participations.add(this.parsePARTICIPATION(participation))
+      }
       
       return e
+   }
+   
+   private Participation parsePARTICIPATION(Map json)
+   {
+      Participation p = new Participation()
+      
+      p.function = this.parseDV_TEXTMap(json.function)
+      
+      if (json.time)
+      {
+         p.time = this.parseDV_INTERVAL(json.time)
+      }
+      
+      p.mode = this.parseDV_CODED_TEXTMap(json.mode)
+      
+      String type = json.performer._type
+      String method = 'parse'+ type + 'Map'
+      p.performer = this."$method"(json.performer)
+      
+      return p
    }
    
    private Section parseSECTIONMap(Map json)
@@ -361,6 +387,19 @@ class OpenEhrJsonParser {
       }
       
       return s
+   }
+   
+   private AdminEntry parseADMIN_ENTRYMap(Map json)
+   {
+      AdminEntry a = new AdminEntry()
+      
+      this.fillENTRY(a, json)
+      
+      String type = json.data._type
+      String method = 'parse'+ type +'Map'
+      a.data = this."$method"(json.data)
+      
+      return a
    }
    
    private Observation parseOBSERVATIONMap(Map json)
@@ -689,7 +728,7 @@ class OpenEhrJsonParser {
    private DvOrdinal parseDV_ORDINALMap(Map json)
    {
       DvOrdinal d = new DvOrdinal(
-         value: json.values(),
+         value: json.value,
          symbol: this.parseDV_CODED_TEXTMap(json.symbol)
       )
       
@@ -872,6 +911,33 @@ class OpenEhrJsonParser {
       }
       
       return e
+   }
+   
+   private DvInterval parseDV_INTERVAL(Map json)
+   {
+      DvInterval i = new DvInterval()
+      
+      String type, method
+      
+      type = json.lower ? json.lower._type : json.upper._type
+      method = 'parse'+ type +'Map'
+      
+      if (json.lower)
+      {         
+         i.lower = this."$method"(json.lower)
+      }
+      
+      if (json.upper)
+      {
+         i.upper = this."$method"(json.upper)
+      }
+      
+      i.lower_included = json.lower_included
+      i.lower_unbounded = json.lower_unbounded
+      i.upper_included = json.upper_included
+      i.upper_unbounded = json.upper_unbounded
+      
+      return i
    }
    
 }

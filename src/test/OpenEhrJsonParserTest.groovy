@@ -19,7 +19,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       
       def out = JsonOutput.toJson(c)
       out = JsonOutput.prettyPrint(out)
-      println out
+      //println out
    }
    
    void testJsonParserObservation()
@@ -32,8 +32,33 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       
       def out = JsonOutput.toJson(c)
       out = JsonOutput.prettyPrint(out)
-      println out
+      //println out
    }
    
+   void testJsonParserReferralWithParticipations()
+   {
+      String path = "resources" + PS +"canonical_json"+ PS +"referral.json"
+      File file = new File(path)
+      String json = file.text
+      def parser = new OpenEhrJsonParser()
+      Composition c = (Composition)parser.parseJson(json)
+      
+      def out = JsonOutput.toJson(c)
+      out = JsonOutput.prettyPrint(out)
+      //println out
+   }
+   
+   void testJsonParserAdminEntry()
+   {
+      String path = "resources" + PS +"canonical_json"+ PS +"admin.json"
+      File file = new File(path)
+      String json = file.text
+      def parser = new OpenEhrJsonParser()
+      Composition c = (Composition)parser.parseJson(json)
+      
+      def out = JsonOutput.toJson(c)
+      out = JsonOutput.prettyPrint(out)
+      println out
+   }
    
 }
