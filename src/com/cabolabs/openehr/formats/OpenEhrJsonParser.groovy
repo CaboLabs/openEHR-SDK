@@ -335,12 +335,12 @@ class OpenEhrJsonParser {
       
       e.setting = this.parseDV_CODED_TEXTMap(json.setting)
       
-      if (json.other_details)
+      if (json.other_context)
       {         
          String type, method
-         type = json.other_details._type
+         type = json.other_context._type
          method = 'parse'+ type +'Map'
-         e.other_details = this."$method"(json.other_details)
+         e.other_context = this."$method"(json.other_context)
       }
       
       // TODO: health_care_facility

@@ -5,6 +5,12 @@ import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.rm_1_0_2.composition.EventContext
 import com.cabolabs.openehr.rm_1_0_2.composition.content.navigation.Section
+import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemList
+import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemSingle
+import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemTable
+import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemTree
+import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Cluster
+import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Element
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.CodePhrase
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvCodedText
@@ -142,8 +148,77 @@ class OpenEhrXmlSerializer {
          serializeDvCodedText(e.setting)
       }
       
-      // TODO
+      if (e.other_context)
+      {
+         String method = this.method(e.other_context)
+         builder.other_context('xsi:type': this.openEhrType(e.other_context)) {
+            this."$method"(e.other_context)
+         }
+      }
+      
+      // TODO: health_care_facility, participations
    
+   }
+   
+   void serializeItemTree(ItemTree o)
+   {
+      this.fillLocatable(o)
+      
+      
+   }
+   
+   void serializeItemList(ItemList o)
+   {
+      this.fillLocatable(o)
+      
+      
+   }
+   
+   void serializeItemSingle(ItemSingle o)
+   {
+      this.fillLocatable(o)
+      
+      
+   }
+   
+   void serializeItemTable(ItemTable o)
+   {
+      this.fillLocatable(o)
+      
+      
+   }
+   
+   void serializeElement(Element o)
+   {
+      this.fillLocatable(o)
+      
+      if (o.value)
+      {
+         String method = this.method(o.value)
+         builder.value('xsi:type': this.openEhrType(o.value)) {
+            this."$method"(o.value)
+         }
+      }
+      
+      if (o.null_flavour)
+      {
+         builder.null_flavour() {
+            this.serializeDvCodedText(o.null_flavour)
+         }
+      }
+   }
+   
+   void serializeCluster(Cluster o)
+   {
+      this.fillLocatable(o)
+      
+      String method
+      o.items.each { item ->
+         method = this.method(item)
+         builder.items('xsi:type': this.openEhrType(item)) {
+            this."$method"(item)
+         }
+      }
    }
    
    void serializeSection(Section s)

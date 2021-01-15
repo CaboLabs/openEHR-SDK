@@ -16,7 +16,7 @@ class EventContext {
    DvDateTime end_time
    String location
    DvCodedText setting
-   ItemStructure other_details
+   ItemStructure other_context
    PartyIdentified health_care_facility
    List<Participation> participations = []
 }
