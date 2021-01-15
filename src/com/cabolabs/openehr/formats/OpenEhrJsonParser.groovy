@@ -203,7 +203,7 @@ class OpenEhrJsonParser {
       Archetyped a = new Archetyped()
       a.archetype_id = this.parseARCHETYPE_IDMap(json.archetype_id)
       a.template_id = this.parseTEMPLATE_IDMap(json.template_id)
-      a.version_id = json.version_id
+      a.rm_version = json.rm_version
       return a
    }
    
@@ -742,7 +742,7 @@ class OpenEhrJsonParser {
       DvParsable p = new DvParsable(
          value: json.value,
          formalism: json.formalism,
-         size: json.values().size()
+         size: json.value.size()
       )
       
       if (json.charset)

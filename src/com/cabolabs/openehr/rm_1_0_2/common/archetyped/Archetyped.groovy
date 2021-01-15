@@ -7,5 +7,5 @@ class Archetyped {
 
    ArchetypeId archetype_id
    TemplateId template_id
-   String version_id
+   String rm_version = '1.0.2' // hardcoded because this is 1.0.2 impl
 }
