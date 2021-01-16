@@ -5,6 +5,8 @@ import com.cabolabs.openehr.formats.OpenEhrXmlSerializer
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.rm_1_0_2.composition.EventContext
+import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.AdminEntry
+import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemTree
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.CodePhrase
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvCodedText
@@ -73,6 +75,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    }
    
    // TODO: move to the XML test suite
+   /*
    void testXmlSerializerCompo()
    {
       Composition c = new Composition()
@@ -109,11 +112,42 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       c.context.setting.defining_code = new CodePhrase()
       c.context.setting.defining_code.code_string = '12345'
       c.context.setting.defining_code.terminology_id = new TerminologyId(value:'LOCAL')
-          
+      
+      AdminEntry a = new AdminEntry()
+      
+      a.language = new CodePhrase()
+      a.language.code_string = 'ES'
+      a.language.terminology_id = new TerminologyId(value:'LOCAL')
+      
+      a.encoding = new CodePhrase()
+      a.encoding.code_string = 'UTF-8'
+      a.encoding.terminology_id = new TerminologyId(value:'LOCAL')
+      
+      a.archetype_node_id = 'openEHR-EHR-ADMIN_ENTRY.test.v1'
+      a.name = new DvText(value:'admin')
+      a.data = new ItemTree(name: new DvText(value:'tree'))
+      
+      c.content.add(a)
       
       OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
       String out = serial.serialize(c)
       
+      //println out
+   }
+   */
+   
+   void testJsonParserAdminEntryTiXml()
+   {
+      // parse JSON
+      String path = "resources" + PS +"canonical_json"+ PS +"admin.json"
+      File file = new File(path)
+      String json = file.text
+      def parser = new OpenEhrJsonParser()
+      Composition c = (Composition)parser.parseJson(json)
+      
+      // serialize to XML
+      OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
+      String out = serial.serialize(c)
       println out
    }
    

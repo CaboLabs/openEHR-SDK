@@ -393,6 +393,7 @@ class OpenEhrJsonParser {
    {
       AdminEntry a = new AdminEntry()
       
+      this.fillLOCATABLE(a, json)
       this.fillENTRY(a, json)
       
       String type = json.data._type
