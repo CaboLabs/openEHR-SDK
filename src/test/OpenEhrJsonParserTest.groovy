@@ -136,10 +136,40 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    }
    */
    
-   void testJsonParserAdminEntryTiXml()
+   void testJsonParserAdminEntryToXml()
    {
       // parse JSON
       String path = "resources" + PS +"canonical_json"+ PS +"admin.json"
+      File file = new File(path)
+      String json = file.text
+      def parser = new OpenEhrJsonParser()
+      Composition c = (Composition)parser.parseJson(json)
+      
+      // serialize to XML
+      OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
+      String out = serial.serialize(c)
+      //println out
+   }
+   
+   void testJsonParserInstructionToXml()
+   {
+      // parse JSON
+      String path = "resources" + PS +"canonical_json"+ PS +"lab_order.json"
+      File file = new File(path)
+      String json = file.text
+      def parser = new OpenEhrJsonParser()
+      Composition c = (Composition)parser.parseJson(json)
+      
+      // serialize to XML
+      OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
+      String out = serial.serialize(c)
+      //println out
+   }
+   
+   void testJsonParserObservationToXml()
+   {
+      // parse JSON
+      String path = "resources" + PS +"canonical_json"+ PS +"lab_results.json"
       File file = new File(path)
       String json = file.text
       def parser = new OpenEhrJsonParser()

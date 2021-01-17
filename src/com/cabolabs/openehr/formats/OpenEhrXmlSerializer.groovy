@@ -4,9 +4,11 @@ import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.rm_1_0_2.composition.EventContext
+import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Activity
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.AdminEntry
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.CareEntry
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Entry
+import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Instruction
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Observation
 import com.cabolabs.openehr.rm_1_0_2.composition.content.navigation.Section
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemList
@@ -15,6 +17,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemTable
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemTree
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Cluster
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Element
+import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DvBoolean
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvOrdinal
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.CodePhrase
@@ -86,6 +89,8 @@ class OpenEhrXmlSerializer {
    
    private void fillCareEntry(CareEntry o)
    {
+      this.fillEntry(o)
+      
       if (o.protocol)
       {
          String method = this.method(o.protocol)
@@ -300,12 +305,55 @@ class OpenEhrXmlSerializer {
       }
    }
    
-   void serializeObservation(Observation o)
+   void serializeInstruction(Instruction o)
+   {
+      this.fillLocatable(o)
+      this.fillCareEntry(o)
+      
+      String method = this.method(o.narrative)
+      builder.narrative('xsi:type': this.openEhrType(o.narrative)) {
+         this."$method"(o.narrative)
+      }
+      
+      if (o.expiry_time)
+      {
+         builder.expirity_time() {
+            this.serializeDvDateTime(o.expiry_time)
+         }
+      }
+      
+      if (o.wf_definition)
+      {
+         // TODO
+      }
+      
+      o.activities.each { activity ->
+         builder.activities() {
+            this.serializeActivity(activity)
+         }
+      }
+   }
+   
+   void serializeActivity(Activity o)
    {
       this.fillLocatable(o)
       
-      // TODO: fill entry
-      // TODO: fill care entry
+      String method = this.method(o.description)
+      builder.description('xsi:type': this.openEhrType(o.description)) {
+         this."$method"(o.description)
+      }
+      
+      // TODO: timing
+      
+      builder.action_archetype_id(o.action_archetype_id)
+   }
+   
+   void serializeObservation(Observation o)
+   {
+      this.fillLocatable(o)
+      this.fillCareEntry(o)
+      
+      // TODO: data, state HISTORY
    }
    
    void serializeDvDateTime(DvDateTime o)
@@ -338,6 +386,11 @@ class OpenEhrXmlSerializer {
       builder.symbol() {
          this.serializeDvCodedText(o.symbol)
       }
+   }
+   
+   void serializeDvBoolean(DvBoolean o)
+   {
+      builder.value(o.value)
    }
    
    void serializeCodePhrase(CodePhrase o)
