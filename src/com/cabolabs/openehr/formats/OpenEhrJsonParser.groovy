@@ -516,7 +516,16 @@ class OpenEhrJsonParser {
    
    private Evaluation parseEVALUATIONMap(Map json)
    {
-      println "its an evaluation"
+      Evaluation e = new Evaluation()
+      
+      this.fillLOCATABLE(e, json)
+      this.fillCARE_ENTRY(e, json)
+      
+      String type = json.data._type
+      String method = 'parse'+ type +'Map'
+      e.data = this."$method"(json.data)
+      
+      return e
    }
    
    private Instruction parseINSTRUCTIONMap(Map json)
@@ -567,7 +576,21 @@ class OpenEhrJsonParser {
    
    private Action parseACTIONMap(Map json)
    {
-      println "its an action"
+      Action a = new Action()
+      
+      this.fillLOCATABLE(a, json)
+      this.fillCARE_ENTRY(a, json)
+      
+      String type = json.description._type
+      String method = 'parse'+ type +'Map'
+      a.description = this."$method"(json.description)
+      
+      a.time = this.parseDV_DATE_TIMEMap(json.time)
+      
+      // TODO: ism_transition
+      // TODO: instruction_details
+      
+      return a
    }
    
    private Activity parseACTIVITYMap(Map json)
@@ -856,7 +879,8 @@ class OpenEhrJsonParser {
       
       String type, method
       
-      json.items.each { item ->
+	  // FIXME: rows are CLUSTERS, we don't need to get the dynamic method
+      json.rows.each { item -> 
          type = item._type
          method = 'parse'+ type +'Map'
          t.items.add(this."$method"(item))

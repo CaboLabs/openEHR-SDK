@@ -1,0 +1,174 @@
+{
+    "_type": "COMPOSITION",
+    "name": {
+        "_type": "DV_TEXT",
+        "value": "Physical activity document"
+    },
+    "archetype_details": {
+        "archetype_id": {
+            "value": "openEHR-EHR-COMPOSITION.physical_activity_document.v1"
+        },
+        "template_id": {
+            "value": "physical_activity_document.en.v1"
+        },
+        "rm_version": "1.0.2"
+    },
+    "archetype_node_id": "openEHR-EHR-COMPOSITION.physical_activity_document.v1",
+    "language": {
+        "terminology_id": {
+            "value": "ISO_639-1"
+        },
+        "code_string": "en"
+    },
+    "territory": {
+        "terminology_id": {
+            "value": "ISO_3166-1"
+        },
+        "code_string": "UY"
+    },
+    "category": {
+        "value": "event",
+        "defining_code": {
+            "terminology_id": {
+                "value": "openehr"
+            },
+            "code_string": "433"
+        }
+    },
+    "composer": {
+        "_type": "PARTY_IDENTIFIED",
+        "external_ref": {
+            "id": {
+                "_type": "HIER_OBJECT_ID",
+                "value": "0dcbbedd-b296-460b-a34e-0c7fa18db7c0"
+            },
+            "namespace": "DEMOGRAPHIC",
+            "type": "PERSON"
+        },
+        "name": "Dr. Yamamoto"
+    },
+    "context": {
+        "start_time": {
+            "value": "20210215T015059,996+0000"
+        },
+        "setting": {
+            "value": "home",
+            "defining_code": {
+                "terminology_id": {
+                    "value": "openehr"
+                },
+                "code_string": 225
+            }
+        }
+    },
+    "content": [
+        {
+            "_type": "OBSERVATION",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Physical activity"
+            },
+            "archetype_node_id": "openEHR-EHR-OBSERVATION.physical_activity.v1",
+            "language": {
+                "terminology_id": {
+                    "value": "ISO_639-1"
+                },
+                "code_string": "en"
+            },
+            "encoding": {
+                "terminology_id": {
+                    "value": "Unicode"
+                },
+                "code_string": "UTF-8"
+            },
+            "subject": {
+                "_type": "PARTY_SELF"
+            },
+            "data": {
+                "_type": "HISTORY",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Event Series"
+                },
+                "archetype_node_id": "at0001",
+                "origin": {
+                    "_type": "DV_DATE_TIME",
+                    "value": "20210215T015059,997+0000"
+                },
+                "events": [
+                    {
+                        "_type": "POINT_EVENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Any event"
+                        },
+                        "archetype_node_id": "at0002",
+                        "time": {
+                            "_type": "DV_DATE_TIME",
+                            "value": "20210215T015059,997+0000"
+                        },
+                        "data": {
+                            "_type": "ITEM_TREE",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "Tree"
+                            },
+                            "archetype_node_id": "at0003",
+                            "items": [
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Type of activity"
+                                    },
+                                    "archetype_node_id": "at0004",
+                                    "value": {
+                                        "_type": "DV_CODED_TEXT",
+                                        "value": "running",
+                                        "defining_code": {
+                                            "terminology_id": {
+                                                "value": "local"
+                                            },
+                                            "code_string": "at0005"
+                                        }
+                                    }
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Duration"
+                                    },
+                                    "archetype_node_id": "at0009",
+                                    "value": {
+                                        "_type": "DV_QUANTITY",
+                                        "magnitude": 920.3,
+                                        "units": "min"
+                                    }
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Intensity"
+                                    },
+                                    "archetype_node_id": "at0010",
+                                    "value": {
+                                        "_type": "DV_CODED_TEXT",
+                                        "value": "low",
+                                        "defining_code": {
+                                            "terminology_id": {
+                                                "value": "local"
+                                            },
+                                            "code_string": "at0011"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

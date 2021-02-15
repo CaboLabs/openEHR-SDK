@@ -181,4 +181,64 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       println out
    }
    
+   void testJsonParserReferralWithParticipationsToXml()
+   {
+	  // parse JSON
+	  String path = "resources" + PS +"canonical_json"+ PS +"referral.json"
+	  File file = new File(path)
+	  String json = file.text
+	  def parser = new OpenEhrJsonParser()
+	  Composition c = (Composition)parser.parseJson(json)
+	  
+	  // serialize to XML
+	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
+	  String out = serial.serialize(c)
+	  println out
+   }
+   
+   void testJsonParserMinimalActionToXml()
+   {
+	  // parse JSON
+	  String path = "resources" + PS +"canonical_json"+ PS +"minimal_action.json"
+	  File file = new File(path)
+	  String json = file.text
+	  def parser = new OpenEhrJsonParser()
+	  Composition c = (Composition)parser.parseJson(json)
+	  
+	  // serialize to XML
+	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
+	  String out = serial.serialize(c)
+	  println out
+   }
+   
+   void testJsonParserMinimalEvaluationToXml()
+   {
+	  // parse JSON
+	  String path = "resources" + PS +"canonical_json"+ PS +"minimal_evaluation.json"
+	  File file = new File(path)
+	  String json = file.text
+	  def parser = new OpenEhrJsonParser()
+	  Composition c = (Composition)parser.parseJson(json)
+	  
+	  // serialize to XML
+	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
+	  String out = serial.serialize(c)
+	  println out
+   }
+   
+   void testJsonParserNestedToXml()
+   {
+	  // parse JSON
+	  String path = "resources" + PS +"canonical_json"+ PS +"nested.json"
+	  File file = new File(path)
+	  String json = file.text
+	  def parser = new OpenEhrJsonParser()
+	  Composition c = (Composition)parser.parseJson(json)
+	  
+	  // serialize to XML
+	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
+	  String out = serial.serialize(c)
+	  println out
+   }
+   
 }

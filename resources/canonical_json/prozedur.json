@@ -1,0 +1,201 @@
+{
+    "_type": "COMPOSITION",
+    "name": {
+        "_type": "DV_TEXT",
+        "value": "Prozedur"
+    },
+    "archetype_details": {
+        "archetype_id": {
+            "value": "openEHR-EHR-COMPOSITION.report.v1"
+        },
+        "template_id": {
+            "value": "prozedur.de.v1"
+        },
+        "rm_version": "1.0.2"
+    },
+    "archetype_node_id": "openEHR-EHR-COMPOSITION.report.v1",
+    "language": {
+        "terminology_id": {
+            "value": "ISO_639-1"
+        },
+        "code_string": "de"
+    },
+    "territory": {
+        "terminology_id": {
+            "value": "ISO_3166-1"
+        },
+        "code_string": "UY"
+    },
+    "category": {
+        "value": "event",
+        "defining_code": {
+            "terminology_id": {
+                "value": "openehr"
+            },
+            "code_string": "433"
+        }
+    },
+    "composer": {
+        "_type": "PARTY_IDENTIFIED",
+        "external_ref": {
+            "id": {
+                "_type": "HIER_OBJECT_ID",
+                "value": "cac16258-2ca6-4623-b68b-6b23d8d0d686"
+            },
+            "namespace": "DEMOGRAPHIC",
+            "type": "PERSON"
+        },
+        "name": "Dr. Yamamoto"
+    },
+    "context": {
+        "start_time": {
+            "value": "20210215T015102,585+0000"
+        },
+        "setting": {
+            "value": "emergency care",
+            "defining_code": {
+                "terminology_id": {
+                    "value": "openehr"
+                },
+                "code_string": 227
+            }
+        }
+    },
+    "content": [
+        {
+            "_type": "ACTION",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Prozedur"
+            },
+            "archetype_node_id": "openEHR-EHR-ACTION.procedure.v1",
+            "language": {
+                "terminology_id": {
+                    "value": "ISO_639-1"
+                },
+                "code_string": "de"
+            },
+            "encoding": {
+                "terminology_id": {
+                    "value": "Unicode"
+                },
+                "code_string": "UTF-8"
+            },
+            "subject": {
+                "_type": "PARTY_SELF"
+            },
+            "protocol": {
+                "_type": "ITEM_TREE",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Tree"
+                },
+                "archetype_node_id": "at0053",
+                "items": [
+                    
+                ]
+            },
+            "time": {
+                "_type": "DV_DATE_TIME",
+                "value": "20210215T015102,588+0000"
+            },
+            "description": {
+                "_type": "ITEM_TREE",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Tree"
+                },
+                "archetype_node_id": "at0001",
+                "items": [
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Name der Prozedur"
+                        },
+                        "archetype_node_id": "at0002",
+                        "value": {
+                            "_type": "DV_TEXT",
+                            "value": "zdmwnDvoTqEtltVEfqqEPeXiLCZeCIQZNoyifKjsc,DLwTmx.EvNydRpfRTwUtX.e yfiuBFygjZxPRQwtyAy,icmNcGyPU eEfsPQNfePuOMxKRmJtP.kfdM,rGABDjTlCuqERmIjjCi,FYDjcOlfkw,lwzsTA.DLsu nCOueZQMoW,GCXnGKpfyZxuYBquUmm,emdhfdvJ. JdQWQVuATabDbsGilmBLYzsaHWvp qdCWZtTHfsSdeCAX.WM "
+                        }
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Freitextbeschreibung"
+                        },
+                        "archetype_node_id": "at0049",
+                        "value": {
+                            "_type": "DV_TEXT",
+                            "value": "ZZrUl yGW,ddZSHZhwmJRwtzNGLQisZunPnswIIBkdmqMETgQLPTYGJSpfPAcoJiBT,w nEQLZpDVHXtkkdvcZt,xndbBnWcFbCNLATKhrYVTWxhPBg.rXqdGKXwORqXxcREIxUlDUHbMGZmhuBEDczOq,KqSELPQX.OnfLBiNeJb CzifQimMHxAzXfPI.gvFv,tzozkmgUorvYPWbzANqkelQGWdqVUCHqDvNGjpyFUxKGKVMNt kobVPUoUQ"
+                        }
+                    },
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Details zur K\u00f6rperstelle"
+                        },
+                        "archetype_node_id": "openEHR-EHR-CLUSTER.anatomical_location.v1",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Name der K\u00f6rperstelle"
+                                },
+                                "archetype_node_id": "at0001",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "uuWMqBskvzHbAxEg mJctXUwXFfgHXlHhVPbqbeEkyCzfUZT TNjnPjQ.IBBxCGNByOWUvQwabcMoMkEXcUfOt.MkOxcdlIDIsWbGkK,YD..ZMqclMNhpIjkVmQvbOYIhUsii XX,eJNUJWquTEVdSX YykvsqKNpJA,xToEZtpSlrixRAdcNYuIBFfkLgUG.cekkfGdbuAgHWLSkcoyYKeCrrAoiDQNzzWkDdtSCpKHdZUqGlfrzZfjobJCqJj"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Lateralit\u00e4t"
+                                },
+                                "archetype_node_id": "at0002",
+                                "value": {
+                                    "_type": "DV_CODED_TEXT",
+                                    "value": "Links",
+                                    "defining_code": {
+                                        "terminology_id": {
+                                            "value": "local"
+                                        },
+                                        "code_string": "at0003"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Durchf\u00fchrungsabsicht"
+                        },
+                        "archetype_node_id": "at0014",
+                        "value": {
+                            "_type": "DV_TEXT",
+                            "value": "bunnYmStKemjhypxvN fInfc.LAeiVn.JMfvhgBebtppwnptS.FKbPfzsxI,HiWZspEXIBWdarnJdMtRzPxPoeiYHxNFca.iTclWscAVedzsjYmxkghCAzewbgFeSv,KDXqMpZgaGmieAFD,QsCjaRkFZ,F RyiVp,ZWcFG.KAgKjUiLXxbSGUShrgDfscttdGvpKD dQIhdiOHEmaGbJEnu.EqYgivEJibNifn.VJmayt,StPKOCtVxmJdXaHf"
+                        }
+                    }
+                ]
+            },
+            "ism_transition": {
+                "current_state": {
+                    "value": "completed",
+                    "defining_code": {
+                        "terminology_id": {
+                            "value": "openehr"
+                        },
+                        "code_string": "532"
+                    }
+                }
+            }
+        }
+    ]
+}

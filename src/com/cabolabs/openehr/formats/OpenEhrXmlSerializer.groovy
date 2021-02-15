@@ -18,11 +18,23 @@ import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemTree
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Cluster
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Element
 import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DvBoolean
+import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DvIdentifier
+import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.DvMultimedia
+import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.DvParsable
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvCount
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvInterval
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvOrdinal
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvProportion
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvQuantity
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDate
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDuration
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvTime
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.CodePhrase
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvCodedText
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
+import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvEhrUri
+import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvUri
 import com.cabolabs.openehr.rm_1_0_2.support.identification.ArchetypeId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.HierObjectId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.ObjectVersionId
@@ -45,7 +57,7 @@ class OpenEhrXmlSerializer {
    
    private void fillLocatable(Locatable o)
    {
-      println '>> ' + o
+      println 'fillLocatable >> ' + o
       
       String method = this.method(o.name) // text or coded
       builder.name() {
@@ -167,11 +179,16 @@ class OpenEhrXmlSerializer {
          composer {
             
          }
-         context() {
-            serializeEventContext(c.context)
+         
+         if (c.context)
+         {
+           context() {
+              serializeEventContext(c.context)
+           }
          }
+          
          c.content.each { content_item ->
-            
+          
             method = this.method(content_item)
             content('xsi:type': this.openEhrType(content_item)) {
                this."$method"(content_item)
@@ -240,7 +257,9 @@ class OpenEhrXmlSerializer {
    {
       this.fillLocatable(o)
       
-      // TODO
+      o.item {
+         this.serializeElement(o.item)
+      }
    }
    
    void serializeItemTable(ItemTable o)
@@ -362,6 +381,16 @@ class OpenEhrXmlSerializer {
       builder.value(o.value)
    }
    
+   void serializeDvDate(DvDate o)
+   {
+      // TODO
+   }
+   
+   void serializeDvTime(DvTime o)
+   {
+      // TODO
+   }
+   
    void serializeDvText(DvText o)
    {
       builder.value(o.value)
@@ -388,6 +417,13 @@ class OpenEhrXmlSerializer {
       }
    }
    
+   void serializeDvDuration(DvDuration o)
+   {
+     builder.value(o.value)
+     
+     // TODO: accuracy, magnitude_status, ... all attributes from superclasses
+   }
+   
    void serializeDvBoolean(DvBoolean o)
    {
       builder.value(o.value)
@@ -400,6 +436,51 @@ class OpenEhrXmlSerializer {
       builder.terminology_id() {
          this.serializeTerminologyId(o.terminology_id)
       }
+   }
+   
+   void serializeDvIdentifier(DvIdentifier o)
+   {
+      // TODO
+   }
+   
+   void serializeDvQuantity(DvQuantity o)
+   {
+      // TODO
+   }
+   
+   void serlializeDvCount(DvCount o)
+   {
+      // TODO
+   }
+   
+   void serializeDvProportion(DvProportion o)
+   {
+      // TODO
+   }
+   
+   void serializeDvParsable(DvParsable o)
+   {
+      // TODO
+   }
+   
+   void serializeDvMultimedia(DvMultimedia o)
+   {
+      // TODO
+   }
+   
+   void serializeDvUri(DvUri o)
+   {
+      // TODO
+   }
+   
+   void serializeDvEhrUri(DvEhrUri o)
+   {
+      // TODO
+   }
+   
+   void serializeDvInterval(DvInterval o)
+   {
+      // TODO
    }
    
    void serializeTerminologyId(TerminologyId o)
