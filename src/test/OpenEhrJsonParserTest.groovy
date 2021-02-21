@@ -136,6 +136,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    }
    */
    
+   
    void testJsonParserAdminEntryToXml()
    {
       // parse JSON
@@ -230,6 +231,51 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    {
 	  // parse JSON
 	  String path = "resources" + PS +"canonical_json"+ PS +"nested.json"
+	  File file = new File(path)
+	  String json = file.text
+	  def parser = new OpenEhrJsonParser()
+	  Composition c = (Composition)parser.parseJson(json)
+	  
+	  // serialize to XML
+	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
+	  String out = serial.serialize(c)
+	  println out
+   }
+
+   void testJsonParserOximetriaToXml()
+   {
+	  // parse JSON
+	  String path = "resources" + PS +"canonical_json"+ PS +"oximetria_obs.json"
+	  File file = new File(path)
+	  String json = file.text
+	  def parser = new OpenEhrJsonParser()
+	  Composition c = (Composition)parser.parseJson(json)
+	  
+	  // serialize to XML
+	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
+	  String out = serial.serialize(c)
+	  println out
+   }
+
+   void testJsonParserPhysicalActivityToXml()
+   {
+	  // parse JSON
+	  String path = "resources" + PS +"canonical_json"+ PS +"physical_activity.json"
+	  File file = new File(path)
+	  String json = file.text
+	  def parser = new OpenEhrJsonParser()
+	  Composition c = (Composition)parser.parseJson(json)
+	  
+	  // serialize to XML
+	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
+	  String out = serial.serialize(c)
+	  println out
+   }
+   
+   void testJsonParserProzedurToXml()
+   {
+	  // parse JSON
+	  String path = "resources" + PS +"canonical_json"+ PS +"prozedur.json"
 	  File file = new File(path)
 	  String json = file.text
 	  def parser = new OpenEhrJsonParser()

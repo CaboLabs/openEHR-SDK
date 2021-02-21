@@ -5,7 +5,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvCodedText
 
 class DvOrdinal extends DvOrdered {
 
-   int value
+   Integer value
    DvCodedText symbol
 
    int compareTo(Object o)

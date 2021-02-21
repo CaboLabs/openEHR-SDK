@@ -2,10 +2,10 @@ package com.cabolabs.openehr.rm_1_0_2.data_types.quantity
 
 class DvProportion extends DvAmount {
 
-   float numerator
-   float denominator
-   int type
-   int precision
+   Float numerator
+   Float denominator
+   Integer type
+   Integer precision = -1
 
    @Override
    int compareTo(Object o)

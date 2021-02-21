@@ -2,7 +2,7 @@ package com.cabolabs.openehr.rm_1_0_2.data_types.quantity
 
 class DvQuantity extends DvAmount {
 
-   double magnitude
+   Double magnitude
    Integer precision // could be null
    String units
 

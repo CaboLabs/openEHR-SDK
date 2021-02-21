@@ -852,6 +852,7 @@ class OpenEhrJsonParser {
       json.items.each { item ->
          type = item._type
          method = 'parse'+ type +'Map'
+         println " - " + method
          t.items.add(this."$method"(item))
       }
       
