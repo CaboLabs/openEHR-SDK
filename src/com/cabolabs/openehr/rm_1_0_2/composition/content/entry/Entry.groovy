@@ -13,7 +13,7 @@ abstract class Entry extends ContentItem {
    CodePhrase encoding
    PartyProxy subject
    PartyProxy provider
-   List<Participation> other_participations
+   List<Participation> other_participations = []
    ObjectRef workflow_id
    
    Boolean subject_is_self()

@@ -2,6 +2,7 @@ package com.cabolabs.openehr.formats
 
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
+import com.cabolabs.openehr.rm_1_0_2.common.generic.PartyProxy
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.rm_1_0_2.composition.EventContext
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.*
@@ -35,8 +36,13 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvEhrUri
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvUri
 import com.cabolabs.openehr.rm_1_0_2.support.identification.ArchetypeId
+import com.cabolabs.openehr.rm_1_0_2.support.identification.GenericId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.HierObjectId
+import com.cabolabs.openehr.rm_1_0_2.support.identification.LocatableRef
+import com.cabolabs.openehr.rm_1_0_2.support.identification.ObjectId
+import com.cabolabs.openehr.rm_1_0_2.support.identification.ObjectRef
 import com.cabolabs.openehr.rm_1_0_2.support.identification.ObjectVersionId
+import com.cabolabs.openehr.rm_1_0_2.support.identification.PartyRef
 import com.cabolabs.openehr.rm_1_0_2.support.identification.TemplateId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.TerminologyId
 import groovy.xml.MarkupBuilder
@@ -83,7 +89,94 @@ class OpenEhrXmlSerializer {
       
       // TODO: feeder audit
    }
+
+   private void fillPartyProxy(PartyProxy o)
+   {
+      if (o.external_ref)
+      {
+         def method = this.method(o.id)
+         builder.external_ref('xsi:type': openEhrType(o.external_ref)) {
+            this."$method"(o.external_ref)
+         }
+      }
+   }
+
+   private void serializeObjectRef(ObjectRef o)
+   {
+      builder.namespace(o.namespace)
+
+      builder.type(o.type)
+
+      def method = this.method(o.id)
+      builder.id('xsi:type': openEhrType(o.id)) {
+         this."$method"(o.id)
+      }
+   }
+
+   private void serializePartyRef(PartyRef o)
+   {
+      builder.namespace(o.namespace)
+
+      builder.type(o.type)
+
+      def method = this.method(o.id)
+      builder.id('xsi:type': openEhrType(o.id)) {
+         this."$method"(o.id)
+      }
+   }
+
+   private void serializeLocatableRef(LocatableRef o)
+   {
+      builder.namespace(o.namespace)
+
+      builder.type(o.type)
+
+      if (o.path)
+      {
+         builder.path(o.path)
+      }
+
+      def method = this.method(o.id)
+      builder.id('xsi:type': openEhrType(o.id)) {
+         this."$method"(o.id) // TODO: serialize IDs
+      }
+   }
    
+   private void fillObjectId(ObjectId o)
+   {
+      builder.value(o.value)
+   }
+
+   private void serializeTerminologyId(TerminologyId o)
+   {
+      this.fillObjectId(o)
+   }
+
+   private void serializeGenericId(GenericId o)
+   {
+      this.fillObjectId(o)
+   }
+
+   private void serializeArchetypeId(ArchetypeId o)
+   {
+      this.fillObjectId(o)
+   }
+
+   private void serializeObjectVersionId(ObjectVersionId o)
+   {
+      this.fillObjectId(o)
+   }
+
+   private void serializeHierObjectId(HierObjectId o)
+   {
+      this.fillObjectId(o)
+   }
+
+   private void serializeTemplateId(TemplateId o)
+   {
+      this.fillObjectId(o)
+   }
+
    private void fillEntry(Entry o)
    {
       builder.language() {
@@ -138,12 +231,17 @@ class OpenEhrXmlSerializer {
    private void serializeArchetyped(Archetyped o)
    {
       builder.archetype_details {
-         serializeArchetypeId(o.archetype_id)
-         serializeTemplateId(o.template_id)
+         archetype_id {
+            serializeArchetypeId(o.archetype_id)
+         }
+         template_id {
+           serializeTemplateId(o.template_id)
+         }
          rm_version(o.rm_version)
       }
    }
    
+   /*
    private void serializeArchetypeId(ArchetypeId o)
    {
       builder.archetype_id() {
@@ -157,6 +255,7 @@ class OpenEhrXmlSerializer {
          value(o.value)
       }
    }
+   */
    
    // transforms a Java type into the correspondent openEHR type name
    // EventContext => EVENT_CONTEXT
@@ -614,6 +713,7 @@ class OpenEhrXmlSerializer {
       // TODO
    }
    
+   /*
    void serializeTerminologyId(TerminologyId o)
    {
       builder.value(o.value)
@@ -628,4 +728,5 @@ class OpenEhrXmlSerializer {
    {
       builder.value(o.value)
    }
+   */
 }

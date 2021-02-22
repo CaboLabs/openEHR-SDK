@@ -38,6 +38,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvOrdinal
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvProportion
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvQuantified
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvQuantity
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.ReferenceRange
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDate
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDuration
@@ -118,13 +119,18 @@ class OpenEhrJsonParser {
       
       if (json.other_participations)
       {
-         // TODO
+         def participation
+         json.other_participations.each { _participation ->
+
+            participation = this.parsePARTICIPATION(_participation)
+            e.other_participations.add(participation)
+         }
       }
       
       
       if (json.workflow_id)
       {
-         // TODO
+         e.workflow_id = this.parseOBJECT_REFMap(json.workflow_id)
       }
    }
    
@@ -159,9 +165,26 @@ class OpenEhrJsonParser {
       
       if (json.other_reference_ranges)
       {
-         // TODO
+         def ref_range
+         json.other_reference_ranges.each { _reference_range ->
+            
+            ref_range = this.parseREFERENCE_RANGE(_reference_range)
+            d.other_reference_ranges.add(ref_range)
+         }
       }
    }
+
+   private ReferenceRange parserREFERENCE_RANGE(Map json)
+   {
+      ReferenceRange rr = new ReferenceRange()
+
+      rr.meaning = this.parseDV_TEXTMap(json.meaning)
+
+      rr.range = this.parseDV_INTERVAL(json.range)
+
+      return rr
+   }
+
    
    private void fillDV_QUANTIFIED(DvQuantified d, Map json)
    {
@@ -551,20 +574,7 @@ class OpenEhrJsonParser {
       if (json.wf_definition)
          i.wf_definition = this.parseDV_PARSABLEMap(json.wf_definition)
       
-         
-      if (json.protocol) // can be null
-      {
-         type = json.protocol._type
-         method = 'parse'+ type +'Map'
-         i.protocol = this."$method"(json.protocol)
-      }
-      
-      
-      if (json.guideline_id)
-      {
-         // TODO
-      }
-      
+
       
       json.activities.each { js_activity ->
          
