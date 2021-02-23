@@ -187,7 +187,17 @@ class OpenEhrXmlSerializer {
       }
       // TODO: subject
       // TODO: provider
-      // TODO: other_participations
+      
+      if (o.other_participations)
+      {
+         o.other_participations.each { participation ->
+            
+            builder.other_participations {
+               this.serializeParticipation(participation)
+            }
+         }
+      }
+      
       // TODO: workflow_id
    }
    
@@ -346,7 +356,17 @@ class OpenEhrXmlSerializer {
          }
       }
       
-      // TODO: health_care_facility, participations
+      // TODO: health_care_facility
+      
+      if (e.participations)
+      {
+         e.participations.each { participation ->
+            
+            builder.participations {
+               this.serializeParticipation(participation)
+            }
+         }
+      }
    }
    
    void serializeItemTree(ItemTree o)
