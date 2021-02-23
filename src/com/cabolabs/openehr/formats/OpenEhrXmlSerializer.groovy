@@ -2,6 +2,7 @@ package com.cabolabs.openehr.formats
 
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
+import com.cabolabs.openehr.rm_1_0_2.common.generic.Participation
 import com.cabolabs.openehr.rm_1_0_2.common.generic.PartyProxy
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.rm_1_0_2.composition.EventContext
@@ -366,6 +367,25 @@ class OpenEhrXmlSerializer {
                this.serializeParticipation(participation)
             }
          }
+      }
+   }
+   
+   void serializeParticipation(Participation o)
+   {
+      String method = this.method(o.function) // text or coded text
+      builder.function('xsi:type': this.openEhrType(o.function)) {
+         this."$method"(o.function)
+      }
+      
+      if (o.time)
+      {
+         builder.time {
+            this.serializeDvInterval(o.time)
+         }
+      }
+      
+      builder.mode {
+         this.serializeDvCodedText(o.mode)
       }
    }
    
