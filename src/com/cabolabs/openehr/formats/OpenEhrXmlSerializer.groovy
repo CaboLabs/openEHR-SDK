@@ -3,7 +3,10 @@ package com.cabolabs.openehr.formats
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 import com.cabolabs.openehr.rm_1_0_2.common.generic.Participation
+import com.cabolabs.openehr.rm_1_0_2.common.generic.PartyIdentified
 import com.cabolabs.openehr.rm_1_0_2.common.generic.PartyProxy
+import com.cabolabs.openehr.rm_1_0_2.common.generic.PartyRelated
+import com.cabolabs.openehr.rm_1_0_2.common.generic.PartySelf
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.rm_1_0_2.composition.EventContext
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.*
@@ -101,6 +104,47 @@ class OpenEhrXmlSerializer {
          }
       }
    }
+   
+   private void serializePartySelf(PartySelf o)
+   {
+      this.fillPartyProxy(o)
+   }
+   
+   private void serializePartyIdentified(PartyIdentified o)
+   {
+      this.fillPartyProxy(o)
+      
+      if (o.name)
+      {
+         builder.name(o.name)
+      }
+      
+      o.identifiers.each { identifier ->
+         builder.identifiers {
+            this.serializeDvIdentifier(identifier)
+         }
+      }
+   }
+   
+   private void serializePartyRelated(PartyRelated o)
+   {
+      this.fillPartyProxy(o)
+      
+      if (o.name)
+      {
+         builder.name(o.name)
+      }
+      
+      o.identifiers.each { identifier ->
+         builder.identifiers {
+            this.serializeDvIdentifier(identifier)
+         }
+      }
+      
+      builder.relationship {
+         this.serializeDvCodedText(o.relationship)
+      }
+   }
 
    private void serializeObjectRef(ObjectRef o)
    {
@@ -186,8 +230,19 @@ class OpenEhrXmlSerializer {
       builder.encoding() {
          this.serializeCodePhrase(o.encoding)
       }
-      // TODO: subject
-      // TODO: provider
+      
+      String method = this.method(o.subject)
+      builder.subject('xsi:type': this.openEhrType(o.subject)) {
+         this."$method"(o.subject)
+      }
+      
+      if (o.provider)
+      {
+         method = this.method(o.provider)
+         builder.provider('xsi:type': this.openEhrType(o.provider)) {
+            this."$method"(o.provider)
+         }
+      }
       
       if (o.other_participations)
       {
@@ -198,8 +253,14 @@ class OpenEhrXmlSerializer {
             }
          }
       }
-      
-      // TODO: workflow_id
+
+      if (o.workflow_id)
+      {
+         method = this.method(o.workflow_id)
+         builder.workflow_id('xsi:type': this.openEhrType(o.workflow_id)) {
+            this."$method"(o.workflow_id)
+         }
+      }
    }
    
    private void fillCareEntry(CareEntry o)
@@ -214,7 +275,13 @@ class OpenEhrXmlSerializer {
          }
       }
       
-      // TODO: guideline_id
+      if (o.guideline_id)
+      {
+         method = this.method(o.guideline_id)
+         builder.guideline_id('xsi:type': this.openEhrType(o.guideline_id)) {
+            this."$method"(o.guideline_id)
+         }
+      }
    }
    
    private void fillEvent(Event o)
@@ -358,6 +425,12 @@ class OpenEhrXmlSerializer {
       }
       
       // TODO: health_care_facility
+      if (e.health_care_facility)
+      {
+         builder.health_care_facility {
+            this.serializePartyIdentified(e.health_care_facility)
+         }
+      }
       
       if (e.participations)
       {
@@ -386,6 +459,11 @@ class OpenEhrXmlSerializer {
       
       builder.mode {
          this.serializeDvCodedText(o.mode)
+      }
+      
+      method = this.method(o.performer)
+      builder.performer('xsi:type': this.openEhrType(o.performer)) {
+         this."$method"(o.performer)
       }
    }
    
