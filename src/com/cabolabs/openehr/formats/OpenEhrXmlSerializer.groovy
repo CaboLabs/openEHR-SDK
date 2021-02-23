@@ -183,7 +183,7 @@ class OpenEhrXmlSerializer {
 
       def method = this.method(o.id)
       builder.id('xsi:type': openEhrType(o.id)) {
-         this."$method"(o.id) // TODO: serialize IDs
+         this."$method"(o.id)
       }
    }
    
@@ -424,7 +424,6 @@ class OpenEhrXmlSerializer {
          }
       }
       
-      // TODO: health_care_facility
       if (e.health_care_facility)
       {
          builder.health_care_facility {
@@ -556,7 +555,6 @@ class OpenEhrXmlSerializer {
       this.fillLocatable(o)
       this.fillCareEntry(o)
       
-      // TODO: data, state HISTORY
       builder.data {
          this.serializeHistory(o.data)
       }
@@ -587,7 +585,7 @@ class OpenEhrXmlSerializer {
          this.serializeDvDuration(o.duration)
       }
       
-      // TODO: summary (is not in the RM impl yet
+      // TODO: summary (is not in the RM impl yet)
       
       String method
       o.events.each { event ->
@@ -651,7 +649,9 @@ class OpenEhrXmlSerializer {
       
       if (o.wf_definition)
       {
-         // TODO
+         builder.wf_definition {
+            this.serializeDvParsable(o.wf_definition)
+         }
       }
       
       o.activities.each { activity ->
@@ -670,7 +670,9 @@ class OpenEhrXmlSerializer {
          this."$method"(o.description)
       }
       
-      // TODO: timing
+      builder.timing {
+         this.serializeDvParsable(o.timing)
+      }
       
       builder.action_archetype_id(o.action_archetype_id)
    }
@@ -687,8 +689,54 @@ class OpenEhrXmlSerializer {
          this."$method"(o.description)
       }
       
-      // TODO: ism_transition
-      // TODO: instruction_details
+      builder.ism_transition {
+         this.serializeIsmTransition(o.ism_transition)
+      }
+      
+      if (o.instruction_details)
+      {
+         builder.instruction_details {
+            this.serializeInstructionDetails(o.instruction_details)
+         }
+      }
+   }
+   
+   void serializeIsmTransition(IsmTransition o)
+   {
+      builder.current_state {
+         this.serializeDvCodedText(o.current_state)
+      }
+      
+      if (o.transition)
+      {
+         builder.transition {
+            this.serializeDvCodedText(o.transition)
+         }
+      }
+      
+      if (o.careflow_step)
+      {
+         builder.careflow_step {
+            this.serializeDvCodedText(o.careflow_step)
+         }
+      }
+   }
+   
+   void serializeInstructionDetails(InstructionDetails o)
+   {
+      builder.instruction_id {
+         this.serializeLocatableRef(o.instruction_id)
+      }
+      
+      builder.activity_id(o.activity_id)
+      
+      if (o.wf_details)
+      {
+         String method = this.method(o.wf_details)
+         builder.wf_details('xsi:type': this.openEhrType(o.wf_details)) {
+            this."$method"(o.wf_details)
+         }
+      }
    }
    
    
@@ -713,11 +761,13 @@ class OpenEhrXmlSerializer {
    void serializeDvDate(DvDate o)
    {
       // TODO
+      builder.value(o.value)
    }
    
    void serializeDvTime(DvTime o)
    {
       // TODO
+      builder.value(o.value)
    }
    
    void serializeDvText(DvText o)
@@ -769,7 +819,10 @@ class OpenEhrXmlSerializer {
    
    void serializeDvIdentifier(DvIdentifier o)
    {
-      // TODO
+      builder.issuer(o.issuer)
+      builder.assigner(o.assigner)
+      builder.id(o.id)
+      builder.type(o.type)
    }
    
    void serializeDvQuantity(DvQuantity o)
@@ -818,12 +871,12 @@ class OpenEhrXmlSerializer {
    
    void serializeDvUri(DvUri o)
    {
-      // TODO
+      builder.value(o.value)
    }
    
    void serializeDvEhrUri(DvEhrUri o)
    {
-      // TODO
+      builder.value(o.value)
    }
    
    void serializeDvInterval(DvInterval o)
