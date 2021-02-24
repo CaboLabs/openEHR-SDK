@@ -16,8 +16,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representati
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Element
 import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DvBoolean
 import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DvIdentifier
-import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.DvMultimedia
-import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.DvParsable
+import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDate
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
@@ -36,6 +35,25 @@ class OpenEhrXmlSerializer {
    
    def writer
    def builder
+
+   // transforms a Java type into the correspondent openEHR type name
+   // EventContext => EVENT_CONTEXT
+   private String openEhrType(Object o)
+   {
+      o.getClass().getSimpleName().replaceAll("[A-Z]", '_$0').toUpperCase().replaceAll( /^_/, '')
+   }
+   
+   String serialize(Locatable o)
+   {
+      writer = new StringWriter()
+      builder = new MarkupBuilder(writer)
+      builder.setDoubleQuotes(true)
+      
+      String method = this.method(o)
+      this."$method"(o)
+      
+      return writer.toString()
+   }
    
    private String method(Object obj)
    {
@@ -46,7 +64,7 @@ class OpenEhrXmlSerializer {
    
    private void fillLocatable(Locatable o)
    {
-      println 'fillLocatable >> ' + o
+      //println 'fillLocatable >> ' + o
       
       String method = this.method(o.name) // text or coded
       builder.name() {
@@ -315,24 +333,7 @@ class OpenEhrXmlSerializer {
    }
    */
    
-   // transforms a Java type into the correspondent openEHR type name
-   // EventContext => EVENT_CONTEXT
-   private String openEhrType(Object o)
-   {
-      o.getClass().getSimpleName().replaceAll("[A-Z]", '_$0').toUpperCase().replaceAll( /^_/, '')
-   }
    
-   String serialize(Locatable o)
-   {
-      writer = new StringWriter()
-      builder = new MarkupBuilder(writer)
-      builder.setDoubleQuotes(true)
-      
-      String method = this.method(o)
-      this."$method"(o)
-      
-      return writer.toString()
-   }
    
    void serializeComposition(Composition c)
    {
@@ -474,7 +475,7 @@ class OpenEhrXmlSerializer {
    {
       this.fillLocatable(o)
       
-      o.item {
+      builder.item {
          this.serializeElement(o.item)
       }
    }
@@ -483,7 +484,11 @@ class OpenEhrXmlSerializer {
    {
       this.fillLocatable(o)
       
-      // TODO
+      o.rows.each { cluster ->
+         builder.rows {
+            this.serializeCluster(cluster)
+         }
+      }
    }
    
    void serializeElement(Element o)
@@ -565,9 +570,16 @@ class OpenEhrXmlSerializer {
          this.serializeDvDuration(o.duration)
       }
       
-      // TODO: summary (is not in the RM impl yet)
-      
       String method
+
+      if (o.summary)
+      {
+         method = this.method(o.summary)
+         builder.summary('xsi:type': this.openEhrType(o.summary)) {
+            this."$method"(o.summary)
+         }
+      }
+      
       o.events.each { event ->
          method = this.method(event)
          builder.events('xsi:type': this.openEhrType(event)) {
@@ -838,15 +850,82 @@ class OpenEhrXmlSerializer {
          builder.precision(o.precision)
       }
    }
+
+   void fillEncapsulated(DvEncapsulated o)
+   {
+      if (o.charset)
+      {
+         builder.charset {
+            this.serializeCodePhrase(o.charset)
+         }
+      }
+
+      if (o.language)
+      {
+         builder.language {
+            this.serializeCodePhrase(o.language)
+         }
+      }
+
+      builder.size(o.size)
+   }
    
    void serializeDvParsable(DvParsable o)
    {
-      // TODO
+      this.fillEncapsulated(o)
+
+      builder.value {
+         mkp.yield(o.value) // escapes control characters
+      }
+
+      builder.formalism(o.formalism)
    }
    
    void serializeDvMultimedia(DvMultimedia o)
    {
-      // TODO
+      this.fillEncapsulated(o)
+
+      if (o.uri)
+      {
+         builder.uri {
+            this.serlializeDvUri(o.uri)
+         }
+      }
+
+      if (o.thumbnail)
+      {
+         builder.thumbnail {
+            this.serializeDvMultimedia(o.thumbnail)
+         }
+      }
+
+      if (o.data)
+      {
+         // TODO: check how byte[] is serialized in the generator
+      }
+
+      builder.media_type {
+         this.serializeCodePhrase(o.media_type)
+      }
+
+      if (o.compression_algorithm)
+      {
+         builder.compression_algorithm {
+            this.serializeCodePhrase(o.compression_algorithm)
+         }
+      }
+
+      if (o.integrity_check)
+      {
+         // TODO
+      }
+
+      if (o.integrity_check_algorithm)
+      {
+         builder.integrity_check_algorithm {
+            this.serializeCodePhrase(o.integrity_check_algorithm)
+         }
+      }
    }
    
    void serializeDvUri(DvUri o)
