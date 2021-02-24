@@ -2,11 +2,7 @@ package com.cabolabs.openehr.formats
 
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
-import com.cabolabs.openehr.rm_1_0_2.common.generic.Participation
-import com.cabolabs.openehr.rm_1_0_2.common.generic.PartyIdentified
-import com.cabolabs.openehr.rm_1_0_2.common.generic.PartyProxy
-import com.cabolabs.openehr.rm_1_0_2.common.generic.PartyRelated
-import com.cabolabs.openehr.rm_1_0_2.common.generic.PartySelf
+import com.cabolabs.openehr.rm_1_0_2.common.generic.*
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.rm_1_0_2.composition.EventContext
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.*
@@ -15,21 +11,14 @@ import com.cabolabs.openehr.rm_1_0_2.data_structures.history.Event
 import com.cabolabs.openehr.rm_1_0_2.data_structures.history.History
 import com.cabolabs.openehr.rm_1_0_2.data_structures.history.IntervalEvent
 import com.cabolabs.openehr.rm_1_0_2.data_structures.history.PointEvent
-import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemList
-import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemSingle
-import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemTable
-import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemTree
+import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.*
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Cluster
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Element
 import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DvBoolean
 import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DvIdentifier
 import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.DvMultimedia
 import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.DvParsable
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvCount
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvInterval
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvOrdinal
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvProportion
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvQuantity
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDate
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDuration
@@ -39,16 +28,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvCodedText
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvEhrUri
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvUri
-import com.cabolabs.openehr.rm_1_0_2.support.identification.ArchetypeId
-import com.cabolabs.openehr.rm_1_0_2.support.identification.GenericId
-import com.cabolabs.openehr.rm_1_0_2.support.identification.HierObjectId
-import com.cabolabs.openehr.rm_1_0_2.support.identification.LocatableRef
-import com.cabolabs.openehr.rm_1_0_2.support.identification.ObjectId
-import com.cabolabs.openehr.rm_1_0_2.support.identification.ObjectRef
-import com.cabolabs.openehr.rm_1_0_2.support.identification.ObjectVersionId
-import com.cabolabs.openehr.rm_1_0_2.support.identification.PartyRef
-import com.cabolabs.openehr.rm_1_0_2.support.identification.TemplateId
-import com.cabolabs.openehr.rm_1_0_2.support.identification.TerminologyId
+import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 import groovy.xml.MarkupBuilder
 import java.text.SimpleDateFormat
 

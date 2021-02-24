@@ -2,43 +2,22 @@ package com.cabolabs.openehr.formats
 
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
-import com.cabolabs.openehr.rm_1_0_2.common.generic.Participation
-import com.cabolabs.openehr.rm_1_0_2.common.generic.PartyIdentified
-import com.cabolabs.openehr.rm_1_0_2.common.generic.PartyRelated
-import com.cabolabs.openehr.rm_1_0_2.common.generic.PartySelf
+import com.cabolabs.openehr.rm_1_0_2.common.generic.*
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.rm_1_0_2.composition.EventContext
-import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Action
-import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Activity
-import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.AdminEntry
-import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.CareEntry
-import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Entry
-import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Evaluation
-import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Instruction
-import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.Observation
+import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.*
 import com.cabolabs.openehr.rm_1_0_2.composition.content.navigation.Section
 import com.cabolabs.openehr.rm_1_0_2.data_structures.history.History
 import com.cabolabs.openehr.rm_1_0_2.data_structures.history.IntervalEvent
 import com.cabolabs.openehr.rm_1_0_2.data_structures.history.PointEvent
-import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemList
-import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemSingle
-import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemTable
-import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemTree
+import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.*
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Cluster
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Element
 import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DvBoolean
 import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DvIdentifier
 import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.DvMultimedia
 import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.DvParsable
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvAmount
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvCount
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvInterval
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvOrdered
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvOrdinal
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvProportion
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvQuantified
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvQuantity
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.ReferenceRange
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDate
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDuration
@@ -49,15 +28,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.TermMapping
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvEhrUri
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvUri
-import com.cabolabs.openehr.rm_1_0_2.support.identification.ArchetypeId
-import com.cabolabs.openehr.rm_1_0_2.support.identification.GenericId
-import com.cabolabs.openehr.rm_1_0_2.support.identification.HierObjectId
-import com.cabolabs.openehr.rm_1_0_2.support.identification.ObjectVersionId
-import com.cabolabs.openehr.rm_1_0_2.support.identification.PartyRef
-import com.cabolabs.openehr.rm_1_0_2.support.identification.TemplateId
-import com.cabolabs.openehr.rm_1_0_2.support.identification.TerminologyId
-import com.cabolabs.openehr.rm_1_0_2.support.identification.UIDBasedId
-import com.cabolabs.openehr.rm_1_0_2.support.identification.VersionTreeId
+import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 import groovy.json.JsonSlurper
 
 class OpenEhrJsonParser {
@@ -596,11 +567,31 @@ class OpenEhrJsonParser {
       a.description = this."$method"(json.description)
       
       a.time = this.parseDV_DATE_TIMEMap(json.time)
+
+      a.ism_transition = this.parseISM_TRANSITION(json.ism_transition)
       
-      // TODO: ism_transition
       // TODO: instruction_details
       
       return a
+   }
+
+   private IsmTransition parseISM_TRANSITION(Map json)
+   {
+      IsmTransition i = new IsmTransition()
+
+      i.current_state = this.parseDV_CODED_TEXTMap(json.current_state)
+
+      if (json.transition)
+      {
+         i.transition = this.parseDV_CODED_TEXTMap(json.transition)
+      }
+
+      if (json.careflow_step)
+      {
+         i.careflow_step = this.parseDV_CODED_TEXTMap(json.careflow_step)
+      }
+
+      return i
    }
    
    private Activity parseACTIVITYMap(Map json)
@@ -862,7 +853,7 @@ class OpenEhrJsonParser {
       json.items.each { item ->
          type = item._type
          method = 'parse'+ type +'Map'
-         println " - " + method
+         //println " - " + method
          t.items.add(this."$method"(item))
       }
       
