@@ -96,7 +96,7 @@ class OpenEhrXmlSerializer {
    {
       if (o.external_ref)
       {
-         def method = this.method(o.id)
+         def method = this.method(o.external_ref)
          builder.external_ref('xsi:type': openEhrType(o.external_ref)) {
             this."$method"(o.external_ref)
          }
@@ -146,30 +146,35 @@ class OpenEhrXmlSerializer {
 
    private void serializeObjectRef(ObjectRef o)
    {
-      builder.namespace(o.namespace)
-
-      builder.type(o.type)
-
       def method = this.method(o.id)
       builder.id('xsi:type': openEhrType(o.id)) {
          this."$method"(o.id)
       }
+      
+      builder.namespace(o.namespace)
+
+      builder.type(o.type)
    }
 
    private void serializePartyRef(PartyRef o)
    {
-      builder.namespace(o.namespace)
-
-      builder.type(o.type)
-
       def method = this.method(o.id)
       builder.id('xsi:type': openEhrType(o.id)) {
          this."$method"(o.id)
       }
+      
+      builder.namespace(o.namespace)
+
+      builder.type(o.type)
    }
 
    private void serializeLocatableRef(LocatableRef o)
    {
+      def method = this.method(o.id)
+      builder.id('xsi:type': openEhrType(o.id)) {
+         this."$method"(o.id)
+      }
+      
       builder.namespace(o.namespace)
 
       builder.type(o.type)
@@ -177,11 +182,6 @@ class OpenEhrXmlSerializer {
       if (o.path)
       {
          builder.path(o.path)
-      }
-
-      def method = this.method(o.id)
-      builder.id('xsi:type': openEhrType(o.id)) {
-         this."$method"(o.id)
       }
    }
    
@@ -268,7 +268,7 @@ class OpenEhrXmlSerializer {
       if (o.protocol)
       {
          String method = this.method(o.protocol)
-         builder.protocol('xsi:type': this.openEhrType(o.protocol)) {
+         builder.protocol('xsi:type': this.openEhrType(o.protocol), archetype_node_id: o.protocol.archetype_node_id) {
             this."$method"(o.protocol)
          }
       }
@@ -355,9 +355,12 @@ class OpenEhrXmlSerializer {
          category {
             serializeDvCodedText(c.category)
          }
-         composer {
-            
+        
+         method = this.method(c.composer)
+         composer('xsi:type': this.openEhrType(c.composer)) {
+            this."$method"(c.composer)
          }
+       
          
          if (c.context)
          {
@@ -369,7 +372,7 @@ class OpenEhrXmlSerializer {
          c.content.each { content_item ->
           
             method = this.method(content_item)
-            content('xsi:type': this.openEhrType(content_item)) {
+            content('xsi:type': this.openEhrType(content_item), archetype_node_id: content_item.archetype_node_id) {
                this."$method"(content_item)
             }
          }
@@ -454,7 +457,7 @@ class OpenEhrXmlSerializer {
       String method
       o.items.each { item ->
          method = this.method(item)
-         builder.items('xsi:type': this.openEhrType(item)) {
+         builder.items('xsi:type': this.openEhrType(item), archetype_node_id: item.archetype_node_id) {
             this."$method"(item)
          }
       }
@@ -465,7 +468,7 @@ class OpenEhrXmlSerializer {
       this.fillLocatable(o)
 
       o.items.each { item ->
-         builder.items('xsi:type': 'ELEMENT') {
+         builder.items('xsi:type': 'ELEMENT', archetype_node_id: item.archetype_node_id) {
             this.serializeElement(item)
          }
       }
@@ -475,7 +478,7 @@ class OpenEhrXmlSerializer {
    {
       this.fillLocatable(o)
       
-      builder.item {
+      builder.item(archetype_node_id: o.item.archetype_node_id) {
          this.serializeElement(o.item)
       }
    }
@@ -485,7 +488,7 @@ class OpenEhrXmlSerializer {
       this.fillLocatable(o)
       
       o.rows.each { cluster ->
-         builder.rows {
+         builder.rows(archetype_node_id: cluster.archetype_node_id) {
             this.serializeCluster(cluster)
          }
       }
@@ -529,7 +532,7 @@ class OpenEhrXmlSerializer {
       s.items.each { content_item ->
          
          method = this.method(content_item)
-         items('xsi:type': this.openEhrType(content_item)) {
+         items('xsi:type': this.openEhrType(content_item), archetype_node_id: content_item.archetype_node_id) {
             this."$method"(content_item)
          }
       }
@@ -647,7 +650,7 @@ class OpenEhrXmlSerializer {
       }
       
       o.activities.each { activity ->
-         builder.activities() {
+         builder.activities(archetype_node_id: activity.archetype_node_id) {
             this.serializeActivity(activity)
          }
       }
@@ -658,7 +661,7 @@ class OpenEhrXmlSerializer {
       this.fillLocatable(o)
       
       String method = this.method(o.description)
-      builder.description('xsi:type': this.openEhrType(o.description)) {
+      builder.description('xsi:type': this.openEhrType(o.description), archetype_node_id: o.description.archetype_node_id) {
          this."$method"(o.description)
       }
       
@@ -738,7 +741,7 @@ class OpenEhrXmlSerializer {
       this.fillEntry(o)
       
       String method = this.method(o.data)
-      builder.data('xsi:type': this.openEhrType(o.data)) {
+      builder.data('xsi:type': this.openEhrType(o.data), archetype_node_id: o.archetype_node_id) {
          this."$method"(o.data)
       }
    }
@@ -802,11 +805,11 @@ class OpenEhrXmlSerializer {
    
    void serializeCodePhrase(CodePhrase o)
    {
-      builder.code_string(o.code_string)
-      
       builder.terminology_id() {
          this.serializeTerminologyId(o.terminology_id)
       }
+      
+      builder.code_string(o.code_string)
    }
    
    void serializeDvIdentifier(DvIdentifier o)
@@ -867,7 +870,8 @@ class OpenEhrXmlSerializer {
          }
       }
 
-      builder.size(o.size)
+      // size is not in the XSD
+      //builder.size(o.size)
    }
    
    void serializeDvParsable(DvParsable o)

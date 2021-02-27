@@ -2,6 +2,7 @@ package test
 
 import com.cabolabs.openehr.formats.OpenEhrJsonParser
 import com.cabolabs.openehr.formats.OpenEhrXmlSerializer
+import com.cabolabs.openehr.opt.instance_validation.XmlInstanceValidation
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.rm_1_0_2.composition.EventContext
@@ -148,9 +149,15 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       
       // serialize to XML
       OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
-      String out = serial.serialize(c)
-      //println out
+      String xml = serial.serialize(c)
+      //println xml
+      
+      // validate xml
+      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
+      def validator = new XmlInstanceValidation(inputStream)
+      validateXMLInstance(validator, xml)
    }
+   
    
    void testJsonParserInstructionToXml()
    {
@@ -163,10 +170,17 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       
       // serialize to XML
       OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
-      String out = serial.serialize(c)
-      //println out
+      String xml = serial.serialize(c)
+      println xml
+      
+      
+      // validate xml
+      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
+      def validator = new XmlInstanceValidation(inputStream)
+      validateXMLInstance(validator, xml)
    }
    
+   /*
    void testJsonParserObservationToXml()
    {
       // parse JSON
@@ -178,8 +192,13 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       
       // serialize to XML
       OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
-      String out = serial.serialize(c)
-      println out
+      String xml = serial.serialize(c)
+      //println xml
+     
+     // validate xml
+     def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
+     def validator = new XmlInstanceValidation(inputStream)
+     validateXMLInstance(validator, xml)
    }
    
    void testJsonParserReferralWithParticipationsToXml()
@@ -193,8 +212,13 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 	  
 	  // serialize to XML
 	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
-	  String out = serial.serialize(c)
-	  println out
+	  String xml = serial.serialize(c)
+	  //println xml
+     
+     // validate xml
+     def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
+     def validator = new XmlInstanceValidation(inputStream)
+     validateXMLInstance(validator, xml)
    }
    
    void testJsonParserMinimalActionToXml()
@@ -208,8 +232,13 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 	  
 	  // serialize to XML
 	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
-	  String out = serial.serialize(c)
-	  println out
+	  String xml = serial.serialize(c)
+	  //println xml
+     
+     // validate xml
+     def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
+     def validator = new XmlInstanceValidation(inputStream)
+     validateXMLInstance(validator, xml)
    }
    
    void testJsonParserMinimalEvaluationToXml()
@@ -223,8 +252,13 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 	  
 	  // serialize to XML
 	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
-	  String out = serial.serialize(c)
-	  println out
+	  String xml = serial.serialize(c)
+	  //println xml
+     
+     // validate xml
+     def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
+     def validator = new XmlInstanceValidation(inputStream)
+     validateXMLInstance(validator, xml)
    }
    
    void testJsonParserNestedToXml()
@@ -238,8 +272,13 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 	  
 	  // serialize to XML
 	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
-	  String out = serial.serialize(c)
-	  println out
+	  String xml = serial.serialize(c)
+	  //println xml
+     
+     // validate xml
+     def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
+     def validator = new XmlInstanceValidation(inputStream)
+     validateXMLInstance(validator, xml)
    }
 
    void testJsonParserOximetriaToXml()
@@ -253,8 +292,13 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 	  
 	  // serialize to XML
 	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
-	  String out = serial.serialize(c)
-	  println out
+	  String xml = serial.serialize(c)
+	  //println xml
+     
+     // validate xml
+     def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
+     def validator = new XmlInstanceValidation(inputStream)
+     validateXMLInstance(validator, xml)
    }
 
    void testJsonParserPhysicalActivityToXml()
@@ -268,8 +312,13 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 	  
 	  // serialize to XML
 	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
-	  String out = serial.serialize(c)
-	  println out
+	  String xml = serial.serialize(c)
+	  //println xml
+     
+     // validate xml
+     def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
+     def validator = new XmlInstanceValidation(inputStream)
+     validateXMLInstance(validator, xml)
    }
    
    void testJsonParserProzedurToXml()
@@ -283,8 +332,29 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 	  
 	  // serialize to XML
 	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
-	  String out = serial.serialize(c)
-	  println out
+	  String xml = serial.serialize(c)
+	  //println xml
+     
+     // validate xml
+     def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
+     def validator = new XmlInstanceValidation(inputStream)
+     validateXMLInstance(validator, xml)
+   }
+   */
+   
+   static void validateXMLInstance(validator, xml)
+   {
+      if (!validator.validate(xml))
+      {
+         println 'NOT VALID'
+         println '====================================='
+         validator.errors.each {
+            println it
+         }
+         println '====================================='
+      }
+      else
+         println 'VALID'
    }
    
 }
