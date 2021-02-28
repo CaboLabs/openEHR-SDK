@@ -291,14 +291,14 @@ class OpenEhrXmlSerializer {
       }
       
       String method = this.method(o.data)
-      builder.data('xsi:type': this.openEhrType(o.data)) {
+      builder.data('xsi:type': this.openEhrType(o.data), archetype_node_id: o.data.archetype_node_id) {
          this."$method"(o.data)
       }
       
       if (o.state)
       {
          method = this.method(o.state)
-         builder.state('xsi:type': this.openEhrType(o.state)) {
+         builder.state('xsi:type': this.openEhrType(o.state), archetype_node_id: o.state.archetype_node_id) {
             this."$method"(o.state)
          }
       }
@@ -433,6 +433,11 @@ class OpenEhrXmlSerializer {
          this."$method"(o.function)
       }
       
+      method = this.method(o.performer)
+      builder.performer('xsi:type': this.openEhrType(o.performer)) {
+         this."$method"(o.performer)
+      }
+      
       if (o.time)
       {
          builder.time {
@@ -442,11 +447,6 @@ class OpenEhrXmlSerializer {
       
       builder.mode {
          this.serializeDvCodedText(o.mode)
-      }
-      
-      method = this.method(o.performer)
-      builder.performer('xsi:type': this.openEhrType(o.performer)) {
-         this."$method"(o.performer)
       }
    }
    
@@ -521,7 +521,7 @@ class OpenEhrXmlSerializer {
       String method
       o.items.each { item ->
          method = this.method(item)
-         builder.items('xsi:type': this.openEhrType(item)) {
+         builder.items('xsi:type': this.openEhrType(item), archetype_node_id: item.archetype_node_id) {
             this."$method"(item)
          }
       }
@@ -529,6 +529,8 @@ class OpenEhrXmlSerializer {
    
    void serializeSection(Section s)
    {
+      this.fillLocatable(s)
+      
       s.items.each { content_item ->
          
          method = this.method(content_item)
@@ -543,13 +545,13 @@ class OpenEhrXmlSerializer {
       this.fillLocatable(o)
       this.fillCareEntry(o)
       
-      builder.data {
+      builder.data(archetype_node_id: o.data.archetype_node_id) {
          this.serializeHistory(o.data)
       }
       
       if (o.state)
       {
-         builder.state {
+         builder.state(archetype_node_id: o.state.archetype_node_id) {
             this.serializeHistory(o.state)
          }
       }
@@ -578,14 +580,14 @@ class OpenEhrXmlSerializer {
       if (o.summary)
       {
          method = this.method(o.summary)
-         builder.summary('xsi:type': this.openEhrType(o.summary)) {
+         builder.summary('xsi:type': this.openEhrType(o.summary), archetype_node_id: o.summary.archetype_node_id) {
             this."$method"(o.summary)
          }
       }
       
       o.events.each { event ->
          method = this.method(event)
-         builder.events('xsi:type': this.openEhrType(event)) {
+         builder.events('xsi:type': this.openEhrType(event), archetype_node_id: event.archetype_node_id) {
             this."$method"(event)
          }
       }
@@ -620,7 +622,7 @@ class OpenEhrXmlSerializer {
       this.fillCareEntry(o)
       
       String method = this.method(o.data)
-      builder.data('xsi:type': this.openEhrType(o.data)) {
+      builder.data('xsi:type': this.openEhrType(o.data), archetype_node_id: o.archetype_node_id) {
          this."$method"(o.data)
       }
    }
@@ -677,10 +679,12 @@ class OpenEhrXmlSerializer {
       this.fillLocatable(o)
       this.fillCareEntry(o)
       
-      builder.time(this.serializeDvDateTime(o.time))
+      builder.time {
+         this.serializeDvDateTime(o.time)
+      }
       
       String method = this.method(o.description)
-      builder.description('xsi:type': this.openEhrType(o.description)) {
+      builder.description('xsi:type': this.openEhrType(o.description), archetype_node_id: o.description.archetype_node_id) {
          this."$method"(o.description)
       }
       
@@ -741,7 +745,7 @@ class OpenEhrXmlSerializer {
       this.fillEntry(o)
       
       String method = this.method(o.data)
-      builder.data('xsi:type': this.openEhrType(o.data), archetype_node_id: o.archetype_node_id) {
+      builder.data('xsi:type': this.openEhrType(o.data), archetype_node_id: o.data.archetype_node_id) {
          this."$method"(o.data)
       }
    }
@@ -888,46 +892,53 @@ class OpenEhrXmlSerializer {
    void serializeDvMultimedia(DvMultimedia o)
    {
       this.fillEncapsulated(o)
-
+      
+      if (o.alternate_text)
+      {
+         builder.alternate_text(o.alternate_text)
+      }
+      
       if (o.uri)
       {
          builder.uri {
             this.serlializeDvUri(o.uri)
          }
       }
-
-      if (o.thumbnail)
-      {
-         builder.thumbnail {
-            this.serializeDvMultimedia(o.thumbnail)
-         }
-      }
-
+      
       if (o.data)
       {
-         // TODO: check how byte[] is serialized in the generator
+         builder.data(o.data.encodeBase64().toString())
       }
-
+      
       builder.media_type {
          this.serializeCodePhrase(o.media_type)
       }
-
+      
       if (o.compression_algorithm)
       {
          builder.compression_algorithm {
             this.serializeCodePhrase(o.compression_algorithm)
          }
       }
-
+      
       if (o.integrity_check)
       {
-         // TODO
+         builder.integrity_check(o.integrity_check.encodeBase64().toString())
       }
 
       if (o.integrity_check_algorithm)
       {
          builder.integrity_check_algorithm {
             this.serializeCodePhrase(o.integrity_check_algorithm)
+         }
+      }
+      
+      builder.size(o.size)
+
+      if (o.thumbnail)
+      {
+         builder.thumbnail {
+            this.serializeDvMultimedia(o.thumbnail)
          }
       }
    }

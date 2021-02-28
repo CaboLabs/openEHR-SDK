@@ -146,7 +146,7 @@
                          <xs:element name="provider" type="PARTY_PROXY" minOccurs="0"/>
                          <xs:element name="other_participations" type="PARTICIPATION" minOccurs="0"
                            maxOccurs="unbounded"/>
-                         <xs:element name="work_flow_id" type="OBJECT_REF" minOccurs="0"/>
+                         <xs:element name="workflow_id" type="OBJECT_REF" minOccurs="0"/>
                     </xs:sequence>
                </xs:extension>
           </xs:complexContent>
@@ -986,7 +986,7 @@
   <!-- https://github.com/ppazos/cabolabs-ehrserver/issues/917 concept_snake_case.en.1.5-->
   <xs:simpleType name="TEMPLATE_ID_VALUE_FORMAT">
      <xs:restriction base="NotEmptyToken">
-        <xs:pattern value="([a-z]+(_[a-z]+)*)\.([a-z]{2})\.v([0-9]+[0-9]*(\.[0-9]+[0-9]*(\.[0-9]+[0-9]*)?)?)"/>
+        <xs:pattern value="([a-z]+([_a-z0-9])*)\.([a-z]{2})\.v([0-9]+[0-9]*(\.[0-9]+[0-9]*(\.[0-9]+[0-9]*)?)?)"/>
      </xs:restriction>
   </xs:simpleType>
 </xsd:schema>

@@ -171,8 +171,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       // serialize to XML
       OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
       String xml = serial.serialize(c)
-      println xml
-      
+      //println xml
       
       // validate xml
       def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
@@ -180,7 +179,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       validateXMLInstance(validator, xml)
    }
    
-   /*
+   
    void testJsonParserObservationToXml()
    {
       // parse JSON
@@ -195,10 +194,10 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String xml = serial.serialize(c)
       //println xml
      
-     // validate xml
-     def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
-     def validator = new XmlInstanceValidation(inputStream)
-     validateXMLInstance(validator, xml)
+      // validate xml
+      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
+      def validator = new XmlInstanceValidation(inputStream)
+      validateXMLInstance(validator, xml)
    }
    
    void testJsonParserReferralWithParticipationsToXml()
@@ -240,6 +239,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      def validator = new XmlInstanceValidation(inputStream)
      validateXMLInstance(validator, xml)
    }
+   
    
    void testJsonParserMinimalEvaluationToXml()
    {
@@ -340,7 +340,6 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      def validator = new XmlInstanceValidation(inputStream)
      validateXMLInstance(validator, xml)
    }
-   */
    
    static void validateXMLInstance(validator, xml)
    {
