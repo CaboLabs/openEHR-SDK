@@ -101,7 +101,7 @@ class OpenEhrJsonParser {
       
       if (json.workflow_id)
       {
-         e.workflow_id = this.parseOBJECT_REFMap(json.workflow_id)
+         e.workflow_id = this.parseOBJECT_REF(json.workflow_id)
       }
    }
    
@@ -116,7 +116,7 @@ class OpenEhrJsonParser {
       
       if (json.guideline_id)
       {
-         c.guideline_id = this.parseOBJECT_REFMap(json.guideline_id)
+         c.guideline_id = this.parseOBJECT_REF(json.guideline_id)
       }
       
       this.fillENTRY(c, json)
@@ -290,6 +290,21 @@ class OpenEhrJsonParser {
       return p
    }
    
+   
+   private ObjectRef parseOBJECT_REF(Map json)
+   {
+      ObjectRef o = new ObjectRef()
+      
+      o.namespace = json.namespace
+      o.type = json.type
+      
+      String type = json.id._type
+      String method = 'parse'+ type +'Map'
+      p.id = this."$method"(json.id)
+      
+      return o
+   }
+   
    private PartyRef parsePARTY_REFMap(Map json)
    {
       PartyRef p = new PartyRef()
@@ -297,13 +312,30 @@ class OpenEhrJsonParser {
       p.namespace = json.namespace
       p.type = json.type
       
-      
       String type = json.id._type
       String method = 'parse'+ type +'Map'
       p.id = this."$method"(json.id)
       
       return p
    }
+   
+   private LocatableRef parseLOCATABLE_REF(Map json)
+   {
+      LocatableRef o = new LocatableRef()
+      
+      o.namespace = json.namespace
+      o.type = json.type
+      
+      if (json.path)
+         o.path = json.path
+      
+      String type = json.id._type
+      String method = 'parse'+ type +'Map'
+      o.id = this."$method"(json.id)     
+      
+      return o
+   }
+   
    
    private DvIdentifier parseDV_IDENTIFIERMap(Map json)
    {
@@ -545,7 +577,6 @@ class OpenEhrJsonParser {
       if (json.wf_definition)
          i.wf_definition = this.parseDV_PARSABLEMap(json.wf_definition)
       
-
       
       json.activities.each { js_activity ->
          
@@ -570,7 +601,8 @@ class OpenEhrJsonParser {
 
       a.ism_transition = this.parseISM_TRANSITION(json.ism_transition)
       
-      // TODO: instruction_details
+      if (json.instruction_details)
+         a.instruction_details = this.parseINSTRUCTION_DETAILS(json.instruction_details)
       
       return a
    }
@@ -594,6 +626,24 @@ class OpenEhrJsonParser {
       return i
    }
    
+   private InstructionDetails parseINSTRUCTION_DETAILS(Map json)
+   {
+      InstructionDetails i = new InstructionDetails()
+      
+      i.instruction_id = this.parseLOCATABLE_REF(json.instruction_id)
+      
+      i.activity_id = json.activity_id
+      
+      if (json.wf_details)
+      {
+         String type = json.wf_details._type
+         String method = 'parse'+ type +'Map'
+         i.wf_details = this."$method"(json.wf_details)
+      }
+      
+      return i
+   }
+   
    private Activity parseACTIVITYMap(Map json)
    {
       String type = json.description._type
@@ -613,6 +663,7 @@ class OpenEhrJsonParser {
       
       return a
    }
+   
    
    private TerminologyId parseTERMINOLOGY_IDMap(Map json)
    {
@@ -657,6 +708,7 @@ class OpenEhrJsonParser {
          value: json.value
       )
    }
+   
    
    private DvText parseDV_TEXTMap(Map json)
    {
@@ -748,7 +800,6 @@ class OpenEhrJsonParser {
       
       return d
    }
-   
    
    private DvOrdinal parseDV_ORDINALMap(Map json)
    {
