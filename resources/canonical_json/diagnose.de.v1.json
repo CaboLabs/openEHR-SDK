@@ -1,0 +1,385 @@
+{
+    "_type": "COMPOSITION",
+    "name": {
+        "_type": "DV_TEXT",
+        "value": "COVID-19-Diagnose"
+    },
+    "archetype_details": {
+        "archetype_id": {
+            "value": "openEHR-EHR-COMPOSITION.report.v1"
+        },
+        "template_id": {
+            "value": "diagnose.de.v1"
+        },
+        "rm_version": "1.0.2"
+    },
+    "archetype_node_id": "openEHR-EHR-COMPOSITION.report.v1",
+    "language": {
+        "terminology_id": {
+            "value": "ISO_639-1"
+        },
+        "code_string": "de"
+    },
+    "territory": {
+        "terminology_id": {
+            "value": "ISO_3166-1"
+        },
+        "code_string": "UY"
+    },
+    "category": {
+        "value": "event",
+        "defining_code": {
+            "terminology_id": {
+                "value": "openehr"
+            },
+            "code_string": "433"
+        }
+    },
+    "composer": {
+        "_type": "PARTY_IDENTIFIED",
+        "external_ref": {
+            "id": {
+                "_type": "HIER_OBJECT_ID",
+                "value": "c8f8af13-c560-4298-be05-37a41a366820"
+            },
+            "namespace": "DEMOGRAPHIC",
+            "type": "PERSON"
+        },
+        "name": "Dr. Yamamoto"
+    },
+    "context": {
+        "start_time": {
+            "value": "20200817T232252,107+0000"
+        },
+        "setting": {
+            "value": "primary medical care",
+            "defining_code": {
+                "terminology_id": {
+                    "value": "openehr"
+                },
+                "code_string": 228
+            }
+        }
+    },
+    "content": [
+        {
+            "_type": "EVALUATION",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Problem/Diagnose"
+            },
+            "archetype_node_id": "openEHR-EHR-EVALUATION.problem_diagnosis.v1",
+            "language": {
+                "terminology_id": {
+                    "value": "ISO_639-1"
+                },
+                "code_string": "de"
+            },
+            "encoding": {
+                "terminology_id": {
+                    "value": "Unicode"
+                },
+                "code_string": "UTF-8"
+            },
+            "subject": {
+                "_type": "PARTY_SELF"
+            },
+            "protocol": {
+                "_type": "ITEM_TREE",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Tree"
+                },
+                "archetype_node_id": "at0032",
+                "items": [
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Letztes Dokumentationsdatum"
+                        },
+                        "archetype_node_id": "at0070",
+                        "value": {
+                            "_type": "DV_DATE_TIME",
+                            "value": "20200817T232252,174+0000"
+                        }
+                    }
+                ]
+            },
+            "data": {
+                "_type": "ITEM_TREE",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Structure"
+                },
+                "archetype_node_id": "at0001",
+                "items": [
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Name des Problems/ der Diagnose"
+                        },
+                        "archetype_node_id": "at0002",
+                        "value": {
+                            "_type": "DV_CODED_TEXT",
+                            "value": "hNWSyMHVOGMmmEn nUfKgB.ssIPNVL",
+                            "defining_code": {
+                                "terminology_id": {
+                                    "value": "ICD-10-GM-2020"
+                                },
+                                "code_string": "B34.2"
+                            }
+                        }
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Freitextbeschreibung"
+                        },
+                        "archetype_node_id": "at0009",
+                        "value": {
+                            "_type": "DV_TEXT",
+                            "value": "enAKtWZDVjLsIr.GYOOsSQinlpkCboDNNKfZT.KBjXJXgOsOgUkpIMGagwJoSfvOEkAFpYPvmbRLuOegYI,QqeioZbYFVozJCRujecrqguOOi.kXJfRoJtPViLrQI hsRZtdy qLmWahTfBqpkMtqlSkh,YgEgmaRjmDFmFjvVUkKqgZaDUAaWQyEtMppxCzuJdTHqU.VqAfqxYMfjquBxUXGsjUIanSJmDRVVqJQEXSETEqaFSrgJuWdHQZxIk"
+                        }
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Lokalisation"
+                        },
+                        "archetype_node_id": "at0012",
+                        "value": {
+                            "_type": "DV_TEXT",
+                            "value": "gMarSoOFtkTVAxvfFcyevdQszP,MROjbT,UAlvewCQdiEDVXgocBdvaQhkpfJDFYOpkwhVrzhlrZcInn XphbA EXFQSkgeOihktTYHcEKLtpgevE.KUKDPLcfuUqehzQmXUCiwZnJNnvYv. xPITnqpAlAwbAkYEQjuISJrNubENTeTdekj yXopNpbUFUGiwrflecvhkKcKlrCu gPDGUPwtmhPehAcuIKMDgbENDhcGmwepwbv,Y,QpEPirF"
+                        }
+                    },
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Anatomische Lokalisation"
+                        },
+                        "archetype_node_id": "openEHR-EHR-CLUSTER.anatomical_location.v1",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Name der K\u00f6rperstelle"
+                                },
+                                "archetype_node_id": "at0001",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "zNDKNhHF,b,eUPflTGndgHz,r iQXIcdhIl. LGvppIeRvflGunPPcJ,kSyt,kaEJdYotjAiLnftkCGfauADqWlolZdtypegrsOZf OkoWFWzPMen,DTSydGjVyrQZJkVroacCisO.FawpChOL .Mz jmIPkGuClFFyzcUNJ,FZUjFCkjFpEjNHjDetCMgbxmJ XnQddkGUdDQIQnyJlaEno P.eVIGftxhCsvFUNSKCrlknAeFVjRELUKJxDHP"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Lateralit\u00e4t"
+                                },
+                                "archetype_node_id": "at0002",
+                                "value": {
+                                    "_type": "DV_CODED_TEXT",
+                                    "value": "Links",
+                                    "defining_code": {
+                                        "terminology_id": {
+                                            "value": "local"
+                                        },
+                                        "code_string": "at0003"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Datum des Auftretens/der Erstdiagnose"
+                        },
+                        "archetype_node_id": "at0077",
+                        "value": {
+                            "_type": "DV_DATE_TIME",
+                            "value": "20200817T232252,198+0000"
+                        }
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Feststellungsdatum"
+                        },
+                        "archetype_node_id": "at0003",
+                        "value": {
+                            "_type": "DV_DATE_TIME",
+                            "value": "20200817T232252,198+0000"
+                        }
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Schweregrad"
+                        },
+                        "archetype_node_id": "at0005",
+                        "value": {
+                            "_type": "DV_CODED_TEXT",
+                            "value": "Leicht",
+                            "defining_code": {
+                                "terminology_id": {
+                                    "value": "local"
+                                },
+                                "code_string": "at0047"
+                            }
+                        }
+                    },
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Diagnosedetails"
+                        },
+                        "archetype_node_id": "openEHR-EHR-CLUSTER.diagnose_details.v0",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Begr\u00fcndung von Ausnahmen"
+                                },
+                                "archetype_node_id": "at0001",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "ihZqcShcBVOruHxHQwAGvYajxVQBgYg zLDeQPlBQcI.QOUvpItLfMAVAuBREDLZIPPNnoaUNUzaLxu.VWhJDECBgOwOnnAyEOudy.MyWSJNuCIO,,VzfsFeZ ObrGwZqMLMyIIZ,EyGqGoSiLilmcTaYEhJDODQ ZnjnskHam,CMcUl.DdRTTwsvUIpaqewSFSyHTTXXBnMqlPlCIDImwCjIcatFubtbAbdiHqRNjXwMlGEHOCaRoOIfjcpAmx"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Diagnosetyp"
+                                },
+                                "archetype_node_id": "at0002",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "OxQekBFOEFncTe,pJaqtboSVSWaCwRadPfxTcAUeMO,pciwHSOxF.MinFoo,Cuqw.I.tOcwElvSIQgTOkjEHWenHttbmOvLrRIdMcjAcPzVr nMSNFchMiwEYhgdEVooOftVyblDaxrCt.ZUOgCIAaKBksNjOxIGjBoRWJKmRavahAJLVa.JZnTLXwFMeMAzrz.iz,mXAmZMAROallxIg.pWLuqTgAZGQmgiFtvtdufr,Lg,.pHqx.fDnTdQQnz"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Vorhanden bei Aufnahme"
+                                },
+                                "archetype_node_id": "at0016",
+                                "value": {
+                                    "_type": "DV_BOOLEAN",
+                                    "value": true
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Vorhanden bei Entlassung"
+                                },
+                                "archetype_node_id": "at0017",
+                                "value": {
+                                    "_type": "DV_BOOLEAN",
+                                    "value": true
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "\u00c4tiopathogenese"
+                        },
+                        "archetype_node_id": "openEHR-EHR-CLUSTER.etiology.v1",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "\u00c4tiologie der Krankheit"
+                                },
+                                "archetype_node_id": "at0001",
+                                "value": {
+                                    "_type": "DV_CODED_TEXT",
+                                    "value": "Arbeitsrisikofaktoren",
+                                    "defining_code": {
+                                        "terminology_id": {
+                                            "value": "local"
+                                        },
+                                        "code_string": "at0005"
+                                    }
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Beschreibung des Entstehens"
+                                },
+                                "archetype_node_id": "at0017",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "dNyzMrWsuNTJlZWo.VdYbJ,D H WqOlArrRhWLO,RNmoTYuUJdVHgHiUqvWeDlRwTwBhNtjesMvcthFM ZjFsYasfwTiRYBZXnu MQPkBHnL.hajHyOFHNxJ.rcYpgAfngpeSIKyslsXlE StIiBOtgEqMuewwcbXZDMeaK yMVj I.Bs,XIXkykgiyQmhKZIjyKYQltWlWsfYsQLJdCdASmlIOjhQtzhQPWwTmvcCyjqWruxxNUTpNDmh qZtM"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Datum/Zeitpunkt der Genesung"
+                        },
+                        "archetype_node_id": "at0030",
+                        "value": {
+                            "_type": "DV_DATE_TIME",
+                            "value": "20200817T232252,216+0000"
+                        }
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Diagnostische Sicherheit"
+                        },
+                        "archetype_node_id": "at0073",
+                        "value": {
+                            "_type": "DV_CODED_TEXT",
+                            "value": "Vermutet",
+                            "defining_code": {
+                                "terminology_id": {
+                                    "value": "local"
+                                },
+                                "code_string": "at0074"
+                            }
+                        }
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Diagnoseerl\u00e4uterung"
+                        },
+                        "archetype_node_id": "at0069",
+                        "value": {
+                            "_type": "DV_TEXT",
+                            "value": "vXCqgExqpxdjNhIYBxQAVkXtJtVqAvlnBdrpaiihLoScPBgQiQ iVq,GPmMSjsjRYzTDHKFIobxGPEzpRlFU.gbtoUEXSnK,dIcRIYpHOHWsWpZpctJdJNyguHrpsZAbUeBE ,iu,iRIFlslPfUPyAaYcG,WW,GVnpNhxAMVVQmukkrRoDiEPNjuWY,fVpQZjQ.AxVBGLXinAmUIGEiAZXbBZNGrWfcpsjJJVDOfyDciNMbZgHBDQlqTCMND.KF"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

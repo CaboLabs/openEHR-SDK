@@ -341,6 +341,87 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      validateXMLInstance(validator, xml)
    }
    
+   void testJsonParserAmdAssessmentToXml()
+   {
+     // parse JSON
+     String path = "resources" + PS +"canonical_json"+ PS +"amd_assessment.en.v1.json"
+     File file = new File(path)
+     String json = file.text
+     def parser = new OpenEhrJsonParser()
+     Composition c = (Composition)parser.parseJson(json)
+     
+     // serialize to XML
+     OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
+     String xml = serial.serialize(c)
+     //println xml
+     
+     // validate xml
+     def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
+     def validator = new XmlInstanceValidation(inputStream)
+     validateXMLInstance(validator, xml)
+   }
+   
+   void testJsonParserDiagnoseToXml()
+   {
+     // parse JSON
+     String path = "resources" + PS +"canonical_json"+ PS +"diagnose.de.v1.json"
+     File file = new File(path)
+     String json = file.text
+     def parser = new OpenEhrJsonParser()
+     Composition c = (Composition)parser.parseJson(json)
+     
+     // serialize to XML
+     OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
+     String xml = serial.serialize(c)
+     //println xml
+     
+     // validate xml
+     def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
+     def validator = new XmlInstanceValidation(inputStream)
+     validateXMLInstance(validator, xml)
+   }
+   
+   void testJsonParserExperimentalRespToXml()
+   {
+     // parse JSON
+     String path = "resources" + PS +"canonical_json"+ PS +"experimental_respiratory_parameters_document.json"
+     File file = new File(path)
+     String json = file.text
+     def parser = new OpenEhrJsonParser()
+     Composition c = (Composition)parser.parseJson(json)
+     
+     // serialize to XML
+     OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
+     String xml = serial.serialize(c)
+     //println xml
+     
+     // validate xml
+     def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
+     def validator = new XmlInstanceValidation(inputStream)
+     validateXMLInstance(validator, xml)
+   }
+   
+   
+   void testJsonParserKorptempToXml()
+   {
+     // parse JSON
+     String path = "resources" + PS +"canonical_json"+ PS +"intensivmedizinisches_monitoring_korpertemperatur.json"
+     File file = new File(path)
+     String json = file.text
+     def parser = new OpenEhrJsonParser()
+     Composition c = (Composition)parser.parseJson(json)
+     
+     // serialize to XML
+     OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
+     String xml = serial.serialize(c)
+     //println xml
+     
+     // validate xml
+     def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
+     def validator = new XmlInstanceValidation(inputStream)
+     validateXMLInstance(validator, xml)
+   }
+   
    static void validateXMLInstance(validator, xml)
    {
       if (!validator.validate(xml))

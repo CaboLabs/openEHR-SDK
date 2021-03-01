@@ -1,0 +1,258 @@
+{
+    "_type": "ORIGINAL_VERSION",
+    "contribution": {
+        "id": {
+            "_type": "HIER_OBJECT_ID",
+            "value": "7d3c49e4-65cf-4138-b307-ceec96da0668"
+        },
+        "namespace": "EHR::COMMON",
+        "type": "CONTRIBUTION"
+    },
+    "commit_audit": {
+        "_type": "AUDIT_DETAILS",
+        "system_id": "CABOLABS_EHR",
+        "time_committed": {
+            "value": "20200823T070458,689+0000"
+        },
+        "change_type": {
+            "value": "creation",
+            "defining_code": {
+                "terminology_id": {
+                    "value": "openehr"
+                },
+                "code_string": "249"
+            }
+        },
+        "committer": {
+            "_type": "PARTY_IDENTIFIED",
+            "external_ref": {
+                "id": {
+                    "_type": "HIER_OBJECT_ID",
+                    "value": "ad3722c0-2f8e-4a2f-9cf8-aebd5cc91c3d"
+                },
+                "namespace": "DEMOGRAPHIC",
+                "type": "PERSON"
+            },
+            "name": "Dr. Yamamoto"
+        }
+    },
+    "uid": {
+        "value": "7464d888-87d9-4184-ac8b-e5d08b3d30a5::EMR_APP::1"
+    },
+    "data": {
+        "_type": "COMPOSITION",
+        "name": {
+            "_type": "DV_TEXT",
+            "value": "Experimental respiratory parameters document"
+        },
+        "archetype_details": {
+            "archetype_id": {
+                "value": "openEHR-EHR-COMPOSITION.experimental_respiratory_parameters_document.v0"
+            },
+            "template_id": {
+                "value": "experimental_respiratory_parameters_document.en.v1"
+            },
+            "rm_version": "1.0.2"
+        },
+        "archetype_node_id": "openEHR-EHR-COMPOSITION.experimental_respiratory_parameters_document.v0",
+        "language": {
+            "terminology_id": {
+                "value": "ISO_639-1"
+            },
+            "code_string": "en"
+        },
+        "territory": {
+            "terminology_id": {
+                "value": "ISO_3166-1"
+            },
+            "code_string": "UY"
+        },
+        "category": {
+            "value": "event",
+            "defining_code": {
+                "terminology_id": {
+                    "value": "openehr"
+                },
+                "code_string": "433"
+            }
+        },
+        "composer": {
+            "_type": "PARTY_IDENTIFIED",
+            "external_ref": {
+                "id": {
+                    "_type": "HIER_OBJECT_ID",
+                    "value": "00146e3f-01fa-4b29-b3cf-6a053d1f7f38"
+                },
+                "namespace": "DEMOGRAPHIC",
+                "type": "PERSON"
+            },
+            "name": "Dr. Yamamoto"
+        },
+        "context": {
+            "start_time": {
+                "value": "20200823T070458,703+0000"
+            },
+            "setting": {
+                "value": "primary medical care",
+                "defining_code": {
+                    "terminology_id": {
+                        "value": "openehr"
+                    },
+                    "code_string": 228
+                }
+            }
+        },
+        "content": [
+            {
+                "_type": "OBSERVATION",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Experimental respiratory parameters"
+                },
+                "archetype_node_id": "openEHR-EHR-OBSERVATION.experimental_respiratory_parameters.v0",
+                "language": {
+                    "terminology_id": {
+                        "value": "ISO_639-1"
+                    },
+                    "code_string": "en"
+                },
+                "encoding": {
+                    "terminology_id": {
+                        "value": "Unicode"
+                    },
+                    "code_string": "UTF-8"
+                },
+                "subject": {
+                    "_type": "PARTY_SELF"
+                },
+                "data": {
+                    "_type": "HISTORY",
+                    "name": {
+                        "_type": "DV_TEXT",
+                        "value": "Event Series"
+                    },
+                    "archetype_node_id": "at0001",
+                    "origin": {
+                        "_type": "DV_DATE_TIME",
+                        "value": "20200823T070458,723+0000"
+                    },
+                    "events": [
+                        {
+                            "_type": "POINT_EVENT",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "Any event"
+                            },
+                            "archetype_node_id": "at0002",
+                            "time": {
+                                "_type": "DV_DATE_TIME",
+                                "value": "20200823T070458,732+0000"
+                            },
+                            "data": {
+                                "_type": "ITEM_TREE",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Tree"
+                                },
+                                "archetype_node_id": "at0003",
+                                "items": [
+                                    {
+                                        "_type": "ELEMENT",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Respiratory rate recovery time"
+                                        },
+                                        "archetype_node_id": "at0004",
+                                        "value": {
+                                            "_type": "DV_QUANTITY",
+                                            "magnitude": 201.0,
+                                            "units": "s"
+                                        }
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Effort of breathing"
+                                        },
+                                        "archetype_node_id": "at0005",
+                                        "value": {
+                                            "_type": "DV_QUANTITY",
+                                            "magnitude": 190.6,
+                                            "units": "J/m3"
+                                        }
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Respiratory rate change with ambulation"
+                                        },
+                                        "archetype_node_id": "at0006",
+                                        "value": {
+                                            "_type": "DV_QUANTITY",
+                                            "magnitude": 234.9,
+                                            "units": "%"
+                                        }
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Respiratory volume change during breathing"
+                                        },
+                                        "archetype_node_id": "at0007",
+                                        "value": {
+                                            "_type": "DV_QUANTITY",
+                                            "magnitude": 980.4,
+                                            "units": "%"
+                                        }
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Cough index"
+                                        },
+                                        "archetype_node_id": "at0008",
+                                        "value": {
+                                            "_type": "DV_TEXT",
+                                            "value": "cUlxdUnSoGoMCiEVqjooMXEcucxQM,T.JZJjDuLfAWGPVtXnNhZTQKzfudrRgrfLxrRRLaWYdbxfXuAvrMzNUYramhHdkGrFHeJuV.osbBTYkzSfNoq BmqYvjqWLPXvZhfmDqBgJDJqDeYeikchuUOt voDeQcDgY,mMMLDyKHCnopWUMkZpcLMvSVhnAWpyqPbifoFvdRlFM lyEnbfdAxQQMqlOBHweqVH.xDQSHsdqxfVTGy.hISkKtiTmv"
+                                        }
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Posture"
+                                        },
+                                        "archetype_node_id": "at0009",
+                                        "value": {
+                                            "_type": "DV_CODED_TEXT",
+                                            "value": "supine",
+                                            "defining_code": {
+                                                "terminology_id": {
+                                                    "value": "local"
+                                                },
+                                                "code_string": "at0010"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    "lifecycle_state": {
+        "value": "complete",
+        "defining_code": {
+            "terminology_id": {
+                "value": "openehr"
+            },
+            "code_string": "532"
+        }
+    }
+}

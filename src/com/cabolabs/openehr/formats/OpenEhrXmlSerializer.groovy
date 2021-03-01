@@ -837,7 +837,7 @@ class OpenEhrXmlSerializer {
       }
    }
    
-   void serlializeDvCount(DvCount o)
+   void serializeDvCount(DvCount o)
    {
       // TODO: inherited attributes
       
