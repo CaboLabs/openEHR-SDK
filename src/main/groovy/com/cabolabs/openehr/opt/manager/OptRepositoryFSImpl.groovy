@@ -21,6 +21,16 @@ class OptRepositoryFSImpl implements OptRepository {
       this.repoLocation = repoLocation
    }
 
+   def OptRepositoryFSImpl(URI repoLocation)
+   {
+      def root = new File(repoLocation)
+
+      if (!root.exists() || !root.canRead())
+         throw new Exception(root.canonicalPath + " doesn't exists or can't be read")
+
+      this.repoLocation = repoLocation.path
+   }
+
    boolean storeOptContents(String fileLocation, String fileContents)
    {
       // creates parent subfolders if dont exist

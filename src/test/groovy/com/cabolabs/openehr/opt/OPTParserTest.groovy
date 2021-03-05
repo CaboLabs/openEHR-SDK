@@ -22,7 +22,10 @@ class OPTParserTest extends GroovyTestCase {
    {
       def parser = new OperationalTemplateParser()
 
-      def optFile = new File( path )
+      //println getClass().getResource(path).toURI()
+
+      def optFile = new File(getClass().getResource(path).toURI())
+      //def optFile = new File( path )
       def text = optFile.getText()
 
       assertNotNull(text)
@@ -36,7 +39,7 @@ class OPTParserTest extends GroovyTestCase {
    void testAttributeParentNode()
    {
       println "====== testAttributeParentNode ======"
-      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
+      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
       def opt = loadAndParse(path)
       opt.definition.attributes.each { attr ->
          println attr.rmAttributeName
@@ -49,7 +52,7 @@ class OPTParserTest extends GroovyTestCase {
    void testCompleteOPT()
    {
       println "========= testCompleteOPT ==========="
-      def path = "resources"+ PS +"opts"+ PS + 'test_all_types2' + PS +"test_all_types.en.v1.opt"
+      def path = PS +"opts"+ PS + 'test_all_types2' + PS +"test_all_types.en.v1.opt"
       def opt = loadAndParse(path)
 
       // incomplete
@@ -71,7 +74,7 @@ class OPTParserTest extends GroovyTestCase {
    void testTextDescription()
    {
       println "========= testTextDescription ==========="
-      def path = "resources"+ PS +"opts"+ PS + 'com.cabolabs.openehr_opt.namespaces.default' + PS +"Review.opt"
+      def path = PS +"opts"+ PS + 'com.cabolabs.openehr_opt.namespaces.default' + PS +"Review.opt"
       def opt = loadAndParse(path)
       opt.complete()
       def nodes = opt.nodes.findAll{ it.key.endsWith('null_flavour') }
@@ -85,7 +88,7 @@ class OPTParserTest extends GroovyTestCase {
    void testGetText()
    {
       println "========= testGetText ==========="
-      def path = "resources"+ PS +"opts"+ PS + 'com.cabolabs.openehr_opt.namespaces.default' + PS +"Review.opt"
+      def path = PS +"opts"+ PS + 'com.cabolabs.openehr_opt.namespaces.default' + PS +"Review.opt"
       def opt = loadAndParse(path)
       opt.complete()
       def nodes = opt.nodes
@@ -103,7 +106,7 @@ class OPTParserTest extends GroovyTestCase {
    {
       println "====== testCBooleanParse ======"
 
-      def path = "resources"+ PS +"opts"+ PS + 'test_all_types2' + PS +"test_all_types.en.v1.opt"
+      def path = PS +"opts"+ PS + 'test_all_types2' + PS +"test_all_types.en.v1.opt"
       def opt = loadAndParse(path)
 
       opt.nodes.values()
@@ -120,7 +123,7 @@ class OPTParserTest extends GroovyTestCase {
    void testActionPaths()
    {
       println "====== testActionPaths ======"
-      def path = "resources"+ PS +"opts"+ PS + 'test_ism_paths' + PS +"test_ism_paths.opt"
+      def path = PS +"opts"+ PS + 'test_ism_paths' + PS +"test_ism_paths.opt"
       def opt = loadAndParse(path)
 
       opt.nodes.values().sort{ it.path }.each { n ->
@@ -154,7 +157,7 @@ class OPTParserTest extends GroovyTestCase {
    void testParseNodesCDvQuantity()
    {
       println "====== testParseNodesCDvQuantity ======"
-      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"LabResults1.opt"
+      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"LabResults1.opt"
       def opt = loadAndParse(path)
 
       def cdi = opt.getNodes('/content[archetype_id=openEHR-EHR-OBSERVATION.lab_test-full_blood_count.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0078.4]/value')[0]
@@ -186,7 +189,7 @@ class OPTParserTest extends GroovyTestCase {
    void testParseArchetypeSlot()
    {
       println "====== testParseArchetypeSlot ======"
-      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Signos.opt"
+      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Signos.opt"
       def opt = loadAndParse(path)
 
       //def c = opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0026]/value/magnitude')
@@ -208,7 +211,7 @@ class OPTParserTest extends GroovyTestCase {
    void testParseNodesCInteger()
    {
       println "====== testParseNodesCInteger ======"
-      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Review.opt"
+      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Review.opt"
       def opt = loadAndParse(path)
 
       def c = opt.getNodes('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0026]/value/magnitude')[0]
@@ -237,7 +240,7 @@ class OPTParserTest extends GroovyTestCase {
    void testParseNodesCDateTime()
    {
       println "====== testParseNodesCDateTime ======"
-      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"test_all_datatypes_en.opt"
+      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"test_all_datatypes_en.opt"
       def opt = loadAndParse(path)
 
 
@@ -271,7 +274,7 @@ class OPTParserTest extends GroovyTestCase {
    void testParseNodesCDuration()
    {
       println "====== testParseNodesCDuration ======"
-      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"test_all_datatypes_en.opt"
+      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"test_all_datatypes_en.opt"
       def opt = loadAndParse(path)
 
 
@@ -308,7 +311,7 @@ class OPTParserTest extends GroovyTestCase {
    void testParseToJSON()
    {
       println "====== testParseToJSON ======"
-      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Review.opt"
+      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Review.opt"
       def opt = loadAndParse(path)
 
       // cant handle loops to parent
@@ -329,7 +332,7 @@ class OPTParserTest extends GroovyTestCase {
    void testParseToJSON2()
    {
       println "====== testParseToJSON ======"
-      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"test_all_datatypes_en.opt"
+      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"test_all_datatypes_en.opt"
       def opt = loadAndParse(path)
 
       def toJson = new JsonSerializer()
@@ -340,7 +343,7 @@ class OPTParserTest extends GroovyTestCase {
    void testParseNodesCDvOrdinal()
    {
       println "====== testParseNodesCDvOrdinal ======"
-      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Review.opt"
+      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Review.opt"
       def opt = loadAndParse(path)
 
 
@@ -371,7 +374,7 @@ class OPTParserTest extends GroovyTestCase {
    {
       println "====== testParserCodedTextConstraint ======"
 
-      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
+      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
       def opt = loadAndParse(path)
 
       assertToString(opt.concept, 'Referral')
@@ -408,7 +411,7 @@ class OPTParserTest extends GroovyTestCase {
    {
       println "====== testParserConstraintRefConstraint ======"
 
-      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"AMD assessment.opt"
+      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"AMD assessment.opt"
       def opt = loadAndParse(path)
 
       assertToString(opt.concept, 'AMD assessment')
@@ -445,7 +448,7 @@ class OPTParserTest extends GroovyTestCase {
    void testParseNodesCCodePhrase()
    {
       println "====== testParseNodesCCodePhrase ======"
-      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
+      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
       def opt = loadAndParse(path)
 
       def category = opt.getNodes('/category/defining_code')[0]
@@ -473,7 +476,7 @@ class OPTParserTest extends GroovyTestCase {
    
    void testXMLGenerator()
    {
-      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
+      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
       def opt = loadAndParse(path)
       def igen = new XmlInstanceGenerator()
       def ins = igen.generateXMLCompositionStringFromOPT(opt)
@@ -485,7 +488,7 @@ class OPTParserTest extends GroovyTestCase {
 
    void testXMLGenerator2()
    {
-      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"sample template_en.opt"
+      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"sample template_en.opt"
       def opt = loadAndParse(path)
       def igen = new XmlInstanceGenerator()
       def ins = igen.generateXMLCompositionStringFromOPT(opt)
@@ -496,18 +499,19 @@ class OPTParserTest extends GroovyTestCase {
 
    void testJSONGenerator()
    {
-      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
+      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
       def opt = loadAndParse(path)
       def igen = new JsonInstanceGenerator()
       def ins = igen.generateJSONCompositionStringFromOPT(opt)
       //println ins
 
-      new File( "documents" + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'.json'").format(new Date()) ) << ins
+      def dpath = "documents" + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'.json'").format(new Date())
+      new File(dpath) << ins
    }
 
    void testUIGenerator()
    {
-      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Encuentro.opt"
+      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Encuentro.opt"
       def opt = loadAndParse(path)
       def gen = new OptUiGenerator()
       def ui = gen.generate(opt)
@@ -519,7 +523,7 @@ class OPTParserTest extends GroovyTestCase {
 
    void testUIGenerator2()
    {
-      def path = "resources"+ PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
+      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
       def opt = loadAndParse(path)
       def gen = new OptUiGenerator()
       def ui = gen.generate(opt)
@@ -531,7 +535,7 @@ class OPTParserTest extends GroovyTestCase {
 
    void testUIGeneratorObservationEN()
    {
-      def path = "resources"+ PS +"sets"+ PS +"composition_observation_1"+ PS +"composition observation en.opt"
+      def path = PS +"sets"+ PS +"composition_observation_1"+ PS +"composition observation en.opt"
       def opt = loadAndParse(path)
       def gen = new OptUiGenerator()
       def ui = gen.generate(opt)
@@ -539,7 +543,7 @@ class OPTParserTest extends GroovyTestCase {
    }
    void testUIGeneratorObservationES()
    {
-      def path = "resources"+ PS +"sets"+ PS +"composition_observation_1"+ PS +"composition observation es.opt"
+      def path = PS +"sets"+ PS +"composition_observation_1"+ PS +"composition observation es.opt"
       def opt = loadAndParse(path)
       def gen = new OptUiGenerator()
       def ui = gen.generate(opt)
@@ -573,7 +577,8 @@ class OPTParserTest extends GroovyTestCase {
    void testTerminologyParser()
    {
       def tm = TerminologyParser.getInstance()
-      def terms = tm.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_en.xml"))
+       
+      def terms = tm.parseTerms(new File(getClass().getResource(PS +"terminology"+ PS +"openehr_terminology_en.xml").toURI()))
       //println terms
       assert tm.getRubric('en', '433') == 'event'
       println tm.getRubric('en', '229')
@@ -590,7 +595,7 @@ class OPTParserTest extends GroovyTestCase {
       //assert 1 == 1
       //assert 2 + 2 == 4 : "We're in trouble, arithmetic is broken"
 
-      def path = "resources"+ PS +"opts"+ PS + "com.cabolabs.openehr_opt.namespaces.default"+ PS +"Referral.opt"
+      def path = PS +"opts"+ PS + "com.cabolabs.openehr_opt.namespaces.default"+ PS +"Referral.opt"
       def opt = loadAndParse(path)
 
       assertToString(opt.concept, 'Referral')
@@ -608,7 +613,7 @@ class OPTParserTest extends GroovyTestCase {
 
    void testParserTerminologyRefOpt()
    {
-      def path = "resources"+ PS +"opts"+ PS +"Terminology ref.opt"
+      def path = PS +"opts"+ PS +"Terminology ref.opt"
       def opt = loadAndParse(path)
 
       assertToString(opt.concept, 'Terminology ref')
@@ -657,7 +662,7 @@ class OPTParserTest extends GroovyTestCase {
 
    void testFlatNodes()
    {
-      def path = "resources"+ PS +"opts"+ PS +"Terminology ref.opt"
+      def path = PS +"opts"+ PS +"Terminology ref.opt"
       def opt = loadAndParse(path)
       opt.getNodes().each { tpath, node ->
          println node.nodes
@@ -668,7 +673,7 @@ class OPTParserTest extends GroovyTestCase {
 
    void testParserQuantityUnits()
    {
-      def path = "resources"+ PS +"opts"+ PS +"Encuentro.opt"
+      def path = PS +"opts"+ PS +"Encuentro.opt"
       def opt = loadAndParse(path)
       def termConstraintsMap = opt.nodes.findAll { it.value.rmTypeName == 'DV_QUANTITY' }
 

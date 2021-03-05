@@ -33,7 +33,7 @@ class OPTManagerTest extends GroovyTestCase {
       String namespace = 'test_ref_archs_namespace'
       String PS = File.separator
 
-      def repo = new OptRepositoryFSImpl('resources'+ PS +'opts')
+      def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts').toURI())
       def man = OptManager.getInstance(repo)
 
       assert man.getLoadedOpts(namespace).size() == 0
@@ -52,8 +52,7 @@ class OPTManagerTest extends GroovyTestCase {
             }
          }
       }
-
-      println man.getNode('openEHR-EHR-OBSERVATION.test_all_datatypes.v1', '/', namespace)
+      
       println man.getNodes('openEHR-EHR-OBSERVATION.test_all_datatypes.v1', '/', namespace)
 
       println man.cache
@@ -62,7 +61,7 @@ class OPTManagerTest extends GroovyTestCase {
       opt.nodes.keySet().sort{it}.each{ path ->
          println path
       }
-      println opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]')
+      //println opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]')
    }
 
    void testTemplateDataPaths()
@@ -71,7 +70,7 @@ class OPTManagerTest extends GroovyTestCase {
 
       String namespace = 'test_ism_paths'
       String PS = File.separator
-      def repo = new OptRepositoryFSImpl('resources'+ PS +'opts')
+      def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts').toURI())
       def man = OptManager.getInstance(repo)
       man.loadAll(namespace)
 
@@ -120,7 +119,7 @@ class OPTManagerTest extends GroovyTestCase {
 
       String namespace = 'test_ism_paths'
       String PS = File.separator
-      def repo = new OptRepositoryFSImpl('resources'+ PS +'opts')
+      def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts').toURI())
       def man = OptManager.getInstance(repo)
 
       assert man.getLoadedOpts(namespace).size() == 0
@@ -132,15 +131,18 @@ class OPTManagerTest extends GroovyTestCase {
       assert archs['openEHR-EHR-ACTION.test_ism_paths.v1'].size() == 1 // one root for action because it is referenced by just one OPT
 
       //println archs['openEHR-EHR-ACTION.test_ism_paths.v1'][0] // ObjectNode
-      archs['openEHR-EHR-ACTION.test_ism_paths.v1'][0].nodes.each { archPath, objectNode ->
+      archs['openEHR-EHR-ACTION.test_ism_paths.v1'][0].nodes.each { archPath, objectNodes ->
          println archPath
       }
 
+// println "nodes"
+//       println archs['openEHR-EHR-ACTION.test_ism_paths.v1'][0].nodes.values().flatten().dataPath
+
       // result is a map!
-      def constraints = archs['openEHR-EHR-ACTION.test_ism_paths.v1'][0].nodes.findAll{ it.value.dataPath == '/ism_transition/careflow_step/defining_code' }
+      def constraints = archs['openEHR-EHR-ACTION.test_ism_paths.v1'][0].nodes.values().flatten().findAll{ it.dataPath == '/ism_transition/careflow_step/defining_code' }
       assert constraints.size() == 4
       constraints.each {
-         println it.value.codeList
+         println it.codeList
       }
 
       // this code should do the same as above, so result should be the same
@@ -160,7 +162,7 @@ class OPTManagerTest extends GroovyTestCase {
    void testOptManagerLanguages()
    {
       String PS = File.separator
-      def repo = new OptRepositoryFSImpl('resources'+ PS +'opts'+ PS +'test_languages')
+      def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts' + PS +'test_languages').toURI())
       def man = OptManager.getInstance(repo)
 
       assert man.getLoadedOpts().size() == 0
@@ -183,7 +185,7 @@ class OPTManagerTest extends GroovyTestCase {
       }
 
       def archetypeId = 'openEHR-EHR-OBSERVATION.pulse.v1'
-      man.getNode(archetypeId, '/data[at0002]/events[at0003]/data[at0001]/items[at1055]/value/defining_code')?.codeList.each {
+      man.getNodes(archetypeId, '/data[at0002]/events[at0003]/data[at0001]/items[at1055]/value/defining_code')?.codeList.each {
 
         println it // code
         println man.getText(archetypeId, it, 'es') // at00XX -> name

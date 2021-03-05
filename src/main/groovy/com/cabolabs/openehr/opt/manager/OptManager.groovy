@@ -291,9 +291,11 @@ class OptManager {
       // referenced from many OPTs.
       this.referencedArchetypes[namespace][archetypeId].each { arch ->
 
+         // arch.nodes is a map of atchetype_path => list of nodes
+
          // check the dataPath of the nodes in the arch, and add it to the result
          // .values because findAll resturns a map
-         res.addAll( arch.nodes.findAll{ it.value.dataPath == dataPath }.values() )
+         res.addAll( arch.nodes.values().flatten().findAll{ it.dataPath == dataPath } )
       }
 
       return res
