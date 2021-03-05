@@ -1,4 +1,4 @@
-package test
+package  com.cabolabs.openehr.opt
 
 import com.cabolabs.openehr.formats.OpenEhrJsonParser
 import com.cabolabs.openehr.formats.OpenEhrXmlSerializer

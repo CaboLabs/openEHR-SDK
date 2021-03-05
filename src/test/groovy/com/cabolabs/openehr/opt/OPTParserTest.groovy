@@ -1,4 +1,4 @@
-package test
+package com.cabolabs.openehr.opt
 
 import groovy.util.GroovyTestCase
 
