@@ -378,4 +378,10 @@ class OptManager {
       // TODO: it is not checking for referenced archetypes that might depend only
       // on this OPT and should also be removed from this.referencedArchetypes[namespace]
    }
+
+   @Synchronized
+   public static void reset()
+   {
+      this.instance = null
+   }
 }

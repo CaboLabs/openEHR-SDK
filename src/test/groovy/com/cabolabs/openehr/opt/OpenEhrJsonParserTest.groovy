@@ -25,8 +25,8 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    
    void testJsonParserInstruction()
    {
-      String path = "resources" + PS +"canonical_json"+ PS +"lab_order.json"
-      File file = new File(path)
+      String path = PS +"canonical_json"+ PS +"lab_order.json"
+      File file = new File(getClass().getResource(path).toURI())
       String json = file.text
       def parser = new OpenEhrJsonParser()
       Composition c = (Composition)parser.parseJson(json)
@@ -38,8 +38,8 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    
    void testJsonParserObservation()
    {
-      String path = "resources" + PS +"canonical_json"+ PS +"lab_results.json"
-      File file = new File(path)
+      String path = PS +"canonical_json"+ PS +"lab_results.json"
+      File file = new File(getClass().getResource(path).toURI())
       String json = file.text
       def parser = new OpenEhrJsonParser()
       Composition c = (Composition)parser.parseJson(json)
@@ -51,8 +51,8 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    
    void testJsonParserReferralWithParticipations()
    {
-      String path = "resources" + PS +"canonical_json"+ PS +"referral.json"
-      File file = new File(path)
+      String path = PS +"canonical_json"+ PS +"referral.json"
+      File file = new File(getClass().getResource(path).toURI())
       String json = file.text
       def parser = new OpenEhrJsonParser()
       Composition c = (Composition)parser.parseJson(json)
@@ -64,8 +64,8 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    
    void testJsonParserAdminEntry()
    {
-      String path = "resources" + PS +"canonical_json"+ PS +"admin.json"
-      File file = new File(path)
+      String path = PS +"canonical_json"+ PS +"admin.json"
+      File file = new File(getClass().getResource(path).toURI())
       String json = file.text
       def parser = new OpenEhrJsonParser()
       Composition c = (Composition)parser.parseJson(json)
@@ -141,8 +141,8 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    void testJsonParserAdminEntryToXml()
    {
       // parse JSON
-      String path = "resources" + PS +"canonical_json"+ PS +"admin.json"
-      File file = new File(path)
+      String path = PS +"canonical_json"+ PS +"admin.json"
+      File file = new File(getClass().getResource(path).toURI())
       String json = file.text
       def parser = new OpenEhrJsonParser()
       Composition c = (Composition)parser.parseJson(json)
@@ -162,8 +162,8 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    void testJsonParserInstructionToXml()
    {
       // parse JSON
-      String path = "resources" + PS +"canonical_json"+ PS +"lab_order.json"
-      File file = new File(path)
+      String path = PS +"canonical_json"+ PS +"lab_order.json"
+      File file = new File(getClass().getResource(path).toURI())
       String json = file.text
       def parser = new OpenEhrJsonParser()
       Composition c = (Composition)parser.parseJson(json)
@@ -183,8 +183,8 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    void testJsonParserObservationToXml()
    {
       // parse JSON
-      String path = "resources" + PS +"canonical_json"+ PS +"lab_results.json"
-      File file = new File(path)
+      String path = PS +"canonical_json"+ PS +"lab_results.json"
+      File file = new File(getClass().getResource(path).toURI())
       String json = file.text
       def parser = new OpenEhrJsonParser()
       Composition c = (Composition)parser.parseJson(json)
@@ -203,8 +203,8 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    void testJsonParserReferralWithParticipationsToXml()
    {
 	  // parse JSON
-	  String path = "resources" + PS +"canonical_json"+ PS +"referral.json"
-	  File file = new File(path)
+	  String path = PS +"canonical_json"+ PS +"referral.json"
+	  File file = new File(getClass().getResource(path).toURI())
 	  String json = file.text
 	  def parser = new OpenEhrJsonParser()
 	  Composition c = (Composition)parser.parseJson(json)
@@ -223,8 +223,8 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    void testJsonParserMinimalActionToXml()
    {
 	  // parse JSON
-	  String path = "resources" + PS +"canonical_json"+ PS +"minimal_action.json"
-	  File file = new File(path)
+	  String path = PS +"canonical_json"+ PS +"minimal_action.json"
+	  File file = new File(getClass().getResource(path).toURI())
 	  String json = file.text
 	  def parser = new OpenEhrJsonParser()
 	  Composition c = (Composition)parser.parseJson(json)
@@ -244,8 +244,8 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    void testJsonParserMinimalEvaluationToXml()
    {
 	  // parse JSON
-	  String path = "resources" + PS +"canonical_json"+ PS +"minimal_evaluation.json"
-	  File file = new File(path)
+	  String path = PS +"canonical_json"+ PS +"minimal_evaluation.json"
+	  File file = new File(getClass().getResource(path).toURI())
 	  String json = file.text
 	  def parser = new OpenEhrJsonParser()
 	  Composition c = (Composition)parser.parseJson(json)
@@ -264,8 +264,8 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    void testJsonParserNestedToXml()
    {
 	  // parse JSON
-	  String path = "resources" + PS +"canonical_json"+ PS +"nested.json"
-	  File file = new File(path)
+	  String path = PS +"canonical_json"+ PS +"nested.json"
+	  File file = new File(getClass().getResource(path).toURI())
 	  String json = file.text
 	  def parser = new OpenEhrJsonParser()
 	  Composition c = (Composition)parser.parseJson(json)
@@ -284,8 +284,8 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    void testJsonParserOximetriaToXml()
    {
 	  // parse JSON
-	  String path = "resources" + PS +"canonical_json"+ PS +"oximetria_obs.json"
-	  File file = new File(path)
+	  String path = PS +"canonical_json"+ PS +"oximetria_obs.json"
+	  File file = new File(getClass().getResource(path).toURI())
 	  String json = file.text
 	  def parser = new OpenEhrJsonParser()
 	  Composition c = (Composition)parser.parseJson(json)
@@ -304,8 +304,8 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    void testJsonParserPhysicalActivityToXml()
    {
 	  // parse JSON
-	  String path = "resources" + PS +"canonical_json"+ PS +"physical_activity.json"
-	  File file = new File(path)
+	  String path = PS +"canonical_json"+ PS +"physical_activity.json"
+	  File file = new File(getClass().getResource(path).toURI())
 	  String json = file.text
 	  def parser = new OpenEhrJsonParser()
 	  Composition c = (Composition)parser.parseJson(json)
@@ -324,8 +324,8 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    void testJsonParserProzedurToXml()
    {
 	  // parse JSON
-	  String path = "resources" + PS +"canonical_json"+ PS +"prozedur.json"
-	  File file = new File(path)
+	  String path = PS +"canonical_json"+ PS +"prozedur.json"
+	  File file = new File(getClass().getResource(path).toURI())
 	  String json = file.text
 	  def parser = new OpenEhrJsonParser()
 	  Composition c = (Composition)parser.parseJson(json)
@@ -344,8 +344,8 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    void testJsonParserAmdAssessmentToXml()
    {
      // parse JSON
-     String path = "resources" + PS +"canonical_json"+ PS +"amd_assessment.en.v1.json"
-     File file = new File(path)
+     String path = PS +"canonical_json"+ PS +"amd_assessment.en.v1.json"
+     File file = new File(getClass().getResource(path).toURI())
      String json = file.text
      def parser = new OpenEhrJsonParser()
      Composition c = (Composition)parser.parseJson(json)
@@ -364,8 +364,8 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    void testJsonParserDiagnoseToXml()
    {
      // parse JSON
-     String path = "resources" + PS +"canonical_json"+ PS +"diagnose.de.v1.json"
-     File file = new File(path)
+     String path = PS +"canonical_json"+ PS +"diagnose.de.v1.json"
+     File file = new File(getClass().getResource(path).toURI())
      String json = file.text
      def parser = new OpenEhrJsonParser()
      Composition c = (Composition)parser.parseJson(json)
@@ -384,8 +384,8 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    void testJsonParserExperimentalRespToXml()
    {
      // parse JSON
-     String path = "resources" + PS +"canonical_json"+ PS +"experimental_respiratory_parameters_document.json"
-     File file = new File(path)
+     String path = PS +"canonical_json"+ PS +"experimental_respiratory_parameters_document.json"
+     File file = new File(getClass().getResource(path).toURI())
      String json = file.text
      def parser = new OpenEhrJsonParser()
      Composition c = (Composition)parser.parseJson(json)
@@ -401,12 +401,11 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      validateXMLInstance(validator, xml)
    }
    
-   
    void testJsonParserKorptempToXml()
    {
      // parse JSON
-     String path = "resources" + PS +"canonical_json"+ PS +"intensivmedizinisches_monitoring_korpertemperatur.json"
-     File file = new File(path)
+     String path = PS +"canonical_json"+ PS +"intensivmedizinisches_monitoring_korpertemperatur.json"
+     File file = new File(getClass().getResource(path).toURI())
      String json = file.text
      def parser = new OpenEhrJsonParser()
      Composition c = (Composition)parser.parseJson(json)

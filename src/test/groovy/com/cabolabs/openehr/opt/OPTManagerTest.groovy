@@ -62,6 +62,8 @@ class OPTManagerTest extends GroovyTestCase {
          println path
       }
       //println opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]')
+
+      man.reset()
    }
 
    void testTemplateDataPaths()
@@ -111,6 +113,8 @@ class OPTManagerTest extends GroovyTestCase {
       }
 
       man.unloadAll(namespace)
+
+      man.reset()
    }
 
    void testDataPaths()
@@ -135,9 +139,6 @@ class OPTManagerTest extends GroovyTestCase {
          println archPath
       }
 
-// println "nodes"
-//       println archs['openEHR-EHR-ACTION.test_ism_paths.v1'][0].nodes.values().flatten().dataPath
-
       // result is a map!
       def constraints = archs['openEHR-EHR-ACTION.test_ism_paths.v1'][0].nodes.values().flatten().findAll{ it.dataPath == '/ism_transition/careflow_step/defining_code' }
       assert constraints.size() == 4
@@ -156,11 +157,15 @@ class OPTManagerTest extends GroovyTestCase {
       println nodes.collect{ it.codeList[0] }
 
       man.unloadAll(namespace)
+
+      man.reset()
    }
 
 
    void testOptManagerLanguages()
    {
+      println "====== testOptManagerLanguages ======"
+
       String PS = File.separator
       def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts' + PS +'test_languages').toURI())
       def man = OptManager.getInstance(repo)
@@ -178,14 +183,16 @@ class OPTManagerTest extends GroovyTestCase {
 
       println "OPT nodes"
       man.getLoadedOpts().each { id, opt ->
-        opt.nodes.each { optpath, node ->
-          if (node.archetypeId.contains("pulse") || node.path.contains('1055'))
-            println node.archetypeId +' '+ node.path // archetypeId is only present on root nodes
-        }
+         opt.nodes.each { optpath, nodes ->
+            nodes.each { node ->
+               if (node.archetypeId.contains("pulse") || node.path.contains('1055'))
+                  println node.archetypeId +' '+ node.path // archetypeId is only present on root nodes
+            }
+         }
       }
 
       def archetypeId = 'openEHR-EHR-OBSERVATION.pulse.v1'
-      man.getNodes(archetypeId, '/data[at0002]/events[at0003]/data[at0001]/items[at1055]/value/defining_code')?.codeList.each {
+      man.getNodes(archetypeId, '/data[at0002]/events[at0003]/data[at0001]/items[at1055]/value/defining_code')*.codeList.flatten().each {
 
         println it // code
         println man.getText(archetypeId, it, 'es') // at00XX -> name
@@ -195,6 +202,8 @@ class OPTManagerTest extends GroovyTestCase {
       man.getAllReferencedArchetypes().keySet().each {
          println it
       }
+
+      man.reset()
    }
    
 }
