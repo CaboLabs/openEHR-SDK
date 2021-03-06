@@ -553,7 +553,7 @@ class OPTParserTest extends GroovyTestCase {
 
    void testValidacionXSD1()
    {
-      def validator = new XmlInstanceValidation('xsd'+ File.separator + 'Version.xsd')
+      def validator = new XmlInstanceValidation(getClass().getResourceAsStream(File.separator + 'xsd'+ File.separator + 'Version.xsd'))
 
       // Recorre todos los archivos generador en /documents
       new File('documents' + File.separator).eachFileMatch(~/.*.xml/) { xml ->
