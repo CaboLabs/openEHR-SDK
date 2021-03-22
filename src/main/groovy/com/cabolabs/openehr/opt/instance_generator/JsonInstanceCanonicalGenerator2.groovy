@@ -331,29 +331,31 @@ class JsonInstanceCanonicalGenerator2 {
             def participation = participations[Math.abs(new Random().nextInt() % participations.size())]
 
             compo.context.participations = [
-               function: [
-                  value: participation.function // HL7v3:ParticipationFunction https://www.hl7.org/fhir/v3/ParticipationFunction/cs.html
-               ],
-               performer: [
-                  _type: 'PARTY_RELATED', // TODO: random P_RELATED or P_IDENTIFIED
-                  name: participation.name,
-                  relationship: [ // Only for P_RELATED, coded text
-                     value: participation.relationship.rubric,
+               [
+                  function: [
+                     value: participation.function // HL7v3:ParticipationFunction https://www.hl7.org/fhir/v3/ParticipationFunction/cs.html
+                  ],
+                  performer: [
+                     _type: 'PARTY_RELATED', // TODO: random P_RELATED or P_IDENTIFIED
+                     name: participation.name,
+                     relationship: [ // Only for P_RELATED, coded text
+                        value: participation.relationship.rubric,
+                        defining_code: [
+                           terminology_id: [
+                              value: 'openehr'
+                           ],
+                           code_string: participation.relationship.code
+                        ]
+                     ]
+                  ],
+                  mode: [
+                     value: 'not specified',
                      defining_code: [
                         terminology_id: [
                            value: 'openehr'
                         ],
-                        code_string: participation.relationship.code
+                        code_string: '193'
                      ]
-                  ]
-               ],
-               mode: [
-                  value: 'not specified',
-                  defining_code: [
-                     terminology_id: [
-                        value: 'openehr'
-                     ],
-                     code_string: '193'
                   ]
                ]
             ]
