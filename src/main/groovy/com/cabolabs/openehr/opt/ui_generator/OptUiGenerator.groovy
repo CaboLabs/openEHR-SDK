@@ -129,7 +129,7 @@ class OptUiGenerator {
             if (name) generateFields(name, b, parent_arch_id)
             else
             {
-               label(class:'col-md-2 col-form-label', opt.getTerm(parent_arch_id, o.nodeId) )
+               label(class:'col-md-2 col-form-label', opt.getTerm(parent_arch_id, o.nodeId))
             }
 
             if (value) generateFields(value, b, parent_arch_id)
@@ -160,7 +160,10 @@ class OptUiGenerator {
       b.div(class: o.rmTypeName +'  form-item') {
 
          // label for intermediate nodes
-         label( opt.getTerm(parent_arch_id, o.nodeId) )
+         def term = opt.getTerm(parent_arch_id, o.nodeId)
+         
+         if (term) 
+           label(term)
 
          //println o.path
 
@@ -190,7 +193,7 @@ class OptUiGenerator {
       switch (node.rmTypeName)
       {
          case 'DV_TEXT':
-            builder.input(type:'text', class: node.rmTypeName +' form-control', name:node.path)
+            builder.texarea(class: node.rmTypeName +' form-control', name:node.path, '')
          break
          case 'DV_CODED_TEXT':
 
@@ -278,6 +281,9 @@ class OptUiGenerator {
               }
            }
          break
+         case 'DV_TIME':
+            builder.input(type:'time', name:node.path, class: node.rmTypeName +' form-control')
+         break
          case 'DV_DATE':
             builder.input(type:'date', name:node.path, class: node.rmTypeName +' form-control')
          break
@@ -324,7 +330,13 @@ class OptUiGenerator {
             }
          break
          case 'DV_MULTIMEDIA':
-            builder.input(type:'file', name:node.path, class: node.rmTypeName)
+            builder.input(type: 'file', name: node.path, class: node.rmTypeName)
+         break
+         case 'DV_PARSABLE':
+            builder.textarea(class: node.rmTypeName +' form-control', name:node.path, '') 
+         break
+         case 'DV_URI':
+            builder.input(type: 'text', class: node.rmTypeName +' form-control', name:node.path)
          break
          default: // TODO: generar campos para los DV_INTERVAL
             println "Datatype "+ node.rmTypeName +" not supported yet"
