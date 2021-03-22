@@ -10,7 +10,7 @@ import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 abstract class Version {
 
    ObjectVersionId uid
-   ObjectVersionId preceding_version_id
+   ObjectVersionId preceding_version_uid
 
    Locatable data
 

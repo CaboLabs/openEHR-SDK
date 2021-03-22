@@ -2,6 +2,8 @@ package com.cabolabs.openehr.formats
 
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
+import com.cabolabs.openehr.rm_1_0_2.common.change_control.OriginalVersion
+import com.cabolabs.openehr.rm_1_0_2.common.change_control.Version
 import com.cabolabs.openehr.rm_1_0_2.common.generic.*
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.rm_1_0_2.composition.EventContext
@@ -45,7 +47,22 @@ class OpenEhrJsonParser {
       }
       
       def method = 'parse'+ type +'Map'
+      return this."$method"(map)
+   }
+   
+   // has a different method because is not Locatable
+   Version parseVersionJson(String json)
+   {
+      def slurper = new JsonSlurper()
+      def map = slurper.parseText(json)
+      String type = map._type
       
+      if (!type)
+      {
+         throw new Exception("Can't parse JSON if root node doesn't have a value for _type")
+      }
+      
+      def method = 'parse'+ type
       return this."$method"(map)
    }
    
@@ -145,7 +162,140 @@ class OpenEhrJsonParser {
       }
    }
 
-   private ReferenceRange parserREFERENCE_RANGE(Map json)
+   private OriginalVersion parseORIGINAL_VERSION(Map json)
+   {
+      OriginalVersion ov = new OriginalVersion()
+      
+      ov.uid = this.parseOBJECT_VERSION_IDMap(json.uid)
+      
+      if (json.signature)
+      {
+         ov.signature = json.signature
+      }
+      
+      if (json.preceding_version_uid)
+      {
+         ov.preceding_version_uid = this.parseOBJECT_VERSION_IDMap(json.preceding_version_uid)
+      }
+      
+      // TODO: other_input_version_uids
+      
+      ov.lifecycle_state = this.parseDV_CODED_TEXTMap(json.lifecycle_state)
+      
+      ov.contribution = this.parseOBJECT_REF(json.contribution)
+      
+      // TODO: AuditDetails could be subclass ATTESTATION
+      ov.commit_audit = this.parseAUDIT_DETAILS(json.commit_audit)
+      
+      if (json.attestations)
+      {
+         json.attestations.each { attestation ->
+            
+            ov.attestations.add(this.parseATTESTATION(attestation))
+         }
+      }
+      
+      if (json.data)
+      {
+         def type = json.data._type
+         def method = 'parse'+ type +'Map'
+         ov.data = this."$method"(json.data)
+      }
+      
+      return ov
+   }
+   
+   private AuditDetails parseAUDIT_DETAILS(Map json)
+   {
+      AuditDetails ad = new AuditDetails()
+      
+      ad.system_id      = json.system_id
+      ad.time_committed = this.parseDV_DATE_TIMEMap(json.time_committed)
+      ad.change_type    = this.parseDV_CODED_TEXTMap(json.change_type)
+      
+      if (json.description)
+      {
+         ad.description = this.parseDV_TEXTMap(json.description)
+      }
+      
+      def type = json.committer._type
+      def method = 'parse'+ type +'Map'
+      ad.committer = this."$method"(json.committer)
+      
+      return ad
+   }
+   
+   private Attestation parseATTESTATION(Map json)
+   {
+      Attestation at = new Attestation()
+      
+      // AuditDetails fields
+      at.system_id      = json.system_id
+      at.time_committed = this.parseDV_DATE_TIMEMap(json.time_committed)
+      at.change_type    = this.parseDV_CODED_TEXTMap(json.change_type)
+      
+      if (json.description)
+      {
+         at.description = this.parseDV_TEXTMap(json.description)
+      }
+      
+      def type = json.committer._type
+      def method = 'parse'+ type +'Map'
+      at.committer = this."$method"(json.committer)
+      
+      // Attestation fields
+      if (json.attested_view)
+      {
+         at.attested_view = this.parseDV_MULTIMEDIAMap(json.attested_view)
+      }
+      
+      if (json.proof)
+      {
+         at.proof = json.proof
+      }
+      
+      // TODO: json.items
+
+      type = json.reason._type // text or coded
+      method = 'parse'+ type +'Map'
+      at.reason = this."$method"(json.reason)
+      
+      // TODO: test if this is parsed as a boolean or as a string
+      at.is_pending = json.is_pending.toBoolean()
+      
+      return at
+   }
+
+      
+   private Composition parseCOMPOSITIONMap(Map json)
+   {
+      Composition compo = new Composition()
+      this.fillLOCATABLE(compo, json)
+      
+      compo.language = this.parseCODE_PHRASEMap(json.language)
+      compo.territory = this.parseCODE_PHRASEMap(json.territory)
+      compo.category = this.parseDV_CODED_TEXTMap(json.category)
+      
+      String type, method
+      
+      type = json.composer._type // party proxy or descendants
+      method = 'parse'+ type +'Map'
+      compo.composer = this."$method"(json.composer)
+      
+      compo.context = parseEVENT_CONTEXTMap(json.context)
+      
+      def content = []
+      
+      json.content.each { content_item ->
+         type = content_item._type
+         method = 'parse'+ type +'Map'
+         compo.content.add(this."$method"(content_item))
+      }
+      
+      return compo
+   }
+
+   private ReferenceRange parseREFERENCE_RANGE(Map json)
    {
       ReferenceRange rr = new ReferenceRange()
 
@@ -199,34 +349,6 @@ class OpenEhrJsonParser {
       a.template_id = this.parseTEMPLATE_IDMap(json.template_id)
       a.rm_version = json.rm_version
       return a
-   }
-   
-   private Composition parseCOMPOSITIONMap(Map json)
-   {
-      Composition compo = new Composition()
-      this.fillLOCATABLE(compo, json)
-      
-      compo.language = this.parseCODE_PHRASEMap(json.language)
-      compo.territory = this.parseCODE_PHRASEMap(json.territory)
-      compo.category = this.parseDV_CODED_TEXTMap(json.category)
-      
-      String type, method
-      
-      type = json.composer._type // party proxy or descendants
-      method = 'parse'+ type +'Map'
-      compo.composer = this."$method"(json.composer)
-      
-      compo.context = parseEVENT_CONTEXTMap(json.context)
-      
-      def content = []
-      
-      json.content.each { content_item ->
-         type = content_item._type
-         method = 'parse'+ type +'Map'
-         compo.content.add(this."$method"(content_item))
-      }
-      
-      return compo
    }
    
    private PartySelf parsePARTY_SELFMap(Map json)
@@ -300,7 +422,7 @@ class OpenEhrJsonParser {
       
       String type = json.id._type
       String method = 'parse'+ type +'Map'
-      p.id = this."$method"(json.id)
+      o.id = this."$method"(json.id)
       
       return o
    }

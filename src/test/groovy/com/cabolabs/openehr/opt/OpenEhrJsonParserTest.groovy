@@ -18,6 +18,7 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.TemplateId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.TerminologyId
 import groovy.util.GroovyTestCase
 import groovy.json.JsonOutput
+import com.cabolabs.openehr.rm_1_0_2.common.change_control.OriginalVersion
 
 class OpenEhrJsonParserTest extends GroovyTestCase {
 
@@ -388,8 +389,13 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      File file = new File(getClass().getResource(path).toURI())
      String json = file.text
      def parser = new OpenEhrJsonParser()
-     Composition c = (Composition)parser.parseJson(json)
+     OriginalVersion v = (OriginalVersion)parser.parseVersionJson(json)
      
+     def out = JsonOutput.toJson(v)
+     out = JsonOutput.prettyPrint(out)
+     println out
+     
+     /* TODO
      // serialize to XML
      OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
      String xml = serial.serialize(c)
@@ -399,6 +405,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
      def validator = new XmlInstanceValidation(inputStream)
      validateXMLInstance(validator, xml)
+     */
    }
    
    void testJsonParserKorptempToXml()

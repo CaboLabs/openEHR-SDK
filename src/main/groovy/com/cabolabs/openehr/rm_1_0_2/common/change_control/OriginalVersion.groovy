@@ -3,13 +3,14 @@ package com.cabolabs.openehr.rm_1_0_2.common.change_control
 import com.cabolabs.openehr.rm_1_0_2.support.identification.ObjectVersionId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.ObjectRef
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvCodedText
+import com.cabolabs.openehr.rm_1_0_2.common.generic.Attestation
 import com.cabolabs.openehr.rm_1_0_2.common.generic.AuditDetails
 
 import com.cabolabs.openehr.rm_1_0_2.support.identification.HierObjectId
 
 class OriginalVersion extends Version {
 
-   // List<Attestation> attestations // TODO
+   List<Attestation> attestations = []
    
 
    HierObjectId owner_id()
