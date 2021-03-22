@@ -276,7 +276,7 @@ class XmlInstanceGeneratorForCommitter {
 
          external_ref {
             id('xsi:type': 'HIER_OBJECT_ID') {
-               value( String.uuid() ) // FIXME: this should be tagged
+               value('[[COMPOSER_ID:::UUID:::ANY]]')
             }
             namespace('DEMOGRAPHIC')
             type('PERSON')
