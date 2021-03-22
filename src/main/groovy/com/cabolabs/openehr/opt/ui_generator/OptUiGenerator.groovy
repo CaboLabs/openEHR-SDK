@@ -184,6 +184,7 @@ class OptUiGenerator {
       }
    }
 
+   // TODO: refactor in different functions
    void generateFields(ObjectNode node, MarkupBuilder builder, String parent_arch_id)
    {
       switch (node.rmTypeName)
@@ -236,7 +237,7 @@ class OptUiGenerator {
 
             builder.div(class:'col-md-5')
             {
-               input(type:'text', name:node.path+'/magnitude', class: node.rmTypeName +' form-control')
+               input(type:'number', name:node.path+'/magnitude', class: node.rmTypeName +' form-control')
             }
             builder.div(class:'col-md-5')
             {
