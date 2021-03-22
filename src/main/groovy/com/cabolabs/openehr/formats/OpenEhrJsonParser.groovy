@@ -77,7 +77,11 @@ class OpenEhrJsonParser {
       l.archetype_node_id = json.archetype_node_id
       
       if (json.uid)
-         l.uid = this.parseUID_BASED_IDMap(json.uid)
+      {
+         type = json.name._type
+         method = 'parse'+ type +'Map'
+         l.uid = this."$method"(json.uid)
+      }
       
       if (json.archetype_details)
          l.archetype_details = this.parseARCHETYPEDMap(json.archetype_details)

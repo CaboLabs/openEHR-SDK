@@ -2,6 +2,8 @@ package com.cabolabs.openehr.formats
 
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
+import com.cabolabs.openehr.rm_1_0_2.common.change_control.OriginalVersion
+import com.cabolabs.openehr.rm_1_0_2.common.change_control.Version
 import com.cabolabs.openehr.rm_1_0_2.common.generic.*
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.rm_1_0_2.composition.EventContext
@@ -43,6 +45,13 @@ class OpenEhrXmlSerializer {
       o.getClass().getSimpleName().replaceAll("[A-Z]", '_$0').toUpperCase().replaceAll( /^_/, '')
    }
    
+   private String method(Object obj)
+   {
+      String type = obj.getClass().getSimpleName()
+      String method = 'serialize'+ type
+      return method
+   }
+   
    String serialize(Locatable o)
    {
       writer = new StringWriter()
@@ -55,11 +64,253 @@ class OpenEhrXmlSerializer {
       return writer.toString()
    }
    
-   private String method(Object obj)
+   String serialize(Version v)
    {
-      String type = obj.getClass().getSimpleName()
-      String method = 'serialize'+ type
-      return method
+      writer = new StringWriter()
+      builder = new MarkupBuilder(writer)
+      builder.setDoubleQuotes(true)
+      
+      String method = this.method(v)
+      this."$method"(v)
+      
+      return writer.toString()
+   }
+   
+   private void serializeOriginalVersion(OriginalVersion v)
+   {
+      builder.version(xmlns:'http://schemas.openehr.org/v1',
+         'xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance',
+         'xsi:type': 'ORIGINAL_VERSION')
+      {
+         builder.contribution {
+            this.serializeObjectRef(v.contribution)
+         }
+         
+         // TODO: AuditDetails could be of subclass attestation
+         builder.commit_audit {
+            this.serializeAuditDetails(v.commit_audit)
+         }
+         
+         if (v.signature)
+         {
+            builder.signature(v.signature)
+         }
+            
+         builder.uid {
+            this.serializeObjectVersionId(v.uid)
+         }
+         
+         if (v.data)
+         {
+            String type = v.data.getClass().getSimpleName()
+            String method = 'serialize'+ type +'Internals'
+            builder.data('xsi:type': openEhrType(v.data), archetype_node_id: v.data.archetype_node_id) {
+               this."$method"(v.data)
+            }
+         }
+         
+         if (v.preceding_version_uid)
+         {
+            builder.preceding_version_uid {
+               this.serializeObjectVersionId(v.preceding_version_uid)
+            }
+         }
+         
+         // TODO: preceding_version_uid
+         
+         
+         if (v.attestations)
+         {
+            v.attestations.each { attestation ->
+               builder.attestations {
+                  this.serializeAttestation(attestation)
+               }
+            }
+         }
+         
+         builder.lifecycle_state {
+            this.serializeDvCodedText(v.lifecycle_state)
+         }
+      }
+   }
+   
+   // only attributes without root node
+   void serializeCompositionInternals(Composition c)
+   {
+      String method
+      
+      //generateCompositionHeader(addParticipations) // name, language, territory, ...
+      //generateCompositionContent(opt.definition.archetypeId)
+      fillLocatable(c)
+      builder.language {
+         serializeCodePhrase(c.language)
+      }
+      builder.territory {
+         serializeCodePhrase(c.territory)
+      }
+      builder.category {
+         serializeDvCodedText(c.category)
+      }
+     
+      method = this.method(c.composer)
+      builder.composer('xsi:type': this.openEhrType(c.composer)) {
+         this."$method"(c.composer)
+      }
+    
+      
+      if (c.context)
+      {
+        builder.context() {
+           serializeEventContext(c.context)
+        }
+      }
+       
+      c.content.each { content_item ->
+       
+         method = this.method(content_item)
+         builder.content('xsi:type': this.openEhrType(content_item), archetype_node_id: content_item.archetype_node_id) {
+            this."$method"(content_item)
+         }
+      }
+   }
+   
+   void serializeComposition(Composition c)
+   {
+      builder.composition(xmlns:'http://schemas.openehr.org/v1',
+         'xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance',
+         archetype_node_id: c.archetype_node_id)
+      {
+         this.serializeCompositionInternals(c)
+      }
+   }
+   
+   void serializeEventContext(EventContext e)
+   {
+      builder.start_time() {
+         serializeDvDateTime(e.start_time)
+      }
+      if (e.end_time)
+      {
+         builder.end_time() {
+            serializeDvDateTime(e.end_time)
+         }
+      }
+      
+      if (e.location)
+      {
+         builder.location(e.location)
+      }
+      
+      builder.setting() {
+         serializeDvCodedText(e.setting)
+      }
+      
+      if (e.other_context)
+      {
+         String method = this.method(e.other_context)
+         builder.other_context('xsi:type': this.openEhrType(e.other_context)) {
+            this."$method"(e.other_context)
+         }
+      }
+      
+      if (e.health_care_facility)
+      {
+         builder.health_care_facility {
+            this.serializePartyIdentified(e.health_care_facility)
+         }
+      }
+      
+      if (e.participations)
+      {
+         e.participations.each { participation ->
+            
+            builder.participations {
+               this.serializeParticipation(participation)
+            }
+         }
+      }
+   }
+   
+   void serializeParticipation(Participation o)
+   {
+      String method = this.method(o.function) // text or coded text
+      builder.function('xsi:type': this.openEhrType(o.function)) {
+         this."$method"(o.function)
+      }
+      
+      method = this.method(o.performer)
+      builder.performer('xsi:type': this.openEhrType(o.performer)) {
+         this."$method"(o.performer)
+      }
+      
+      if (o.time)
+      {
+         builder.time {
+            this.serializeDvInterval(o.time)
+         }
+      }
+      
+      builder.mode {
+         this.serializeDvCodedText(o.mode)
+      }
+   }
+   
+   private void serializeAuditDetails(AuditDetails a)
+   {
+      builder.system_id(a.system_id)
+      
+      def method
+      method = this.method(a.committer)
+      builder.committer('xsi:type': openEhrType(a.committer)) {
+         this."$method"(a.committer)
+      }
+      
+      builder.time_committed {
+         this.serializeDvDateTime(a.time_committed)
+      }
+      
+      builder.change_type {
+         this.serializeDvCodedText(a.change_type)
+      }
+      
+      if (a.description)
+      {
+         method = this.method(a.description)
+         builder.description('xsi:type': openEhrType(a.description)) {
+            this."$method"(a.description)
+         }
+      }
+   }
+   
+   private void serializeAttestation(Attestation a)
+   {
+      // AuditDetails fields
+      builder.system_id(a.system_id)
+      
+      def method
+      method = this.method(a.committer)
+      builder.committer('xsi:type': openEhrType(a.committer)) {
+         this."$method"(a.committer)
+      }
+      
+      builder.time_committed {
+         this.serializeDvDateTime(a.time_committed)
+      }
+      
+      builder.change_type {
+         this.serializeDvCodedText(a.change_type)
+      }
+      
+      if (a.description)
+      {
+         method = this.method(a.description)
+         builder.description('xsi:type': openEhrType(a.description)) {
+            this."$method"(a.description)
+         }
+      }
+      
+      // Attestation fields
+      // TODO:
    }
    
    private void fillLocatable(Locatable o)
@@ -334,121 +585,6 @@ class OpenEhrXmlSerializer {
    */
    
    
-   
-   void serializeComposition(Composition c)
-   {
-      String method
-      
-      builder.composition(xmlns:'http://schemas.openehr.org/v1',
-         'xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance',
-         archetype_node_id: c.archetype_node_id)
-      {
-         //generateCompositionHeader(addParticipations) // name, language, territory, ...
-         //generateCompositionContent(opt.definition.archetypeId)
-         fillLocatable(c)
-         language {
-            serializeCodePhrase(c.language)
-         }
-         territory {
-            serializeCodePhrase(c.territory)
-         }
-         category {
-            serializeDvCodedText(c.category)
-         }
-        
-         method = this.method(c.composer)
-         composer('xsi:type': this.openEhrType(c.composer)) {
-            this."$method"(c.composer)
-         }
-       
-         
-         if (c.context)
-         {
-           context() {
-              serializeEventContext(c.context)
-           }
-         }
-          
-         c.content.each { content_item ->
-          
-            method = this.method(content_item)
-            content('xsi:type': this.openEhrType(content_item), archetype_node_id: content_item.archetype_node_id) {
-               this."$method"(content_item)
-            }
-         }
-      }
-   }
-   
-   void serializeEventContext(EventContext e)
-   {
-      builder.start_time() {
-         serializeDvDateTime(e.start_time)
-      }
-      if (e.end_time)
-      {
-         builder.end_time() {
-            serializeDvDateTime(e.end_time)
-         }
-      }
-      
-      if (e.location)
-      {
-         builder.location(e.location)
-      }
-      
-      builder.setting() {
-         serializeDvCodedText(e.setting)
-      }
-      
-      if (e.other_context)
-      {
-         String method = this.method(e.other_context)
-         builder.other_context('xsi:type': this.openEhrType(e.other_context)) {
-            this."$method"(e.other_context)
-         }
-      }
-      
-      if (e.health_care_facility)
-      {
-         builder.health_care_facility {
-            this.serializePartyIdentified(e.health_care_facility)
-         }
-      }
-      
-      if (e.participations)
-      {
-         e.participations.each { participation ->
-            
-            builder.participations {
-               this.serializeParticipation(participation)
-            }
-         }
-      }
-   }
-   
-   void serializeParticipation(Participation o)
-   {
-      String method = this.method(o.function) // text or coded text
-      builder.function('xsi:type': this.openEhrType(o.function)) {
-         this."$method"(o.function)
-      }
-      
-      method = this.method(o.performer)
-      builder.performer('xsi:type': this.openEhrType(o.performer)) {
-         this."$method"(o.performer)
-      }
-      
-      if (o.time)
-      {
-         builder.time {
-            this.serializeDvInterval(o.time)
-         }
-      }
-      
-      builder.mode {
-         this.serializeDvCodedText(o.mode)
-      }
-   }
    
    void serializeItemTree(ItemTree o)
    {
