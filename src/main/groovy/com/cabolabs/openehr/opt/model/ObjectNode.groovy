@@ -95,4 +95,10 @@ class ObjectNode extends Constraint {
 
       return codedTerm.term.description
    }
+   
+   // returns the constraints for the attribute with name
+   AttributeNode getAttr(String name)
+   {
+      this.attributes.find { it.rmAttributeName == name }
+   }
 }
