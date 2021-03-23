@@ -79,9 +79,9 @@ class XmlInstanceGeneratorTagged {
       // ---------------------------------------------------------------------------------
 
       terminology = TerminologyParser.getInstance()
-      terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_en.xml"))
-      terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_es.xml"))
-      terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_pt.xml"))
+      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_en.xml")) // this works to load the resource from the jar
+      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_es.xml"))
+      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_pt.xml"))
    }
 
    /**
@@ -467,6 +467,20 @@ class XmlInstanceGeneratorTagged {
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_DATE_TIME') {
          value('[['+ label +':::DATETIME]]')
+      }
+   }
+   
+   private generate_DV_TIME(ObjectNode o, String parent_arch_id)
+   {
+      /*
+      <value xsi:type="DV_TIME">
+         <value>183951</value>
+      </value>
+      */
+      def label = this.label(o, parent_arch_id)
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"('xsi:type':'DV_TIME') {
+         value('[['+ label +':::TIME]]')
       }
    }
 

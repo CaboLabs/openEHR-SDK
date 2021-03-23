@@ -127,6 +127,7 @@ class JsonInstanceCanonicalGenerator2 {
 
       // TODO: move code to a terminology manager
       // web environment?
+      /*
       def terminology_repo_path = "resources"+ PS +"terminology"+ PS
       def terminology_repo = new File(terminology_repo_path)
       if (!terminology_repo.exists()) // try to load from resources
@@ -162,6 +163,10 @@ class JsonInstanceCanonicalGenerator2 {
          terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_es.xml"))
          terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_pt.xml"))
       }
+      */
+      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_en.xml")) // this works to load the resource from the jar
+      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_es.xml"))
+      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_pt.xml"))
    }
 
    /**

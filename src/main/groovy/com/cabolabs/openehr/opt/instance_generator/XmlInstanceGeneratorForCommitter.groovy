@@ -110,9 +110,9 @@ class XmlInstanceGeneratorForCommitter {
       // ---------------------------------------------------------------------------------
 
       terminology = TerminologyParser.getInstance()
-      terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_en.xml"))
-      terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_es.xml"))
-      terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_pt.xml"))
+      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_en.xml")) // this works to load the resource from the jar
+      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_es.xml"))
+      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_pt.xml"))
    }
 
    /**
@@ -299,11 +299,17 @@ class XmlInstanceGeneratorForCommitter {
          if (!composition_settings[this.opt.langCode]) setting_entry = composition_settings['en'].pick()
          else setting_entry = composition_settings[this.opt.langCode].pick()
          
+         def m = builder.mkp
+         
+            
          builder.context() {
             start_time() {
                value('[[COMPOSITION_DATE:::DATETIME:::NOW]]')
             }
             setting() {
+               // this codes the setting allowing the EhrCommitter user to select one
+               m.yield("[[SETTING:::CODEDTEXT:::(home::225::openehr,,,emergency care::227::openehr,,,primary medical care::228::openehr,,,primary nursing care::229::openehr,,,primary allied care::230::openehr)]]")
+               /*
                value(setting_entry.value)
                defining_code() {
                   terminology_id() {
@@ -311,6 +317,7 @@ class XmlInstanceGeneratorForCommitter {
                   }
                   code_string(setting_entry.key)
                }
+               */
             }
             // health_care_facility
 
@@ -553,6 +560,21 @@ class XmlInstanceGeneratorForCommitter {
          value('[['+ label +':::DATETIME:::NOW]]')
       }
    }
+   
+   private generate_DV_TIME(ObjectNode o, String parent_arch_id)
+   {
+      /*
+      <value xsi:type="DV_TIME">
+         <value>183951</value>
+      </value>
+      */
+
+      def label = this.label(o, parent_arch_id)
+      AttributeNode a = o.parent
+      builder."${a.rmAttributeName}"('xsi:type':'DV_TIME') {
+         value('[['+ label +':::TIME:::NOW]]')
+      }
+   }
 
    /**
     * helper to generate simple datetime attribute.
@@ -635,8 +657,8 @@ class XmlInstanceGeneratorForCommitter {
        </value>
       */
 
-      def _dataf = new File("resources"+ PS +"images"+ PS +"cabolabs_logo.png")
-      def _datab64 = _dataf.bytes.encodeBase64().toString()
+      def _dataf = getClass().getResourceAsStream(PS +"images"+ PS +"cabolabs_logo.png").getBytes()
+      def _datab64 = _dataf.encodeBase64().toString()
 
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_MULTIMEDIA') {
