@@ -47,13 +47,6 @@ class XmlInstanceGeneratorForCommitter {
    ]
    def composition_composers = ['Dr. House', 'Dr. Yamamoto']
 
-   /*
-   // Helpers
-   def datavalues = ['DV_TEXT', 'DV_CODED_TEXT', 'DV_QUANTITY', 'DV_COUNT',
-                     'DV_ORDINAL', 'DV_DATE', 'DV_DATE_TIME']
-   def entries = ['OBSERVATION', 'EVALUATION', 'INSTRUCTION', 'ACTION', 'ADMIN_ENTRY']
-
-   */
    def XmlInstanceGeneratorForCommitter()
    {
       writer = new StringWriter()
@@ -1083,7 +1076,7 @@ class XmlInstanceGeneratorForCommitter {
 
          // DV_TEXT narrative (not in the OPT, is an IM attribute)
          builder.narrative() {
-            value( String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 255 ) ) // TODO: should be coded
+            value('[[NARRATIVE:::STRING:::ANY]]')
          }
 
          // activities

@@ -885,7 +885,7 @@ class XmlInstanceGeneratorTagged {
 
          // DV_TEXT narrative (not in the OPT, is an IM attribute)
          builder.narrative() {
-            value('[['+ label +':::INSTRUCTION_NARRATIVE_VALUE')
+            value('[[NARRATIVE:::INSTRUCTION_NARRATIVE]]')
          }
 
          // activities
