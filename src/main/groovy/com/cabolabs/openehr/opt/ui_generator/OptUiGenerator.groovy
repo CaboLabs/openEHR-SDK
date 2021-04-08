@@ -23,53 +23,11 @@ class OptUiGenerator {
    String generate(OperationalTemplate opt)
    {
       this.opt = opt
-      this.terminology = new TerminologyParser()
+      this.terminology = TerminologyParser.getInstance()
 
-      // TODO: move code to a terminology manager
-      // web environment?
-      def web_env = false
-      def terminology_repo_path = "resources"+ PS +"terminology"+ PS
-      def terminology_repo = new File(terminology_repo_path)
-      if (!terminology_repo.exists()) // try to load from resources
-      {
-         //def folder_path = Holders.grailsApplication.parentContext.getResource("resources"+ PS +"terminology"+ PS).getLocation().getPath()
-         //println "Terminology not found in file system"
-
-         // absolute route to the JAR File
-         //println new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath())
-
-         def jar = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath())
-         if (jar.isFile())
-         {
-            def real_jar_file = new JarFile(jar)
-            def entries = real_jar_file.entries()
-            def e, is
-            while (entries.hasMoreElements())
-            {
-               e = entries.nextElement()
-               if (!e.isDirectory() && e.name.startsWith(terminology_repo_path))
-               {
-                  //println e.name
-                  is = real_jar_file.getInputStream(e)
-                  ///is = this.getClass().getResourceAsStream("/"+e.name)
-                  //this.terminology.parseTerms(is) // This is loading every XML in the folder!
-                  this.terminology.parseTerms(is) // This is loading every XML in the folder!
-               }
-            }
-            real_jar_file.close()
-         }
-
-         web_env = true
-      }
-      else
-      {
-         // loads the openehr terminolgy
-         // FIXME: THIS IS THE EN TERMINOLOGY, if the OPT is in another language, it needs to load that terminology
-
-         this.terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_en.xml")) // TODO: parameter
-         this.terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_es.xml"))
-         this.terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_pt.xml"))
-      }
+      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_en.xml")) // this works to load the resource from the jar
+      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_es.xml"))
+      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_pt.xml"))
 
 
       def writer = new StringWriter()
@@ -83,10 +41,7 @@ class OptUiGenerator {
 
             mkp.comment('simple style')
 
-            if (web_env)
-               link(rel:"stylesheet", href:"/static/style.css")
-            else
-               link(rel:"stylesheet", href:"style.css")
+            link(rel:"stylesheet", href:"/static/style.css")
 
             mkp.comment('boostrap style')
             link(rel:"stylesheet", href:"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css")

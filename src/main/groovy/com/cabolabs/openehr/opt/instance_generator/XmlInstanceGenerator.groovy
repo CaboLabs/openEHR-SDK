@@ -726,39 +726,9 @@ class XmlInstanceGenerator {
        </value>
       */
 
-      def _dataf, _datab64
-
-      // web environment?
-      def img_repo_path = "resources"+ PS +"images"+ PS
-      def img_repo = new File(img_repo_path)
-      if (!img_repo.exists()) // try to load from resources
-      {
-         def jar = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath())
-         if (jar.isFile())
-         {
-            def real_jar_file = new JarFile(jar)
-            def entries = real_jar_file.entries()
-            def e, is
-            while (entries.hasMoreElements())
-            {
-               e = entries.nextElement()
-               if (e.name.startsWith(img_repo_path))
-               {
-                  println e.name
-                  is = real_jar_file.getInputStream(e)
-                  _datab64 = is.text.bytes.encodeBase64().toString()
-               }
-            }
-            real_jar_file.close()
-         }
-      }
-      else
-      {
-         _dataf = new File("resources"+ PS +"images"+ PS +"cabolabs_logo.png")
-         _datab64 = _dataf.bytes.encodeBase64().toString()
-      }
-
-
+      def inputStream = getClass().getResourceAsStream(PS +"images"+ PS +"cabolabs_logo.png")
+      def bytes = inputStream.bytes
+      def _datab64 = bytes.encodeBase64().toString()
 
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_MULTIMEDIA') {
