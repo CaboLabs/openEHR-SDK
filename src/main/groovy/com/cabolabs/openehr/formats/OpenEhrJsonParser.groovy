@@ -34,7 +34,10 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 import groovy.json.JsonSlurper
 
 class OpenEhrJsonParser {
-   
+
+   // ========= ENTRY POINTS =========
+
+   // used to parse compositions and other descendant from Locatable
    Locatable parseJson(String json)
    {
       def slurper = new JsonSlurper()
@@ -50,7 +53,7 @@ class OpenEhrJsonParser {
       return this."$method"(map)
    }
    
-   // has a different method because is not Locatable
+   // used to parse versions because is not Locatable
    Version parseVersionJson(String json)
    {
       def slurper = new JsonSlurper()
@@ -65,6 +68,8 @@ class OpenEhrJsonParser {
       def method = 'parse'+ type
       return this."$method"(map)
    }
+
+   // ========= FIll METHODS =========
    
    private void fillLOCATABLE(Locatable l, Map json)
    {
@@ -78,7 +83,7 @@ class OpenEhrJsonParser {
       
       if (json.uid)
       {
-         type = json.name._type
+         type = json.uid._type
          method = 'parse'+ type +'Map'
          l.uid = this."$method"(json.uid)
       }
@@ -165,6 +170,8 @@ class OpenEhrJsonParser {
          }
       }
    }
+
+   // ========= PARSE METHODS =========
 
    private OriginalVersion parseORIGINAL_VERSION(Map json)
    {
