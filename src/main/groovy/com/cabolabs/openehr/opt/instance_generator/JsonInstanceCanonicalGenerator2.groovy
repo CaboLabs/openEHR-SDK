@@ -176,6 +176,7 @@ class JsonInstanceCanonicalGenerator2 {
             ]
          ],
          uid: [
+            _type: 'OBJECT_VERSION_ID',
             value: String.uuid() +'::EMR_APP::1'
          ],
          data: generateComposition(addParticipations),
