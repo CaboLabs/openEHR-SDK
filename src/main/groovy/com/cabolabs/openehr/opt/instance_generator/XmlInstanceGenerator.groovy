@@ -733,7 +733,7 @@ class XmlInstanceGenerator {
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_MULTIMEDIA') {
          data(_datab64)
-         generate_attr_CODE_PHRASE('media_type', 'IANA_media-types', 'image/jpeg') // TODO: grab the terminology from the ObjectNode
+         generate_attr_CODE_PHRASE('media_type', 'IANA_media-types', 'image/png') // TODO: grab the terminology from the ObjectNode
          size(_datab64.size())
       }
    }

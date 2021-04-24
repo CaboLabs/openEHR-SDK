@@ -721,7 +721,7 @@ class JsonInstanceCanonicalGenerator2 {
       def bytes = inputStream.bytes
       def _datab64 = bytes.encodeBase64().toString()
 
-      Map mtype = generate_attr_CODE_PHRASE('media_type', 'IANA_media-types', 'image/jpeg') // TODO: grab the terminology from the ObjectNode
+      Map mtype = generate_attr_CODE_PHRASE('media_type', 'IANA_media-types', 'image/png') // TODO: grab the terminology from the ObjectNode
       Map mmcontent = [
          _type: 'DV_MULTIMEDIA',
          data: _datab64,
