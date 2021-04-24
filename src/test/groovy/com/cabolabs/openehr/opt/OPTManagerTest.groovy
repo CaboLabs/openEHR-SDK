@@ -98,7 +98,11 @@ class OPTManagerTest extends GroovyTestCase {
 
       def nodes
       templateDataPaths.each { tdp ->
+      
          nodes = opt.getNodesByTemplateDataPath(tdp)
+
+         assert nodes
+
          if (nodes)
          {
             println "FOUND FOR "+ tdp

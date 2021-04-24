@@ -908,7 +908,7 @@ class OpenEhrXmlParser {
    {
       DvQuantity q = new DvQuantity()
       
-      q.magnitude = Double.valueOf(xml.magnitude.text())
+      q.magnitude = xml.magnitude.toDouble() // Double.valueOf(xml.magnitude.text())
       
       q.units = xml.units.text()
       
@@ -936,10 +936,10 @@ class OpenEhrXmlParser {
    private DvProportion parseDV_PROPORTION(GPathResult xml)
    {
       DvProportion d = new DvProportion(
-         numerator: xml.numerator,
-         denominator: xml.denominator,
-         type: xml.type,
-         precision: xml.precision
+         numerator: xml.numerator.toFloat(),
+         denominator: xml.denominator.toFloat(),
+         type: xml.type.toInteger(),
+         precision: xml.precision?.toInteger()
       )
       
       this.fillDV_AMOUNT(d, xml)
@@ -950,7 +950,7 @@ class OpenEhrXmlParser {
    private DvOrdinal parseDV_ORDINAL(GPathResult xml)
    {
       DvOrdinal d = new DvOrdinal(
-         value: xml.value,
+         value: xml.value.toInteger(),
          symbol: this.parseDV_CODED_TEXT(xml.symbol)
       )
       
@@ -1001,7 +1001,7 @@ class OpenEhrXmlParser {
          d.uri = this.parseDV_URI(xml.uri)
       }
       
-      d.data = xml.data.getBytes()
+      d.data = xml.data.text().getBytes()
       
       d.media_type = this.parseCODE_PHRASE(xml.media_type)
       
@@ -1010,7 +1010,7 @@ class OpenEhrXmlParser {
          d.compression_algorithm = this.parseCODE_PHRASE(xml.compression_algorithm)
       }
       
-      d.size = xml.size
+      d.size = xml.size.toInteger()
       
       // TODO: integrity_check, integrity_check_algorithm, thumbnail
       

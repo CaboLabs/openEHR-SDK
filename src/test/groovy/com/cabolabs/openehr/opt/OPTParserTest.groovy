@@ -140,7 +140,7 @@ class OPTParserTest extends GroovyTestCase {
       }
 
 
-      def c = opt.getNodes('/content[archetype_id=openEHR-EHR-ACTION.test_ism_paths.v1]/ism_transition[at0006]/current_state')[0]
+      def c = opt.getNodes('/content[archetype_id=openEHR-EHR-ACTION.test_ism_paths.v1]/ism_transition/current_state')[0]
       assert c instanceof ObjectNode
       assert c.rmTypeName == 'DV_CODED_TEXT'
       assert c.type == 'C_COMPLEX_OBJECT'
