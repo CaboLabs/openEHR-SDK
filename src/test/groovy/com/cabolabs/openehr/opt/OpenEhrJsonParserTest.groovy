@@ -20,6 +20,11 @@ import groovy.util.GroovyTestCase
 import groovy.json.JsonOutput
 import com.cabolabs.openehr.rm_1_0_2.common.change_control.OriginalVersion
 
+import com.networknt.schema.*
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.cabolabs.openehr.opt.instance_validation.JsonInstanceValidation
+
 class OpenEhrJsonParserTest extends GroovyTestCase {
 
    private static String PS = System.getProperty("file.separator")
@@ -444,4 +449,26 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       return true
    }
    
+   void testJsonSchema()
+   {
+      def uri = 'https://gist.githubusercontent.com/pieterbos/81651d2d7a5041a130ecb21b0a852e39/raw/2f31b9c7067bccf192256358da868ee8fbc7239a/OpenEHR%2520RM%2520json%2520schema,%2520with%2520default%2520instances%2520of%2520objects%2520addedcorrectly.json'
+      def jsonValidator = new JsonInstanceValidation(uri)
+
+      ObjectMapper mapper = new ObjectMapper()
+
+      def files = [
+         'canonical_json/admin.json',
+         'canonical_json/amd_assessment.en.v1.json'
+      ]
+
+      // https://github.com/networknt/json-schema-validator/blob/master/src/test/java/com/networknt/schema/V7JsonSchemaTest.java
+      files.each { testCaseFile ->
+
+         //final URI testCaseFileUri = URI.create("classpath:" + testCaseFile)
+         InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(testCaseFile)
+         JsonNode json = mapper.readTree(ins)
+         println jsonValidator.validate(json)
+      }
+
+   }
 }
