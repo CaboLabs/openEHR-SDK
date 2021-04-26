@@ -56,22 +56,24 @@ $ opt ingen path_to_opt dest_folder [amount] [version|composition|version_commit
 5. tagged: generates a version instance with tags instead of data, useful to inject data from your app to commit to the [EHRServer]
 
 
-### Validate XML instances
+### Validate XML or JSON instances against the schemas
 
 Validate one instance:
 
 ```shell
-$ opt inval path_to_xml_instance
+$ opt inval path_to_xml_or_json_instance
 ```
 
 Validate all instances in folder:
 
 ```shell
-$ opt inval path_to_folder_with_xml_instances
+$ opt inval path_to_folder_with_xml_or_json_instances
 ```
 
-[EHRCommitter]: https://github.com/ppazos/EHRCommitter
-[EHRServer]: https://github.com/ppazos/cabolabs-ehrserver
+> Note: if the folder contains JSON and XML, it will validate both with the correct schema, but the files should have .json or .xml extensions for the mixed validation to work OK.
+
+
+In both cases, the output is "file IS VALID" or the list of validation errors if the file is not valid against the schemas.
 
 
 ## Requires Java 8 and Groovy 2.5.5+
@@ -79,3 +81,10 @@ $ opt inval path_to_folder_with_xml_instances
 > - - - - -
 > Note: check the opt.sh/opt.bat files to see if the correct path to the groovy dependencies on your machine is set there.
 > - - - - -
+
+
+
+[EHRCommitter]: https://github.com/ppazos/EHRCommitter
+[EHRServer]: https://github.com/ppazos/cabolabs-ehrserver
+
+
