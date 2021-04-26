@@ -167,7 +167,7 @@ class XmlInstanceGeneratorForCommitter {
                   terminology_id() {
                      value('openehr')
                   }
-                  code_string(249)
+                  code_string('249')
                }
             }
          } // commit_audit
@@ -192,7 +192,7 @@ class XmlInstanceGeneratorForCommitter {
                terminology_id() {
                   value('openehr')
                }
-               code_string(532)
+               code_string('532')
             }
          }
       }
@@ -580,7 +580,7 @@ class XmlInstanceGeneratorForCommitter {
       </attr>
       */
       builder."${attr}"('xsi:type':'DV_DATE_TIME') {
-         value( new Date().toOpenEHRDateTime() )
+         value(new Date().toOpenEHRDateTime())
       }
    }
 
@@ -590,7 +590,7 @@ class XmlInstanceGeneratorForCommitter {
          terminology_id() {
             value( terminology )
          }
-         code_string( code )
+         code_string(code)
       }
    }
 
@@ -931,9 +931,9 @@ class XmlInstanceGeneratorForCommitter {
                value( this.opt.getTerm(parent_arch_id, code_phrase.codeList[0]) )
                defining_code() { // use generate_attr_CODE_PHRASE
                   terminology_id() {
-                     value( code_phrase.terminologyIdName )
+                     value(code_phrase.terminologyIdName)
                   }
-                  code_string( code_phrase.codeList[0] )
+                  code_string(code_phrase.codeList[0])
                }
             }
          }
@@ -953,9 +953,9 @@ class XmlInstanceGeneratorForCommitter {
    {
       builder.language() {
          terminology_id() {
-            value( this.opt.langTerminology )
+            value(this.opt.langTerminology)
          }
-         code_string( this.opt.langCode )
+         code_string(this.opt.langCode)
       }
       builder.encoding() {
          terminology_id() {
@@ -1300,7 +1300,7 @@ class XmlInstanceGeneratorForCommitter {
                   terminology_id {
                      value('openehr')
                   }
-                  code_string( first_code )
+                  code_string(first_code)
                }
             }
             // /quick fix

@@ -143,7 +143,7 @@ class XmlInstanceGeneratorTagged {
                   terminology_id() {
                      value('openehr')
                   }
-                  code_string(249)
+                  code_string('249')
                }
             }
          } // commit_audit
@@ -168,7 +168,7 @@ class XmlInstanceGeneratorTagged {
                terminology_id() {
                   value('openehr')
                }
-               code_string(532)
+               code_string('532')
             }
          }
       }
@@ -215,9 +215,9 @@ class XmlInstanceGeneratorTagged {
       // Campos de COMPOSITION
       builder.language() {
          terminology_id() {
-            value( this.opt.langTerminology )
+            value(this.opt.langTerminology)
          }
-         code_string( this.opt.langCode )
+         code_string(this.opt.langCode)
       }
       builder.territory() {
          terminology_id() {
@@ -436,9 +436,9 @@ class XmlInstanceGeneratorTagged {
    {
       builder."${attr}"() {
          terminology_id() {
-            value( terminology )
+            value(terminology)
          }
-         code_string( code )
+         code_string(code)
       }
    }
 
