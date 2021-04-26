@@ -8,20 +8,33 @@ class JsonInstanceValidation {
 
    def schema
 
+   // constructor using local schema copied from
+   // https://gist.githubusercontent.com/pieterbos/81651d2d7a5041a130ecb21b0a852e39/raw/2f31b9c7067bccf192256358da868ee8fbc7239a/OpenEHR%2520RM%2520json%2520schema,%2520with%2520default%2520instances%2520of%2520objects%2520addedcorrectly.json
+   JsonInstanceValidation()
+   {
+      JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7)
+      InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream('json_schema/openehr_schema.json')
+      this.schema = factory.getSchema(ins)
+   }
+
+   // constructor providing external schema
    JsonInstanceValidation(String uri)
    {
-      this.schema = getJsonSchemaFromUrl(uri)
+      JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7)
+      this.schema = factory.getSchema(new URI(uri))
    }
 
-   JsonSchema getJsonSchemaFromUrl(String uri) throws URISyntaxException
+   // validate parsed json
+   Set<ValidationMessage> validate(JsonNode json)
    {
-      JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
-      return factory.getSchema(new URI(uri));
+      this.schema.validate(json)
    }
 
-   //java.util.LinkedHashSet
-   /*List<ValidationMessage>*/ def validate(JsonNode json)
+   // validate json file contents
+   Set<ValidationMessage> validate(String jsonContents)
    {
+      ObjectMapper mapper = new ObjectMapper()
+      JsonNode json = mapper.readTree(jsonContents)
       this.schema.validate(json)
    }
 }

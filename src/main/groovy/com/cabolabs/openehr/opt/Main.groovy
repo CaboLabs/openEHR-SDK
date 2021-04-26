@@ -5,6 +5,7 @@ import com.cabolabs.openehr.opt.ui_generator.OptUiGenerator
 import com.cabolabs.openehr.opt.instance_generator.*
 import com.cabolabs.openehr.opt.parser.*
 import com.cabolabs.openehr.opt.model.*
+import com.cabolabs.openehr.opt.instance_validation.JsonInstanceValidation
 
 class Main {
 
@@ -80,7 +81,7 @@ class Main {
             def destination_path = args[2]
             if (!new File(destination_path).exists())
             {
-               println "destination_path $destination_path doesn't exists"
+               println "destination_path $destination_path doesn't exist"
                System.exit(0)
             }
 
@@ -153,10 +154,13 @@ class Main {
             def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
             def validator = new XmlInstanceValidation(inputStream)
 
+            // JSON Schema validation, loads the schema internally
+            def jsonValidator = new JsonInstanceValidation()
+
             if (args.size() < 2)
             {
-               println 'usage: opt inval path_to_xml_instance'
-               println 'usage: opt inval path_to_folder_with_xml_instances'
+               println 'usage: opt inval path_to_xml_or_json_instance'
+               println 'usage: opt inval path_to_folder_with_xml_or_json_instances'
                System.exit(0)
             }
 
@@ -164,7 +168,7 @@ class Main {
             def f = new File(path)
             if (!f.exists())
             {
-               println path +" doesn't exists"
+               println path +" doesn't exist"
                System.exit(0)
             }
 
@@ -174,16 +178,59 @@ class Main {
 
                  validateXMLInstance(validator, xml)
                }
+
+               f.eachFileMatch(~/.*.json/) { json ->
+
+                 validateJSONInstance(jsonValidator, json)
+               }
             }
-            else // Validate the XML instance referenced by the file
+            else // Validate the XML or JSON instance referenced by the file
             {
-               validateXMLInstance(validator, f)
+               String ext = fileExtension(path)
+               if (ext == 'json')
+               {
+                  validateJSONInstance(jsonValidator, f)
+               }
+               else if (ext == 'xml')
+               {
+                  validateXMLInstance(validator, f)
+               }
+               else
+               {
+                  println "File extension ${ext} is not supported, only json and xml are supported"
+                  System.exit(0)
+               }
             }
 
          break
          default:
             println "command "+ args[0] +" not recognized"
       }
+   }
+
+   static String fileExtension(String path)
+   {
+      path.lastIndexOf('.').with {it != -1 ? path.substring(it+1):''}
+   }
+
+   static void validateJSONInstance(validator, file)
+   {
+      def validationMessages = validator.validate(file.text)
+      if (validationMessages.size() == 0)
+      {
+         println file.name +' VALID'
+      }
+      else
+      {
+         println file.name +' NOT VALID'
+         println '====================================='
+         validationMessages.each {
+            println it.message
+         }
+         println '====================================='
+      }
+
+      println ""
    }
 
    static void validateXMLInstance(validator, file)
@@ -198,7 +245,11 @@ class Main {
          println '====================================='
       }
       else
+      {
          println file.name +' VALID'
+      }
+      
+      println ""
    }
 
    static OperationalTemplate loadAndParse(String path)
