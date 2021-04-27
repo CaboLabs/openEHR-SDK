@@ -30,14 +30,14 @@ class JsonInstanceCanonicalGenerator2 {
    // Dummy data (TODO: make this configurable from an external file)
    def composition_settings = [
       'en': [
-         225: 'home',
-         227: 'emergency care',
-         228: 'primary medical care'
+         '225': 'home',
+         '227': 'emergency care',
+         '228': 'primary medical care'
       ],
       'es': [
-         225: 'hogar',
-         227: 'atención de emergencia',
-         228: 'atención médica primaria'
+         '225': 'hogar',
+         '227': 'atención de emergencia',
+         '228': 'atención médica primaria'
       ]
       // TODO: for other laguages we need to add more here, or access the terminology and pick terms from there...
    ]
@@ -499,7 +499,7 @@ class JsonInstanceCanonicalGenerator2 {
 
       if (!first_code)
       {
-         first_code = Integer.random(10000, 1000000)
+         first_code = Integer.random(10000, 1000000).toString()
       }
       else
       {

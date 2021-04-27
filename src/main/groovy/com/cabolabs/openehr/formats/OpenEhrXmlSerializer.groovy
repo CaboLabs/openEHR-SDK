@@ -334,7 +334,7 @@ class OpenEhrXmlSerializer {
       
       if (o.archetype_details)
       {
-         serializeArchetyped(o.archetype_details)
+         this.serializeArchetyped(o.archetype_details)
       }
       
       // this should be an attribute

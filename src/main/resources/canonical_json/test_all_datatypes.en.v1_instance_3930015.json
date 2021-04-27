@@ -57,7 +57,7 @@
                 "terminology_id": {
                     "value": "openehr"
                 },
-                "code_string": 228
+                "code_string": "228"
             }
         },
         "participations": {
@@ -186,7 +186,7 @@
                                             "terminology_id": {
                                                 "value": "terminology_not_specified_as_constraint_or_referenceSetUri_in_opt"
                                             },
-                                            "code_string": 1002403
+                                            "code_string": "1002403"
                                         }
                                     }
                                 },
@@ -352,7 +352,7 @@
                                             "terminology_id": {
                                                 "value": "IANA_media-types"
                                             },
-                                            "code_string": "image/jpeg"
+                                            "code_string": "image/png"
                                         }
                                     }
                                 },
