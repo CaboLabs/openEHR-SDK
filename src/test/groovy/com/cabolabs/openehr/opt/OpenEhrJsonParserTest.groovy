@@ -2,6 +2,8 @@ package  com.cabolabs.openehr.opt
 
 import com.cabolabs.openehr.formats.OpenEhrJsonParser
 import com.cabolabs.openehr.formats.OpenEhrXmlSerializer
+import com.cabolabs.openehr.formats.OpenEhrJsonSerializer
+
 import com.cabolabs.openehr.opt.instance_validation.XmlInstanceValidation
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
@@ -501,5 +503,41 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
          println out
       }
 
+   }
+
+   void testCompositionJsonParseValidationSerializationValidation()
+   {
+      String path = PS +"canonical_json"+ PS +"admin.json"
+      File file = new File(getClass().getResource(path).toURI())
+      String json = file.text
+
+      // JSON VALIDATION
+      def jsonValidator = new JsonInstanceValidation()
+      //ObjectMapper mapper = new ObjectMapper()
+      //InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(path)
+      //JsonNode json = mapper.readTree(ins)
+      Set<ValidationMessage> errors = jsonValidator.validate(json)
+
+      assert errors.size() == 0
+
+      // JSON PARSE
+      def parser = new OpenEhrJsonParser()
+      Composition compo = (Composition)parser.parseJson(json)
+
+      // TODO: COMPOSITION VALIDATION AGAINST OPT
+
+      // JSON SERIALIZATION
+      def serializer = new OpenEhrJsonSerializer()
+      String json2 = serializer.serialize(compo)
+      errors = jsonValidator.validate(json2)
+
+      // JSON VALIDATION
+      def out = JsonOutput.toJson(errors)
+      out = JsonOutput.prettyPrint(out)
+      //println out
+
+      //println json2
+
+      assert errors.size() == 0
    }
 }

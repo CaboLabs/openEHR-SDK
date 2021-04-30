@@ -1,5 +1,8 @@
 package com.cabolabs.openehr.formats
 
+import groovy.xml.MarkupBuilder
+import java.text.SimpleDateFormat
+
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 import com.cabolabs.openehr.rm_1_0_2.common.change_control.OriginalVersion
@@ -30,8 +33,6 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvEhrUri
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvUri
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
-import groovy.xml.MarkupBuilder
-import java.text.SimpleDateFormat
 
 class OpenEhrXmlSerializer {
    
@@ -74,6 +75,36 @@ class OpenEhrXmlSerializer {
       this."$method"(v)
       
       return writer.toString()
+   }
+
+   private void fillLocatable(Locatable o)
+   {
+      //println 'fillLocatable >> ' + o
+      
+      String method = this.method(o.name) // text or coded
+      builder.name() {
+         this."$method"(o.name)
+      }
+      
+      if (o.uid)
+      {
+         method = this.method(o.uid)
+         builder.uid('xsi:type': openEhrType(o.uid)) {
+            this."$method"(o.uid)
+         }
+      }
+      
+      // TODO: links
+      
+      if (o.archetype_details)
+      {
+         this.serializeArchetyped(o.archetype_details)
+      }
+      
+      // this should be an attribute
+      //builder.archetype_node_id(o.archetype_node_id)
+      
+      // TODO: feeder audit
    }
    
    private void serializeOriginalVersion(OriginalVersion v)
@@ -156,7 +187,6 @@ class OpenEhrXmlSerializer {
       builder.composer('xsi:type': this.openEhrType(c.composer)) {
          this."$method"(c.composer)
       }
-    
       
       if (c.context)
       {
@@ -259,8 +289,7 @@ class OpenEhrXmlSerializer {
    {
       builder.system_id(a.system_id)
       
-      def method
-      method = this.method(a.committer)
+      String method = this.method(a.committer)
       builder.committer('xsi:type': openEhrType(a.committer)) {
          this."$method"(a.committer)
       }
@@ -311,36 +340,6 @@ class OpenEhrXmlSerializer {
       
       // Attestation fields
       // TODO:
-   }
-   
-   private void fillLocatable(Locatable o)
-   {
-      //println 'fillLocatable >> ' + o
-      
-      String method = this.method(o.name) // text or coded
-      builder.name() {
-         this."$method"(o.name)
-      }
-      
-      if (o.uid)
-      {
-         method = this.method(o.uid)
-         builder.uid('xsi:type': openEhrType(o.uid)) {
-            this."$method"(o.uid)
-         }
-      }
-      
-      // TODO: links
-      
-      if (o.archetype_details)
-      {
-         this.serializeArchetyped(o.archetype_details)
-      }
-      
-      // this should be an attribute
-      //builder.archetype_node_id(o.archetype_node_id)
-      
-      // TODO: feeder audit
    }
 
    private void fillPartyProxy(PartyProxy o)
@@ -449,6 +448,8 @@ class OpenEhrXmlSerializer {
    private void serializeGenericId(GenericId o)
    {
       this.fillObjectId(o)
+
+      builder.scheme(o.scheme)
    }
 
    private void serializeArchetypeId(ArchetypeId o)
@@ -470,6 +471,7 @@ class OpenEhrXmlSerializer {
    {
       this.fillObjectId(o)
    }
+
 
    private void fillEntry(Entry o)
    {
@@ -916,8 +918,7 @@ class OpenEhrXmlSerializer {
    {
       builder.value(o.value)
       
-      builder.defining_code()
-      {
+      builder.defining_code() {
          this.serializeCodePhrase(o.defining_code)
       }
    }
