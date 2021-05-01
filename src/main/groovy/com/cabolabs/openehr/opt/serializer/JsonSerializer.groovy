@@ -10,7 +10,7 @@ import com.cabolabs.openehr.opt.model.datatypes.*
 
 /**
  * @author pablo.pazos@cabolabs.com
- *
+ * Transforms an OPT into a JSON string
  */
 class JsonSerializer {
 

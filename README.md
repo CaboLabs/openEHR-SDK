@@ -43,7 +43,7 @@ The test report in HTML will be under ./build/reports/tests/test/index.html
 $ opt uigen path_to_opt dest_folder
 ```
 
-### Generate XML instances with random data
+### Generate XML instances from OPTs with random data
 
 ```shell
 $ opt ingen path_to_opt dest_folder [amount] [version|composition|version_committer|tagged]
@@ -75,6 +75,25 @@ $ opt inval path_to_folder_with_xml_or_json_instances
 
 In both cases, the output is "file IS VALID" or the list of validation errors if the file is not valid against the schemas.
 
+
+### Transform an OPT in it's antive XML form to JSON
+
+```shell
+$ opt trans opt path_to_opt destination_folder
+```
+
+### Transform an COMPOSITION instances between canonical XML and JSON formats
+
+Transform a XML COMPOSITION to JSON
+
+```shell
+$ opt trans composition path_to_compo.xml destination_folder
+```
+Transform a JSON COMPOSITION to JSON
+
+```shell
+$ opt trans composition path_to_compo.json destination_folder
+```
 
 ## Requires Java 8 and Groovy 2.5.5+
 

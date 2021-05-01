@@ -6,6 +6,7 @@ import com.cabolabs.openehr.opt.instance_generator.*
 import com.cabolabs.openehr.opt.parser.*
 import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.opt.instance_validation.JsonInstanceValidation
+import com.cabolabs.openehr.opt.serializer.JsonSerializer
 
 class Main {
 
@@ -18,6 +19,8 @@ class Main {
     */
    static void main(String[] args)
    {
+      def out, printer
+
       if (args.size() == 0 || args[0] == 'help')
       {
          println 'usage: opt command [options]'
@@ -69,6 +72,8 @@ class Main {
             }
 
             def path = args[1] //"resources"+ PS +"opts"+ PS +"Referral.opt"
+
+            // TODO: check path to OPT exists
             def opt = loadAndParse(path)
 
             // test
@@ -100,7 +105,7 @@ class Main {
             def withParticipations = args.contains('withParticipations')
             //println withParticipations
 
-            def igen, ins, out, printer, ext = 'xml'
+            def igen, ins, ext = 'xml'
             for (i in 1..count)
             {
                if (generate == 'composition')
@@ -201,6 +206,55 @@ class Main {
                   System.exit(0)
                }
             }
+
+         break
+         case 'trans':
+
+            def ext
+
+            // ['trans', 'opt', source_opt, dest_folder]
+            // tansform opt xml to json
+            switch (args[1])
+            {
+               case "opt":
+
+                  String path = args[2]
+                  File f = new File(path);
+                  if (!f.exists() || f.isDirectory())
+                  { 
+                     println "Path to OPT $path doesn't exist or is not an OPT file"
+                     System.exit(0)
+                  }
+
+                  def dpath = args[3]
+                  File df = new File(dpath);
+                  if (!df.exists() || !df.isDirectory())
+                  { 
+                     println "Path to destination $dpath doesn't exist or is not a folder"
+                     System.exit(0)
+                  }
+
+                  ext = 'json'
+
+                  def opt = loadAndParse(path)
+                  def toJson = new JsonSerializer()
+                  toJson.serialize(opt)
+
+                  out = new File(dpath + PS + new java.text.SimpleDateFormat("'"+ opt.concept.replaceAll(' ', '_') +"_'yyyyMMddhhmmss'."+ ext +"'").format(new Date()) )
+
+                  // Generates UTF-8 output
+                  printer = new java.io.PrintWriter(out, 'UTF-8')
+                  printer.write(toJson.get(true))
+                  printer.flush()
+                  printer.close()
+               break
+               case "composition":
+               break
+            }
+
+            // [trans, composition, source, dest]
+            // transforms the composition in the format it is, xml or json, into the other format
+
 
          break
          default:

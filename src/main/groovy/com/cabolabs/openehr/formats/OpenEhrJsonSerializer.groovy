@@ -71,6 +71,7 @@ class OpenEhrJsonSerializer {
    {
       String method = this.method(o.name) // text or coded
       out.name = this."$method"(o.name)
+      out.name._type = this.openEhrType(o.name)
 
       // adds the JSON type
       out._type = this.openEhrType(o)
@@ -291,8 +292,7 @@ class OpenEhrJsonSerializer {
       if (o.external_ref)
       {
          def method = this.method(o.external_ref)
-         out.external_ref = this."$method"(o.external_ref)
-         out.external_ref._type = this.openEhrType(o.external_ref)
+         out.external_ref = this."$method"(o.external_ref) // doesn't need a _type is always PARTY_REF
       }
    }
    

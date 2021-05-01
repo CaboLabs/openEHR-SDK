@@ -536,7 +536,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       out = JsonOutput.prettyPrint(out)
       //println out
 
-      //println json2
+      println json2
 
       assert errors.size() == 0
    }
