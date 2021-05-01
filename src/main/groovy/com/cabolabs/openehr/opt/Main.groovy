@@ -7,6 +7,9 @@ import com.cabolabs.openehr.opt.parser.*
 import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.opt.instance_validation.JsonInstanceValidation
 import com.cabolabs.openehr.opt.serializer.JsonSerializer
+import com.cabolabs.openehr.formats.*
+import com.cabolabs.openehr.rm_1_0_2.composition.Composition
+import groovy.json.JsonOutput
 
 class Main {
 
@@ -84,11 +87,7 @@ class Main {
             */
 
             def destination_path = args[2]
-            if (!new File(destination_path).exists())
-            {
-               println "destination_path $destination_path doesn't exist"
-               System.exit(0)
-            }
+            verifyFolder(destination_path)
 
             def generate = 'version'
             if (args.size() > 4)
@@ -212,27 +211,30 @@ class Main {
 
             def ext
 
+            if (args.size() < 4)
+            {
+               println "Usage: opt.sh trans opt path_to_opt destination_folder                \t--Transforms XML OPT into JSON"
+               println "Usage: opt.sh trans composition path_to_composition destination_folder\t--Transforms a XML or JSON COMPOSITION into JSON or XML"
+               System.exit(0)
+            }
+
             // ['trans', 'opt', source_opt, dest_folder]
             // tansform opt xml to json
             switch (args[1])
             {
                case "opt":
 
-                  String path = args[2]
-                  File f = new File(path);
+                  String path = args[2] // OPT 
+                  File f = new File(path)
                   if (!f.exists() || f.isDirectory())
                   { 
-                     println "Path to OPT $path doesn't exist or is not an OPT file"
+                     println "Path to OPT $path doesn't exist or is not a file"
                      System.exit(0)
                   }
 
                   def dpath = args[3]
                   File df = new File(dpath);
-                  if (!df.exists() || !df.isDirectory())
-                  { 
-                     println "Path to destination $dpath doesn't exist or is not a folder"
-                     System.exit(0)
-                  }
+                  verifyFolder(dpath)
 
                   ext = 'json'
 
@@ -240,7 +242,7 @@ class Main {
                   def toJson = new JsonSerializer()
                   toJson.serialize(opt)
 
-                  out = new File(dpath + PS + new java.text.SimpleDateFormat("'"+ opt.concept.replaceAll(' ', '_') +"_'yyyyMMddhhmmss'."+ ext +"'").format(new Date()) )
+                  out = new File(dpath + PS + new java.text.SimpleDateFormat("'"+ opt.concept.replaceAll(' ', '_') +"_'yyyyMMddhhmmss_opt'."+ ext +"'").format(new Date()) )
 
                   // Generates UTF-8 output
                   printer = new java.io.PrintWriter(out, 'UTF-8')
@@ -249,6 +251,78 @@ class Main {
                   printer.close()
                break
                case "composition":
+
+                  String path = args[2] // composition
+                  File f = new File(path)
+                  if (!f.exists() || f.isDirectory())
+                  { 
+                     println "Path to composition $path doesn't exist or is not a file"
+                     System.exit(0)
+                  }
+
+                  def dpath = args[3]
+                  verifyFolder(dpath)
+
+
+                  ext = fileExtension(path)
+                  if (ext == 'xml') // XML to JSON
+                  {
+                     // Parse XML
+                     String xml = f.text
+                     def parser = new OpenEhrXmlParser()
+                     Composition c = (Composition)parser.parseXml(xml)
+
+                     // debug
+                     // out = JsonOutput.toJson(c)
+                     // out = JsonOutput.prettyPrint(out)
+                     // println out
+
+                     // Serialize to JSON
+                     def serializer = new OpenEhrJsonSerializer()
+                     String json = serializer.serialize(c)
+
+                     // Output
+                     ext = 'json'
+                     out = new File(dpath + PS + new java.text.SimpleDateFormat("'"+ (f.name.replaceAll(' ', '_') -'.xml') +"_'yyyyMMddhhmmss'."+ ext +"'").format(new Date()) )
+
+                     // Generates UTF-8 output
+                     printer = new java.io.PrintWriter(out, 'UTF-8')
+                     printer.write(json)
+                     printer.flush()
+                     printer.close()
+
+                     println "Created "+ out.name
+                     println ""
+                  }
+                  else if (ext == 'json') // JSON to XML
+                  {
+                     // Parse JSON
+                     String json = f.text
+                     def parser = new OpenEhrJsonParser()
+                     Composition c = (Composition)parser.parseJson(json)
+
+                     // Serialize to XML
+                     def serializer = new OpenEhrXmlSerializer()
+                     String xml = serializer.serialize(c)
+
+                     // Output
+                     ext = 'xml'
+                     out = new File(dpath + PS + new java.text.SimpleDateFormat("'"+ (f.name.replaceAll(' ', '_') -'.json') +"_'yyyyMMddhhmmss'."+ ext +"'").format(new Date()) )
+
+                     // Generates UTF-8 output
+                     printer = new java.io.PrintWriter(out, 'UTF-8')
+                     printer.write(xml)
+                     printer.flush()
+                     printer.close()
+
+                     println "Created "+ out.name
+                     println ""
+                  }
+                  else
+                  {
+                     println "Extension $ext not supported, the COMPOSITION file should be .json or .xml"
+                     System.exit(0)
+                  }
                break
             }
 
@@ -259,6 +333,17 @@ class Main {
          break
          default:
             println "command "+ args[0] +" not recognized"
+      }
+   }
+
+   // path to folder exists or exit
+   static void verifyFolder(String path)
+   {
+      File df = new File(path);
+      if (!df.exists() || !df.isDirectory())
+      { 
+         println "Path to destination $path doesn't exist or is not a folder"
+         System.exit(0)
       }
    }
 

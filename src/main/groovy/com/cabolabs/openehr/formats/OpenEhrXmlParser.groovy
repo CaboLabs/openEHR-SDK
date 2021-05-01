@@ -87,7 +87,9 @@ class OpenEhrXmlParser {
       
       l.name = this."$method"(xml.name)
       
-      l.archetype_node_id = xml.archetype_node_id
+      l.archetype_node_id = xml.@archetype_node_id.text()
+
+      //println "archetype node id: "+ xml.@archetype_node_id.text()
       
       if (!xml.uid.isEmpty())
       {
@@ -103,7 +105,8 @@ class OpenEhrXmlParser {
    private void fillENTRY(Entry e, GPathResult xml)
    {
       String type, method
-      
+
+      this.fillLOCATABLE(e, xml)
       
       e.encoding = this.parseCODE_PHRASE(xml.encoding)
       e.language = this.parseCODE_PHRASE(xml.language)
@@ -290,7 +293,7 @@ class OpenEhrXmlParser {
    private Composition parseCOMPOSITION(GPathResult xml)
    {
       Composition compo = new Composition()
-      println "compo"+ xml
+      //println "compo"+ xml
       this.fillLOCATABLE(compo, xml)
       
       compo.language = this.parseCODE_PHRASE(xml.language)
@@ -562,7 +565,6 @@ class OpenEhrXmlParser {
    {
       AdminEntry a = new AdminEntry()
       
-      this.fillLOCATABLE(a, xml)
       this.fillENTRY(a, xml)
       
       String type = xml.data.'@xsi:type'.text()
@@ -576,7 +578,6 @@ class OpenEhrXmlParser {
    {
       Observation o = new Observation()
       
-      this.fillLOCATABLE(o, xml)
       this.fillCARE_ENTRY(o, xml)
       
       if (!xml.data.isEmpty())
@@ -687,7 +688,6 @@ class OpenEhrXmlParser {
    {
       Evaluation e = new Evaluation()
       
-      this.fillLOCATABLE(e, xml)
       this.fillCARE_ENTRY(e, xml)
       
       String type = xml.data.'@xsi:type'.text()
@@ -701,7 +701,6 @@ class OpenEhrXmlParser {
    {
       Instruction i = new Instruction()
       
-      this.fillLOCATABLE(i, xml)
       this.fillCARE_ENTRY(i, xml)
       
       String type, method
@@ -733,7 +732,6 @@ class OpenEhrXmlParser {
    {
       Action a = new Action()
       
-      this.fillLOCATABLE(a, xml)
       this.fillCARE_ENTRY(a, xml)
       
       String type = xml.description.'@xsi:type'.text()

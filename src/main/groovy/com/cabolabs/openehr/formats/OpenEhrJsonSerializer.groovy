@@ -1044,10 +1044,8 @@ class OpenEhrJsonSerializer {
       return out
    }
 
-   private Map fillEncapsulated(DvEncapsulated o)
+   private Map fillEncapsulated(DvEncapsulated o, Map out)
    {
-      def out = [:]
-      
       if (o.charset)
       {
          out.charset = this.serializeCodePhrase(o.charset)
@@ -1061,8 +1059,6 @@ class OpenEhrJsonSerializer {
       // TODO: check if size is an attribute in the schema
       // size is not in the XSD
       //out.size(o.size)
-
-      return out
    }
    
    private Map serializeDvParsable(DvParsable o)
