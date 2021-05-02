@@ -1492,7 +1492,21 @@ class JsonInstanceCanonicalGenerator2 {
    // these are not different than ITEM_TREE processing since it is generic
    private generate_ITEM_SINGLE(ObjectNode o, String parent_arch_id)
    {
-      generate_ITEM_TREE(o, parent_arch_id)
+     // generate_ITEM_TREE(o, parent_arch_id)
+     
+     // parent from now can be different than the parent if if the object has archetypeId
+     parent_arch_id = o.archetypeId ?: parent_arch_id
+     
+     def mobj = add_LOCATABLE_elements(o, parent_arch_id) // _type, name, archetype_node_id
+
+     def oa_item = o.attributes.find{ it.rmAttributeName == 'item' }
+
+     if (oa_item && oa_item.children)
+     {
+        mobj.item = generate_ELEMENT(oa_item.children[0], parent_arch_id)
+     }
+
+     return mobj
    }
    private generate_ITEM_TABLE(ObjectNode o, String parent_arch_id)
    {
@@ -1507,16 +1521,17 @@ class JsonInstanceCanonicalGenerator2 {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
-      AttributeNode a = o.parent
+      //AttributeNode a = o.parent
 
       def mobj = add_LOCATABLE_elements(o, parent_arch_id) // _type, name, archetype_node_id
       
       def mattr
       o.attributes.each { oa ->
 
-         mattr = processAttributeChildren(oa, parent_arch_id)
+         mattr = processAttributeChildren(oa, parent_arch_id) // this is a list!
 
-         // TODO: check if this generates the right structure for SINGLE that is just one item, not a list
+         // this doesn't work for item single because it's a list and should be an object,
+         // but for the other structures it works OK
          mobj[oa.rmAttributeName] = mattr
       }
 
@@ -1615,8 +1630,12 @@ class JsonInstanceCanonicalGenerator2 {
    private generate_DV_INTERVAL__DV_COUNT(ObjectNode o, String parent_arch_id)
    {
       def mobj = [
-         _type: 'DV_INTERVAL<DV_COUNT>'
+         _type: 'DV_INTERVAL' // removed <DV_COUNT> generics because of https://discourse.openehr.org/t/correct-use-of-generic-types-in-xml-and-json/1504/16
       ]
+
+      // default included limits
+      mobj.lower_included = true
+      mobj.upper_included = true
 
       // Need to ask for the attributes explicitly since order matters for the XSD
 
@@ -1644,6 +1663,7 @@ class JsonInstanceCanonicalGenerator2 {
       if (!lower)
       {
          mobj.lower_unbounded = true
+         mobj.lower_included = false
       }
       else
       {
@@ -1679,6 +1699,7 @@ class JsonInstanceCanonicalGenerator2 {
       if (!upper)
       {
          mobj.upper_unbounded = true
+         mobj.upper_included = false
       }
       else
       {
@@ -1717,8 +1738,12 @@ class JsonInstanceCanonicalGenerator2 {
    private generate_DV_INTERVAL__DV_QUANTITY(ObjectNode o, String parent_arch_id)
    {
       def mobj = [
-         _type: 'DV_INTERVAL<DV_QUANTITY>'
+         _type: 'DV_INTERVAL' // removed <DV_QUANTITY> generics because of https://discourse.openehr.org/t/correct-use-of-generic-types-in-xml-and-json/1504/16
       ]
+      
+      // default included limits
+      mobj.lower_included = true
+      mobj.upper_included = true
 
       def lower = o.attributes.find { it.rmAttributeName == 'lower' } // FIXME: lower could be null
       mobj.lower = generate_DV_QUANTITY(lower.children[0], parent_arch_id)
@@ -1741,6 +1766,7 @@ class JsonInstanceCanonicalGenerator2 {
       if (!cqty.list)
       {
          mobj.lower_unbounded = true
+         mobj.lower_included = false
       }
       else
       {
@@ -1761,6 +1787,7 @@ class JsonInstanceCanonicalGenerator2 {
       if (!cqty.list)
       {
          mobj.upper_unbounded = true
+         mobj.upper_included = false
       }
       else
       {
@@ -1781,7 +1808,7 @@ class JsonInstanceCanonicalGenerator2 {
    private generate_DV_INTERVAL__DV_DATE_TIME(ObjectNode o, String parent_arch_id)
    {
       def mobj = [
-         _type: 'DV_INTERVAL<DV_DATE_TIME>'
+         _type: 'DV_INTERVAL' // removed <DV_DATE_TIME> generics because of https://discourse.openehr.org/t/correct-use-of-generic-types-in-xml-and-json/1504/16
       ]
 
       def lower = o.attributes.find { it.rmAttributeName == 'lower' }
@@ -1791,9 +1818,11 @@ class JsonInstanceCanonicalGenerator2 {
       mobj << generate_attr_DV_DATE_TIME(upper.rmAttributeName)
 
       // there are no constraints for date time to establish unbounded,
-      // so it is always unbounded for both limits.
-      mobj.lower_unbounded = true
-      mobj.upper_unbounded = true
+      // so it is always bounded for both limits
+      mobj.lower_unbounded = false
+      mobj.upper_unbounded = false
+      mobj.lower_included = true
+      mobj.upper_included = true
 
       return mobj
    }

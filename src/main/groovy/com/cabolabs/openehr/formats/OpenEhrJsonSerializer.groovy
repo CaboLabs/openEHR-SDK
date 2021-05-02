@@ -908,7 +908,6 @@ class OpenEhrJsonSerializer {
    {
       def out = [:]
       
-      // TODO
       out.value = o.value
 
       return out
@@ -1145,7 +1144,23 @@ class OpenEhrJsonSerializer {
    {
       def out = [:]
       
-      // TODO
+      String method
+      if (o.upper)
+      {
+         method = this.method(o.upper)
+         out.upper = this."$method"(o.upper)
+      }
+
+      if (o.lower)
+      {
+         method = this.method(o.lower)
+         out.lower = this."$method"(o.lower)
+      }
+
+      out.lower_included  = o.lower_included
+      out.lower_unbounded = o.lower_unbounded
+      out.upper_included  = o.upper_included
+      out.upper_unbounded = o.upper_unbounded
 
       return out
    }

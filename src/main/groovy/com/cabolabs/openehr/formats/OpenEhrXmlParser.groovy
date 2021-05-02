@@ -1154,9 +1154,9 @@ class OpenEhrXmlParser {
          i.upper = this."$method"(xml.upper)
       }
       
-      i.lower_included = xml.lower_included
+      i.lower_included  = xml.lower_included
       i.lower_unbounded = xml.lower_unbounded
-      i.upper_included = xml.upper_included
+      i.upper_included  = xml.upper_included
       i.upper_unbounded = xml.upper_unbounded
       
       return i
