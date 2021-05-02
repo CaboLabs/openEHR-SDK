@@ -15,6 +15,12 @@ $ cd openEHR-OPT
 $ gradle build
 ```
 
+### Requires Java 8+ and Groovy 2.5.5+
+
+> - - - - -
+> Note: check the opt.sh/opt.bat files to see if the correct path to the groovy dependencies on your machine is set there.
+> - - - - -
+
 That will run the tests and build the file ./build/libs/opt.jar
 
 For running tests, there are many options, examples below:
@@ -37,16 +43,16 @@ The test report in HTML will be under ./build/reports/tests/test/index.html
 
 ## Command Tools
 
-### Generate UI for data input
+### uigen: Generate UI for data input
 
 ```shell
-$ opt uigen path_to_opt dest_folder
+$ ./opt.sh uigen path_to_opt dest_folder
 ```
 
-### Generate XML instances from OPTs with random data
+### ingen: Generate XML instances from OPTs with random data
 
 ```shell
-$ opt ingen path_to_opt dest_folder [amount] [version|composition|version_committer|tagged]
+$ ./opt.sh ingen path_to_opt dest_folder [amount] [version|composition|version_committer|tagged]
 ```
 
 1. amount: defines how many XML instances will be generated
@@ -56,18 +62,18 @@ $ opt ingen path_to_opt dest_folder [amount] [version|composition|version_commit
 5. tagged: generates a version instance with tags instead of data, useful to inject data from your app to commit to the [EHRServer]
 
 
-### Validate XML or JSON instances against the schemas
+### inval: Validate XML or JSON instances against the schemas
 
 Validate one instance:
 
 ```shell
-$ opt inval path_to_xml_or_json_instance
+$ ./opt.sh inval path_to_xml_or_json_instance
 ```
 
 Validate all instances in folder:
 
 ```shell
-$ opt inval path_to_folder_with_xml_or_json_instances
+$ ./opt.sh inval path_to_folder_with_xml_or_json_instances
 ```
 
 > Note: if the folder contains JSON and XML, it will validate both with the correct schema, but the files should have .json or .xml extensions for the mixed validation to work OK.
@@ -76,31 +82,26 @@ $ opt inval path_to_folder_with_xml_or_json_instances
 In both cases, the output is "file IS VALID" or the list of validation errors if the file is not valid against the schemas.
 
 
-### Transform an OPT in it's antive XML form to JSON
+### trans opt: Transform an OPT in it's antive XML form to JSON
 
 ```shell
-$ opt trans opt path_to_opt destination_folder
+$ ./opt.sh trans opt path_to_opt destination_folder
 ```
 
-### Transform an COMPOSITION instances between canonical XML and JSON formats
+### trans composition: Transform an COMPOSITION instances between canonical XML and JSON formats
 
-Transform a XML COMPOSITION to JSON
+To transform a XML COMPOSITION to JSON:
 
 ```shell
-$ opt trans composition path_to_compo.xml destination_folder
+$ ./opt.sh trans composition path_to_compo.xml destination_folder
 ```
-Transform a JSON COMPOSITION to JSON
+To transform a JSON COMPOSITION to JSON:
 
 ```shell
-$ opt trans composition path_to_compo.json destination_folder
+$ ./opt.sh trans composition path_to_compo.json destination_folder
 ```
 
-## Requires Java 8 and Groovy 2.5.5+
-
-> - - - - -
-> Note: check the opt.sh/opt.bat files to see if the correct path to the groovy dependencies on your machine is set there.
-> - - - - -
-
+> Note: the transformation of COMPOSITIONS between foramts relies on the file extension, only .xml or .json files are allowed.
 
 
 [EHRCommitter]: https://github.com/ppazos/EHRCommitter
