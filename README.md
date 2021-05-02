@@ -1,7 +1,7 @@
 openEHR-OPT
 ===========
 
-Groovy Support of openEHR Operational Templates for CaboLabs Grails/Java projects, with advanced command line tools.
+Java/Groovy Support of openEHR Operational Templates, Refernce Model, Data Generators and other tools for www.CaboLabs.com projects.
 
 This will be used in CaboLabs apps like EHRGen, EHRServer, EMRApp and XML Rule Engine.
 
