@@ -40,7 +40,7 @@
         "external_ref": {
             "id": {
                 "_type": "HIER_OBJECT_ID",
-                "value": "ac9c7138-45e0-4a3f-92df-d32c25742767"
+                "value": "889ec2a3-bc5b-4943-b608-6f046074f38d"
             },
             "namespace": "DEMOGRAPHIC",
             "type": "PERSON"
@@ -49,17 +49,46 @@
     },
     "context": {
         "start_time": {
-            "value": "20210215T014853,009+0000"
+            "value": "20210502T031711,582-0300"
         },
         "setting": {
-            "value": "home",
+            "value": "emergency care",
             "defining_code": {
                 "terminology_id": {
                     "value": "openehr"
                 },
-                "code_string": 225
+                "code_string": "227"
             }
-        }
+        },
+        "participations": [
+            {
+                "function": {
+                    "value": "companion"
+                },
+                "performer": {
+                    "_type": "PARTY_RELATED",
+                    "name": "Betty Bix",
+                    "relationship": {
+                        "value": "sister",
+                        "defining_code": {
+                            "terminology_id": {
+                                "value": "openehr"
+                            },
+                            "code_string": "24"
+                        }
+                    }
+                },
+                "mode": {
+                    "value": "not specified",
+                    "defining_code": {
+                        "terminology_id": {
+                            "value": "openehr"
+                        },
+                        "code_string": "193"
+                    }
+                }
+            }
+        ]
     },
     "content": [
         {
@@ -101,7 +130,7 @@
                         "archetype_node_id": "at0009",
                         "value": {
                             "_type": "DV_TEXT",
-                            "value": "QnQepWXhiMnnJasKQFJEoJ.qddYsBwBMAONtDLBYtSvUbdSuOMxiCQqxXyWhxErAYdTSqLGXRpvJNptJKMbFekIa.rtGOUReFtFiEDRkPNvl psfOwomwkQORf yfWMRVPPPuiLIlXSDDkFoifEImByfkkODcvoddsDVBtowYCRVKiiSdPmAhEYxbfiNhPLpMfpDJqSyVdwAKNjPcdueyKeAi.dxGMsMaVxtdetstWGwDGmqjyzOZqLIMyfaXcr"
+                            "value": "WqBqbRKCiYyCfYJLdZEVULLuWaEqbsoHVTZfNLAvCzdd,rwEZsUtWpQsNMOmIgVkxDhYjdbDGFRKoXjOeFJLcYBiqZtlNhENW.kKETcSCBoxbjmHdcJthUHXlh.Nv,cQnwqUYubKjFMECZZd,bFhwC mrHJIlBDLdppSThDUTeOInLAPsruNySgwoqTCbld.eQUSRihvgUVDP,ozFH,LRjnUDGzQPssdgwWxFiu,SP.WrdBGOYvVtnUyp MAWKb"
                         }
                     },
                     {
@@ -133,7 +162,7 @@
                 "archetype_node_id": "at0001",
                 "origin": {
                     "_type": "DV_DATE_TIME",
-                    "value": "20210215T014853,038+0000"
+                    "value": "20210502T031711,650-0300"
                 },
                 "events": [
                     {
@@ -145,7 +174,7 @@
                         "archetype_node_id": "at0002",
                         "time": {
                             "_type": "DV_DATE_TIME",
-                            "value": "20210215T014853,039+0000"
+                            "value": "20210502T031711,657-0300"
                         },
                         "data": {
                             "_type": "ITEM_TREE",
@@ -164,7 +193,7 @@
                                     "archetype_node_id": "at0006",
                                     "value": {
                                         "_type": "DV_PROPORTION",
-                                        "numerator": 84.1,
+                                        "numerator": 71.4,
                                         "denominator": 100,
                                         "type": 2
                                     }
@@ -178,7 +207,7 @@
                                     "archetype_node_id": "at0044",
                                     "value": {
                                         "_type": "DV_QUANTITY",
-                                        "magnitude": 29.3,
+                                        "magnitude": 88.1,
                                         "units": "ml/dl"
                                     }
                                 },
@@ -191,7 +220,7 @@
                                     "archetype_node_id": "at0045",
                                     "value": {
                                         "_type": "DV_PROPORTION",
-                                        "numerator": 10.9,
+                                        "numerator": 31.4,
                                         "denominator": 100,
                                         "type": 2
                                     }
@@ -205,7 +234,7 @@
                                     "archetype_node_id": "at0046",
                                     "value": {
                                         "_type": "DV_PROPORTION",
-                                        "numerator": 51.2,
+                                        "numerator": 6.4,
                                         "denominator": 100,
                                         "type": 2
                                     }
@@ -219,7 +248,7 @@
                                     "archetype_node_id": "at0058",
                                     "value": {
                                         "_type": "DV_TEXT",
-                                        "value": "JYllmRRunKPTwahAATQx  LJrqOQrgivTQiGZoLHpGAUHyrOfJw rJwjs.NdmWDFslTmrGLTiGoifyldtLqhwPIAdLuawJoMhnfwvABnHOImGOWRBJRwWrOmpfnNFbJZBf sSSNchHxVfWebBiS MVrl kWfQoSxAqW TMEsRvILvopfGjga,wFDEBvJTT pAsmbtrYdVBIGlCkvmfraVQneUOJxjLeDZUAUuZajBlqImpdjhvarmNtxFdhasMJ"
+                                        "value": "ZWqBujvgSzfgilKHdc.hlVR.ZSYIvzhePDWBJmmQWMsIknLslHqKHgwc OjBaflTlxlnBAcXmSYiDFG.LJJUqHl JfbSHinXuzcXTaz.EbQExzSwgyeLhHe.tJkyneJTTdTuhR jSClTHiMvjkwxHjFY ycC.aWFsCQPjJsUce bSbhwuQJmdTSMNlJHQuo  nQAgXeUyouAhLmMKymESNxWY DilTqjxHjhdDBfdIFIrIUQfO.Al eJmAWeNbv"
                                     }
                                 },
                                 {
@@ -231,7 +260,7 @@
                                     "archetype_node_id": "at0036",
                                     "value": {
                                         "_type": "DV_TEXT",
-                                        "value": "dNOMucc.M TrGLry,EyCVmCxPCoPgSbGQmAJot.mKGMpUNFwiKmTHXsRAnbMDrmtDDHjWVWpQpwxYXSNtAgyf Botp.UhgljSxuhnXIodOnapKpK.CXWmOOsOAePHe dIxdQcwQVWMN,mhyA VNXQMMeVxuJNYxhlMkISxEvBuVSyjOQlrQn  qLU.DcXlnlbuHCT ZeLyhfOPLEw KGMQpAtlGJpMKCpUAipLSjXQvGNmwCOiN,vsqBPXacwYy"
+                                        "value": "gKIVXmVNg nkC UWqlIBRzYtpMKsDsc ZbiHkVSUCnOdGLXTJx PXYvIaDkyuYNquqpMaOBmacDDVLGPL DhXOFMCKZLQZYrxOGoyB.XhFBpZpzknsZIJOcLhmJCci,yWBL TGGwJIyftUiTPR.gRffdjZi.SeHHBbrVeGmrFaoAiHkyMnMQvPaLcVZmnpti nwoxERvbPk.UCKZUaaL ftxiRHBwUWLqgpsNGfJbhlvLgaThgATycmVkEALVlI"
                                     }
                                 }
                             ]
@@ -253,7 +282,7 @@
                                     "archetype_node_id": "at0016",
                                     "value": {
                                         "_type": "DV_TEXT",
-                                        "value": "DfBbGWhRV,ALKZaobHUYf upAVJGwgCcUIvRXZIyTnKLhUFYntrBMknlXPhII,wHnx .ZluLpAwjgNmAdKaXPX gQAKpyyjgWnoUtJnK,phyKRhHKpEeqQKjymOhlQotZSUZLvF.PwDvWdgMYCZxXCeceW.dluVGgTqPFdoDneLvZCJXTZOJrBcJaBGvuct.FdLDTg,HcyZYImaL MixveaOKawjpveihCvIxMFRqbIaUoreAYNhBNiDWCmmEN "
+                                        "value": "JFMMAnlW ZhFjSmDVHBqRphsc.rtiEdTGfNCNtyAABqakPwwAKHQyHEf NZGCjcj RENWOnMB,zUZWXh,LFDpEekmENehDCESjhAISabgCVNULIXpQG,OkXseJMKPTFxX. RkzwnHVGU,jTEgsbQspAwMbcmbwWIx, dmEfsytuPMCGdTuOA.w,TJAcrLWuytnIfsrkbcJYPjkooBFniVQoYNDBDKKclzvNFaDAr,K.MymKmLzAbLWlDvWXSyLX"
                                     }
                                 }
                             ]

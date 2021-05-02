@@ -40,7 +40,7 @@
         "external_ref": {
             "id": {
                 "_type": "HIER_OBJECT_ID",
-                "value": "9c43e42d-3a01-4bbc-ac10-a7747b69746b"
+                "value": "90e94383-e6de-4aab-96fc-86eb8707e707"
             },
             "namespace": "DEMOGRAPHIC",
             "type": "PERSON"
@@ -49,17 +49,46 @@
     },
     "context": {
         "start_time": {
-            "value": "20210215T015033,774+0000"
+            "value": "20210502T031135,463-0300"
         },
         "setting": {
-            "value": "home",
+            "value": "emergency care",
             "defining_code": {
                 "terminology_id": {
                     "value": "openehr"
                 },
-                "code_string": 225
+                "code_string": "227"
             }
-        }
+        },
+        "participations": [
+            {
+                "function": {
+                    "value": "legal guardian consent author"
+                },
+                "performer": {
+                    "_type": "PARTY_RELATED",
+                    "name": "Charles Connor",
+                    "relationship": {
+                        "value": "father",
+                        "defining_code": {
+                            "terminology_id": {
+                                "value": "openehr"
+                            },
+                            "code_string": "9"
+                        }
+                    }
+                },
+                "mode": {
+                    "value": "not specified",
+                    "defining_code": {
+                        "terminology_id": {
+                            "value": "openehr"
+                        },
+                        "code_string": "193"
+                    }
+                }
+            }
+        ]
     },
     "content": [
         {
@@ -101,7 +130,7 @@
                         "archetype_node_id": "at0002",
                         "value": {
                             "_type": "DV_QUANTITY",
-                            "magnitude": 205.1,
+                            "magnitude": 562.8,
                             "units": "kg"
                         }
                     }
