@@ -478,7 +478,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
          'canonical_json/physical_activity.json',
          'canonical_json/prozedur.json',
          'canonical_json/referral.json',
-         'canonical_json/test_all_datatypes.en.v1_instance_3930015.json',
+         'canonical_json/test_all_datatypes_en.json',
          'canonical_json/vital_signs_pathfinder_demo.en.v1_instance_3602591.json'
       ]
 
@@ -493,6 +493,8 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 
          //final URI testCaseFileUri = URI.create("classpath:" + testCaseFile)
          ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(testCaseFile)
+
+         if (!ins) throw new Exception("Test file $testCaseFile not found")
 
          // https://fasterxml.github.io/jackson-databind/javadoc/2.7/com/fasterxml/jackson/databind/ObjectMapper.html#readTree(java.io.InputStream)
          json = mapper.readTree(ins)
