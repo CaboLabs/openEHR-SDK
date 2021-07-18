@@ -53,7 +53,7 @@ class OpenEhrXmlSerializer {
       return method
    }
    
-   String serialize(Locatable o)
+   String serialize(Locatable o, boolean pretty = false)
    {
       writer = new StringWriter()
       builder = new MarkupBuilder(writer)
@@ -65,10 +65,19 @@ class OpenEhrXmlSerializer {
       return writer.toString()
    }
    
-   String serialize(Version v)
+   String serialize(Version v, boolean pretty = false)
    {
       writer = new StringWriter()
-      builder = new MarkupBuilder(writer)
+
+      if (pretty)
+      {
+         builder = new MarkupBuilder(writer)
+      }
+      else
+      {
+         builder = new MarkupBuilder(new IndentPrinter(new PrintWriter(writer), "", false))
+      }
+
       builder.setDoubleQuotes(true)
       
       String method = this.method(v)
@@ -127,7 +136,7 @@ class OpenEhrXmlSerializer {
             builder.signature(v.signature)
          }
             
-         builder.uid {
+         builder.uid('xsi:type': 'OBJECT_VERSION_ID') {
             this.serializeObjectVersionId(v.uid)
          }
          
@@ -347,7 +356,7 @@ class OpenEhrXmlSerializer {
       if (o.external_ref)
       {
          def method = this.method(o.external_ref)
-         builder.external_ref('xsi:type': openEhrType(o.external_ref)) {
+         builder.external_ref() { //'xsi:type': openEhrType(o.external_ref)) {
             this."$method"(o.external_ref)
          }
       }

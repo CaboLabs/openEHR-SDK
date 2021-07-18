@@ -1,7 +1,7 @@
-package  com.cabolabs.openehr.opt
+package com.cabolabs.openehr.opt
 
 import com.cabolabs.openehr.formats.OpenEhrXmlParser
-//import com.cabolabs.openehr.formats.OpenEhrXmlSerializer
+import com.cabolabs.openehr.formats.OpenEhrXmlSerializer
 import com.cabolabs.openehr.opt.instance_validation.XmlInstanceValidation
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
@@ -36,7 +36,7 @@ class OpenEhrXmlParserTest extends GroovyTestCase {
       
       def out = JsonOutput.toJson(c)
       out = JsonOutput.prettyPrint(out)
-      println out
+      //println out
    }
    
    void testXmlParserComposition()
@@ -49,6 +49,23 @@ class OpenEhrXmlParserTest extends GroovyTestCase {
       
       def out = JsonOutput.toJson(c)
       out = JsonOutput.prettyPrint(out)
-      println out
+      //println out
+   }
+
+   void testXmlParserAndMarshaller()
+   {
+      String path = PS +"canonical_xml"+ PS +"test_all_datatypes.version.en.xml"
+      File file = new File(getClass().getResource(path).toURI())
+      String xml = file.text
+      def parser = new OpenEhrXmlParser()
+      Version v = (Version)parser.parseVersionXml(xml)
+
+      OpenEhrXmlSerializer marshal = new OpenEhrXmlSerializer()
+      String xml2 = marshal.serialize(v)
+
+      println xml.replaceAll(">\\s+<", "><").replaceAll("[\n\r]", "")
+      println xml2
+
+      assert xml.replaceAll(">\\s+<", "><").replaceAll("[\n\r]", "") == xml2
    }
 }
