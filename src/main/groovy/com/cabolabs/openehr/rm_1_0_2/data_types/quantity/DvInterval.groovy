@@ -8,10 +8,10 @@ class DvInterval extends DataValue { // implements assumed Interval<T>
    DvOrdered upper
 
    // inherited from assumed Interval<T>
-   boolean lower_unbounded
-   boolean upper_unbounded
-   boolean lower_included
-   boolean upper_included
+   Boolean lower_unbounded
+   Boolean upper_unbounded
+   Boolean lower_included
+   Boolean upper_included
 
    boolean has(DvOrdered e)
    {

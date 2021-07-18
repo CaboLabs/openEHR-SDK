@@ -4,10 +4,10 @@ import com.cabolabs.openehr.opt.model.datatypes.Duration
 
 class IntervalDuration {
 
-   boolean lowerIncluded
-   boolean upperIncluded
-   boolean lowerUnbounded
-   boolean upperUnbounded
+   Boolean lowerIncluded
+   Boolean upperIncluded
+   Boolean lowerUnbounded
+   Boolean upperUnbounded
    Duration lower
    Duration upper
 

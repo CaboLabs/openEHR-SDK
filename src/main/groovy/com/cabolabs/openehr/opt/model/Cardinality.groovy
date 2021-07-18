@@ -2,7 +2,7 @@ package com.cabolabs.openehr.opt.model
 
 class Cardinality {
 
-   boolean isOrdered
-   boolean isUnique
+   Boolean isOrdered
+   Boolean isUnique
    IntervalInt interval
 }

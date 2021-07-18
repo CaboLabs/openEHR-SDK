@@ -999,7 +999,7 @@ class OpenEhrXmlParser {
          d.uri = this.parseDV_URI(xml.uri)
       }
       
-      d.data = xml.data.text().getBytes()
+      d.data = xml.data.text().getBytes() // stores the encoded value!
       
       d.media_type = this.parseCODE_PHRASE(xml.media_type)
       
@@ -1154,10 +1154,18 @@ class OpenEhrXmlParser {
          i.upper = this."$method"(xml.upper)
       }
       
-      i.lower_included  = xml.lower_included
-      i.lower_unbounded = xml.lower_unbounded
-      i.upper_included  = xml.upper_included
-      i.upper_unbounded = xml.upper_unbounded
+      if (!xml.lower_included.isEmpty())
+      {
+         i.lower_included = xml.lower_included.toBoolean()
+      }
+
+      if (!xml.upper_included.isEmpty())
+      {
+         i.upper_included = xml.upper_included.toBoolean()
+      }
+
+      i.lower_unbounded = xml.lower_unbounded.toBoolean() // toBoolean is important here to get the right value
+      i.upper_unbounded = xml.upper_unbounded.toBoolean()
       
       return i
    }

@@ -2,10 +2,10 @@ package com.cabolabs.openehr.opt.model
 
 class IntervalFloat {
 
-   boolean lowerIncluded
-   boolean upperIncluded
-   boolean lowerUnbounded
-   boolean upperUnbounded
+   Boolean lowerIncluded
+   Boolean upperIncluded
+   Boolean lowerUnbounded
+   Boolean upperUnbounded
    Float lower
    Float upper
 

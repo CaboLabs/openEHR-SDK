@@ -53,19 +53,20 @@ class OpenEhrXmlSerializer {
       return method
    }
    
+   // this allows to serialize any LOCATABLE
    String serialize(Locatable o, boolean pretty = false)
    {
-      writer = new StringWriter()
-      builder = new MarkupBuilder(writer)
-      builder.setDoubleQuotes(true)
-      
-      String method = this.method(o)
-      this."$method"(o)
-      
-      return writer.toString()
+      return internalSerialize(o, pretty)
    }
    
+   // since VERSION is not LOCATABLE, this allows to serialize a VERSION
    String serialize(Version v, boolean pretty = false)
+   {
+      return internalSerialize(v, pretty)
+   }
+
+   // this is used by both entry points, since the code is the same
+   private String internalSerialize(Object o, boolean pretty = false)
    {
       writer = new StringWriter()
 
@@ -80,8 +81,8 @@ class OpenEhrXmlSerializer {
 
       builder.setDoubleQuotes(true)
       
-      String method = this.method(v)
-      this."$method"(v)
+      String method = this.method(o)
+      this."$method"(o)
       
       return writer.toString()
    }
@@ -91,7 +92,7 @@ class OpenEhrXmlSerializer {
       //println 'fillLocatable >> ' + o
       
       String method = this.method(o.name) // text or coded
-      builder.name() {
+      builder.name('xsi:type': openEhrType(o.name)) {
          this."$method"(o.name)
       }
       
@@ -217,6 +218,7 @@ class OpenEhrXmlSerializer {
    {
       builder.composition(xmlns:'http://schemas.openehr.org/v1',
          'xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance',
+         'xsi:type':'COMPOSITION',
          archetype_node_id: c.archetype_node_id)
       {
          this.serializeCompositionInternals(c)
@@ -1053,7 +1055,7 @@ class OpenEhrXmlSerializer {
       
       if (o.data)
       {
-         builder.data(o.data.encodeBase64().toString())
+         builder.data(new String(o.data)) //o.data.encodeBase64().toString()) no need to reencode because the data is stored encoded
       }
       
       builder.media_type {
@@ -1101,7 +1103,30 @@ class OpenEhrXmlSerializer {
    
    void serializeDvInterval(DvInterval o)
    {
-      // TODO
+      String method = this.method(o.lower)
+      builder.lower('xsi:type': this.openEhrType(o.lower)) {
+         this."$method"(o.lower)
+      }
+      method = this.method(o.upper)
+      builder.upper('xsi:type': this.openEhrType(o.upper)) {
+         this."$method"(o.upper)
+      }
+
+      // _included are optional in the XSD
+      if (o.lower_included != null)
+      {
+         builder.lower_included(o.lower_included)
+      }
+
+      if (o.upper_included != null)
+      {
+         builder.upper_included(o.upper_included)
+      }
+
+      // _unbounded are mandatory in the XSD
+      builder.lower_unbounded(o.lower_unbounded)
+      
+      builder.upper_unbounded(o.upper_unbounded)
    }
    
    /*

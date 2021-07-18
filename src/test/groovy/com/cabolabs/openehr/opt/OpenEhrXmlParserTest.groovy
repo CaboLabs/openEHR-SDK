@@ -26,6 +26,7 @@ class OpenEhrXmlParserTest extends GroovyTestCase {
 
    private static String PS = System.getProperty("file.separator")
    
+   
    void testXmlParserVersion()
    {
       String path = PS +"canonical_xml"+ PS +"test_all_datatypes.version.en.xml"
@@ -38,6 +39,7 @@ class OpenEhrXmlParserTest extends GroovyTestCase {
       out = JsonOutput.prettyPrint(out)
       //println out
    }
+   
    
    void testXmlParserComposition()
    {
@@ -52,7 +54,7 @@ class OpenEhrXmlParserTest extends GroovyTestCase {
       //println out
    }
 
-   void testXmlParserAndMarshaller()
+   void testXmlParserAndMarshallerVerasion()
    {
       String path = PS +"canonical_xml"+ PS +"test_all_datatypes.version.en.xml"
       File file = new File(getClass().getResource(path).toURI())
@@ -63,9 +65,28 @@ class OpenEhrXmlParserTest extends GroovyTestCase {
       OpenEhrXmlSerializer marshal = new OpenEhrXmlSerializer()
       String xml2 = marshal.serialize(v)
 
-      println xml.replaceAll(">\\s+<", "><").replaceAll("[\n\r]", "")
-      println xml2
+      //println xml.replaceAll(">\\s+<", "><").replaceAll("[\n\r]", "")
+      //println xml2
 
+      // original xml, when parsed and serialized again, are exactly the same as strings (without indentation and new lines)
+      assert xml.replaceAll(">\\s+<", "><").replaceAll("[\n\r]", "") == xml2
+   }
+
+   void testXmlParserAndMarshallerComposition()
+   {
+      String path = PS +"canonical_xml"+ PS +"test_all_datatypes.composition.en.xml"
+      File file = new File(getClass().getResource(path).toURI())
+      String xml = file.text
+      def parser = new OpenEhrXmlParser()
+      Composition c = (Composition)parser.parseXml(xml)
+
+      OpenEhrXmlSerializer marshal = new OpenEhrXmlSerializer()
+      String xml2 = marshal.serialize(c)
+
+      //println xml.replaceAll(">\\s+<", "><").replaceAll("[\n\r]", "")
+      //println xml2
+
+      // original xml, when parsed and serialized again, are exactly the same as strings (without indentation and new lines)
       assert xml.replaceAll(">\\s+<", "><").replaceAll("[\n\r]", "") == xml2
    }
 }

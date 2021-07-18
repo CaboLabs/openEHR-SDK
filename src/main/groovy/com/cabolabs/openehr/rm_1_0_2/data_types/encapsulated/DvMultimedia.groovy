@@ -20,4 +20,6 @@ class DvMultimedia extends DvEncapsulated {
    int size
    DvMultimedia thumbnail
 
+   // TODO: add a method to get the decoded data (it is stored encoded)
+
 }

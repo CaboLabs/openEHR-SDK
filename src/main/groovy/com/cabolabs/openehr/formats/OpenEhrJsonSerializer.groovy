@@ -140,6 +140,8 @@ class OpenEhrJsonSerializer {
    {
       def out = [:]
 
+      out._type = 'COMPOSITION'
+
       this.fillLocatable(o, out)
 
       out.language = this.serializeCodePhrase(o.language)
@@ -1092,7 +1094,7 @@ class OpenEhrJsonSerializer {
       
       if (o.data)
       {
-         out.data = o.data.encodeBase64().toString()
+         out.data = new String(o.data) //o.data.encodeBase64().toString()no need to reencode because the data is stored encoded
       }
       
       out.media_type = this.serializeCodePhrase(o.media_type)

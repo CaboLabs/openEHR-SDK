@@ -10,7 +10,7 @@ import java.util.jar.JarFile
 /**
  * Based on EMRApp xml.XmlSerializer
  * @author Pablo Pazos <pablo.pazos@cabolabs.com>
- *
+ * Design note: the xsi attributes should appear first in the attribute list of each element
  */
 class XmlInstanceGenerator {
 
@@ -259,6 +259,7 @@ class XmlInstanceGenerator {
 
       builder.composition(xmlns:'http://schemas.openehr.org/v1',
          'xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance',
+         'xsi:type':'COMPOSITION',
          archetype_node_id: opt.definition.archetypeId)
       {
          generateCompositionHeader(addParticipations) // name, language, territory, ...
@@ -273,8 +274,8 @@ class XmlInstanceGenerator {
       // FIXME: this should only generate what doesnt comes from the OPT (category and context are in the OPT!)
 
       // Campos heredados de LOCATABLE
-      builder.name() {
-         value( opt.getTerm(opt.definition.archetypeId, opt.definition.nodeId) )
+      builder.name('xsi:type':'DV_TEXT') {
+         value(opt.getTerm(opt.definition.archetypeId, opt.definition.nodeId))
       }
       builder.archetype_details() { // ARCHETYPED
          archetype_id() { // ARCHETYPE_ID
@@ -377,7 +378,7 @@ class XmlInstanceGenerator {
                def participation = participations[Math.abs(new Random().nextInt() % participations.size())]
 
                participations() {
-                  function() {
+                  function('xsi:type': 'DV_TEXT') {
                      value(participation.function) // HL7v3:ParticipationFunction https://www.hl7.org/fhir/v3/ParticipationFunction/cs.html
                   }
                   performer('xsi:type':'PARTY_RELATED') { // TODO: random P_RELATED or P_IDENTIFIED
@@ -615,15 +616,24 @@ class XmlInstanceGenerator {
    /**
     * helper to generate simple datetime attribute.
     */
-   private generate_attr_DV_DATE_TIME(String attr)
+   private generate_attr_DV_DATE_TIME(String attr, boolean addType = true)
    {
       /*
       <attr xsi:type="DV_DATE_TIME">
          <value>20150515T183951,000-0300</value>
       </attr>
       */
-      builder."${attr}"('xsi:type':'DV_DATE_TIME') {
-         value( new Date().toOpenEHRDateTime() )
+      if (addType)
+      {
+         builder."${attr}"('xsi:type':'DV_DATE_TIME') {
+            value( new Date().toOpenEHRDateTime() )
+         }
+      }
+      else
+      {
+         builder."${attr}"() {
+            value( new Date().toOpenEHRDateTime() )
+         }
       }
    }
 
@@ -1128,8 +1138,8 @@ class XmlInstanceGenerator {
       // only if the aom type is ARCHETYPE_ROOT, the arch_node_id is archetypeId, else should be nodeId
       def arch_node_id = (o.archetypeId ?: o.nodeId)
 
-      builder."${a.rmAttributeName}"(archetype_node_id: arch_node_id, 'xsi:type': o.rmTypeName) {
-         name() {
+      builder."${a.rmAttributeName}"('xsi:type': o.rmTypeName, archetype_node_id: arch_node_id) {
+         name('xsi:type':'DV_TEXT') {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
 
@@ -1148,8 +1158,8 @@ class XmlInstanceGenerator {
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
       AttributeNode a = o.parent
-      builder."${a.rmAttributeName}"(archetype_node_id: o.archetypeId, 'xsi:type': o.rmTypeName) {
-         name() {
+      builder."${a.rmAttributeName}"('xsi:type': o.rmTypeName, archetype_node_id: o.archetypeId) {
+         name('xsi:type':'DV_TEXT') {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
          add_ENTRY_elements(o, parent_arch_id)
@@ -1168,8 +1178,8 @@ class XmlInstanceGenerator {
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
       AttributeNode a = o.parent
-      builder."${a.rmAttributeName}"(archetype_node_id: o.archetypeId, 'xsi:type': o.rmTypeName) {
-         name() {
+      builder."${a.rmAttributeName}"('xsi:type': o.rmTypeName, archetype_node_id: o.archetypeId) {
+         name('xsi:type':'DV_TEXT') {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
          add_ENTRY_elements(o, parent_arch_id)
@@ -1188,8 +1198,8 @@ class XmlInstanceGenerator {
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
       AttributeNode a = o.parent
-      builder."${a.rmAttributeName}"(archetype_node_id: o.archetypeId, 'xsi:type': o.rmTypeName) {
-         name() {
+      builder."${a.rmAttributeName}"('xsi:type': o.rmTypeName, archetype_node_id: o.archetypeId) {
+         name('xsi:type':'DV_TEXT') {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
          add_ENTRY_elements(o, parent_arch_id)
@@ -1209,9 +1219,9 @@ class XmlInstanceGenerator {
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
       AttributeNode a = o.parent
-      builder."${a.rmAttributeName}"(archetype_node_id: o.archetypeId, 'xsi:type': o.rmTypeName) {
+      builder."${a.rmAttributeName}"('xsi:type': o.rmTypeName, archetype_node_id: o.archetypeId) {
 
-         name() {
+         name('xsi:type':'DV_TEXT') {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
          add_ENTRY_elements(o, parent_arch_id)
@@ -1253,7 +1263,7 @@ class XmlInstanceGenerator {
 
       builder."${a.rmAttributeName}"(archetype_node_id:arch_node_id) {
 
-         name() {
+         name('xsi:type':'DV_TEXT') {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
 
@@ -1304,15 +1314,15 @@ class XmlInstanceGenerator {
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
       AttributeNode a = o.parent
-      builder."${a.rmAttributeName}"(archetype_node_id: o.archetypeId, 'xsi:type': o.rmTypeName) {
-         name() {
+      builder."${a.rmAttributeName}"('xsi:type': o.rmTypeName, archetype_node_id: o.archetypeId) {
+         name('xsi:type':'DV_TEXT') {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
          add_ENTRY_elements(o, parent_arch_id)
 
 
          // ACTION.time (not in the OPT, is an IM attribute)
-         generate_attr_DV_DATE_TIME('time')
+         generate_attr_DV_DATE_TIME('time', false)
 
          // description
          def oa = o.attributes.find { it.rmAttributeName == 'description' }
@@ -1392,13 +1402,13 @@ class XmlInstanceGenerator {
       // is it arcehtyped or not?
       def arch_node_id = (o.archetypeId ?: o.nodeId)
 
-      builder."${a.rmAttributeName}"(archetype_node_id:arch_node_id, 'xsi:type': o.rmTypeName) {
+      builder."${a.rmAttributeName}"(archetype_node_id:arch_node_id) {
 
-         name() {
+         name('xsi:type':'DV_TEXT') {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
          // IM attribute not present in the OPT
-         generate_attr_DV_DATE_TIME('origin')
+         generate_attr_DV_DATE_TIME('origin', false)
 
          o.attributes.each { oa ->
 
@@ -1417,13 +1427,13 @@ class XmlInstanceGenerator {
       // is it arcehtyped or not?
       def arch_node_id = (o.archetypeId ?: o.nodeId)
 
-      builder."${a.rmAttributeName}"(archetype_node_id:arch_node_id, 'xsi:type': 'POINT_EVENT') { // dont use EVENT because is abstract
+      builder."${a.rmAttributeName}"('xsi:type': 'POINT_EVENT', archetype_node_id:arch_node_id) { // dont use EVENT because is abstract
 
-         name() {
+         name('xsi:type':'DV_TEXT') {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
          // IM attribute not present in the OPT
-         generate_attr_DV_DATE_TIME('time')
+         generate_attr_DV_DATE_TIME('time', false)
 
          o.attributes.each { oa ->
 
@@ -1442,13 +1452,13 @@ class XmlInstanceGenerator {
       // is it arcehtyped or not?
       def arch_node_id = (o.archetypeId ?: o.nodeId)
 
-      builder."${a.rmAttributeName}"(archetype_node_id:arch_node_id, 'xsi:type': 'INTERVAL_EVENT') { // dont use EVENT because is abstract
+      builder."${a.rmAttributeName}"('xsi:type': 'INTERVAL_EVENT', archetype_node_id:arch_node_id) { // dont use EVENT because is abstract
 
-         name() {
+         name('xsi:type':'DV_TEXT') {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
          // IM attribute not present in the OPT
-         generate_attr_DV_DATE_TIME('time')
+         generate_attr_DV_DATE_TIME('time', false)
 
 
          // data
@@ -1515,9 +1525,9 @@ class XmlInstanceGenerator {
       // is it arcehtyped or not?
       def arch_node_id = (o.archetypeId ?: o.nodeId)
 
-      builder."${a.rmAttributeName}"(archetype_node_id:arch_node_id, 'xsi:type': o.rmTypeName) {
+      builder."${a.rmAttributeName}"('xsi:type': o.rmTypeName, archetype_node_id:arch_node_id) {
 
-         name() {
+         name('xsi:type':'DV_TEXT') {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }
 
@@ -1538,9 +1548,9 @@ class XmlInstanceGenerator {
       // is it arcehtyped or not?
       def arch_node_id = (o.archetypeId ?: o.nodeId)
 
-      builder."${a.rmAttributeName}"(archetype_node_id:arch_node_id, 'xsi:type': o.rmTypeName) {
+      builder."${a.rmAttributeName}"('xsi:type': o.rmTypeName, archetype_node_id:arch_node_id) {
 
-         /*name() {
+         /*name('xsi:type':'DV_TEXT') {
             value( opt.getTerm(parent_arch_id, o.nodeId) )
          }*/
          add_LOCATABLE_elements(o, parent_arch_id)
@@ -1562,7 +1572,7 @@ class XmlInstanceGenerator {
       // is it arcehtyped or not?
       def arch_node_id = (o.archetypeId ?: o.nodeId)
 
-      builder."${a.rmAttributeName}"(archetype_node_id:arch_node_id, 'xsi:type': o.rmTypeName) {
+      builder."${a.rmAttributeName}"('xsi:type': o.rmTypeName, archetype_node_id:arch_node_id) {
 
          add_LOCATABLE_elements(o, parent_arch_id)
 
