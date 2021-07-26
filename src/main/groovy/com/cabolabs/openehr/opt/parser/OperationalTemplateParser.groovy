@@ -147,11 +147,11 @@ class OperationalTemplateParser {
       return itv
    }
 
-   private parseIntervalFloat(GPathResult node)
+   private parseIntervalDouble(GPathResult node)
    {
       if (node.isEmpty()) return null
 
-      def itv = new IntervalFloat(
+      def itv = new IntervalDouble(
          upperIncluded:  node.upper_included.text().toBoolean(),
          lowerIncluded:  node.lower_included.text().toBoolean(),
          upperUnbounded: node.upper_unbounded.text().toBoolean(),
@@ -310,7 +310,7 @@ class OperationalTemplateParser {
          node.list.each {
             cqi           = new CQuantityItem()
             cqi.units     = it.units.text()
-            cqi.magnitude = parseIntervalFloat(it.magnitude)
+            cqi.magnitude = parseIntervalDouble(it.magnitude)
             cqi.precision = parseIntervalInt(it.precision)
             obn.list << cqi
          }
@@ -419,7 +419,7 @@ class OperationalTemplateParser {
          else if (primitive.'@xsi:type'.text() == 'C_REAL')
          {
             obn.item = new CReal()
-            obn.item.range = parseIntervalFloat(primitive.range)
+            obn.item.range = parseIntervalDouble(primitive.range)
          }
          else if (primitive.'@xsi:type'.text() == 'C_STRING')
          {

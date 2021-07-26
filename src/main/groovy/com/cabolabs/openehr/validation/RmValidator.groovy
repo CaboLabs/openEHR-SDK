@@ -9,6 +9,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.*
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.*
+import com.cabolabs.openehr.opt.model.primitive.*
 import com.cabolabs.openehr.opt.model.validation.*
 import com.cabolabs.openehr.opt.model.domain.*
 
@@ -109,10 +110,19 @@ class RmValidator {
          //println container*.archetype_node_id
          container.each { item ->
 
-            println "item "+ item.archetype_node_id
-         
+            //println "item "+ item.archetype_node_id
+            //println c_multiple_attribute.children*.nodeId
+
             // each item in the collection should validate against the child object with the same node_id
-            def obj = c_multiple_attribute.children.find{ it.nodeId == item.archetype_node_id }
+            def obj = c_multiple_attribute.children.find{ 
+               if (it.type == 'C_ARCHETYPE_ROOT')
+                  it.archetypeId == item.archetype_node_id
+               else
+                  it.nodeId == item.archetype_node_id   
+            }
+
+            //println obj.type
+            
             if (obj)
             {
                report.append(validate(item, obj))
@@ -726,7 +736,7 @@ class RmValidator {
 
       if (!valid)
       {
-         report.addError(r.message)
+         report.addError(valid.message)
       }
 
       return report
@@ -1349,14 +1359,13 @@ class RmValidator {
       RmValidationReport report
       for (o in os)
       {
-         println o.type +" "+ o.rmTypeName
-         /*
+         //println o.type +" "+ o.rmTypeName
+         
          report = validate(d, o)
          if (!report.hasErrors())
          {
             return report
          }
-*/
       }
 
       // this will return the last failed validation
@@ -1382,6 +1391,135 @@ class RmValidator {
 
       // TODO: validate magnitude, precision and units
       ValidationResult valid = o.isValid(d.units, d.magnitude)
+      if (!valid)
+      {
+         report.addError(valid.message)
+      }
+
+      return report
+   }
+
+
+   private RmValidationReport validate(DvCount d, AttributeNode a)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // existence
+      if (a.existence)
+      {
+         def existence = (d ? 1 : 0)
+         if (!a.existence.has(existence))
+         {
+            // existence error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${a.templateDataPath}' doesn't match existence")
+         }
+      }
+
+      report.append(validate_alternatives(d, a.children))
+
+      return report
+   }
+
+   // validates against the children of a CSingleAttribute
+   // should check all the constraints and if one validates, the whole thing validates
+   private RmValidationReport validate_alternatives(DvCount d, List<ObjectNode> os)
+   {
+      RmValidationReport report
+      for (o in os)
+      {
+         report = validate(d, o)
+         if (!report.hasErrors())
+         {
+            return report
+         }
+      }
+
+      // this will return the last failed validation
+      // we can also add an error saying the data doesn't validates against any alternative
+      return report
+   }
+
+   private RmValidationReport validate(DvCount d, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // occurrences
+      if (o.occurrences)
+      {
+         def occurrences = (d ? 1 : 0)
+         if (!o.occurrences.has(occurrences))
+         {
+            // occurrences error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${o.templateDataPath}' doesn't match occurrences")
+         }
+      }
+
+      // TODO: validate magnitude
+      def a_magnitude = o.getAttr('magnitude')
+      if (a_magnitude)
+      {
+         if (d.magnitude != null) // compare to null to avoid 0 as false
+         {
+            report.append(validate(d.magnitude, a_magnitude))
+         }
+         else
+         {
+            if (!a_magnitude.existence.has(0))
+            {
+               report.addError("'${o.templateDataPath}' /magnitude is not present but is required")
+            }
+         }
+      }
+
+      return report
+   }
+
+   private RmValidationReport validate(Integer d, AttributeNode a)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // existence
+      if (a.existence)
+      {
+         def existence = (d ? 1 : 0)
+         if (!a.existence.has(existence))
+         {
+            // existence error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${a.templateDataPath}' doesn't match existence")
+         }
+      }
+
+      report.append(validate_alternatives(d, a.children))
+
+      return report
+   }
+
+   private RmValidationReport validate_alternatives(Integer d, List<ObjectNode> os)
+   {
+      RmValidationReport report
+      for (o in os)
+      {
+         report = validate(d, o)
+         if (!report.hasErrors())
+         {
+            return report
+         }
+      }
+
+      // this will return the last failed validation
+      // we can also add an error saying the data doesn't validates against any alternative
+      return report
+   }
+
+   private RmValidationReport validate(Integer d, PrimitiveObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      ValidationResult valid = o.item.isValid(d) // item is CInteger
+
       if (!valid)
       {
          report.addError(valid.message)

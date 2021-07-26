@@ -1,18 +1,18 @@
 package com.cabolabs.openehr.opt.model
 
-class IntervalFloat {
+class IntervalDouble {
 
    Boolean lowerIncluded
    Boolean upperIncluded
    Boolean lowerUnbounded
    Boolean upperUnbounded
-   Float lower
-   Float upper
+   Double lower
+   Double upper
 
-   boolean has(float i)
+   boolean has(Double i)
    {
-      def ll = (lowerUnbounded ? -Float.MAX_VALUE : lower)
-      def hh = (upperUnbounded ? Float.MAX_VALUE : upper)
+      def ll = (lowerUnbounded ? -Double.MAX_VALUE : lower)
+      def hh = (upperUnbounded ? Double.MAX_VALUE : upper)
 
       if (lowerIncluded)
       {

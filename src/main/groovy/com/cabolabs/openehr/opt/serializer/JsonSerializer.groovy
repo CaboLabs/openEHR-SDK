@@ -293,7 +293,7 @@ class JsonSerializer {
 
       return n
    }
-   Map serialize(IntervalFloat iv)
+   Map serialize(IntervalDouble iv)
    {
       def n = [
          lower_unbounded: iv.lowerUnbounded,
