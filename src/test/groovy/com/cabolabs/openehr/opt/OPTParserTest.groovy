@@ -240,7 +240,7 @@ class OPTParserTest extends GroovyTestCase {
    void testParseNodesCDateTime()
    {
       println "====== testParseNodesCDateTime ======"
-      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"test_all_datatypes_en.opt"
+      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"test_all_datatypes.en.v1.opt"
       def opt = loadAndParse(path)
 
 
@@ -274,7 +274,7 @@ class OPTParserTest extends GroovyTestCase {
    void testParseNodesCDuration()
    {
       println "====== testParseNodesCDuration ======"
-      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"test_all_datatypes_en.opt"
+      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"test_all_datatypes.en.v1.opt"
       def opt = loadAndParse(path)
 
 
@@ -332,7 +332,7 @@ class OPTParserTest extends GroovyTestCase {
    void testParseToJSON2()
    {
       println "====== testParseToJSON ======"
-      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"test_all_datatypes_en.opt"
+      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"test_all_datatypes.en.v1.opt"
       def opt = loadAndParse(path)
 
       def toJson = new JsonSerializer()

@@ -6,9 +6,12 @@ import com.cabolabs.openehr.opt.model.domain.*
 import com.cabolabs.openehr.opt.model.datatypes.*
 //import com.thoughtworks.xstream.XStream
 import groovy.util.slurpersupport.GPathResult
+import org.apache.log4j.Logger
 
-@groovy.util.logging.Log4j
+//@groovy.util.logging.Log4j
 class OperationalTemplateParser {
+
+   private Logger log = Logger.getLogger(getClass())
 
    // Parsed XML
    //GPathResult templateXML
@@ -234,6 +237,9 @@ class OperationalTemplateParser {
       //println node.'@xsi:type'.text() +" "+ path
 
       // TODO: refactor individual factories per AOM type
+
+      //log.debug(node.'@xsi:type'.text())
+      //log.debug(templatePath)
 
       def obn
       if (['C_CODE_PHRASE', 'C_CODE_REFERENCE', 'CONSTRAINT_REF'].contains(node.'@xsi:type'.text()))
@@ -547,6 +553,7 @@ class OperationalTemplateParser {
       attr.children.each { xobn ->
 
          obn = parseObjectNode(xobn, templatePath, nextArchPath, dataPath, templateDataPath)
+
          obn.parent = atn
          atn.children << obn
       }

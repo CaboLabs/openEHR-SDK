@@ -459,6 +459,7 @@ class OpenEhrJsonParser {
       o.namespace = json.namespace
       o.type = json.type
       
+      // FIXME: the path is not a field, it's calculated!
       if (json.path)
          o.path = json.path
       
