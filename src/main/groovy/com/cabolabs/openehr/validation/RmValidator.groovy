@@ -9,6 +9,10 @@ import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.*
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.*
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.*
+import com.cabolabs.openehr.rm_1_0_2.data_types.basic.*
+import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.*
+import com.cabolabs.openehr.rm_1_0_2.data_types.uri.*
 import com.cabolabs.openehr.opt.model.primitive.*
 import com.cabolabs.openehr.opt.model.validation.*
 import com.cabolabs.openehr.opt.model.domain.*
@@ -80,7 +84,7 @@ class RmValidator {
    // all container attributes will get here
    private RmValidationReport validate(List container, AttributeNode c_multiple_attribute)
    {
-      println "validate container attribute "+ c_multiple_attribute.templatePath
+      //println "validate container attribute "+ c_multiple_attribute.templatePath
       RmValidationReport report = new RmValidationReport()
 
       if (!c_multiple_attribute.cardinality.interval.has(container.size()))
@@ -802,7 +806,6 @@ class RmValidator {
  
    private RmValidationReport validate(ItemTree is, AttributeNode a)
    {
-      println "validate ItemTree attribute "+ a.templatePath
       RmValidationReport report = new RmValidationReport()
 
       // existence
@@ -878,7 +881,6 @@ class RmValidator {
 
    private RmValidationReport validate(ItemList is, AttributeNode a)
    {
-      println "validate ItemList attribute "+ a.templatePath
       RmValidationReport report = new RmValidationReport()
 
       // existence
@@ -940,7 +942,6 @@ class RmValidator {
 
    private RmValidationReport validate(ItemTable is, AttributeNode a)
    {
-      println "validate ItemTable attribute "+ a.templatePath
       RmValidationReport report = new RmValidationReport()
 
       // existence
@@ -1002,7 +1003,6 @@ class RmValidator {
 
    private RmValidationReport validate(ItemSingle is, AttributeNode a)
    {
-      println "validate ItemSingle attribute "+ a.templatePath
       RmValidationReport report = new RmValidationReport()
 
       // existence
@@ -1115,7 +1115,6 @@ class RmValidator {
 
    private RmValidationReport validate(Element e, AttributeNode a)
    {
-      println "validate Element attribute"
       RmValidationReport report = new RmValidationReport()
 
       // existence
@@ -1137,7 +1136,6 @@ class RmValidator {
 
    private RmValidationReport validate_alternatives(Element e, List<ObjectNode> os)
    {
-      println "validate_alternatives Element"
       RmValidationReport report
       for (o in os)
       {
@@ -1155,7 +1153,9 @@ class RmValidator {
 
    private RmValidationReport validate(Element e, ObjectNode o)
    {
-      println "validate Element object "+ o.templatePath
+      println 'elementp path '+ e.path // FIXME: the parser is not setting the path!
+      println 'object path '+ o.path
+
       RmValidationReport report = new RmValidationReport()
 
       // occurrences
@@ -1169,6 +1169,9 @@ class RmValidator {
             report.addError("Node '${o.templateDataPath}' doesn't match occurrences")
          }
       }
+
+      // TODO: need to pass the path to the DV* validators so the error reporting can
+      // include the path, but should be the data path!
 
       def a_value = o.getAttr('value')
       if (a_value)
@@ -1186,17 +1189,22 @@ class RmValidator {
          }
       }
 
-      /*
-      if (e.null_flavour)
+      def a_null_flavour = o.getAttr('null_flavour')
+      if (a_null_flavour)
       {
-         report.append(validate(e.null_flavour, o.getAttr('null_flavour')))
+         if (e.null_flavour)
+         {
+            report.append(validate(e.null_flavour, a_null_flavour))
+         }
+         else
+         {
+            if (!a_null_flavour.existence.has(0))
+            {
+               report.addError("/a_null_flavour is not present but is required")
+            }
+         }
       }
-      else
-      {
-         // TODO: the existence of the attribute when it's null should be checked by the parent
-         // because polymorphism can't choose the right method to call with a null value
-      }
-      */
+
 
       return report
    }
@@ -1204,7 +1212,6 @@ class RmValidator {
 
    private RmValidationReport validate(DvText te, AttributeNode a)
    {
-      println "validate DvText attribute "+ a.templatePath
       RmValidationReport report = new RmValidationReport()
 
       // existence
@@ -1330,7 +1337,6 @@ class RmValidator {
 
    private RmValidationReport validate(DvQuantity d, AttributeNode a)
    {
-      println "validate DvQuantity attribute "+ a.templatePath
       RmValidationReport report = new RmValidationReport()
 
       // existence
@@ -1354,8 +1360,6 @@ class RmValidator {
    // should check all the constraints and if one validates, the whole thing validates
    private RmValidationReport validate_alternatives(DvQuantity d, List<ObjectNode> os)
    {
-      println "validate_alternatives DvQuantity"
-
       RmValidationReport report
       for (o in os)
       {
@@ -1525,6 +1529,1011 @@ class RmValidator {
          report.addError(valid.message)
       }
 
+      return report
+   }
+
+
+
+   private RmValidationReport validate(DvDateTime d, AttributeNode a)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // existence
+      if (a.existence)
+      {
+         def existence = (d ? 1 : 0)
+         if (!a.existence.has(existence))
+         {
+            // existence error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${a.templateDataPath}' doesn't match existence")
+         }
+      }
+
+      report.append(validate_alternatives(d, a.children))
+
+      return report
+   }
+
+   // validates against the children of a CSingleAttribute
+   // should check all the constraints and if one validates, the whole thing validates
+   private RmValidationReport validate_alternatives(DvDateTime d, List<ObjectNode> os)
+   {
+      RmValidationReport report
+      for (o in os)
+      {
+         report = validate(d, o)
+         if (!report.hasErrors())
+         {
+            return report
+         }
+      }
+
+      // this will return the last failed validation
+      // we can also add an error saying the data doesn't validates against any alternative
+      return report
+   }
+
+   private RmValidationReport validate(DvDateTime d, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // occurrences
+      if (o.occurrences)
+      {
+         def occurrences = (d ? 1 : 0)
+         if (!o.occurrences.has(occurrences))
+         {
+            // occurrences error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${o.templateDataPath}' doesn't match occurrences")
+         }
+      }
+
+      def a_value = o.getAttr('value')
+      if (a_value)
+      {
+         if (d.value != null) // compare to null to avoid 0 as false
+         {
+            report.append(validate(d.value, a_value))
+         }
+         else
+         {
+            if (!a_value.existence.has(0))
+            {
+               report.addError("'${o.templateDataPath}' /value is not present but is required")
+            }
+         }
+      }
+
+      return report
+   }
+
+
+   private RmValidationReport validate(DvDate d, AttributeNode a)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // existence
+      if (a.existence)
+      {
+         def existence = (d ? 1 : 0)
+         if (!a.existence.has(existence))
+         {
+            // existence error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${a.templateDataPath}' doesn't match existence")
+         }
+      }
+
+      report.append(validate_alternatives(d, a.children))
+
+      return report
+   }
+
+   // validates against the children of a CSingleAttribute
+   // should check all the constraints and if one validates, the whole thing validates
+   private RmValidationReport validate_alternatives(DvDate d, List<ObjectNode> os)
+   {
+      RmValidationReport report
+      for (o in os)
+      {
+         report = validate(d, o)
+         if (!report.hasErrors())
+         {
+            return report
+         }
+      }
+
+      // this will return the last failed validation
+      // we can also add an error saying the data doesn't validates against any alternative
+      return report
+   }
+
+   private RmValidationReport validate(DvDate d, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // occurrences
+      if (o.occurrences)
+      {
+         def occurrences = (d ? 1 : 0)
+         if (!o.occurrences.has(occurrences))
+         {
+            // occurrences error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${o.templateDataPath}' doesn't match occurrences")
+         }
+      }
+
+      def a_value = o.getAttr('value')
+      if (a_value)
+      {
+         if (d.value != null) // compare to null to avoid 0 as false
+         {
+            report.append(validate(d.value, a_value))
+         }
+         else
+         {
+            if (!a_value.existence.has(0))
+            {
+               report.addError("'${o.templateDataPath}' /value is not present but is required")
+            }
+         }
+      }
+
+      return report
+   }
+
+
+   private RmValidationReport validate(DvTime d, AttributeNode a)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // existence
+      if (a.existence)
+      {
+         def existence = (d ? 1 : 0)
+         if (!a.existence.has(existence))
+         {
+            // existence error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${a.templateDataPath}' doesn't match existence")
+         }
+      }
+
+      report.append(validate_alternatives(d, a.children))
+
+      return report
+   }
+
+   // validates against the children of a CSingleAttribute
+   // should check all the constraints and if one validates, the whole thing validates
+   private RmValidationReport validate_alternatives(DvTime d, List<ObjectNode> os)
+   {
+      RmValidationReport report
+      for (o in os)
+      {
+         report = validate(d, o)
+         if (!report.hasErrors())
+         {
+            return report
+         }
+      }
+
+      // this will return the last failed validation
+      // we can also add an error saying the data doesn't validates against any alternative
+      return report
+   }
+
+   private RmValidationReport validate(DvTime d, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // occurrences
+      if (o.occurrences)
+      {
+         def occurrences = (d ? 1 : 0)
+         if (!o.occurrences.has(occurrences))
+         {
+            // occurrences error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${o.templateDataPath}' doesn't match occurrences")
+         }
+      }
+
+      def a_value = o.getAttr('value')
+      if (a_value)
+      {
+         if (d.value != null) // compare to null to avoid 0 as false
+         {
+            report.append(validate(d.value, a_value))
+         }
+         else
+         {
+            if (!a_value.existence.has(0))
+            {
+               report.addError("'${o.templateDataPath}' /value is not present but is required")
+            }
+         }
+      }
+
+      return report
+   }
+
+
+   private RmValidationReport validate(String d, AttributeNode a)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // existence
+      if (a.existence)
+      {
+         def existence = (d ? 1 : 0)
+         if (!a.existence.has(existence))
+         {
+            // existence error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${a.templateDataPath}' doesn't match existence")
+         }
+      }
+
+      report.append(validate_alternatives(d, a.children))
+
+      return report
+   }
+
+   private RmValidationReport validate_alternatives(String d, List<ObjectNode> os)
+   {
+      RmValidationReport report
+      for (o in os)
+      {
+         report = validate(d, o)
+         if (!report.hasErrors())
+         {
+            return report
+         }
+      }
+
+      // this will return the last failed validation
+      // we can also add an error saying the data doesn't validates against any alternative
+      return report
+   }
+
+   private RmValidationReport validate(String d, PrimitiveObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      ValidationResult valid = o.item.isValid(d) // item is could be CDateTime, CString, CDate, CDuration, etc.
+
+      if (!valid)
+      {
+         report.addError(valid.message)
+      }
+
+      return report
+   }
+
+
+   private RmValidationReport validate(DvOrdinal d, AttributeNode a)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // existence
+      if (a.existence)
+      {
+         def existence = (d ? 1 : 0)
+         if (!a.existence.has(existence))
+         {
+            // existence error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${a.templateDataPath}' doesn't match existence")
+         }
+      }
+
+      report.append(validate_alternatives(d, a.children))
+
+      return report
+   }
+
+   // validates against the children of a CSingleAttribute
+   // should check all the constraints and if one validates, the whole thing validates
+   private RmValidationReport validate_alternatives(DvOrdinal d, List<ObjectNode> os)
+   {
+      RmValidationReport report
+      for (o in os)
+      {
+         report = validate(d, o)
+         if (!report.hasErrors())
+         {
+            return report
+         }
+      }
+
+      // this will return the last failed validation
+      // we can also add an error saying the data doesn't validates against any alternative
+      return report
+   }
+
+   private RmValidationReport validate(DvOrdinal d, CDvOrdinal o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // occurrences
+      if (o.occurrences)
+      {
+         def occurrences = (d ? 1 : 0)
+         if (!o.occurrences.has(occurrences))
+         {
+            // occurrences error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${o.templateDataPath}' doesn't match occurrences")
+         }
+      }
+
+      def a_value = o.getAttr('value')
+      if (a_value)
+      {
+         if (d.value != null) // compare to null to avoid 0 as false
+         {
+            report.append(validate(d.value, a_value))
+         }
+         else
+         {
+            if (!a_value.existence.has(0))
+            {
+               report.addError("'${o.templateDataPath}' /value is not present but is required")
+            }
+         }
+      }
+
+      return report
+   }
+
+
+   private RmValidationReport validate(DvBoolean d, AttributeNode a)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // existence
+      if (a.existence)
+      {
+         def existence = (d ? 1 : 0)
+         if (!a.existence.has(existence))
+         {
+            // existence error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${a.templateDataPath}' doesn't match existence")
+         }
+      }
+
+      report.append(validate_alternatives(d, a.children))
+
+      return report
+   }
+
+   // validates against the children of a CSingleAttribute
+   // should check all the constraints and if one validates, the whole thing validates
+   private RmValidationReport validate_alternatives(DvBoolean d, List<ObjectNode> os)
+   {
+      RmValidationReport report
+      for (o in os)
+      {
+         report = validate(d, o)
+         if (!report.hasErrors())
+         {
+            return report
+         }
+      }
+
+      // this will return the last failed validation
+      // we can also add an error saying the data doesn't validates against any alternative
+      return report
+   }
+
+   private RmValidationReport validate(DvBoolean d, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // occurrences
+      if (o.occurrences)
+      {
+         def occurrences = (d ? 1 : 0)
+         if (!o.occurrences.has(occurrences))
+         {
+            // occurrences error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${o.templateDataPath}' doesn't match occurrences")
+         }
+      }
+
+      def a_value = o.getAttr('value')
+      if (a_value)
+      {
+         if (d.value != null) // compare to null to avoid 0 as false
+         {
+            report.append(validate(d.value, a_value))
+         }
+         else
+         {
+            if (!a_value.existence.has(0))
+            {
+               report.addError("'${o.templateDataPath}' /value is not present but is required")
+            }
+         }
+      }
+
+      return report
+   }
+
+
+   private RmValidationReport validate(Boolean d, AttributeNode a)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // existence
+      if (a.existence)
+      {
+         def existence = (d ? 1 : 0)
+         if (!a.existence.has(existence))
+         {
+            // existence error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${a.templateDataPath}' doesn't match existence")
+         }
+      }
+
+      report.append(validate_alternatives(d, a.children))
+
+      return report
+   }
+
+   private RmValidationReport validate_alternatives(Boolean d, List<ObjectNode> os)
+   {
+      RmValidationReport report
+      for (o in os)
+      {
+         report = validate(d, o)
+         if (!report.hasErrors())
+         {
+            return report
+         }
+      }
+
+      // this will return the last failed validation
+      // we can also add an error saying the data doesn't validates against any alternative
+      return report
+   }
+
+   private RmValidationReport validate(Boolean d, PrimitiveObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      ValidationResult valid = o.item.isValid(d) // item is could be CBoolean
+
+      if (!valid)
+      {
+         report.addError(valid.message)
+      }
+
+      return report
+   }
+
+
+
+   private RmValidationReport validate(DvDuration d, AttributeNode a)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // existence
+      if (a.existence)
+      {
+         def existence = (d ? 1 : 0)
+         if (!a.existence.has(existence))
+         {
+            // existence error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${a.templateDataPath}' doesn't match existence")
+         }
+      }
+
+      report.append(validate_alternatives(d, a.children))
+
+      return report
+   }
+
+   // validates against the children of a CSingleAttribute
+   // should check all the constraints and if one validates, the whole thing validates
+   private RmValidationReport validate_alternatives(DvDuration d, List<ObjectNode> os)
+   {
+      RmValidationReport report
+      for (o in os)
+      {
+         report = validate(d, o)
+         if (!report.hasErrors())
+         {
+            return report
+         }
+      }
+
+      // this will return the last failed validation
+      // we can also add an error saying the data doesn't validates against any alternative
+      return report
+   }
+
+   private RmValidationReport validate(DvDuration d, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // occurrences
+      if (o.occurrences)
+      {
+         def occurrences = (d ? 1 : 0)
+         if (!o.occurrences.has(occurrences))
+         {
+            // occurrences error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${o.templateDataPath}' doesn't match occurrences")
+         }
+      }
+
+      def a_value = o.getAttr('value')
+      if (a_value)
+      {
+         if (d.value != null) // compare to null to avoid 0 as false
+         {
+            report.append(validate(d.value, a_value))
+         }
+         else
+         {
+            if (!a_value.existence.has(0))
+            {
+               report.addError("'${o.templateDataPath}' /value is not present but is required")
+            }
+         }
+      }
+
+      return report
+   }
+
+
+   private RmValidationReport validate(DvInterval d, AttributeNode a)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // existence
+      if (a.existence)
+      {
+         def existence = (d ? 1 : 0)
+         if (!a.existence.has(existence))
+         {
+            // existence error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${a.templateDataPath}' doesn't match existence")
+         }
+      }
+
+      report.append(validate_alternatives(d, a.children))
+
+      return report
+   }
+
+   // validates against the children of a CSingleAttribute
+   // should check all the constraints and if one validates, the whole thing validates
+   private RmValidationReport validate_alternatives(DvInterval d, List<ObjectNode> os)
+   {
+      RmValidationReport report
+      for (o in os)
+      {
+         report = validate(d, o)
+         if (!report.hasErrors())
+         {
+            return report
+         }
+      }
+
+      // this will return the last failed validation
+      // we can also add an error saying the data doesn't validates against any alternative
+      return report
+   }
+
+   private RmValidationReport validate(DvInterval d, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // occurrences
+      if (o.occurrences)
+      {
+         def occurrences = (d ? 1 : 0)
+         if (!o.occurrences.has(occurrences))
+         {
+            // occurrences error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${o.templateDataPath}' doesn't match occurrences")
+         }
+      }
+
+      // in the OPT the interval definition is a C_COMPLEX_OBJECT
+      // it contains C_COMPLEX_OBJECT for the upper and lower constraints
+      // each constraint could be a range for the magnitude, so we could have:
+      // lower(a..b) .. upper(c..d) in the OPT
+      // then in the data we have an interval (a1..b1) that is lower and higher
+      // so we know a1 should be in a..b
+      // and b2 should be in c..d
+
+      def a_lower = o.getAttr('lower')
+      if (a_lower)
+      {
+         if (d.lower != null) // compare to null to avoid 0 as false
+         {
+            report.append(validate(d.lower, a_lower))
+         }
+         else
+         {
+            if (!a_lower.existence.has(0))
+            {
+               report.addError("'${o.templateDataPath}' /lower is not present but is required")
+            }
+         }
+      }
+
+      def a_upper = o.getAttr('upper')
+      if (a_upper)
+      {
+         if (d.upper != null) // compare to null to avoid 0 as false
+         {
+            report.append(validate(d.upper, a_upper))
+         }
+         else
+         {
+            if (!a_upper.existence.has(0))
+            {
+               report.addError("'${o.templateDataPath}' /upper is not present but is required")
+            }
+         }
+      }
+
+      return report
+   }
+
+
+   private RmValidationReport validate(DvMultimedia d, AttributeNode a)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // existence
+      if (a.existence)
+      {
+         def existence = (d ? 1 : 0)
+         if (!a.existence.has(existence))
+         {
+            // existence error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${a.templateDataPath}' doesn't match existence")
+         }
+      }
+
+      report.append(validate_alternatives(d, a.children))
+
+      return report
+   }
+
+   // validates against the children of a CSingleAttribute
+   // should check all the constraints and if one validates, the whole thing validates
+   private RmValidationReport validate_alternatives(DvMultimedia d, List<ObjectNode> os)
+   {
+      RmValidationReport report
+      for (o in os)
+      {
+         report = validate(d, o)
+         if (!report.hasErrors())
+         {
+            return report
+         }
+      }
+
+      // this will return the last failed validation
+      // we can also add an error saying the data doesn't validates against any alternative
+      return report
+   }
+
+   private RmValidationReport validate(DvMultimedia d, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // occurrences
+      if (o.occurrences)
+      {
+         def occurrences = (d ? 1 : 0)
+         if (!o.occurrences.has(occurrences))
+         {
+            // occurrences error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${o.templateDataPath}' doesn't match occurrences")
+         }
+      }
+      /* TODO: validate multimedia
+
+      def a_value = o.getAttr('value')
+      if (a_value)
+      {
+         if (d.value != null) // compare to null to avoid 0 as false
+         {
+            report.append(validate(d.value, a_value))
+         }
+         else
+         {
+            if (!a_value.existence.has(0))
+            {
+               report.addError("'${o.templateDataPath}' /value is not present but is required")
+            }
+         }
+      }
+      */
+
+      return report
+   }
+
+
+   private RmValidationReport validate(DvParsable d, AttributeNode a)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // existence
+      if (a.existence)
+      {
+         def existence = (d ? 1 : 0)
+         if (!a.existence.has(existence))
+         {
+            // existence error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${a.templateDataPath}' doesn't match existence")
+         }
+      }
+
+      report.append(validate_alternatives(d, a.children))
+
+      return report
+   }
+
+   // validates against the children of a CSingleAttribute
+   // should check all the constraints and if one validates, the whole thing validates
+   private RmValidationReport validate_alternatives(DvParsable d, List<ObjectNode> os)
+   {
+      RmValidationReport report
+      for (o in os)
+      {
+         report = validate(d, o)
+         if (!report.hasErrors())
+         {
+            return report
+         }
+      }
+
+      // this will return the last failed validation
+      // we can also add an error saying the data doesn't validates against any alternative
+      return report
+   }
+
+   private RmValidationReport validate(DvParsable d, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // occurrences
+      if (o.occurrences)
+      {
+         def occurrences = (d ? 1 : 0)
+         if (!o.occurrences.has(occurrences))
+         {
+            // occurrences error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${o.templateDataPath}' doesn't match occurrences")
+         }
+      }
+      /* TODO: validate DvParsable
+
+      def a_value = o.getAttr('value')
+      if (a_value)
+      {
+         if (d.value != null) // compare to null to avoid 0 as false
+         {
+            report.append(validate(d.value, a_value))
+         }
+         else
+         {
+            if (!a_value.existence.has(0))
+            {
+               report.addError("'${o.templateDataPath}' /value is not present but is required")
+            }
+         }
+      }
+      */
+
+      return report
+   }
+
+
+   // Same validators are used for DvEhrUri
+   private RmValidationReport validate(DvUri d, AttributeNode a)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // existence
+      if (a.existence)
+      {
+         def existence = (d ? 1 : 0)
+         if (!a.existence.has(existence))
+         {
+            // existence error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${a.templateDataPath}' doesn't match existence")
+         }
+      }
+
+      report.append(validate_alternatives(d, a.children))
+
+      return report
+   }
+
+   // validates against the children of a CSingleAttribute
+   // should check all the constraints and if one validates, the whole thing validates
+   private RmValidationReport validate_alternatives(DvUri d, List<ObjectNode> os)
+   {
+      RmValidationReport report
+      for (o in os)
+      {
+         report = validate(d, o)
+         if (!report.hasErrors())
+         {
+            return report
+         }
+      }
+
+      // this will return the last failed validation
+      // we can also add an error saying the data doesn't validates against any alternative
+      return report
+   }
+
+   private RmValidationReport validate(DvUri d, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // occurrences
+      if (o.occurrences)
+      {
+         def occurrences = (d ? 1 : 0)
+         if (!o.occurrences.has(occurrences))
+         {
+            // occurrences error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${o.templateDataPath}' doesn't match occurrences")
+         }
+      }
+
+      def a_value = o.getAttr('value')
+      if (a_value)
+      {
+         if (d.value != null) // compare to null to avoid 0 as false
+         {
+            report.append(validate(d.value, a_value))
+         }
+         else
+         {
+            if (!a_value.existence.has(0))
+            {
+               report.addError("'${o.templateDataPath}' /value is not present but is required")
+            }
+         }
+      }
+      
+      return report
+   }
+
+
+   private RmValidationReport validate(DvIdentifier d, AttributeNode a)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // existence
+      if (a.existence)
+      {
+         def existence = (d ? 1 : 0)
+         if (!a.existence.has(existence))
+         {
+            // existence error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${a.templateDataPath}' doesn't match existence")
+         }
+      }
+
+      report.append(validate_alternatives(d, a.children))
+
+      return report
+   }
+
+   // validates against the children of a CSingleAttribute
+   // should check all the constraints and if one validates, the whole thing validates
+   private RmValidationReport validate_alternatives(DvIdentifier d, List<ObjectNode> os)
+   {
+      RmValidationReport report
+      for (o in os)
+      {
+         report = validate(d, o)
+         if (!report.hasErrors())
+         {
+            return report
+         }
+      }
+
+      // this will return the last failed validation
+      // we can also add an error saying the data doesn't validates against any alternative
+      return report
+   }
+
+   private RmValidationReport validate(DvIdentifier d, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // occurrences
+      if (o.occurrences)
+      {
+         def occurrences = (d ? 1 : 0)
+         if (!o.occurrences.has(occurrences))
+         {
+            // occurrences error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError("Node '${o.templateDataPath}' doesn't match occurrences")
+         }
+      }
+
+      def a_issuer = o.getAttr('issuer')
+      if (a_issuer)
+      {
+         if (d.issuer != null) // compare to null to avoid 0 as false
+         {
+            report.append(validate(d.issuer, a_issuer))
+         }
+         else
+         {
+            if (!a_issuer.existence.has(0))
+            {
+               report.addError("'${o.templateDataPath}' /issuer is not present but is required")
+            }
+         }
+      }
+
+      def a_type = o.getAttr('type')
+      if (a_type)
+      {
+         if (d.type != null) // compare to null to avoid 0 as false
+         {
+            report.append(validate(d.type, a_type))
+         }
+         else
+         {
+            if (!a_type.existence.has(0))
+            {
+               report.addError("'${o.templateDataPath}' /type is not present but is required")
+            }
+         }
+      }
+
+      def a_assigned = o.getAttr('assigner')
+      if (a_assigned)
+      {
+         if (d.assigner != null) // compare to null to avoid 0 as false
+         {
+            report.append(validate(d.assigner, a_assigned))
+         }
+         else
+         {
+            if (!a_assigned.existence.has(0))
+            {
+               report.addError("'${o.templateDataPath}' /assigner is not present but is required")
+            }
+         }
+      }
+      
       return report
    }
 

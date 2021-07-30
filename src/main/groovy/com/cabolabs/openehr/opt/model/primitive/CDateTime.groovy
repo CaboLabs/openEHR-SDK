@@ -73,7 +73,6 @@ class CDateTime extends CPrimitive {
             return new ValidationResult(isValid: true)
          }
          catch (ParseException e) {}
-
       }
 
       return new ValidationResult(isValid: false, message:'CDateTime.validation.error.notAValidDateTime')
