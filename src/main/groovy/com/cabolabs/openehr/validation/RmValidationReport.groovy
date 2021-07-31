@@ -4,9 +4,9 @@ class RmValidationReport {
 
    def errors = []
    
-   def addError(String error)
+   def addError(String path, String error)
    {
-      errors << error
+      errors << [path: path, error: error]
    }
 
    boolean hasErrors()

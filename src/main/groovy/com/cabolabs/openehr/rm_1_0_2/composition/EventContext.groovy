@@ -5,12 +5,13 @@ import com.cabolabs.openehr.rm_1_0_2.common.generic.PartyIdentified
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemStructure
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvCodedText
+import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 
 /**
  * @author pablo.pazos@cabolabs.com
  *
  */
-class EventContext {
+class EventContext extends Pathable {
    
    DvDateTime start_time
    DvDateTime end_time

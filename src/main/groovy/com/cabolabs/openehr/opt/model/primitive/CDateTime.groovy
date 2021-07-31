@@ -15,16 +15,18 @@ class CDateTime extends CPrimitive {
    // OPT DateTime Pattern
    String pattern
 
+   // TODO: accept seconds fraction with comma
+   
    // OPT DateTime Pattern => Java SimpleFormat Patterns
    static Map validators = [
-      'yyyy-mm-ddTHH:MM:SS':  ["yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+      'yyyy-mm-ddTHH:MM:SS': ["yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
                               "yyyy-MM-dd'T'HH:mm:ss.SSSX",
                               "yyyy-MM-dd'T'HH:mm:ss.SSS",
                               "yyyy-MM-dd'T'HH:mm:ss'Z'",
                               "yyyy-MM-dd'T'HH:mm:ssX",
                               "yyyy-MM-dd'T'HH:mm:ss"
-                              ],
-      'yyyy-mm-ddTHH:??:??':  ["yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", // complete, with seconds and fractions
+                             ],
+      'yyyy-mm-ddTHH:??:??': ["yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", // complete, with seconds and fractions
                               "yyyy-MM-dd'T'HH:mm:ss.SSSX",
                               "yyyy-MM-dd'T'HH:mm:ss.SSS",
                               "yyyy-MM-dd'T'HH:mm:ss'Z'",
@@ -38,9 +40,9 @@ class CDateTime extends CPrimitive {
                               "yyyy-MM-dd'T'HH'Z'",             // without minutes
                               "yyyy-MM-dd'T'HHX",
                               "yyyy-MM-dd'T'HH"
-                              ],
+                             ],
       // This is applied when the complex object of the DV_DATE_TIME has no constraints
-      'any_allowed':          ["yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",         // same as previous case, since it includes all the possible valid datetime formats
+      'any_allowed':         ["yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",         // same as previous case, since it includes all the possible valid datetime formats
                               "yyyy-MM-dd'T'HH:mm:ss.SSSX",
                               "yyyy-MM-dd'T'HH:mm:ss.SSS",
                               "yyyy-MM-dd'T'HH:mm:ss'Z'",
@@ -53,8 +55,23 @@ class CDateTime extends CPrimitive {
 
                               "yyyy-MM-dd'T'HH'Z'",
                               "yyyy-MM-dd'T'HHX",
-                              "yyyy-MM-dd'T'HH"
-                              ]
+                              "yyyy-MM-dd'T'HH",
+
+                              "yyyyMMdd'T'HHmmss.SSS'Z'",         // basic formats ISO-8601
+                              "yyyyMMdd'T'HHmmss.SSSX",
+                              "yyyyMM-dd'T'HHmmss.SSS",
+                              "yyyyMM-dd'T'HHmmss'Z'",
+                              "yyyyMM-dd'T'HHmmssX",
+                              "yyyyMM-dd'T'HHmmss",
+
+                              "yyyyMMdd'T'HHmm'Z'",
+                              "yyyyMMdd'T'HHmmX",
+                              "yyyyMMdd'T'HHmm",
+
+                              "yyyyMMdd'T'HH'Z'",
+                              "yyyyMMdd'T'HHX",
+                              "yyyyMMdd'T'HH"
+                             ]
    ]
 
 
@@ -75,6 +92,6 @@ class CDateTime extends CPrimitive {
          catch (ParseException e) {}
       }
 
-      return new ValidationResult(isValid: false, message:'CDateTime.validation.error.notAValidDateTime')
+      return new ValidationResult(isValid: false, message: "value '${formattedDate}' is not a valid datetime format")
    }
 }

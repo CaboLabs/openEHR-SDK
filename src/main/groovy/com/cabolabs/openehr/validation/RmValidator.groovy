@@ -1153,7 +1153,7 @@ class RmValidator {
 
    private RmValidationReport validate(Element e, ObjectNode o)
    {
-      println 'elementp path '+ e.path // FIXME: the parser is not setting the path!
+      println 'element path '+ e.path // FIXME: the parser is not setting the path!
       println 'object path '+ o.path
 
       RmValidationReport report = new RmValidationReport()
@@ -1178,7 +1178,7 @@ class RmValidator {
       {
          if (e.value)
          {
-            report.append(validate(e.value, a_value))
+            report.append(validate(e.value, a_value, e.dataPath))
          }
          else
          {
@@ -1194,7 +1194,7 @@ class RmValidator {
       {
          if (e.null_flavour)
          {
-            report.append(validate(e.null_flavour, a_null_flavour))
+            report.append(validate(e.null_flavour, a_null_flavour, e.dataPath))
          }
          else
          {
@@ -1210,7 +1210,7 @@ class RmValidator {
    }
 
 
-   private RmValidationReport validate(DvText te, AttributeNode a)
+   private RmValidationReport validate(DvText te, AttributeNode a, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1226,19 +1226,19 @@ class RmValidator {
          }
       }
 
-      report.append(validate_alternatives(te, a.children))
+      report.append(validate_alternatives(te, a.children, path))
 
       return report
    }
 
    // validates against the children of a CSingleAttribute
    // should check all the constraints and if one validates, the whole thing validates
-   private RmValidationReport validate_alternatives(DvText te, List<ObjectNode> os)
+   private RmValidationReport validate_alternatives(DvText te, List<ObjectNode> os, String path)
    {
       RmValidationReport report
       for (o in os)
       {
-         report = validate(te, o)
+         report = validate(te, o, path)
          if (!report.hasErrors())
          {
             return report
@@ -1250,7 +1250,7 @@ class RmValidator {
       return report
    }
 
-   private RmValidationReport validate(DvText te, ObjectNode o)
+   private RmValidationReport validate(DvText te, ObjectNode o, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1273,7 +1273,7 @@ class RmValidator {
 
 
 
-   private RmValidationReport validate(DvProportion d, AttributeNode a)
+   private RmValidationReport validate(DvProportion d, AttributeNode a, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1289,19 +1289,19 @@ class RmValidator {
          }
       }
 
-      report.append(validate_alternatives(d, a.children))
+      report.append(validate_alternatives(d, a.children, path))
 
       return report
    }
 
    // validates against the children of a CSingleAttribute
    // should check all the constraints and if one validates, the whole thing validates
-   private RmValidationReport validate_alternatives(DvProportion d, List<ObjectNode> os)
+   private RmValidationReport validate_alternatives(DvProportion d, List<ObjectNode> os, String path)
    {
       RmValidationReport report
       for (o in os)
       {
-         report = validate(d, o)
+         report = validate(d, o, path)
          if (!report.hasErrors())
          {
             return report
@@ -1313,7 +1313,7 @@ class RmValidator {
       return report
    }
 
-   private RmValidationReport validate(DvProportion d, ObjectNode o)
+   private RmValidationReport validate(DvProportion d, ObjectNode o, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1335,7 +1335,7 @@ class RmValidator {
    }
 
 
-   private RmValidationReport validate(DvQuantity d, AttributeNode a)
+   private RmValidationReport validate(DvQuantity d, AttributeNode a, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1351,21 +1351,21 @@ class RmValidator {
          }
       }
 
-      report.append(validate_alternatives(d, a.children))
+      report.append(validate_alternatives(d, a.children, path))
 
       return report
    }
 
    // validates against the children of a CSingleAttribute
    // should check all the constraints and if one validates, the whole thing validates
-   private RmValidationReport validate_alternatives(DvQuantity d, List<ObjectNode> os)
+   private RmValidationReport validate_alternatives(DvQuantity d, List<ObjectNode> os, String path)
    {
       RmValidationReport report
       for (o in os)
       {
          //println o.type +" "+ o.rmTypeName
          
-         report = validate(d, o)
+         report = validate(d, o, path)
          if (!report.hasErrors())
          {
             return report
@@ -1377,7 +1377,7 @@ class RmValidator {
       return new RmValidationReport() //report
    }
 
-   private RmValidationReport validate(DvQuantity d, CDvQuantity o)
+   private RmValidationReport validate(DvQuantity d, CDvQuantity o, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1397,14 +1397,14 @@ class RmValidator {
       ValidationResult valid = o.isValid(d.units, d.magnitude)
       if (!valid)
       {
-         report.addError(valid.message)
+         report.addError(path, valid.message)
       }
 
       return report
    }
 
 
-   private RmValidationReport validate(DvCount d, AttributeNode a)
+   private RmValidationReport validate(DvCount d, AttributeNode a, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1420,19 +1420,19 @@ class RmValidator {
          }
       }
 
-      report.append(validate_alternatives(d, a.children))
+      report.append(validate_alternatives(d, a.children, path))
 
       return report
    }
 
    // validates against the children of a CSingleAttribute
    // should check all the constraints and if one validates, the whole thing validates
-   private RmValidationReport validate_alternatives(DvCount d, List<ObjectNode> os)
+   private RmValidationReport validate_alternatives(DvCount d, List<ObjectNode> os, String path)
    {
       RmValidationReport report
       for (o in os)
       {
-         report = validate(d, o)
+         report = validate(d, o, path)
          if (!report.hasErrors())
          {
             return report
@@ -1444,7 +1444,7 @@ class RmValidator {
       return report
    }
 
-   private RmValidationReport validate(DvCount d, ObjectNode o)
+   private RmValidationReport validate(DvCount d, ObjectNode o, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1466,7 +1466,7 @@ class RmValidator {
       {
          if (d.magnitude != null) // compare to null to avoid 0 as false
          {
-            report.append(validate(d.magnitude, a_magnitude))
+            report.append(validate(d.magnitude, a_magnitude, path +'/magnitude'))
          }
          else
          {
@@ -1480,7 +1480,7 @@ class RmValidator {
       return report
    }
 
-   private RmValidationReport validate(Integer d, AttributeNode a)
+   private RmValidationReport validate(Integer d, AttributeNode a, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1496,17 +1496,17 @@ class RmValidator {
          }
       }
 
-      report.append(validate_alternatives(d, a.children))
+      report.append(validate_alternatives(d, a.children, path))
 
       return report
    }
 
-   private RmValidationReport validate_alternatives(Integer d, List<ObjectNode> os)
+   private RmValidationReport validate_alternatives(Integer d, List<ObjectNode> os, String path)
    {
       RmValidationReport report
       for (o in os)
       {
-         report = validate(d, o)
+         report = validate(d, o, path)
          if (!report.hasErrors())
          {
             return report
@@ -1518,7 +1518,7 @@ class RmValidator {
       return report
    }
 
-   private RmValidationReport validate(Integer d, PrimitiveObjectNode o)
+   private RmValidationReport validate(Integer d, PrimitiveObjectNode o, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1526,7 +1526,7 @@ class RmValidator {
 
       if (!valid)
       {
-         report.addError(valid.message)
+         report.addError(path, valid.message)
       }
 
       return report
@@ -1534,7 +1534,7 @@ class RmValidator {
 
 
 
-   private RmValidationReport validate(DvDateTime d, AttributeNode a)
+   private RmValidationReport validate(DvDateTime d, AttributeNode a, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1550,19 +1550,19 @@ class RmValidator {
          }
       }
 
-      report.append(validate_alternatives(d, a.children))
+      report.append(validate_alternatives(d, a.children, path))
 
       return report
    }
 
    // validates against the children of a CSingleAttribute
    // should check all the constraints and if one validates, the whole thing validates
-   private RmValidationReport validate_alternatives(DvDateTime d, List<ObjectNode> os)
+   private RmValidationReport validate_alternatives(DvDateTime d, List<ObjectNode> os, String path)
    {
       RmValidationReport report
       for (o in os)
       {
-         report = validate(d, o)
+         report = validate(d, o, path)
          if (!report.hasErrors())
          {
             return report
@@ -1574,7 +1574,7 @@ class RmValidator {
       return report
    }
 
-   private RmValidationReport validate(DvDateTime d, ObjectNode o)
+   private RmValidationReport validate(DvDateTime d, ObjectNode o, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1595,7 +1595,7 @@ class RmValidator {
       {
          if (d.value != null) // compare to null to avoid 0 as false
          {
-            report.append(validate(d.value, a_value))
+            report.append(validate(d.value, a_value, path +'/value'))
          }
          else
          {
@@ -1610,7 +1610,7 @@ class RmValidator {
    }
 
 
-   private RmValidationReport validate(DvDate d, AttributeNode a)
+   private RmValidationReport validate(DvDate d, AttributeNode a, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1626,19 +1626,19 @@ class RmValidator {
          }
       }
 
-      report.append(validate_alternatives(d, a.children))
+      report.append(validate_alternatives(d, a.children, path))
 
       return report
    }
 
    // validates against the children of a CSingleAttribute
    // should check all the constraints and if one validates, the whole thing validates
-   private RmValidationReport validate_alternatives(DvDate d, List<ObjectNode> os)
+   private RmValidationReport validate_alternatives(DvDate d, List<ObjectNode> os, String path)
    {
       RmValidationReport report
       for (o in os)
       {
-         report = validate(d, o)
+         report = validate(d, o, path)
          if (!report.hasErrors())
          {
             return report
@@ -1650,7 +1650,7 @@ class RmValidator {
       return report
    }
 
-   private RmValidationReport validate(DvDate d, ObjectNode o)
+   private RmValidationReport validate(DvDate d, ObjectNode o, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1671,7 +1671,7 @@ class RmValidator {
       {
          if (d.value != null) // compare to null to avoid 0 as false
          {
-            report.append(validate(d.value, a_value))
+            report.append(validate(d.value, a_value, path +'/value'))
          }
          else
          {
@@ -1686,7 +1686,7 @@ class RmValidator {
    }
 
 
-   private RmValidationReport validate(DvTime d, AttributeNode a)
+   private RmValidationReport validate(DvTime d, AttributeNode a, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1702,19 +1702,19 @@ class RmValidator {
          }
       }
 
-      report.append(validate_alternatives(d, a.children))
+      report.append(validate_alternatives(d, a.children, path))
 
       return report
    }
 
    // validates against the children of a CSingleAttribute
    // should check all the constraints and if one validates, the whole thing validates
-   private RmValidationReport validate_alternatives(DvTime d, List<ObjectNode> os)
+   private RmValidationReport validate_alternatives(DvTime d, List<ObjectNode> os, String path)
    {
       RmValidationReport report
       for (o in os)
       {
-         report = validate(d, o)
+         report = validate(d, o, path)
          if (!report.hasErrors())
          {
             return report
@@ -1726,7 +1726,7 @@ class RmValidator {
       return report
    }
 
-   private RmValidationReport validate(DvTime d, ObjectNode o)
+   private RmValidationReport validate(DvTime d, ObjectNode o, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1747,7 +1747,7 @@ class RmValidator {
       {
          if (d.value != null) // compare to null to avoid 0 as false
          {
-            report.append(validate(d.value, a_value))
+            report.append(validate(d.value, a_value, path +'/value'))
          }
          else
          {
@@ -1762,7 +1762,7 @@ class RmValidator {
    }
 
 
-   private RmValidationReport validate(String d, AttributeNode a)
+   private RmValidationReport validate(String d, AttributeNode a, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1778,17 +1778,17 @@ class RmValidator {
          }
       }
 
-      report.append(validate_alternatives(d, a.children))
+      report.append(validate_alternatives(d, a.children, path))
 
       return report
    }
 
-   private RmValidationReport validate_alternatives(String d, List<ObjectNode> os)
+   private RmValidationReport validate_alternatives(String d, List<ObjectNode> os, String path)
    {
       RmValidationReport report
       for (o in os)
       {
-         report = validate(d, o)
+         report = validate(d, o, path)
          if (!report.hasErrors())
          {
             return report
@@ -1800,7 +1800,7 @@ class RmValidator {
       return report
    }
 
-   private RmValidationReport validate(String d, PrimitiveObjectNode o)
+   private RmValidationReport validate(String d, PrimitiveObjectNode o, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1808,14 +1808,14 @@ class RmValidator {
 
       if (!valid)
       {
-         report.addError(valid.message)
+         report.addError(path, valid.message)
       }
 
       return report
    }
 
 
-   private RmValidationReport validate(DvOrdinal d, AttributeNode a)
+   private RmValidationReport validate(DvOrdinal d, AttributeNode a, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1831,19 +1831,19 @@ class RmValidator {
          }
       }
 
-      report.append(validate_alternatives(d, a.children))
+      report.append(validate_alternatives(d, a.children, path))
 
       return report
    }
 
    // validates against the children of a CSingleAttribute
    // should check all the constraints and if one validates, the whole thing validates
-   private RmValidationReport validate_alternatives(DvOrdinal d, List<ObjectNode> os)
+   private RmValidationReport validate_alternatives(DvOrdinal d, List<ObjectNode> os, String path)
    {
       RmValidationReport report
       for (o in os)
       {
-         report = validate(d, o)
+         report = validate(d, o, path)
          if (!report.hasErrors())
          {
             return report
@@ -1855,7 +1855,7 @@ class RmValidator {
       return report
    }
 
-   private RmValidationReport validate(DvOrdinal d, CDvOrdinal o)
+   private RmValidationReport validate(DvOrdinal d, CDvOrdinal o, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1876,7 +1876,7 @@ class RmValidator {
       {
          if (d.value != null) // compare to null to avoid 0 as false
          {
-            report.append(validate(d.value, a_value))
+            report.append(validate(d.value, a_value, path +'/value'))
          }
          else
          {
@@ -1891,7 +1891,7 @@ class RmValidator {
    }
 
 
-   private RmValidationReport validate(DvBoolean d, AttributeNode a)
+   private RmValidationReport validate(DvBoolean d, AttributeNode a, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1907,19 +1907,19 @@ class RmValidator {
          }
       }
 
-      report.append(validate_alternatives(d, a.children))
+      report.append(validate_alternatives(d, a.children, path))
 
       return report
    }
 
    // validates against the children of a CSingleAttribute
    // should check all the constraints and if one validates, the whole thing validates
-   private RmValidationReport validate_alternatives(DvBoolean d, List<ObjectNode> os)
+   private RmValidationReport validate_alternatives(DvBoolean d, List<ObjectNode> os, String path)
    {
       RmValidationReport report
       for (o in os)
       {
-         report = validate(d, o)
+         report = validate(d, o, path)
          if (!report.hasErrors())
          {
             return report
@@ -1931,7 +1931,7 @@ class RmValidator {
       return report
    }
 
-   private RmValidationReport validate(DvBoolean d, ObjectNode o)
+   private RmValidationReport validate(DvBoolean d, ObjectNode o, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1952,7 +1952,7 @@ class RmValidator {
       {
          if (d.value != null) // compare to null to avoid 0 as false
          {
-            report.append(validate(d.value, a_value))
+            report.append(validate(d.value, a_value, path +'/value'))
          }
          else
          {
@@ -1967,7 +1967,7 @@ class RmValidator {
    }
 
 
-   private RmValidationReport validate(Boolean d, AttributeNode a)
+   private RmValidationReport validate(Boolean d, AttributeNode a, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -1983,17 +1983,17 @@ class RmValidator {
          }
       }
 
-      report.append(validate_alternatives(d, a.children))
+      report.append(validate_alternatives(d, a.children, path))
 
       return report
    }
 
-   private RmValidationReport validate_alternatives(Boolean d, List<ObjectNode> os)
+   private RmValidationReport validate_alternatives(Boolean d, List<ObjectNode> os, String path)
    {
       RmValidationReport report
       for (o in os)
       {
-         report = validate(d, o)
+         report = validate(d, o, path)
          if (!report.hasErrors())
          {
             return report
@@ -2005,7 +2005,7 @@ class RmValidator {
       return report
    }
 
-   private RmValidationReport validate(Boolean d, PrimitiveObjectNode o)
+   private RmValidationReport validate(Boolean d, PrimitiveObjectNode o, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -2013,15 +2013,14 @@ class RmValidator {
 
       if (!valid)
       {
-         report.addError(valid.message)
+         report.addError(path, valid.message)
       }
 
       return report
    }
 
 
-
-   private RmValidationReport validate(DvDuration d, AttributeNode a)
+   private RmValidationReport validate(DvDuration d, AttributeNode a, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -2037,19 +2036,19 @@ class RmValidator {
          }
       }
 
-      report.append(validate_alternatives(d, a.children))
+      report.append(validate_alternatives(d, a.children, path))
 
       return report
    }
 
    // validates against the children of a CSingleAttribute
    // should check all the constraints and if one validates, the whole thing validates
-   private RmValidationReport validate_alternatives(DvDuration d, List<ObjectNode> os)
+   private RmValidationReport validate_alternatives(DvDuration d, List<ObjectNode> os, String path)
    {
       RmValidationReport report
       for (o in os)
       {
-         report = validate(d, o)
+         report = validate(d, o, path)
          if (!report.hasErrors())
          {
             return report
@@ -2061,7 +2060,7 @@ class RmValidator {
       return report
    }
 
-   private RmValidationReport validate(DvDuration d, ObjectNode o)
+   private RmValidationReport validate(DvDuration d, ObjectNode o, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -2082,7 +2081,7 @@ class RmValidator {
       {
          if (d.value != null) // compare to null to avoid 0 as false
          {
-            report.append(validate(d.value, a_value))
+            report.append(validate(d.value, a_value, path +'/value'))
          }
          else
          {
@@ -2097,7 +2096,7 @@ class RmValidator {
    }
 
 
-   private RmValidationReport validate(DvInterval d, AttributeNode a)
+   private RmValidationReport validate(DvInterval d, AttributeNode a, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -2113,19 +2112,19 @@ class RmValidator {
          }
       }
 
-      report.append(validate_alternatives(d, a.children))
+      report.append(validate_alternatives(d, a.children, path))
 
       return report
    }
 
    // validates against the children of a CSingleAttribute
    // should check all the constraints and if one validates, the whole thing validates
-   private RmValidationReport validate_alternatives(DvInterval d, List<ObjectNode> os)
+   private RmValidationReport validate_alternatives(DvInterval d, List<ObjectNode> os, String path)
    {
       RmValidationReport report
       for (o in os)
       {
-         report = validate(d, o)
+         report = validate(d, o, path)
          if (!report.hasErrors())
          {
             return report
@@ -2137,7 +2136,7 @@ class RmValidator {
       return report
    }
 
-   private RmValidationReport validate(DvInterval d, ObjectNode o)
+   private RmValidationReport validate(DvInterval d, ObjectNode o, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -2166,7 +2165,7 @@ class RmValidator {
       {
          if (d.lower != null) // compare to null to avoid 0 as false
          {
-            report.append(validate(d.lower, a_lower))
+            report.append(validate(d.lower, a_lower, path +'/lower'))
          }
          else
          {
@@ -2182,7 +2181,7 @@ class RmValidator {
       {
          if (d.upper != null) // compare to null to avoid 0 as false
          {
-            report.append(validate(d.upper, a_upper))
+            report.append(validate(d.upper, a_upper, path +'/upper'))
          }
          else
          {
@@ -2197,7 +2196,7 @@ class RmValidator {
    }
 
 
-   private RmValidationReport validate(DvMultimedia d, AttributeNode a)
+   private RmValidationReport validate(DvMultimedia d, AttributeNode a, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -2213,19 +2212,19 @@ class RmValidator {
          }
       }
 
-      report.append(validate_alternatives(d, a.children))
+      report.append(validate_alternatives(d, a.children, path))
 
       return report
    }
 
    // validates against the children of a CSingleAttribute
    // should check all the constraints and if one validates, the whole thing validates
-   private RmValidationReport validate_alternatives(DvMultimedia d, List<ObjectNode> os)
+   private RmValidationReport validate_alternatives(DvMultimedia d, List<ObjectNode> os, String path)
    {
       RmValidationReport report
       for (o in os)
       {
-         report = validate(d, o)
+         report = validate(d, o, path)
          if (!report.hasErrors())
          {
             return report
@@ -2237,7 +2236,7 @@ class RmValidator {
       return report
    }
 
-   private RmValidationReport validate(DvMultimedia d, ObjectNode o)
+   private RmValidationReport validate(DvMultimedia d, ObjectNode o, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -2259,7 +2258,7 @@ class RmValidator {
       {
          if (d.value != null) // compare to null to avoid 0 as false
          {
-            report.append(validate(d.value, a_value))
+            report.append(validate(d.value, a_value, path +'/value'))
          }
          else
          {
@@ -2275,7 +2274,7 @@ class RmValidator {
    }
 
 
-   private RmValidationReport validate(DvParsable d, AttributeNode a)
+   private RmValidationReport validate(DvParsable d, AttributeNode a, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -2291,19 +2290,19 @@ class RmValidator {
          }
       }
 
-      report.append(validate_alternatives(d, a.children))
+      report.append(validate_alternatives(d, a.children, path))
 
       return report
    }
 
    // validates against the children of a CSingleAttribute
    // should check all the constraints and if one validates, the whole thing validates
-   private RmValidationReport validate_alternatives(DvParsable d, List<ObjectNode> os)
+   private RmValidationReport validate_alternatives(DvParsable d, List<ObjectNode> os, String path)
    {
       RmValidationReport report
       for (o in os)
       {
-         report = validate(d, o)
+         report = validate(d, o, path)
          if (!report.hasErrors())
          {
             return report
@@ -2315,7 +2314,7 @@ class RmValidator {
       return report
    }
 
-   private RmValidationReport validate(DvParsable d, ObjectNode o)
+   private RmValidationReport validate(DvParsable d, ObjectNode o, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -2337,7 +2336,7 @@ class RmValidator {
       {
          if (d.value != null) // compare to null to avoid 0 as false
          {
-            report.append(validate(d.value, a_value))
+            report.append(validate(d.value, a_value, path +'/value'))
          }
          else
          {
@@ -2354,7 +2353,7 @@ class RmValidator {
 
 
    // Same validators are used for DvEhrUri
-   private RmValidationReport validate(DvUri d, AttributeNode a)
+   private RmValidationReport validate(DvUri d, AttributeNode a, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -2370,19 +2369,19 @@ class RmValidator {
          }
       }
 
-      report.append(validate_alternatives(d, a.children))
+      report.append(validate_alternatives(d, a.children, path))
 
       return report
    }
 
    // validates against the children of a CSingleAttribute
    // should check all the constraints and if one validates, the whole thing validates
-   private RmValidationReport validate_alternatives(DvUri d, List<ObjectNode> os)
+   private RmValidationReport validate_alternatives(DvUri d, List<ObjectNode> os, String path)
    {
       RmValidationReport report
       for (o in os)
       {
-         report = validate(d, o)
+         report = validate(d, o, path)
          if (!report.hasErrors())
          {
             return report
@@ -2394,7 +2393,7 @@ class RmValidator {
       return report
    }
 
-   private RmValidationReport validate(DvUri d, ObjectNode o)
+   private RmValidationReport validate(DvUri d, ObjectNode o, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -2415,7 +2414,7 @@ class RmValidator {
       {
          if (d.value != null) // compare to null to avoid 0 as false
          {
-            report.append(validate(d.value, a_value))
+            report.append(validate(d.value, a_value, path +'/value'))
          }
          else
          {
@@ -2430,7 +2429,7 @@ class RmValidator {
    }
 
 
-   private RmValidationReport validate(DvIdentifier d, AttributeNode a)
+   private RmValidationReport validate(DvIdentifier d, AttributeNode a, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -2446,19 +2445,19 @@ class RmValidator {
          }
       }
 
-      report.append(validate_alternatives(d, a.children))
+      report.append(validate_alternatives(d, a.children, path))
 
       return report
    }
 
    // validates against the children of a CSingleAttribute
    // should check all the constraints and if one validates, the whole thing validates
-   private RmValidationReport validate_alternatives(DvIdentifier d, List<ObjectNode> os)
+   private RmValidationReport validate_alternatives(DvIdentifier d, List<ObjectNode> os, String path)
    {
       RmValidationReport report
       for (o in os)
       {
-         report = validate(d, o)
+         report = validate(d, o, path)
          if (!report.hasErrors())
          {
             return report
@@ -2470,7 +2469,7 @@ class RmValidator {
       return report
    }
 
-   private RmValidationReport validate(DvIdentifier d, ObjectNode o)
+   private RmValidationReport validate(DvIdentifier d, ObjectNode o, String path)
    {
       RmValidationReport report = new RmValidationReport()
 
@@ -2491,7 +2490,7 @@ class RmValidator {
       {
          if (d.issuer != null) // compare to null to avoid 0 as false
          {
-            report.append(validate(d.issuer, a_issuer))
+            report.append(validate(d.issuer, a_issuer, path + '/issuer'))
          }
          else
          {
@@ -2507,7 +2506,7 @@ class RmValidator {
       {
          if (d.type != null) // compare to null to avoid 0 as false
          {
-            report.append(validate(d.type, a_type))
+            report.append(validate(d.type, a_type, path +'/type'))
          }
          else
          {
@@ -2523,7 +2522,7 @@ class RmValidator {
       {
          if (d.assigner != null) // compare to null to avoid 0 as false
          {
-            report.append(validate(d.assigner, a_assigned))
+            report.append(validate(d.assigner, a_assigned, path +'/assigned'))
          }
          else
          {
