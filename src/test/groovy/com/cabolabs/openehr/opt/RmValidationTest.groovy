@@ -28,7 +28,9 @@ class RmValidationTest extends GroovyTestCase {
       RmValidator validator = new RmValidator(opt_manager)
       RmValidationReport report = validator.dovalidate(c)
 
-      println report.errors
+      report.errors.each { error ->
+         println error
+      }
    }
 
    void testValidationFromJsonComposition()
@@ -48,6 +50,8 @@ class RmValidationTest extends GroovyTestCase {
       RmValidator validator = new RmValidator(opt_manager)
       RmValidationReport report = validator.dovalidate(c)
 
-      println report.errors
+      report.errors.each { error ->
+         println error
+      }
    }
 }

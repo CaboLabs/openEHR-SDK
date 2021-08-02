@@ -15,7 +15,23 @@ class CInteger extends CPrimitive {
 
    ValidationResult isValid(Integer value)
    {
-      if (!range.has(value)) return new ValidationResult(isValid: false, message:'CInteger.validation.error.valueNotInRange')
+      if (range)
+      {
+         if (!range.has(value))
+         {
+            def msg = "value '${value}' is not contained in the range '${range.lower}..${range.upper}'"
+            return new ValidationResult(isValid: false, message: msg)
+         }
+      }
+
+      if (list)
+      {
+         if (!list.contains(value))
+         {
+            def msg = "value '${value}' is not contained in the list '${list}'"
+            return new ValidationResult(isValid: false, message: msg)
+         }
+      }
 
       return new ValidationResult(isValid: true)
    }

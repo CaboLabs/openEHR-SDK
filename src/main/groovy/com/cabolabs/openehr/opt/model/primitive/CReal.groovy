@@ -13,7 +13,14 @@ class CReal extends CPrimitive {
 
    ValidationResult isValid(Float value)
    {
-      if (!range.has(value)) return new ValidationResult(isValid: false, message:'CPrimitive.validation.error.valueNotInRange')
+      if (range)
+      {
+         if (!range.has(value))
+         {
+            def msg = "value '${value}' is not contained in the range '${range.lower}..${range.upper}'"
+            return new ValidationResult(isValid: false, message: msg)
+         }
+      }
 
       return new ValidationResult(isValid: true)
    }

@@ -12,8 +12,24 @@ class CString extends CPrimitive {
 
    ValidationResult isValid(String value)
    {
-      // TODO:
-      //if (!range.has(new Duration(value: value))) return new ValidationResult(isValid: false, message:'CDuration.validation.error.valueNotInRange')
+      if (pattern)
+      {
+         def matching_pattern = ~/${pattern}/
+         if (!matching_pattern.matcher(value).matches())
+         {
+            def msg = "value '${value}' doesn't match pattern '${pattern}'"
+            return new ValidationResult(isValid: false, message: msg)
+         }
+      }
+
+      if (list)
+      {
+         if (!list.contains(value))
+         {
+            def msg = "value '${value}' is not contained in the list '${list}'"
+            return new ValidationResult(isValid: false, message: msg)
+         }
+      }
 
       return new ValidationResult(isValid: true)
    }

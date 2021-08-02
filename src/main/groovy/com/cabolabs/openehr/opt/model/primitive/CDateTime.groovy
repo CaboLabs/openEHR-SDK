@@ -22,22 +22,33 @@ class CDateTime extends CPrimitive {
       'yyyy-mm-ddTHH:MM:SS': ["yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
                               "yyyy-MM-dd'T'HH:mm:ss.SSSX",
                               "yyyy-MM-dd'T'HH:mm:ss.SSS",
+
+                              "yyyy-MM-dd'T'HH:mm:ss,SSS'Z'", // seconds fraction alternative with comma
+                              "yyyy-MM-dd'T'HH:mm:ss,SSSX",
+                              "yyyy-MM-dd'T'HH:mm:ss,SSS",
+
+
                               "yyyy-MM-dd'T'HH:mm:ss'Z'",
                               "yyyy-MM-dd'T'HH:mm:ssX",
                               "yyyy-MM-dd'T'HH:mm:ss"
                              ],
-      'yyyy-mm-ddTHH:??:??': ["yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", // complete, with seconds and fractions
+      'yyyy-mm-ddTHH:??:??': ["yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
                               "yyyy-MM-dd'T'HH:mm:ss.SSSX",
                               "yyyy-MM-dd'T'HH:mm:ss.SSS",
-                              "yyyy-MM-dd'T'HH:mm:ss'Z'",
+
+                              "yyyy-MM-dd'T'HH:mm:ss,SSS'Z'", // seconds fraction alternative with comma
+                              "yyyy-MM-dd'T'HH:mm:ss,SSSX",
+                              "yyyy-MM-dd'T'HH:mm:ss,SSS",
+
+                              "yyyy-MM-dd'T'HH:mm:ss'Z'",     // without seconds fraction
                               "yyyy-MM-dd'T'HH:mm:ssX",
                               "yyyy-MM-dd'T'HH:mm:ss",
 
-                              "yyyy-MM-dd'T'HH:mm'Z'",          // without seconds and fractions
+                              "yyyy-MM-dd'T'HH:mm'Z'",        // without seconds and fractions
                               "yyyy-MM-dd'T'HH:mmX",
                               "yyyy-MM-dd'T'HH:mm",
 
-                              "yyyy-MM-dd'T'HH'Z'",             // without minutes
+                              "yyyy-MM-dd'T'HH'Z'",           // without minutes
                               "yyyy-MM-dd'T'HHX",
                               "yyyy-MM-dd'T'HH"
                              ],
@@ -45,6 +56,11 @@ class CDateTime extends CPrimitive {
       'any_allowed':         ["yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",         // same as previous case, since it includes all the possible valid datetime formats
                               "yyyy-MM-dd'T'HH:mm:ss.SSSX",
                               "yyyy-MM-dd'T'HH:mm:ss.SSS",
+
+                              "yyyy-MM-dd'T'HH:mm:ss,SSS'Z'", // seconds fraction alternative with comma
+                              "yyyy-MM-dd'T'HH:mm:ss,SSSX",
+                              "yyyy-MM-dd'T'HH:mm:ss,SSS",
+
                               "yyyy-MM-dd'T'HH:mm:ss'Z'",
                               "yyyy-MM-dd'T'HH:mm:ssX",
                               "yyyy-MM-dd'T'HH:mm:ss",
@@ -59,10 +75,15 @@ class CDateTime extends CPrimitive {
 
                               "yyyyMMdd'T'HHmmss.SSS'Z'",         // basic formats ISO-8601
                               "yyyyMMdd'T'HHmmss.SSSX",
-                              "yyyyMM-dd'T'HHmmss.SSS",
-                              "yyyyMM-dd'T'HHmmss'Z'",
-                              "yyyyMM-dd'T'HHmmssX",
-                              "yyyyMM-dd'T'HHmmss",
+                              "yyyyMMdd'T'HHmmss.SSS",
+
+                              "yyyyMMdd'T'HHmmss,SSS'Z'",         // basic formats ISO-8601, seconds fraction alternatives with comma
+                              "yyyyMMdd'T'HHmmss,SSSX",
+                              "yyyyMMdd'T'HHmmss,SSS",
+
+                              "yyyyMMdd'T'HHmmss'Z'",
+                              "yyyyMMdd'T'HHmmssX",
+                              "yyyyMMdd'T'HHmmss",
 
                               "yyyyMMdd'T'HHmm'Z'",
                               "yyyyMMdd'T'HHmmX",
@@ -92,6 +113,17 @@ class CDateTime extends CPrimitive {
          catch (ParseException e) {}
       }
 
-      return new ValidationResult(isValid: false, message: "value '${formattedDate}' is not a valid datetime format")
+      def msg
+
+      if (pattern)
+      {
+         msg = "value '${formattedDate}' is not a valid datetime format for the specified pattern '${pattern}'"
+      }
+      else
+      {
+         msg = "value '${formattedDate}' is not a valid datetime format"
+      }
+
+      return new ValidationResult(isValid: false, message: msg)
    }
 }

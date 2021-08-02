@@ -12,7 +12,9 @@ import com.cabolabs.openehr.opt.instance_validation.XmlInstanceValidation
 
 class OPTManagerTest extends GroovyTestCase {
 
-   private static String PS = System.getProperty("file.separator")
+   private static String PS = System.getProperty("file.separator") // File.separator
+
+   private man
 
 /*
    void testXMLGenerator()
@@ -26,15 +28,24 @@ class OPTManagerTest extends GroovyTestCase {
       new File( "documents" + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'.xml'").format(new Date()) ) << ins
    }
 */
+   protected void setUp() throws Exception
+   {
+      super.setUp()
+      println "setup"
+ 
+      def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts').toURI())
+      this.man = OptManager.getInstance(repo)
+      this.man.unloadAll()
+   }
+
    void testReferencedArchetypes()
    {
       println "====== testReferencedArchetypes ======"
 
       String namespace = 'test_ref_archs_namespace'
-      String PS = File.separator
 
-      def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts').toURI())
-      def man = OptManager.getInstance(repo)
+      //def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts').toURI())
+      //def man = OptManager.getInstance(repo)
 
       assert man.getLoadedOpts(namespace).size() == 0
       man.loadAll(namespace)
@@ -71,9 +82,9 @@ class OPTManagerTest extends GroovyTestCase {
       println "====== testTemplateDataPaths ======"
 
       String namespace = 'test_ism_paths'
-      String PS = File.separator
-      def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts').toURI())
-      def man = OptManager.getInstance(repo)
+
+      //def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts').toURI())
+      //def man = OptManager.getInstance(repo)
       man.loadAll(namespace)
 
       def archs = man.getAllReferencedArchetypes(namespace) // List<ObjectNode>
@@ -126,9 +137,9 @@ class OPTManagerTest extends GroovyTestCase {
       println "====== testDataPaths ======"
 
       String namespace = 'test_ism_paths'
-      String PS = File.separator
-      def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts').toURI())
-      def man = OptManager.getInstance(repo)
+
+      //def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts').toURI())
+      //def man = OptManager.getInstance(repo)
 
       assert man.getLoadedOpts(namespace).size() == 0
       man.loadAll(namespace)
@@ -170,9 +181,9 @@ class OPTManagerTest extends GroovyTestCase {
    {
       println "====== testOptManagerLanguages ======"
 
-      String PS = File.separator
-      def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts' + PS +'test_languages').toURI())
-      def man = OptManager.getInstance(repo)
+      //String PS = File.separator
+      //def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts' + PS +'test_languages').toURI())
+      //def man = OptManager.getInstance(repo)
 
       assert man.getLoadedOpts().size() == 0
 
