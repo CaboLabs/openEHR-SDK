@@ -357,8 +357,6 @@ class OptManager {
    @Synchronized
    public void unloadAll(String namespace = DEFAULT_NAMESPACE)
    {
-      println namespace
-      println this.cache
       if (this.cache[namespace]) // just in case an unload is called before loading, maps doesnt exist and throws exception.
       {
          // TODO: sometimes we get 'Cannot invoke method clear() on null object' from here, not sure which one is null, needs more testing, added the ? just in case.
