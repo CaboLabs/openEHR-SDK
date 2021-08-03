@@ -35,8 +35,8 @@ class OpenEhrXmlParserTest extends GroovyTestCase {
       def parser = new OpenEhrXmlParser()
       Version c = (Version)parser.parseVersionXml(xml)
       
-      def out = JsonOutput.toJson(c)
-      out = JsonOutput.prettyPrint(out)
+      //def out = JsonOutput.toJson(c)
+      //out = JsonOutput.prettyPrint(out)
       //println out
    }
    
@@ -49,8 +49,8 @@ class OpenEhrXmlParserTest extends GroovyTestCase {
       def parser = new OpenEhrXmlParser()
       Composition c = (Composition)parser.parseXml(xml)
       
-      def out = JsonOutput.toJson(c)
-      out = JsonOutput.prettyPrint(out)
+      //def out = JsonOutput.toJson(c)
+      //out = JsonOutput.prettyPrint(out)
       //println out
    }
 
@@ -70,6 +70,19 @@ class OpenEhrXmlParserTest extends GroovyTestCase {
 
       // original xml, when parsed and serialized again, are exactly the same as strings (without indentation and new lines)
       assert xml.replaceAll(">\\s+<", "><").replaceAll("[\n\r]", "") == xml2
+
+
+      assert v.data.context.path == '/context'
+      assert v.data.context.dataPath == '/context'
+
+      assert v.data.content[0].path == '/content'
+      assert v.data.content[0].dataPath == '/content[0]'
+
+      assert v.data.content[0].data.path == '/content/data'
+      assert v.data.content[0].data.dataPath == '/content[0]/data'
+
+      assert v.data.content[0].data.events[0].path == '/content/data/events'
+      assert v.data.content[0].data.events[0].dataPath == '/content[0]/data/events[0]'
    }
 
    void testXmlParserAndMarshallerComposition()
@@ -88,5 +101,18 @@ class OpenEhrXmlParserTest extends GroovyTestCase {
 
       // original xml, when parsed and serialized again, are exactly the same as strings (without indentation and new lines)
       assert xml.replaceAll(">\\s+<", "><").replaceAll("[\n\r]", "") == xml2
+
+
+      assert c.context.path == '/context'
+      assert c.context.dataPath == '/context'
+
+      assert c.content[0].path == '/content'
+      assert c.content[0].dataPath == '/content[0]'
+
+      assert c.content[0].data.path == '/content/data'
+      assert c.content[0].data.dataPath == '/content[0]/data'
+
+      assert c.content[0].data.events[0].path == '/content/data/events'
+      assert c.content[0].data.events[0].dataPath == '/content[0]/data/events[0]'
    }
 }

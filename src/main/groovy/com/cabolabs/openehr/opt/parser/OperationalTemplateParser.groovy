@@ -6,9 +6,12 @@ import com.cabolabs.openehr.opt.model.domain.*
 import com.cabolabs.openehr.opt.model.datatypes.*
 //import com.thoughtworks.xstream.XStream
 import groovy.util.slurpersupport.GPathResult
+import org.apache.log4j.Logger
 
-@groovy.util.logging.Log4j
+//@groovy.util.logging.Log4j
 class OperationalTemplateParser {
+
+   private Logger log = Logger.getLogger(getClass())
 
    // Parsed XML
    //GPathResult templateXML
@@ -144,11 +147,11 @@ class OperationalTemplateParser {
       return itv
    }
 
-   private parseIntervalFloat(GPathResult node)
+   private parseIntervalDouble(GPathResult node)
    {
       if (node.isEmpty()) return null
 
-      def itv = new IntervalFloat(
+      def itv = new IntervalDouble(
          upperIncluded:  node.upper_included.text().toBoolean(),
          lowerIncluded:  node.lower_included.text().toBoolean(),
          upperUnbounded: node.upper_unbounded.text().toBoolean(),
@@ -235,6 +238,9 @@ class OperationalTemplateParser {
 
       // TODO: refactor individual factories per AOM type
 
+      //log.debug(node.'@xsi:type'.text())
+      //log.debug(templatePath)
+
       def obn
       if (['C_CODE_PHRASE', 'C_CODE_REFERENCE', 'CONSTRAINT_REF'].contains(node.'@xsi:type'.text()))
       {
@@ -304,7 +310,7 @@ class OperationalTemplateParser {
          node.list.each {
             cqi           = new CQuantityItem()
             cqi.units     = it.units.text()
-            cqi.magnitude = parseIntervalFloat(it.magnitude)
+            cqi.magnitude = parseIntervalDouble(it.magnitude)
             cqi.precision = parseIntervalInt(it.precision)
             obn.list << cqi
          }
@@ -413,7 +419,7 @@ class OperationalTemplateParser {
          else if (primitive.'@xsi:type'.text() == 'C_REAL')
          {
             obn.item = new CReal()
-            obn.item.range = parseIntervalFloat(primitive.range)
+            obn.item.range = parseIntervalDouble(primitive.range)
          }
          else if (primitive.'@xsi:type'.text() == 'C_STRING')
          {
@@ -547,6 +553,7 @@ class OperationalTemplateParser {
       attr.children.each { xobn ->
 
          obn = parseObjectNode(xobn, templatePath, nextArchPath, dataPath, templateDataPath)
+
          obn.parent = atn
          atn.children << obn
       }

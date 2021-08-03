@@ -36,7 +36,7 @@
     <value>cb5aa21f-82d9-440d-908d-9fa4087263a9</value>
   </uid>
   <template_id>
-    <value>Minimal action 2</value>
+    <value>minimal_action_2.en.v1</value>
   </template_id>
   <concept>Minimal action 2</concept>
   <definition>
@@ -345,7 +345,7 @@
       <value>openEHR-EHR-COMPOSITION.minimal.v1</value>
     </archetype_id>
     <template_id>
-      <value>Minimal action 2</value>
+      <value>minimal_action_2.en.v1</value>
     </template_id>
     <term_definitions code="at0000">
       <items id="description">unknown</items>

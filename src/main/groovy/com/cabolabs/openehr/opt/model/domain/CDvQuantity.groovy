@@ -18,7 +18,7 @@ class CDvQuantity extends ObjectNode {
    // List<CQuantityItem>
    List list = []
 
-   ValidationResult isValid(String units, float magnitude)
+   ValidationResult isValid(String units, Double magnitude)
    {
       // if there are no constraints, the validation is always true
       if (list.size() > 0)

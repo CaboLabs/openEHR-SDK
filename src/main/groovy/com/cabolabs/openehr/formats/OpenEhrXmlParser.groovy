@@ -1,7 +1,6 @@
 package com.cabolabs.openehr.formats
 
-import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
-import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
+import com.cabolabs.openehr.rm_1_0_2.common.archetyped.*
 import com.cabolabs.openehr.rm_1_0_2.common.change_control.OriginalVersion
 import com.cabolabs.openehr.rm_1_0_2.common.change_control.Version
 import com.cabolabs.openehr.rm_1_0_2.common.generic.*
@@ -20,16 +19,9 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DvIdentifier
 import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.DvMultimedia
 import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.DvParsable
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.*
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDate
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDuration
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvTime
-import com.cabolabs.openehr.rm_1_0_2.data_types.text.CodePhrase
-import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvCodedText
-import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
-import com.cabolabs.openehr.rm_1_0_2.data_types.text.TermMapping
-import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvEhrUri
-import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvUri
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.*
+import com.cabolabs.openehr.rm_1_0_2.data_types.text.*
+import com.cabolabs.openehr.rm_1_0_2.data_types.uri.*
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 
 // Old Groovy
@@ -57,7 +49,7 @@ class OpenEhrXmlParser {
       }
       
       def method = 'parse'+ type
-      return this."$method"(gpath)
+      return this."$method"(gpath, null, '/', '/')
    }
 
    // used to parse versions because is not Locatable
@@ -78,7 +70,14 @@ class OpenEhrXmlParser {
 
    // ========= FIll METHODS =========
 
-   private void fillLOCATABLE(Locatable l, GPathResult xml)
+   private void fillPATHABLE(Pathable p, Pathable parent, String path, String dataPath)
+   {
+      p.parent   = parent
+      p.path     = path
+      p.dataPath = dataPath
+   }
+
+   private void fillLOCATABLE(Locatable l, GPathResult xml, Pathable parent, String path, String dataPath)
    {
       // name can be text or coded
       String type = xml.name.'@xsi:type'.text()
@@ -100,13 +99,15 @@ class OpenEhrXmlParser {
       
       if (!xml.archetype_details.isEmpty())
          l.archetype_details = this.parseARCHETYPED(xml.archetype_details)
+
+      this.fillPATHABLE(l, parent, path, dataPath)
    }
    
-   private void fillENTRY(Entry e, GPathResult xml)
+   private void fillENTRY(Entry e, GPathResult xml, Pathable parent, String path, String dataPath)
    {
       String type, method
 
-      this.fillLOCATABLE(e, xml)
+      this.fillLOCATABLE(e, xml, parent, path, dataPath)
       
       e.encoding = this.parseCODE_PHRASE(xml.encoding)
       e.language = this.parseCODE_PHRASE(xml.language)
@@ -142,13 +143,16 @@ class OpenEhrXmlParser {
       }
    }
    
-   private void fillCARE_ENTRY(CareEntry c, GPathResult xml)
+   private void fillCARE_ENTRY(CareEntry c, GPathResult xml, Pathable parent, String path, String dataPath)
    {
       if (!xml.protocol.isEmpty())
       {
          String type = xml.protocol.'@xsi:type'.text()
          String method = 'parse'+ type
-         c.protocol = this."$method"(xml.protocol)         
+         c.protocol = this."$method"(xml.protocol, parent,
+                                     (path != '/' ? path +'/protocol' : '/protocol'),
+                                     (dataPath != '/' ? dataPath +'/protocol' : '/protocol')
+                                    )         
       }
       
       if (!xml.guideline_id.isEmpty())
@@ -156,32 +160,9 @@ class OpenEhrXmlParser {
          c.guideline_id = this.parseOBJECT_REF(xml.guideline_id)
       }
       
-      this.fillENTRY(c, xml)
+      this.fillENTRY(c, xml, parent, path, dataPath)
    }
    
-   private void fillDV_ORDERED(DvOrdered d, GPathResult xml)
-   {
-      if (!xml.normal_status.isEmpty())
-      {
-         d.normal_status = this.parseCODE_PHRASE(xml.normal_status)
-      }
-      
-      if (!xml.normal_range.isEmpty())
-      {
-         d.normal_range = this.parseDV_INTERVAL(xml.normal_range)
-      }
-      
-      if (!xml.other_reference_ranges.isEmpty())
-      {
-         def ref_range
-         xml.other_reference_ranges.each { _reference_range ->
-            
-            ref_range = this.parseREFERENCE_RANGE(_reference_range)
-            d.other_reference_ranges.add(ref_range)
-         }
-      }
-   }
-
 
    // ========= PARSE METHODS =========
 
@@ -222,7 +203,7 @@ class OpenEhrXmlParser {
       {
          def type = xml.data.'@xsi:type'.text()
          def method = 'parse'+ type
-         ov.data = this."$method"(xml.data)
+         ov.data = this."$method"(xml.data, null, '/', '/')
       }
       
       return ov
@@ -290,15 +271,15 @@ class OpenEhrXmlParser {
    }
 
       
-   private Composition parseCOMPOSITION(GPathResult xml)
+   private Composition parseCOMPOSITION(GPathResult xml, Pathable parent, String path, String dataPath)
    {
       Composition compo = new Composition()
       //println "compo"+ xml
-      this.fillLOCATABLE(compo, xml)
+      this.fillLOCATABLE(compo, xml, parent, path, dataPath)
       
-      compo.language = this.parseCODE_PHRASE(xml.language)
+      compo.language  = this.parseCODE_PHRASE(xml.language)
       compo.territory = this.parseCODE_PHRASE(xml.territory)
-      compo.category = this.parseDV_CODED_TEXT(xml.category)
+      compo.category  = this.parseDV_CODED_TEXT(xml.category)
       
       String type, method
       
@@ -306,14 +287,22 @@ class OpenEhrXmlParser {
       method = 'parse'+ type
       compo.composer = this."$method"(xml.composer)
       
-      compo.context = parseEVENT_CONTEXT(xml.context)
+      compo.context = parseEVENT_CONTEXT(xml.context, compo,
+                                         (path != '/' ? path +'/context' : '/context'),
+                                         (dataPath != '/' ? dataPath +'/context' : '/context')
+                                        )
       
       def content = []
       
-      xml.content.each { content_item ->
+      xml.content.eachWithIndex { content_item, i ->
          type = content_item.'@xsi:type'.text()
          method = 'parse'+ type
-         compo.content.add(this."$method"(content_item))
+         compo.content.add(
+            this."$method"(content_item, compo,
+                           (path != '/' ? path +'/content' : '/content'),
+                           (dataPath != '/' ? dataPath +'/content['+ i +']' : '/content['+ i +']')
+                          )
+         )
       }
       
       return compo
@@ -328,6 +317,31 @@ class OpenEhrXmlParser {
       rr.range = this.parseDV_INTERVAL(xml.range)
 
       return rr
+   }
+
+
+
+   private void fillDV_ORDERED(DvOrdered d, GPathResult xml)
+   {
+      if (!xml.normal_status.isEmpty())
+      {
+         d.normal_status = this.parseCODE_PHRASE(xml.normal_status)
+      }
+      
+      if (!xml.normal_range.isEmpty())
+      {
+         d.normal_range = this.parseDV_INTERVAL(xml.normal_range)
+      }
+      
+      if (!xml.other_reference_ranges.isEmpty())
+      {
+         def ref_range
+         xml.other_reference_ranges.each { _reference_range ->
+            
+            ref_range = this.parseREFERENCE_RANGE(_reference_range)
+            d.other_reference_ranges.add(ref_range)
+         }
+      }
    }
 
    
@@ -495,9 +509,13 @@ class OpenEhrXmlParser {
       return i
    }
    
-   private EventContext parseEVENT_CONTEXT(GPathResult xml)
+
+   private EventContext parseEVENT_CONTEXT(GPathResult xml, Pathable parent, String path, String dataPath)
    {
       EventContext e = new EventContext()
+
+      this.fillPATHABLE(e, parent, path, dataPath)
+
       e.start_time = this.parseDV_DATE_TIME(xml.start_time)
       
       if (e.end_time)
@@ -544,60 +562,72 @@ class OpenEhrXmlParser {
       return p
    }
    
-   private Section parseSECTION(GPathResult xml)
+   private Section parseSECTION(GPathResult xml, Pathable parent, String path, String dataPath)
    {
       Section s = new Section()
       
-      this.fillLOCATABLE(s, xml)
+      this.fillLOCATABLE(s, xml, parent, path, dataPath)
       
       String type, method
       
-      xml.items.each { content_item ->
+      xml.items.eachWithIndex { content_item, i ->
          type = content_item.'@xsi:type'.text()
          method = 'parse'+ type
-         this."$method"(content_item)
+         this."$method"(content_item, s,
+                        (path != '/' ? path +'/items' : '/items'),
+                        (dataPath != '/' ? dataPath +'/items['+ i +']' : '/items['+ i +']')
+                       )
       }
       
       return s
    }
    
-   private AdminEntry parseADMIN_ENTRY(GPathResult xml)
+   private AdminEntry parseADMIN_ENTRY(GPathResult xml, Pathable parent, String path, String dataPath)
    {
       AdminEntry a = new AdminEntry()
       
-      this.fillENTRY(a, xml)
+      this.fillENTRY(a, xml, parent, path, dataPath)
       
       String type = xml.data.'@xsi:type'.text()
       String method = 'parse'+ type
-      a.data = this."$method"(xml.data)
+      a.data = this."$method"(xml.data, a,
+                               (path != '/' ? path +'/data' : '/data'),
+                               (dataPath != '/' ? dataPath +'/data' : '/data')
+                             )
       
       return a
    }
    
-   private Observation parseOBSERVATION(GPathResult xml)
+   private Observation parseOBSERVATION(GPathResult xml, Pathable parent, String path, String dataPath)
    {
       Observation o = new Observation()
       
-      this.fillCARE_ENTRY(o, xml)
+      this.fillCARE_ENTRY(o, xml, parent, path, dataPath)
       
       if (!xml.data.isEmpty())
       {
-         o.data = this.parseHISTORY(xml.data)
+         o.data = this.parseHISTORY(xml.data, o,
+                                     (path != '/' ? path +'/data' : '/data'),
+                                     (dataPath != '/' ? dataPath +'/data' : '/data')
+                                    )
       }
       
       if (!xml.state.isEmpty())
       {
-         o.state = this.parseHISTORY(xml.state)
+         o.state = this.parseHISTORY(xml.state, o,
+                                     (path != '/' ? path +'/state' : '/state'),
+                                     (dataPath != '/' ? dataPath +'/state' : '/state')
+                                    )
       }
       
       return o
    }
    
-   private History parseHISTORY(GPathResult xml)
+   private History parseHISTORY(GPathResult xml, Pathable parent, String path, String dataPath)
    {
       History h = new History()
       
-      this.fillLOCATABLE(h, xml)
+      this.fillLOCATABLE(h, xml, parent, path, dataPath)
       
       h.origin = this.parseDV_DATE_TIME(xml.origin)
       
@@ -612,64 +642,82 @@ class OpenEhrXmlParser {
       }
 
       String type, method
-      xml.events.each { event ->
+      xml.events.eachWithIndex { event, i ->
          type = event.'@xsi:type'.text()
          method = 'parse'+ type
-         h.events.add("$method"(event))
+         h.events.add(
+            this."$method"(event, h,
+                        (path != '/' ? path +'/events' : '/events'),
+                        (dataPath != '/' ? dataPath +'/events['+ i +']' : '/events['+ i +']')
+                       )
+         )
       }     
       
       return h
    }
    
-   private PointEvent parsePOINT_EVENT(GPathResult xml)
+   private PointEvent parsePOINT_EVENT(GPathResult xml, Pathable parent, String path, String dataPath)
    {
       PointEvent e = new PointEvent()
       
-      this.fillLOCATABLE(e, xml)
+      this.fillLOCATABLE(e, xml, parent, path, dataPath)
       
       e.time = this.parseDV_DATE_TIME(xml.time)
       
       String type, method
-      
+
+      if (!xml.data.isEmpty())
+      {
+         type = xml.data.'@xsi:type'.text()
+         method = 'parse'+ type
+         e.data = this."$method"(xml.data, e,
+                                    (path != '/' ? path +'/data' : '/data'),
+                                    (dataPath != '/' ? dataPath +'/data' : '/data')
+                                 )
+      }
+
       if (!xml.state.isEmpty())
       {         
          type = xml.state.'@xsi:type'.text()
          method = 'parse'+ type
-         e.state = this."$method"(xml.state)
+         e.state = this."$method"(xml.state, e,
+                                    (path != '/' ? path +'/state' : '/state'),
+                                    (dataPath != '/' ? dataPath +'/state' : '/state')
+                                 )
       }
       
-      if (!xml.data.isEmpty())
-      {
-         type = xml.data.'@xsi:type'.text()
-         method = 'parse'+ type
-         e.data = this."$method"(xml.data)
-      }
       
       return e
    }
    
-   private IntervalEvent parseINTERVAL_EVENT(GPathResult xml)
+   private IntervalEvent parseINTERVAL_EVENT(GPathResult xml, Pathable parent, String path, String dataPath)
    {
       IntervalEvent e = new IntervalEvent()
       
-      this.fillLOCATABLE(e, xml)
+      this.fillLOCATABLE(e, xml, parent, path, dataPath)
       
       e.time = this.parseDV_DATE_TIME(xml.time)
       
       String type, method
+
+      if (!xml.data.isEmpty())
+      {
+         type = xml.data.'@xsi:type'.text()
+         method = 'parse'+ type
+         e.data = this."$method"(xml.data, e,
+                                    (path != '/' ? path +'/data' : '/data'),
+                                    (dataPath != '/' ? dataPath +'/data' : '/data')
+                                 )
+      }
       
       if (!xml.state.isEmpty())
       {
          type = xml.state.'@xsi:type'.text()
          method = 'parse'+ type
-         e.state = this."$method"(xml.state)
-      }
-      
-      if (!xml.data.isEmpty())
-      {
-         type = xml.data.'@xsi:type'.text()
-         method = 'parse'+ type
-         e.data = this."$method"(xml.data)
+         e.state = this."$method"(xml.state, e,
+                                 (path != '/' ? path +'/state' : '/state'),
+                                 (dataPath != '/' ? dataPath +'/state' : '/state')
+                              )
       }
       
       e.width = this.parseDV_DURATION(xml.width)
@@ -684,55 +732,62 @@ class OpenEhrXmlParser {
       return e
    }
    
-   private Evaluation parseEVALUATION(GPathResult xml)
+   private Evaluation parseEVALUATION(GPathResult xml, Pathable parent, String path, String dataPath)
    {
       Evaluation e = new Evaluation()
       
-      this.fillCARE_ENTRY(e, xml)
+      this.fillCARE_ENTRY(e, xml, parent, data, dataPath)
       
       String type = xml.data.'@xsi:type'.text()
       String method = 'parse'+ type
-      e.data = this."$method"(xml.data)
+      e.data = this."$method"(xml.data, e,
+                                 (path != '/' ? path +'/data' : '/data'),
+                                 (dataPath != '/' ? dataPath +'/data' : '/data')
+                              )
       
       return e
    }
    
-   private Instruction parseINSTRUCTION(GPathResult xml)
+   private Instruction parseINSTRUCTION(GPathResult xml, Pathable parent, String path, String dataPath)
    {
-      Instruction i = new Instruction()
+      Instruction ins = new Instruction()
       
-      this.fillCARE_ENTRY(i, xml)
+      this.fillCARE_ENTRY(ins, xml, parent, path, dataPath)
       
       String type, method
-      
       
       type = xml.narrative.'@xsi:type'.text()
       if (!type) type = 'DV_TEXT'
       method = 'parse'+ type
-      i.narrative = this."$method"(xml.narrative)
+      ins.narrative = this."$method"(xml.narrative)
       
       
       if (!xml.expiry_time.isEmpty())
-         i.expiry_time = this.parseDV_DATE_TIME(xml.expiry_time)
+         ins.expiry_time = this.parseDV_DATE_TIME(xml.expiry_time)
       
          
       if (!xml.wf_definition.isEmpty())
-         i.wf_definition = this.parseDV_PARSABLE(xml.wf_definition)
+         ins.wf_definition = this.parseDV_PARSABLE(xml.wf_definition)
       
       
-      xml.activities.each { js_activity ->
+      xml.activities.eachWithIndex { js_activity, i ->
          
-         i.activities.add(this.parseACTIVITY(js_activity))
+         ins.activities.add(
+            this.parseACTIVITY(js_activity, ins,
+                        (path != '/' ? path +'/activities' : '/activities'),
+                        (dataPath != '/' ? dataPath +'/activities['+ i +']' : '/activities['+ i +']')
+                       )
+         )
       }
       
       return i
    }
    
-   private Action parseACTION(GPathResult xml)
+   private Action parseACTION(GPathResult xml, Pathable parent, String path, String dataPath)
    {
       Action a = new Action()
       
-      this.fillCARE_ENTRY(a, xml)
+      this.fillCARE_ENTRY(a, xml, parent, path, dataPath)
       
       String type = xml.description.'@xsi:type'.text()
       String method = 'parse'+ type
@@ -740,17 +795,25 @@ class OpenEhrXmlParser {
       
       a.time = this.parseDV_DATE_TIME(xml.time)
 
-      a.ism_transition = this.parseISM_TRANSITION(xml.ism_transition)
+      a.ism_transition = this.parseISM_TRANSITION(xml.ism_transition, a,
+                                 (path != '/' ? path +'/ism_transition' : '/ism_transition'),
+                                 (dataPath != '/' ? dataPath +'/ism_transition' : '/ism_transition')
+                              )
       
       if (!xml.instruction_details.isEmpty())
-         a.instruction_details = this.parseINSTRUCTION_DETAILS(xml.instruction_details)
+         a.instruction_details = this.parseINSTRUCTION_DETAILS(xml.instruction_details, a,
+                                 (path != '/' ? path +'/instruction_details' : '/instruction_details'),
+                                 (dataPath != '/' ? dataPath +'/instruction_details' : '/instruction_details')
+                              )
       
       return a
    }
 
-   private IsmTransition parseISM_TRANSITION(GPathResult xml)
+   private IsmTransition parseISM_TRANSITION(GPathResult xml, Pathable parent, String path, String dataPath)
    {
       IsmTransition i = new IsmTransition()
+
+      this.fillPATHABLE(i, parent, path, dataPath)
 
       i.current_state = this.parseDV_CODED_TEXT(xml.current_state)
 
@@ -767,9 +830,11 @@ class OpenEhrXmlParser {
       return i
    }
    
-   private InstructionDetails parseINSTRUCTION_DETAILS(GPathResult xml)
+   private InstructionDetails parseINSTRUCTION_DETAILS(GPathResult xml, Pathable parent, String path, String dataPath)
    {
       InstructionDetails i = new InstructionDetails()
+
+      this.fillPATHABLE(i, parent, path, dataPath)
       
       i.instruction_id = this.parseLOCATABLE_REF(xml.instruction_id)
       
@@ -785,7 +850,7 @@ class OpenEhrXmlParser {
       return i
    }
    
-   private Activity parseACTIVITY(GPathResult xml)
+   private Activity parseACTIVITY(GPathResult xml, Pathable parent, String path, String dataPath)
    {
       String type = xml.description.'@xsi:type'.text()
       String method = 'parse'+ type
@@ -794,17 +859,140 @@ class OpenEhrXmlParser {
          description: this."$method"(xml.description),
          action_archetype_id: xml.action_archetype_id
       )
-      
+
       if (!xml.timing.isEmpty())
       {
          a.timing = this.parseDV_PARSABLE(xml.timing)
       }
       
-      this.fillLOCATABLE(a, xml)
+      this.fillLOCATABLE(a, xml, parent, path, dataPath)
       
       return a
    }
    
+
+   
+   private ItemTree parseITEM_TREE(GPathResult xml, Pathable parent, String path, String dataPath)
+   {
+      ItemTree t = new ItemTree()
+      
+      this.fillLOCATABLE(t, xml, parent, path, dataPath)
+      
+      String type, method
+      
+      xml.items.eachWithIndex { item, i ->
+         type = item.'@xsi:type'.text()
+         method = 'parse'+ type
+         t.items.add(
+            this."$method"(item, t,
+                        (path != '/' ? path +'/items' : '/items'),
+                        (dataPath != '/' ? dataPath +'/items['+ i +']' : '/items['+ i +']')
+                       )
+         )
+      }
+      
+      return t
+   }
+   
+   private ItemList parseITEM_LIST(GPathResult xml, Pathable parent, String path, String dataPath)
+   {
+      ItemList l = new ItemList()
+      
+      this.fillLOCATABLE(l, xml, parent, path, dataPath)
+      
+      xml.items.eachWithIndex { element, i ->
+         l.items.add(
+            this.parseELEMENT(element, l,
+                        (path != '/' ? path +'/items' : '/items'),
+                        (dataPath != '/' ? dataPath +'/items['+ i +']' : '/items['+ i +']')
+                       )
+         )
+      }
+      
+      return l
+   }
+   
+   private ItemTable parseITEM_TABLE(GPathResult xml, Pathable parent, String path, String dataPath)
+   {
+      ItemTable t = new ItemTable()
+      
+      this.fillLOCATABLE(t, xml, parent, path, dataPath)
+      
+      String type, method
+      
+	  // FIXME: rows are CLUSTERS, we don't need to get the dynamic method
+      xml.rows.eachWithIndex { item, i -> 
+         type = item.'@xsi:type'.text()
+         method = 'parse'+ type
+         t.items.add(
+            this."$method"(item, t, 
+                        (path != '/' ? path +'/rows' : '/rows'),
+                        (dataPath != '/' ? dataPath +'/rows['+ i +']' : '/rows['+ i +']')
+                      )
+         )
+      }
+      
+      return t
+   }
+   
+   private ItemSingle parseITEM_SINGLE(GPathResult xml, Pathable parent, String path, String dataPath)
+   {
+      ItemSingle s = new ItemSingle()
+      
+      this.fillLOCATABLE(s, xml, parent, path, dataPath)
+      
+      s.item = this.parseELEMENT(xml.item, s,
+                                 (path != '/' ? path +'/item' : '/item'),
+                                 (dataPath != '/' ? dataPath +'/item' : '/item')
+                              )
+      
+      return s
+   }
+   
+   private Cluster parseCLUSTER(GPathResult xml, Pathable parent, String path, String dataPath)
+   {
+      Cluster c = new Cluster()
+      
+      this.fillLOCATABLE(c, xml, parent, path, dataPath)
+      
+      String type, method
+      
+      xml.items.eachWithIndex { item, i ->
+         type = item.'@xsi:type'.text()
+         method = 'parse'+ type
+         c.items.add(
+            this."$method"(item, c
+                        (path != '/' ? path +'/items' : '/items'),
+                        (dataPath != '/' ? dataPath +'/items['+ i +']' : '/items['+ i +']')
+                       )
+         )
+      }
+      
+      return c
+   }
+   
+   private Element parseELEMENT(GPathResult xml, Pathable parent, String path, String dataPath)
+   {
+      Element e = new Element()
+      
+      this.fillLOCATABLE(e, xml, parent, path, dataPath)
+      
+      if (!xml.value.isEmpty())
+      {
+         String type = xml.value.'@xsi:type'.text()
+         String method = 'parse'+ type
+         e.value = this."$method"(xml.value)
+      }
+      
+      if (!xml.null_flavour.isEmpty())
+      {
+         e.null_flavour = this.parseDV_CODED_TEXT(xml.null_flavour)
+      }
+      
+      return e
+   }
+
+
    
    private TerminologyId parseTERMINOLOGY_ID(GPathResult xml)
    {
@@ -1036,104 +1224,6 @@ class OpenEhrXmlParser {
       )
    }
    
-   
-   private ItemTree parseITEM_TREE(GPathResult xml)
-   {
-      ItemTree t = new ItemTree()
-      
-      this.fillLOCATABLE(t, xml)
-      
-      String type, method
-      
-      xml.items.each { item ->
-         type = item.'@xsi:type'.text()
-         method = 'parse'+ type
-         //println " - " + method
-         t.items.add(this."$method"(item))
-      }
-      
-      return t
-   }
-   
-   private ItemList parseITEM_LIST(GPathResult xml)
-   {
-      ItemList l = new ItemList()
-      
-      this.fillLOCATABLE(l, xml)
-      
-      xml.items.each { element ->
-         l.items.add(this.parseELEMENT(element))
-      }
-      
-      return l
-   }
-   
-   private ItemTable parseITEM_TABLE(GPathResult xml)
-   {
-      ItemTable t = new ItemTable()
-      
-      this.fillLOCATABLE(t, xml)
-      
-      String type, method
-      
-	  // FIXME: rows are CLUSTERS, we don't need to get the dynamic method
-      xml.rows.each { item -> 
-         type = item.'@xsi:type'.text()
-         method = 'parse'+ type
-         t.items.add(this."$method"(item))
-      }
-      
-      return t
-   }
-   
-   private ItemSingle parseITEM_SINGLE(GPathResult xml)
-   {
-      ItemSingle s = new ItemSingle()
-      
-      this.fillLOCATABLE(s, xml)
-      
-      s.item = this.parseELEMENT(xml.item)
-      
-      return s
-   }
-   
-   private Cluster parseCLUSTER(GPathResult xml)
-   {
-      Cluster c = new Cluster()
-      
-      this.fillLOCATABLE(c, xml)
-      
-      String type, method
-      
-      xml.items.each { item ->
-         type = item.'@xsi:type'.text()
-         method = 'parse'+ type
-         c.items.add(this."$method"(item))
-      }
-      
-      return c
-   }
-   
-   private Element parseELEMENT(GPathResult xml)
-   {
-      Element e = new Element()
-      
-      this.fillLOCATABLE(e, xml)
-      
-      if (!xml.value.isEmpty())
-      {
-         String type = xml.value.'@xsi:type'.text()
-         String method = 'parse'+ type
-         e.value = this."$method"(xml.value)
-      }
-      
-      if (!xml.null_flavour.isEmpty())
-      {
-         e.null_flavour = this.parseDV_CODED_TEXT(xml.null_flavour)
-      }
-      
-      return e
-   }
    
    private DvInterval parseDV_INTERVAL(GPathResult xml)
    {

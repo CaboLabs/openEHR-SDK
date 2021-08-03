@@ -77,7 +77,7 @@ class OptRepositoryFSImpl implements OptRepository {
 
       if (!isNormalizedTemplateId(templateId))
       {
-         templateId = normalizeTemplateId(templateId) // FIXME: this needs the language!
+         templateId = normalizeTemplateId(templateId, "en") // FIXME: should get the default language from config or a list of supported languages
       }
 
       def location = addTrailingSeparator(this.repoLocation) +

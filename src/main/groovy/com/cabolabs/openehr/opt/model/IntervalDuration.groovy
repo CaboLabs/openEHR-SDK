@@ -11,10 +11,16 @@ class IntervalDuration {
    Duration lower
    Duration upper
 
-   boolean has(Duration i)
+   // FIXME: this is all wrong
+   // 1. duration is a string than can be represented as a number of seconds
+   // 2. if the range limits are not included. +1 or -1 is not the right way of comparing, it should be <= vs. < or >= vs. >
+   // 3. the seconds should be compared, in that way this would be the same as comparing integers
+   boolean has(Duration d)
    {
-      def ll = (lowerUnbounded ? Long.MIN_VALUE : (lowerIncluded ? lower : lower+1))
-      def hh = (upperUnbounded ? Long.MAX_VALUE : (upperIncluded ? upper : upper-1))
+      def i = d.seconds()
+
+      def ll = (lowerUnbounded ? Long.MIN_VALUE : (lowerIncluded ? lower.seconds() : lower.seconds()+1))
+      def hh = (upperUnbounded ? Long.MAX_VALUE : (upperIncluded ? upper.seconds() : upper.seconds()-1))
 
       return ll <= i && i <= hh
    }
