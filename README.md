@@ -52,7 +52,7 @@ $ ./opt.sh uigen path_to_opt dest_folder
 ### ingen: Generate XML instances from OPTs with random data
 
 ```shell
-$ ./opt.sh ingen path_to_opt dest_folder [amount] [version|composition|version_committer|tagged]
+$ ./opt.sh ingen path_to_opt dest_folder [amount] [version|composition|version_committer|tagged|json_version|json_composition|json_compo_with_errors] [withParticipations]
 ```
 
 1. amount: defines how many XML instances will be generated
@@ -60,6 +60,9 @@ $ ./opt.sh ingen path_to_opt dest_folder [amount] [version|composition|version_c
 3. composition: generates an instance of a COMPOSITION object
 4. version_committer: generates an instance with the format required by the [EHRCommitter] to generate the UI and load data to test the [EHRServer].
 5. tagged: generates a version instance with tags instead of data, useful to inject data from your app to commit to the [EHRServer]
+6. json_version: openEHR canonical JSON VERSION object
+7. json_composition: openEHR canonical JSON COMPOSITION object
+8. json_compo_with_errors: canonical JSON COMPOSITION object with violating data elements for cardinality constraints (purpose: data validation testing)
 
 
 ### inval: Validate XML or JSON instances against the schemas
