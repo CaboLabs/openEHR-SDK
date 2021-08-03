@@ -58,7 +58,7 @@ class Main {
 
             if (args.size() < 3)
             {
-               println 'usage: opt ingen path_to_opt dest_folder [amount] [version|composition|version_committer|tagged|json_version|json_composition] [withParticipations]'
+               println 'usage: opt ingen path_to_opt dest_folder [amount] [version|composition|version_committer|tagged|json_version|json_composition|json_compo_with_errors] [withParticipations]'
                System.exit(0)
             }
 
@@ -92,9 +92,9 @@ class Main {
             def generate = 'version'
             if (args.size() > 4)
             {
-               if (!['version', 'composition', 'version_committer', 'tagged', 'json_version', 'json_composition'].contains(args[4]))
+               if (!['version', 'composition', 'version_committer', 'tagged', 'json_version', 'json_composition', 'json_compo_with_errors'].contains(args[4]))
                {
-                  println "result type should be one of 'version', 'composition', 'version_committer', 'tagged', 'json_version', 'json_composition'"
+                  println "result type should be one of 'version', 'composition', 'version_committer', 'tagged', 'json_version', 'json_composition', 'json_compo_with_errors'"
                   System.exit(0)
                }
 
@@ -131,6 +131,12 @@ class Main {
                else if (generate == 'json_composition')
                {
                   igen = new JsonInstanceCanonicalGenerator2()
+                  ins = igen.generateJSONCompositionStringFromOPT(opt, withParticipations, true)
+                  ext = 'json'
+               }
+               else if (generate == 'json_compo_with_errors')
+               {
+                  igen = new JsonInstanceCanonicalGeneratorCardinalityErrors()
                   ins = igen.generateJSONCompositionStringFromOPT(opt, withParticipations, true)
                   ext = 'json'
                }

@@ -29,4 +29,10 @@ class IntervalInt {
 
       return s
    }
+
+   // true if the interval is 0..*
+   boolean anyAllowed()
+   {
+      (lower != null && lower == 0 && upperUnbounded)
+   }
 }

@@ -50,4 +50,10 @@ class IntervalDouble {
 
       return s
    }
+
+   // true if the interval is *..*
+   boolean anyAllowed()
+   {
+      (lowerUnbounded && upperUnbounded)
+   }
 }

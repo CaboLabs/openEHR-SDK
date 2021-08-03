@@ -17,6 +17,7 @@ class CDuration extends CPrimitive {
    {
       // TODO: check pattern constraint
 
+      // FIXME: add message with path
       if (range && !range.has(new Duration(value: value))) return new ValidationResult(isValid: false, message:'CDuration.validation.error.valueNotInRange')
 
       return new ValidationResult(isValid: true)

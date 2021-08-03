@@ -609,6 +609,89 @@ class OPTParserTest extends GroovyTestCase {
       }
    }
 
+
+   // testing finding the collection attribute nodes in an OPT, to be able to read the cardinality constraints
+   void testTraverseCollectionAttributes()
+   {
+      def collection_attrs = [
+         'COMPOSITION': [
+            'content'
+         ],
+         'SECTION': [
+            'items'
+         ],
+         'INSTRUCTION': [
+            'activities'
+         ],
+         'HISTORY': [
+            'events'
+         ],
+         'ITEM_TREE': [
+            'items'
+         ],
+         'ITEM_LIST': [
+            'items'
+         ],
+         'ITEM_TABLE': [
+            'rows'
+         ],
+         'CLUSTER': [
+            'items'
+         ],
+         'FOLDER': [
+            'folders'
+         ]
+      ]
+
+      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"test_all_datatypes.en.v1.opt"
+      def opt = loadAndParse(path)
+
+      def collection_attr_nodes = [], // collection attribute nodes in the current OPT
+          object_nodes,
+          found_object_nodes,
+          collect_found_object_nodes = []
+         
+      collection_attrs.each { clazz, attrs -> 
+
+         attrs.each { attr ->
+
+            //println "searching ${clazz}.${attr}"
+
+            opt.nodes.each { entry ->
+
+               //println "matching ${entry.value.rmTypeName}"
+
+               object_nodes = entry.value
+               found_object_nodes = object_nodes.findAll { it.rmTypeName == clazz }
+               
+               if (found_object_nodes)
+               {
+                  collect_found_object_nodes.addAll(found_object_nodes)
+               }
+            }
+            
+            collect_found_object_nodes.each { object_node ->
+               collection_attr_nodes.addAll(
+                  object_node.attributes.find{ an -> an.rmAttributeName == attr }
+               )
+            }
+
+            collect_found_object_nodes = []
+         }
+      }
+
+      // all the collection attribute will have cardinality constraint
+      collection_attr_nodes.each { attr_node ->
+      
+         assert attr_node.cardinality != null
+      }
+
+      println collection_attr_nodes.rmAttributeName
+      println collection_attr_nodes.path
+      println collection_attr_nodes.cardinality.interval
+      println collection_attr_nodes.cardinality.interval*.anyAllowed()
+   }
+
    /*
 
    void testParserTerminologyRefOpt()

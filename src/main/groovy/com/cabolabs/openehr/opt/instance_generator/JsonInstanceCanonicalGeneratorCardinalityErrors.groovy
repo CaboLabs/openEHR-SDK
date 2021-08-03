@@ -10,8 +10,10 @@ import java.util.jar.JarFile
 /**
  * @author Pablo Pazos <pablo.pazos@cabolabs.com>
  *
+ * This generatos will generate errors on purpose for the C_MULTIPLE_ATTRIBUTE.cardinality
+ * constraints to be able to generated compositions for testing data validation.
  */
-class JsonInstanceCanonicalGenerator2 {
+class JsonInstanceCanonicalGeneratorCardinalityErrors {
 
    static String PS = File.separator
 
@@ -50,7 +52,7 @@ class JsonInstanceCanonicalGenerator2 {
       [name: 'Daniel Duncan', function: 'companion', relationship: [rubric:'bother', code:'23']]
    ]
 
-   def JsonInstanceCanonicalGenerator2()
+   def JsonInstanceCanonicalGeneratorCardinalityErrors()
    {
       /* THIS CANT BE USED UNTIL Groovy 2.5.x, since Grails 3.3.10 uses 2.4.17 we keep building under that version
          OLD javadocs by Groovy version 
@@ -352,10 +354,12 @@ class JsonInstanceCanonicalGenerator2 {
 
       // it is possible the cardinality upper is lower than the items generated because there are more alternatives
       // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
+      /*
       if (oa.cardinality && oa.cardinality.interval.upper)
       {
          content = content.take(oa.cardinality.interval.upper)
       }
+      */
    
       compo.content = content
 
@@ -386,34 +390,75 @@ class JsonInstanceCanonicalGenerator2 {
       // or just the first alternative if it is C_SINGLE_ATTRIBUTE
       def children
 
+      def generate_errors_for_cardinality = false
+
       if (a.type == 'C_MULTIPLE_ATTRIBUTE')
       {
          children = a.children
+
+         // if anyAllowed then ew can't generate a violation of the constraint
+         generate_errors_for_cardinality = !(a.cardinality.interval.anyAllowed())
       }
       else
       {
-         children = [ a.children[0] ]
+         children = [ a.children[0] ] 
       }
 
-      children.each { obj ->
-
-         // Avoid processing slots
-         if (obj.type == 'ARCHETYPE_SLOT')
+      // NOTE: this will generate validations errors for cardinality
+      if (generate_errors_for_cardinality)
+      {
+         // if there is a lower constraint and it is greater than zero, generate zero items
+         // NOTE: if lower >= 2, we can generate less items than than instead of no items at all
+         if (a.cardinality.interval.lower != null && a.cardinality.interval.lower > 0)
          {
-            //builder.mkp.comment('SLOT IN '+ obj.path +' NOT PROCESSED')
-            return
+            return attrs
          }
 
-         // wont process all the alternatives from children, just the first
-         obj_type = obj.rmTypeName
+         // if upper is not null and there is a bound to upper, try to generate more items than upper
+         if (a.cardinality.interval.upper != null && !a.cardinality.interval.upperUnbounded)
+         {
+            // pick any children
+            def obj = children.find{ it.type != 'ARCHETYPE_SLOT' }
 
-         // generate_DV_INTERVAL<DV_COUNT> => generate_DV_INTERVAL__DV_COUNT
-         obj_type = obj_type.replace('<','__').replace('>','')
+            // generate multiple instances for that children
+            (a.cardinality.interval.upper + 1).times {
 
-         method = 'generate_'+ obj_type
+               // wont process all the alternatives from children, just the first
+               obj_type = obj.rmTypeName
 
-         attrs << "$method"(obj, parent_arch_id) // generate_OBSERVATION(a)
+               // generate_DV_INTERVAL<DV_COUNT> => generate_DV_INTERVAL__DV_COUNT
+               obj_type = obj_type.replace('<','__').replace('>','')
+
+               method = 'generate_'+ obj_type
+
+               attrs << "$method"(obj, parent_arch_id) // generate_OBSERVATION(a)
+            }
+         }
       }
+      else // normal generator
+      {
+         children.each { obj ->
+
+            // Avoid processing slots
+            if (obj.type == 'ARCHETYPE_SLOT')
+            {
+               //builder.mkp.comment('SLOT IN '+ obj.path +' NOT PROCESSED')
+               return
+            }
+
+            // wont process all the alternatives from children, just the first
+            obj_type = obj.rmTypeName
+
+            // generate_DV_INTERVAL<DV_COUNT> => generate_DV_INTERVAL__DV_COUNT
+            obj_type = obj_type.replace('<','__').replace('>','')
+
+            method = 'generate_'+ obj_type
+
+            attrs << "$method"(obj, parent_arch_id) // generate_OBSERVATION(a)
+         }
+      }
+
+      
       
       return attrs
    }
@@ -1166,10 +1211,12 @@ class JsonInstanceCanonicalGenerator2 {
          
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
          // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
+         /*
          if (oa.cardinality && oa.cardinality.interval.upper)
          {
             items = items.take(oa.cardinality.interval.upper)
          }
+         */
          
          mobj.items = items
       }
@@ -1405,10 +1452,12 @@ class JsonInstanceCanonicalGenerator2 {
 
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
          // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
+         /*
          if (oa.cardinality && oa.cardinality.interval.upper)
          {
             events = events.take(oa.cardinality.interval.upper)
          }
+         */
 
          mobj.events = events
       }
@@ -1566,10 +1615,12 @@ class JsonInstanceCanonicalGenerator2 {
 
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
          // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
+         /*
          if (oa.cardinality && oa.cardinality.interval.upper)
          {
             mattr = mattr.take(oa.cardinality.interval.upper)
          }
+         */
 
          //println oa.cardinality.interval //.interval.upper <<<< NULL we are not parsing the cardinality
 
