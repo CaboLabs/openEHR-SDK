@@ -33,10 +33,10 @@
     </details>
   </description>
   <uid>
-    <value>210b5699-4efb-4238-9156-688322b5f86c</value>
+    <value>210b5699-4efb-4238-9156-688322b5f456</value>
   </uid>
   <template_id>
-    <value>test_all_datatypes.en.v1</value>
+    <value>test_all_datatypes_strict_cardinalities.en.v1</value>
   </template_id>
   <concept>Test all datatypes en</concept>
   <definition>
@@ -1659,7 +1659,7 @@
                   <lower_included>true</lower_included>
                   <lower_unbounded>false</lower_unbounded>
                   <upper_unbounded>true</upper_unbounded>
-                  <lower>1</lower>
+                  <lower>2</lower>
                 </interval>
               </cardinality>
             </attributes>
@@ -1802,7 +1802,7 @@
       <value>openEHR-EHR-COMPOSITION.test_all_datatypes.v1</value>
     </archetype_id>
     <template_id>
-      <value>test_all_datatypes.en.v1</value>
+      <value>test_all_datatypes_strict_cardinalities.en.v1</value>
     </template_id>
     <term_definitions code="at0000">
       <items id="description">composition root</items>

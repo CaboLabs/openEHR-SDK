@@ -407,31 +407,25 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
       // NOTE: this will generate validations errors for cardinality
       if (generate_errors_for_cardinality)
       {
-         // if there is a lower constraint and it is greater than zero, generate zero items
-         // NOTE: if lower >= 2, we can generate less items than than instead of no items at all
+         // pick any children that is not a slot
+         def obj = children.find{ it.type != 'ARCHETYPE_SLOT' }
+
+         // if there is a lower constraint and it is greater than zero, generate one item less than lower
          if (a.cardinality.interval.lower != null && a.cardinality.interval.lower > 0)
          {
-            return attrs
+            // generate multiple instances for that children
+            (a.cardinality.interval.lower - 1).times {
+
+               attrs << processAttributeChildrenForObject(obj, parent_arch_id)
+            }
          }
-
          // if upper is not null and there is a bound to upper, try to generate more items than upper
-         if (a.cardinality.interval.upper != null && !a.cardinality.interval.upperUnbounded)
+         else if (a.cardinality.interval.upper != null && !a.cardinality.interval.upperUnbounded)
          {
-            // pick any children
-            def obj = children.find{ it.type != 'ARCHETYPE_SLOT' }
-
             // generate multiple instances for that children
             (a.cardinality.interval.upper + 1).times {
 
-               // wont process all the alternatives from children, just the first
-               obj_type = obj.rmTypeName
-
-               // generate_DV_INTERVAL<DV_COUNT> => generate_DV_INTERVAL__DV_COUNT
-               obj_type = obj_type.replace('<','__').replace('>','')
-
-               method = 'generate_'+ obj_type
-
-               attrs << "$method"(obj, parent_arch_id) // generate_OBSERVATION(a)
+               attrs << processAttributeChildrenForObject(obj, parent_arch_id)
             }
          }
       }
@@ -446,21 +440,23 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
                return
             }
 
-            // wont process all the alternatives from children, just the first
-            obj_type = obj.rmTypeName
-
-            // generate_DV_INTERVAL<DV_COUNT> => generate_DV_INTERVAL__DV_COUNT
-            obj_type = obj_type.replace('<','__').replace('>','')
-
-            method = 'generate_'+ obj_type
-
-            attrs << "$method"(obj, parent_arch_id) // generate_OBSERVATION(a)
+            attrs << processAttributeChildrenForObject(obj, parent_arch_id)
          }
       }
-
-      
       
       return attrs
+   }
+
+   private Map processAttributeChildrenForObject(ObjectNode obj, String parent_arch_id)
+   {
+      def obj_type = obj.rmTypeName
+
+      // generate_DV_INTERVAL<DV_COUNT> => generate_DV_INTERVAL__DV_COUNT
+      obj_type = obj_type.replace('<','__').replace('>','')
+
+      def method = 'generate_'+ obj_type
+
+      return "$method"(obj, parent_arch_id)
    }
 
 
