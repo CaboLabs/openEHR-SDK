@@ -29,8 +29,9 @@ class Main {
          println 'usage: opt command [options]'
          println 'command: [uigen, ingen, inval]'
          println 'uigen: user interface generation from an OPT'
-         println 'ingen: XML instance generation from an OPT'
-         println 'inval: XML instance validator'
+         println 'ingen: XML/JSON instance generation from an OPT'
+         println 'inval: XML/JSON instance validator'
+         println 'trans: transforms an OPT in XML to JSON, or a XML/JSON composition to JSON/XML respectively'
          System.exit(0)
       }
 
@@ -54,11 +55,11 @@ class Main {
          break
          case 'ingen':
 
-            println "ingen args "+ args.size() +" "+ args // DEBUG
+            //println "ingen args "+ args.size() +" "+ args // DEBUG
 
             if (args.size() < 3)
             {
-               println 'usage: opt ingen path_to_opt dest_folder [amount] [version|composition|version_committer|tagged|json_version|json_composition|json_compo_with_errors] [withParticipations]'
+               println 'usage: opt ingen [path_to_opt|path_to_opt_folder] dest_folder [amount] [version|composition|version_committer|tagged|json_version|json_composition|json_compo_with_errors] [withParticipations]'
                System.exit(0)
             }
 
@@ -74,10 +75,25 @@ class Main {
                }
             }
 
-            def path = args[1] //"resources"+ PS +"opts"+ PS +"Referral.opt"
 
-            // TODO: check path to OPT exists
-            def opt = loadAndParse(path)
+            def path = args[1] //"resources"+ PS +"opts"+ PS +"Referral.opt"
+            def opts = []
+
+            // check of path points to a file or folder
+            def source = new File(path)
+            if (source.isDirectory())
+            {
+               source.eachFileMatch(~/.*.opt/) { opt_file ->
+
+                 opts << loadAndParse(opt_file.path)
+               }
+            }
+            else
+            {
+               opts << loadAndParse(path)
+            }
+
+            
 
             // test
             /*
@@ -101,62 +117,10 @@ class Main {
                generate = args[4]
             }
 
-            def withParticipations = args.contains('withParticipations')
-            //println withParticipations
+            def with_participations = args.contains('withParticipations')
 
-            def igen, ins, ext = 'xml'
-            for (i in 1..count)
-            {
-               if (generate == 'composition')
-               {
-                  igen = new XmlInstanceGenerator()
-                  ins = igen.generateXMLCompositionStringFromOPT(opt, withParticipations)
-               }
-               else if (generate == 'version')
-               {
-                  igen = new XmlInstanceGenerator()
-                  ins = igen.generateXMLVersionStringFromOPT(opt, withParticipations)
-               }
-               else if (generate == 'tagged')
-               {
-                  igen = new XmlInstanceGeneratorTagged()
-                  ins = igen.generateXMLVersionStringFromOPT(opt)
-               }
-               else if (generate == 'json_version')
-               {
-                  igen = new JsonInstanceCanonicalGenerator2()
-                  ins = igen.generateJSONVersionStringFromOPT(opt, withParticipations, true)
-                  ext = 'json'
-               }
-               else if (generate == 'json_composition')
-               {
-                  igen = new JsonInstanceCanonicalGenerator2()
-                  ins = igen.generateJSONCompositionStringFromOPT(opt, withParticipations, true)
-                  ext = 'json'
-               }
-               else if (generate == 'json_compo_with_errors')
-               {
-                  igen = new JsonInstanceCanonicalGeneratorCardinalityErrors()
-                  ins = igen.generateJSONCompositionStringFromOPT(opt, withParticipations, true)
-                  ext = 'json'
-               }
-               else
-               {
-                  igen = new XmlInstanceGeneratorForCommitter()
-                  ins = igen.generateXMLVersionStringFromOPT(opt)
-               }
-
-               out = new File( destination_path + PS + new java.text.SimpleDateFormat("'"+ opt.concept.replaceAll(' ', '_') +"_'yyyyMMddhhmmss'_"+ i +"."+ ext +"'").format(new Date()) )
-
-               // Generates UTF-8 XML output
-               printer = new java.io.PrintWriter(out, 'UTF-8')
-               printer.write(ins)
-               printer.flush()
-               printer.close()
-
-
-               println "Instance generated: "+ out.absolutePath
-            }
+            generateInstances(opts, destination_path, with_participations, count, generate)
+            
          break
          case 'inval':
 
@@ -399,7 +363,7 @@ class Main {
 
    static OperationalTemplate loadAndParse(String path)
    {
-      def optFile = new File( path )
+      def optFile = new File(path)
 
       if (!optFile.exists()) throw new java.io.FileNotFoundException(path)
 
@@ -410,5 +374,68 @@ class Main {
 
       def parser = new OperationalTemplateParser()
       return parser.parse( text )
+   }
+
+   static def generateInstances(List opts, String destination_path, boolean withParticipations, int count, String generate)
+   {
+      def out, printer, igen, ins, ext = 'xml', file_number = 1
+
+      opts.each { opt ->
+
+         for (i in 1..count)
+         {
+            if (generate == 'composition')
+            {
+               igen = new XmlInstanceGenerator()
+               ins = igen.generateXMLCompositionStringFromOPT(opt, withParticipations)
+            }
+            else if (generate == 'version')
+            {
+               igen = new XmlInstanceGenerator()
+               ins = igen.generateXMLVersionStringFromOPT(opt, withParticipations)
+            }
+            else if (generate == 'tagged')
+            {
+               igen = new XmlInstanceGeneratorTagged()
+               ins = igen.generateXMLVersionStringFromOPT(opt)
+            }
+            else if (generate == 'json_version')
+            {
+               igen = new JsonInstanceCanonicalGenerator2()
+               ins = igen.generateJSONVersionStringFromOPT(opt, withParticipations, true)
+               ext = 'json'
+            }
+            else if (generate == 'json_composition')
+            {
+               igen = new JsonInstanceCanonicalGenerator2()
+               ins = igen.generateJSONCompositionStringFromOPT(opt, withParticipations, true)
+               ext = 'json'
+            }
+            else if (generate == 'json_compo_with_errors')
+            {
+               igen = new JsonInstanceCanonicalGeneratorCardinalityErrors()
+               ins = igen.generateJSONCompositionStringFromOPT(opt, withParticipations, true)
+               ext = 'json'
+            }
+            else
+            {
+               igen = new XmlInstanceGeneratorForCommitter()
+               ins = igen.generateXMLVersionStringFromOPT(opt)
+            }
+
+            out = new File(destination_path + PS + (opt.templateId.replaceAll(' ', '_') +"_"+ file_number.toString().padLeft(6, '0') +'_'+ i +'.'+ ext))
+
+            // Generates UTF-8 XML output
+            printer = new java.io.PrintWriter(out, 'UTF-8')
+            printer.write(ins)
+            printer.flush()
+            printer.close()
+
+            file_number++
+
+
+            println "Instance generated: "+ out.absolutePath
+         }
+      }
    }
 }
