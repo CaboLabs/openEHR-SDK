@@ -154,11 +154,9 @@
                 <rm_type_name>POINT_EVENT</rm_type_name>
                 <occurrences>
                   <lower_included>true</lower_included>
-                  <upper_included>true</upper_included>
                   <lower_unbounded>false</lower_unbounded>
-                  <upper_unbounded>false</upper_unbounded>
-                  <lower>0</lower>
-                  <upper>1</upper>
+                  <upper_unbounded>true</upper_unbounded>
+                  <lower>2</lower>
                 </occurrences>
                 <node_id>at0002</node_id>
                 <attributes xsi:type="C_SINGLE_ATTRIBUTE">
@@ -200,7 +198,7 @@
                           <lower_unbounded>false</lower_unbounded>
                           <upper_unbounded>false</upper_unbounded>
                           <lower>0</lower>
-                          <upper>1</upper>
+                          <upper>3</upper>
                         </occurrences>
                         <node_id>at0004</node_id>
                         <attributes xsi:type="C_SINGLE_ATTRIBUTE">
