@@ -17,11 +17,11 @@ class CDvOrdinal extends ObjectNode {
    {
       CDvOrdinalItem item = list.find{ it.value == value }
 
-      if (!item) return new ValidationResult(isValid: false, message:'CDvOrdinal.validation.error.noMatchingValue')
+      if (!item) return new ValidationResult(isValid: false, message: "value ${value} is not valid")
 
-      if (item.symbol.codeString != codeString) return new ValidationResult(isValid: false, message:'CDvOrdinal.validation.error.noMatchingCodeString')
+      if (item.symbol.codeString != codeString) return new ValidationResult(isValid: false, message: "code_string ${codeString} doesn't match")
 
-      if (item.symbol.terminologyId != terminologyId) return new ValidationResult(isValid: false, message:'CDvOrdinal.validation.error.noMatchingTerminology')
+      if (item.symbol.terminologyId != terminologyId) return new ValidationResult(isValid: false, message: "terminology_id ${terminologyId} doesn't match")
 
       return new ValidationResult(isValid: true)
    }
