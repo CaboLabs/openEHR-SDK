@@ -40,16 +40,23 @@ class OptManager {
 
 
    //private OptManager(String repoPath)
-   private OptManager(OptRepository repo)
+   private OptManager()
    {
-      // if (repoPath) this.baseOptRepoPath = repoPath
-      // else log.warn('OptManager using deefault baseOptRepoPath '+ this.baseOptRepoPath)
-      //
-      // def repo = new File(this.baseOptRepoPath)
-      // if (!repo.exists() || !repo.canRead())
-      //    throw new Exception(this.baseOptRepoPath + " doesn't exists or can't be read")
+
+   }
+
+   //public static OptManager getInstance(String repoPath)
+   public static OptManager getInstance()
+   {
+      if (!instance) instance = new OptManager()
+      return instance
+   }
+
+   public void init(OptRepository repo)
+   {
       this.repo = repo
    }
+
 
    // returns the cache status in a displayable string
    public String status()
@@ -66,16 +73,11 @@ class OptManager {
       return out
    }
 
-   //public static OptManager getInstance(String repoPath)
-   public static OptManager getInstance(OptRepository repo)
-   {
-      if (!instance) instance = new OptManager(repo)
-      return instance
-   }
-
    @Synchronized
    public void loadAll(String namespace = DEFAULT_NAMESPACE, boolean complete = false)
    {
+      if (!repo) throw new Exception("Please initialize the OPT repository by calling init()")
+
       def opt
       def parser = new OperationalTemplateParser()
 
@@ -127,6 +129,8 @@ class OptManager {
    @Synchronized
    public void load(String templateId, String namespace = DEFAULT_NAMESPACE, boolean complete = false)
    {
+      if (!repo) throw new Exception("Please initialize the OPT repository by calling init()")
+
       // FIXME: it needs the language or use a normalized template id to get
       // TODO: the language shouldnt be part of the OPT normalized ID since the concept name should be in that language anyway and it's enough to differentiate IDs
       def text = this.repo.getOptContentsByTemplateId(templateId, namespace)
@@ -165,6 +169,8 @@ class OptManager {
     */
    public OperationalTemplate getOpt(String templateId, String namespace = DEFAULT_NAMESPACE, String filename = null)
    {
+      if (!repo) throw new Exception("Please initialize the OPT repository by calling init()")
+      
       // cache hit?
       if (this.cache[namespace] && this.cache[namespace][templateId])
       {

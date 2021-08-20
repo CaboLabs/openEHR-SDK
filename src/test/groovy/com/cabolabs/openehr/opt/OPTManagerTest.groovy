@@ -33,8 +33,10 @@ class OPTManagerTest extends GroovyTestCase {
       super.setUp()
       println "setup"
  
+      // this is the default repo, each test could change it
       def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts').toURI())
-      this.man = OptManager.getInstance(repo)
+      this.man = OptManager.getInstance()
+      this.man.init(repo)
       this.man.unloadAll()
    }
 
@@ -44,9 +46,7 @@ class OPTManagerTest extends GroovyTestCase {
 
       String namespace = 'test_ref_archs_namespace'
 
-      //def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts').toURI())
-      //def man = OptManager.getInstance(repo)
-
+      // manager users the default repo
       assert man.getLoadedOpts(namespace).size() == 0
       man.loadAll(namespace)
       assert man.getLoadedOpts(namespace).size() == 1
@@ -83,9 +83,10 @@ class OPTManagerTest extends GroovyTestCase {
 
       String namespace = 'test_ism_paths'
 
-      //def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts').toURI())
-      //def man = OptManager.getInstance(repo)
+      // manager users the default repo
+      assert man.getLoadedOpts(namespace).size() == 0
       man.loadAll(namespace)
+      assert man.getLoadedOpts(namespace).size() == 1
 
       def archs = man.getAllReferencedArchetypes(namespace) // List<ObjectNode>
       assert archs.size() == 2 // compo and action
@@ -138,8 +139,7 @@ class OPTManagerTest extends GroovyTestCase {
 
       String namespace = 'test_ism_paths'
 
-      //def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts').toURI())
-      //def man = OptManager.getInstance(repo)
+      // man uses default repo
 
       assert man.getLoadedOpts(namespace).size() == 0
       man.loadAll(namespace)
@@ -180,17 +180,17 @@ class OPTManagerTest extends GroovyTestCase {
    void testOptManagerLanguages()
    {
       println "====== testOptManagerLanguages ======"
-
-      //String PS = File.separator
-      //def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts' + PS +'test_languages').toURI())
-      //def man = OptManager.getInstance(repo)
+      
+      // this tests uses a different opt repo than the default one
+      def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts'+ PS + 'test_languages').toURI())
+      this.man = OptManager.getInstance()
+      this.man.init(repo)
 
       assert man.getLoadedOpts().size() == 0
 
-      man.loadAll()
+      man.loadAll() // uses default namespace
 
-      // FIXME: To be able to pass, we need to change the OptManager to avoid receiving parameters in the constructor and have an init to receive the repo
-      //assert man.getLoadedOpts().size() == 2
+      assert man.getLoadedOpts().size() == 2
 
       println "Loaded OPTs:"
       man.getLoadedOpts().each { id, opt ->

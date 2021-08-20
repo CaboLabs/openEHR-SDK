@@ -783,7 +783,8 @@ class OPTParserTest extends GroovyTestCase {
    {
       String PS = File.separator
       def repo = new OptRepositoryFSImpl('resources'+ PS +'opts')
-      def man = OptManager.getInstance(repo)
+      def man = OptManager.getInstance()
+      man.init(repo)
 
       assert man.getLoadedOpts().size() == 0
 

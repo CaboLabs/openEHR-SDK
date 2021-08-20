@@ -22,7 +22,8 @@ class RmValidationTest extends GroovyTestCase {
       // TODO: add support for S3 repo
       String opt_repo_path = PS + "opts"
       OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(opt_repo_path).toURI())
-      OptManager opt_manager = OptManager.getInstance(repo)
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
       //opt_manager.loadAll()
 
       RmValidator validator = new RmValidator(opt_manager)
@@ -44,7 +45,8 @@ class RmValidationTest extends GroovyTestCase {
       // TODO: add support for S3 repo
       String opt_repo_path = PS + "opts"
       OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(opt_repo_path).toURI())
-      OptManager opt_manager = OptManager.getInstance(repo)
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
       //opt_manager.loadAll()
 
       RmValidator validator = new RmValidator(opt_manager)
