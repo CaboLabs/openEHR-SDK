@@ -39,7 +39,7 @@ class CCodePhrase extends ObjectNode {
 
 
       def item = codeList.find { it == code }
-      if (!item) return new ValidationResult(isValid: false, message:'CCodePhrase.validation.error.noMatchingCode')
+      if (!item) return new ValidationResult(isValid: false, message: 'code_string ${code} is not in the code list')
 
 
       // TODO: it would be better to have TerminologyId and have this parsing logic contained inside.
@@ -47,7 +47,7 @@ class CCodePhrase extends ObjectNode {
       def result = tidPattern.matcher(terminologyId)
       if (terminologyIdName != result[0][1] || terminologyIdVersion != result[0][2])
       {
-         return new ValidationResult(isValid: false, message:'CCodePhrase.validation.error.noMatchingTerminology')
+         return new ValidationResult(isValid: false, message: "terminology_id ${terminologyId} doesn't match ${terminologyIdName}")
       }
 
 
