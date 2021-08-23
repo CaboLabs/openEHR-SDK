@@ -41,6 +41,9 @@ dependencies {
     implementation(group: "com.networknt", name: "json-schema-validator", version: "1.0.52");
 
     //implementation fileTree(dir: 'lib', include: ['*.jar'])
+
+    // json serialization for tests that handles loops correctly
+    testImplementation group: 'com.cedarsoftware', name: 'json-io', version: '4.12.0'
 }
 
 application {

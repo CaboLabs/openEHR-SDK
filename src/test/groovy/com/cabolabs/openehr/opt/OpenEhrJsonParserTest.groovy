@@ -27,6 +27,8 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.cabolabs.openehr.opt.instance_validation.JsonInstanceValidation
 
+import com.cedarsoftware.util.io.JsonWriter
+
 class OpenEhrJsonParserTest extends GroovyTestCase {
 
    private static String PS = System.getProperty("file.separator")
@@ -39,9 +41,11 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       def parser = new OpenEhrJsonParser()
       Composition c = (Composition)parser.parseJson(json)
       
-      def out = JsonOutput.toJson(c)
-      out = JsonOutput.prettyPrint(out)
-      //println out
+      
+      // TODO assert paths
+
+      def out = JsonWriter.objectToJson(c.content, [(JsonWriter.PRETTY_PRINT): true])
+      println out
    }
    
    void testJsonParserObservation()
@@ -52,9 +56,10 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       def parser = new OpenEhrJsonParser()
       Composition c = (Composition)parser.parseJson(json)
       
-      def out = JsonOutput.toJson(c)
-      out = JsonOutput.prettyPrint(out)
-      //println out
+      // TODO assert paths
+
+      def out = JsonWriter.objectToJson(c.content, [(JsonWriter.PRETTY_PRINT): true])
+      println out
    }
    
    void testJsonParserReferralWithParticipations()
@@ -64,9 +69,36 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String json = file.text
       def parser = new OpenEhrJsonParser()
       Composition c = (Composition)parser.parseJson(json)
+
+      assert c.path     == '/'
+      assert c.dataPath == '/'
+
+      assert c.context.path     == '/context'
+      assert c.context.dataPath == '/context'
+
+      assert c.content[0].path     == '/content'
+      assert c.content[0].dataPath == '/content[0]'
+
+      assert c.content[0].protocol.path     == '/content/protocol'
+      assert c.content[0].protocol.dataPath == '/content[0]/protocol'
+
+      assert c.content[0].protocol.items[0].path     == '/content/protocol/items'
+      assert c.content[0].protocol.items[0].dataPath == '/content[0]/protocol/items[0]'
+
+      // there are more items in the protocol
+
+      assert c.content[0].activities[0].path     == '/content/activities'
+      assert c.content[0].activities[0].dataPath == '/content[0]/activities[0]'
       
-      def out = JsonOutput.toJson(c)
-      out = JsonOutput.prettyPrint(out)
+      assert c.content[0].activities[0].description.path     == '/content/activities/description'
+      assert c.content[0].activities[0].description.dataPath == '/content[0]/activities[0]/description'
+      
+      assert c.content[0].activities[0].description.items[0].path     == '/content/activities/description/items'
+      assert c.content[0].activities[0].description.items[0].dataPath == '/content[0]/activities[0]/description/items[0]'
+
+      // there are more items in the description
+
+      //def out = JsonWriter.objectToJson(c.content, [(JsonWriter.PRETTY_PRINT): true])
       //println out
    }
    
@@ -78,8 +110,27 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       def parser = new OpenEhrJsonParser()
       Composition c = (Composition)parser.parseJson(json)
       
-      def out = JsonOutput.toJson(c)
-      out = JsonOutput.prettyPrint(out)
+      // This doesn't handle loops created by the parent references of PATHABLE
+      //def out = JsonOutput.toJson(c)
+      //out = JsonOutput.prettyPrint(out)
+      //println out
+
+      assert c.path     == '/'
+      assert c.dataPath == '/'
+
+      assert c.context.path     == '/context'
+      assert c.context.dataPath == '/context'
+
+      assert c.content[0].path     == '/content'
+      assert c.content[0].dataPath == '/content[0]'
+
+      assert c.content[0].data.path     == '/content/data'
+      assert c.content[0].data.dataPath == '/content[0]/data'
+
+      assert c.content[0].data.items[0].path     == '/content/data/items'
+      assert c.content[0].data.items[0].dataPath == '/content[0]/data/items[0]'
+
+      //def out = JsonWriter.objectToJson(c, [(JsonWriter.PRETTY_PRINT): true])
       //println out
    }
    
@@ -398,15 +449,16 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      def parser = new OpenEhrJsonParser()
      OriginalVersion v = (OriginalVersion)parser.parseVersionJson(json)
      
-     def out = JsonOutput.toJson(v)
-     out = JsonOutput.prettyPrint(out)
+
+     //def out = JsonOutput.toJson(v)
+     //out = JsonOutput.prettyPrint(out)
      //println out
      
      
      // serialize to XML
      OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
      String xml = serial.serialize(v)
-     println xml
+     //println xml
      
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
@@ -500,6 +552,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
          json = mapper.readTree(ins)
          errors = jsonValidator.validate(json)
 
+         // TODO: use asserts
          def out = JsonOutput.toJson(errors)
          out = JsonOutput.prettyPrint(out)
          println out
@@ -533,6 +586,8 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String json2 = serializer.serialize(compo)
       errors = jsonValidator.validate(json2)
 
+
+      // TODO: use asserts
       // JSON VALIDATION
       def out = JsonOutput.toJson(errors)
       out = JsonOutput.prettyPrint(out)

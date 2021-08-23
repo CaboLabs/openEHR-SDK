@@ -274,7 +274,7 @@ class OpenEhrXmlParser {
    private Composition parseCOMPOSITION(GPathResult xml, Pathable parent, String path, String dataPath)
    {
       Composition compo = new Composition()
-      //println "compo"+ xml
+
       this.fillLOCATABLE(compo, xml, parent, path, dataPath)
       
       compo.language  = this.parseCODE_PHRASE(xml.language)
@@ -320,7 +320,6 @@ class OpenEhrXmlParser {
    }
 
 
-
    private void fillDV_ORDERED(DvOrdered d, GPathResult xml)
    {
       if (!xml.normal_status.isEmpty())
@@ -343,7 +342,6 @@ class OpenEhrXmlParser {
          }
       }
    }
-
    
    private void fillDV_QUANTIFIED(DvQuantified d, GPathResult xml)
    {
@@ -609,7 +607,7 @@ class OpenEhrXmlParser {
          o.data = this.parseHISTORY(xml.data, o,
                                      (path != '/' ? path +'/data' : '/data'),
                                      (dataPath != '/' ? dataPath +'/data' : '/data')
-                                    )
+                                   )
       }
       
       if (!xml.state.isEmpty())
@@ -647,9 +645,9 @@ class OpenEhrXmlParser {
          method = 'parse'+ type
          h.events.add(
             this."$method"(event, h,
-                        (path != '/' ? path +'/events' : '/events'),
-                        (dataPath != '/' ? dataPath +'/events['+ i +']' : '/events['+ i +']')
-                       )
+                           (path != '/' ? path +'/events' : '/events'),
+                           (dataPath != '/' ? dataPath +'/events['+ i +']' : '/events['+ i +']')
+                          )
          )
       }     
       
@@ -671,9 +669,9 @@ class OpenEhrXmlParser {
          type = xml.data.'@xsi:type'.text()
          method = 'parse'+ type
          e.data = this."$method"(xml.data, e,
-                                    (path != '/' ? path +'/data' : '/data'),
-                                    (dataPath != '/' ? dataPath +'/data' : '/data')
-                                 )
+                                 (path != '/' ? path +'/data' : '/data'),
+                                 (dataPath != '/' ? dataPath +'/data' : '/data')
+                                )
       }
 
       if (!xml.state.isEmpty())
@@ -681,11 +679,10 @@ class OpenEhrXmlParser {
          type = xml.state.'@xsi:type'.text()
          method = 'parse'+ type
          e.state = this."$method"(xml.state, e,
-                                    (path != '/' ? path +'/state' : '/state'),
-                                    (dataPath != '/' ? dataPath +'/state' : '/state')
+                                  (path != '/' ? path +'/state' : '/state'),
+                                  (dataPath != '/' ? dataPath +'/state' : '/state')
                                  )
       }
-      
       
       return e
    }
@@ -705,9 +702,9 @@ class OpenEhrXmlParser {
          type = xml.data.'@xsi:type'.text()
          method = 'parse'+ type
          e.data = this."$method"(xml.data, e,
-                                    (path != '/' ? path +'/data' : '/data'),
-                                    (dataPath != '/' ? dataPath +'/data' : '/data')
-                                 )
+                                 (path != '/' ? path +'/data' : '/data'),
+                                 (dataPath != '/' ? dataPath +'/data' : '/data')
+                                )
       }
       
       if (!xml.state.isEmpty())
@@ -715,9 +712,9 @@ class OpenEhrXmlParser {
          type = xml.state.'@xsi:type'.text()
          method = 'parse'+ type
          e.state = this."$method"(xml.state, e,
-                                 (path != '/' ? path +'/state' : '/state'),
-                                 (dataPath != '/' ? dataPath +'/state' : '/state')
-                              )
+                                  (path != '/' ? path +'/state' : '/state'),
+                                  (dataPath != '/' ? dataPath +'/state' : '/state')
+                                 )
       }
       
       e.width = this.parseDV_DURATION(xml.width)
@@ -741,9 +738,9 @@ class OpenEhrXmlParser {
       String type = xml.data.'@xsi:type'.text()
       String method = 'parse'+ type
       e.data = this."$method"(xml.data, e,
-                                 (path != '/' ? path +'/data' : '/data'),
-                                 (dataPath != '/' ? dataPath +'/data' : '/data')
-                              )
+                               (path != '/' ? path +'/data' : '/data'),
+                               (dataPath != '/' ? dataPath +'/data' : '/data')
+                             )
       
       return e
    }
@@ -780,7 +777,7 @@ class OpenEhrXmlParser {
          )
       }
       
-      return i
+      return ins
    }
    
    private Action parseACTION(GPathResult xml, Pathable parent, String path, String dataPath)
@@ -791,7 +788,11 @@ class OpenEhrXmlParser {
       
       String type = xml.description.'@xsi:type'.text()
       String method = 'parse'+ type
-      a.description = this."$method"(xml.description)
+
+      a.description = this."$method"(xml.description, a,
+         (path != '/' ? path +'/description' : '/description'),
+         (dataPath != '/' ? dataPath +'/description' : '/description')
+      )
       
       a.time = this.parseDV_DATE_TIME(xml.time)
 
@@ -856,8 +857,12 @@ class OpenEhrXmlParser {
       String method = 'parse'+ type
       
       Activity a = new Activity(
-         description: this."$method"(xml.description),
          action_archetype_id: xml.action_archetype_id
+      )
+
+      a.description = this."$method"(json.description, a,
+         (path != '/' ? path +'/description' : '/description'),
+         (dataPath != '/' ? dataPath +'/description' : '/description')
       )
 
       if (!xml.timing.isEmpty())
@@ -962,9 +967,9 @@ class OpenEhrXmlParser {
          method = 'parse'+ type
          c.items.add(
             this."$method"(item, c
-                        (path != '/' ? path +'/items' : '/items'),
-                        (dataPath != '/' ? dataPath +'/items['+ i +']' : '/items['+ i +']')
-                       )
+                           (path != '/' ? path +'/items' : '/items'),
+                           (dataPath != '/' ? dataPath +'/items['+ i +']' : '/items['+ i +']')
+                          )
          )
       }
       
