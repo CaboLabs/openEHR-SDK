@@ -48,5 +48,5 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClassName = 'com.cabolabs.openehr.opt.Main'
+    mainClass = 'com.cabolabs.openehr.opt.Main'
 }
