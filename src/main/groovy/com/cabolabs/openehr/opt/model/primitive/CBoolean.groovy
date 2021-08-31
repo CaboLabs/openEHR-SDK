@@ -2,6 +2,7 @@ package com.cabolabs.openehr.opt.model.primitive
 
 import com.cabolabs.openehr.opt.model.IntervalInt
 import com.cabolabs.openehr.opt.model.validation.ValidationResult
+import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 
 @groovy.util.logging.Log4j
 class CBoolean extends CPrimitive {
@@ -9,7 +10,7 @@ class CBoolean extends CPrimitive {
    Boolean trueValid
    Boolean falseValid
 
-   ValidationResult isValid(Boolean value)
+   ValidationResult isValid(Pathable parent, Boolean value)
    {
       if (value == null)
       {

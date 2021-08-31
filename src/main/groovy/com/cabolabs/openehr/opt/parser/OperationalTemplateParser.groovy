@@ -208,12 +208,12 @@ class OperationalTemplateParser {
          // comienza de nuevo con las paths relativas al root de este arquetipo
          if (!node.archetype_id.value.isEmpty())
          {
-            templatePath += '[archetype_id='+ node.archetype_id.value +']' // slot in the path instead of node_id
+            templatePath     += '[archetype_id='+ node.archetype_id.value +']' // slot in the path instead of node_id
             templateDataPath += '[archetype_id='+ node.archetype_id.value +']'
 
             if (node.'@xsi:type'.text() == "C_ARCHETYPE_ROOT")
             {
-               path = '/' // archetype root found
+               path     = '/' // archetype root found
                dataPath = '/' // reset data path when path is root
             }
          }
@@ -224,10 +224,10 @@ class OperationalTemplateParser {
             // if node is a LOCATABLE add the node_id to the dataPath
             if (!pathables.contains(node.rm_type_name.text()))
             {
-               templatePath += '['+ node.node_id.text() + ']'
-               path += '['+ node.node_id.text() + ']'
+               templatePath     += '['+ node.node_id.text() + ']'
+               path             += '['+ node.node_id.text() + ']'
                templateDataPath += '['+ node.node_id.text() + ']'
-               dataPath += '['+ node.node_id.text() + ']'
+               dataPath         += '['+ node.node_id.text() + ']'
             }
          }
       }
@@ -255,16 +255,16 @@ class OperationalTemplateParser {
 
 
          obn = new CCodePhrase(
-            owner: this.template,
-            rmTypeName: node.rm_type_name.text(),
-            nodeId: node.node_id.text(),
-            type: node.'@xsi:type'.text(),
-            archetypeId: node.archetype_id.value.text(), // This is optional, just resolved slots have archId
-            templatePath: templatePath,
-            path: path,
-            dataPath: dataPath,
+            owner:            this.template,
+            rmTypeName:       node.rm_type_name.text(),
+            nodeId:           node.node_id.text(),
+            type:             node.'@xsi:type'.text(),
+            archetypeId:      node.archetype_id.value.text(), // This is optional, just resolved slots have archId
+            templatePath:     templatePath,
+            path:             path,
+            dataPath:         dataPath,
             templateDataPath: templateDataPath,
-            terminologyRef: terminologyRef
+            terminologyRef:   terminologyRef
          )
 
          if (obn.type == 'CONSTRAINT_REF')
@@ -292,14 +292,14 @@ class OperationalTemplateParser {
       else if (node.'@xsi:type'.text() == 'C_DV_QUANTITY')
       {
          obn = new CDvQuantity(
-            owner:        this.template,
-            rmTypeName:   node.rm_type_name.text(),
-            nodeId:       node.node_id.text(),
-            type:         node.'@xsi:type'.text(),
-            archetypeId:  node.archetype_id.value.text(), // This is optional, just resolved slots have archId
-            templatePath: templatePath,
-            path:         path,
-            dataPath: dataPath,
+            owner:            this.template,
+            rmTypeName:       node.rm_type_name.text(),
+            nodeId:           node.node_id.text(),
+            type:             node.'@xsi:type'.text(),
+            archetypeId:      node.archetype_id.value.text(), // This is optional, just resolved slots have archId
+            templatePath:     templatePath,
+            path:             path,
+            dataPath:         dataPath,
             templateDataPath: templateDataPath
          )
 
@@ -318,14 +318,14 @@ class OperationalTemplateParser {
       else if (node.'@xsi:type'.text() == 'C_DV_ORDINAL')
       {
          obn = new CDvOrdinal(
-            owner:        this.template,
-            rmTypeName:   node.rm_type_name.text(),
-            nodeId:       node.node_id.text(),
-            type:         node.'@xsi:type'.text(),
-            archetypeId:  node.archetype_id.value.text(), // This is optional, just resolved slots have archId
-            templatePath: templatePath,
-            path:         path,
-            dataPath: dataPath,
+            owner:            this.template,
+            rmTypeName:       node.rm_type_name.text(),
+            nodeId:           node.node_id.text(),
+            type:             node.'@xsi:type'.text(),
+            archetypeId:      node.archetype_id.value.text(), // This is optional, just resolved slots have archId
+            templatePath:     templatePath,
+            path:             path,
+            dataPath:         dataPath,
             templateDataPath: templateDataPath
          )
 
@@ -347,7 +347,7 @@ class OperationalTemplateParser {
             archetypeId:  node.archetype_id.value.text(),
             templatePath: templatePath,
             path:         path,
-            dataPath: dataPath,
+            dataPath:     dataPath,
             templateDataPath: templateDataPath
          )
 
@@ -364,7 +364,7 @@ class OperationalTemplateParser {
             archetypeId:  node.archetype_id.value.text(), // This is optional, just resolved slots have archId
             templatePath: templatePath,
             path:         path,
-            dataPath: dataPath,
+            dataPath:     dataPath,
             templateDataPath: templateDataPath
          )
 
@@ -451,14 +451,14 @@ class OperationalTemplateParser {
 
          // println "ObjectNode "+ node.'@xsi:type'.text()
          obn = new ObjectNode(
-            owner: this.template,
-            rmTypeName: node.rm_type_name.text(),
-            nodeId: node.node_id.text(),
-            type: node.'@xsi:type'.text(),
-            archetypeId: node.archetype_id.value.text(), // This is optional, just resolved slots have archId
-            templatePath: templatePath,
-            path: path,
-            dataPath: dataPath,
+            owner:            this.template,
+            rmTypeName:       node.rm_type_name.text(),
+            nodeId:           node.node_id.text(),
+            type:             node.'@xsi:type'.text(),
+            archetypeId:      node.archetype_id.value.text(), // This is optional, just resolved slots have archId
+            templatePath:     templatePath,
+            path:             path,
+            dataPath:         dataPath,
             templateDataPath: templateDataPath
             // TODO: default_values
          )
@@ -516,12 +516,12 @@ class OperationalTemplateParser {
       def templatePath = parentPath
       if (templatePath == '/')
       {
-         templatePath += attr.rm_attribute_name.text() // Avoids to repeat '/'
+         templatePath     += attr.rm_attribute_name.text() // Avoids to repeat '/'
          templateDataPath += attr.rm_attribute_name.text()
       }
       else
       {
-         templatePath += '/'+ attr.rm_attribute_name.text()
+         templatePath     += '/'+ attr.rm_attribute_name.text()
          templateDataPath += '/'+ attr.rm_attribute_name.text()
       }
 
@@ -529,25 +529,25 @@ class OperationalTemplateParser {
       if (path == '/')
       {
          nextArchPath = '/' + attr.rm_attribute_name.text()
-         dataPath = '/' + attr.rm_attribute_name.text()
+         dataPath     = '/' + attr.rm_attribute_name.text()
       }
       else
       {
          nextArchPath = path +'/'+ attr.rm_attribute_name.text()
-         dataPath = dataPath +'/'+ attr.rm_attribute_name.text()
+         dataPath     = dataPath +'/'+ attr.rm_attribute_name.text()
       }
 
       def atn = new AttributeNode(
-         rmAttributeName: attr.rm_attribute_name.text(),
-         type:            attr.'@xsi:type'.text(),
-         parent:          parent,
-         path: nextArchPath,
-         dataPath: dataPath,
-         templatePath: templatePath,
+         rmAttributeName:  attr.rm_attribute_name.text(),
+         type:             attr.'@xsi:type'.text(),
+         parent:           parent,
+         path:             nextArchPath,
+         dataPath:         dataPath,
+         templatePath:     templatePath,
          templateDataPath: templateDataPath,
-         cardinality: parseCardinality(attr.cardinality),
-         existence: parseIntervalInt(attr.existence)
-      )
+         cardinality:      parseCardinality(attr.cardinality),
+         existence:        parseIntervalInt(attr.existence)
+      ) 
 
       def obn
       attr.children.each { xobn ->

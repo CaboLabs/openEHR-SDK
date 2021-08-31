@@ -1,6 +1,7 @@
 package com.cabolabs.openehr.opt.model.primitive
 
 import com.cabolabs.openehr.opt.model.validation.ValidationResult
+import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 
 @groovy.util.logging.Log4j
 class CString extends CPrimitive {
@@ -10,7 +11,7 @@ class CString extends CPrimitive {
    // List<String>
    List list = []
 
-   ValidationResult isValid(String value)
+   ValidationResult isValid(Pathable parent, String value)
    {
       if (pattern)
       {

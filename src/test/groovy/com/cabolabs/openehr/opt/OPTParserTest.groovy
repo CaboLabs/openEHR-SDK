@@ -164,6 +164,7 @@ class OPTParserTest extends GroovyTestCase {
 
       assert cdi instanceof CDvQuantity
 
+// FIXME pass parent Pathable
       assert cdi.isValid('gm/l', 50.5)
       assert !cdi.isValid('qweerty', 50.5)
       assert !cdi.isValid('gm/l', -50.5)

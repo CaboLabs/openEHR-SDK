@@ -5,6 +5,7 @@ import com.cabolabs.openehr.opt.model.validation.ValidationResult
 
 import java.text.SimpleDateFormat
 import java.text.ParseException
+import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 
 @groovy.util.logging.Log4j
 class CDate extends CPrimitive {
@@ -18,11 +19,11 @@ class CDate extends CPrimitive {
    // OPT DateTime Pattern => Java SimpleFormat Patterns
    static Map validators = [
       'yyyy-mm-dd':  ["yyyy-MM-dd"],
-      'any_allowed': ["yyyy-MM-dd"]
+      'any_allowed': ["yyyy-MM-dd", "yyyyMMdd"]
    ]
 
 
-   ValidationResult isValid(String formattedDate)
+   ValidationResult isValid(Pathable parent, String formattedDate)
    {
       def formats = validators[pattern]
 

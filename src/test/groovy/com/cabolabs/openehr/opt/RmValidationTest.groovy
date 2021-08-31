@@ -27,7 +27,7 @@ class RmValidationTest extends GroovyTestCase {
       //opt_manager.loadAll()
 
       RmValidator validator = new RmValidator(opt_manager)
-      RmValidationReport report = validator.dovalidate(c)
+      RmValidationReport report = validator.dovalidate(c, OptManager.DEFAULT_NAMESPACE)
 
       report.errors.each { error ->
          println error
@@ -50,7 +50,76 @@ class RmValidationTest extends GroovyTestCase {
       //opt_manager.loadAll()
 
       RmValidator validator = new RmValidator(opt_manager)
-      RmValidationReport report = validator.dovalidate(c)
+      RmValidationReport report = validator.dovalidate(c, OptManager.DEFAULT_NAMESPACE)
+
+      report.errors.each { error ->
+         println error
+      }
+   }
+
+   void testValidationFromJsonCompositionAllDatatypes()
+   {
+      String path = PS +"canonical_json"+ PS +"test_all_datatypes_en.json"
+	   File file = new File(getClass().getResource(path).toURI())
+	   String json = file.text
+	   def parser = new OpenEhrJsonParser()
+	   Composition c = (Composition)parser.parseJson(json)
+
+      // TODO: add support for S3 repo
+      String opt_repo_path = PS + "opts"
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(opt_repo_path).toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+      //opt_manager.loadAll()
+
+      RmValidator validator = new RmValidator(opt_manager)
+      RmValidationReport report = validator.dovalidate(c, OptManager.DEFAULT_NAMESPACE)
+
+      report.errors.each { error ->
+         println error
+      }
+   }
+
+   void testValidationFromJsonCompositionInvalidCardinalities1()
+   {
+      String path = PS +"rm_validation"+ PS +"0_alternative_types.en.v1_000052_1.json"
+	   File file = new File(getClass().getResource(path).toURI())
+	   String json = file.text
+	   def parser = new OpenEhrJsonParser()
+	   Composition c = (Composition)parser.parseJson(json)
+
+      // TODO: add support for S3 repo
+      String opt_repo_path = PS + "rm_validation"
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(opt_repo_path).toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+      //opt_manager.loadAll()
+
+      RmValidator validator = new RmValidator(opt_manager)
+      RmValidationReport report = validator.dovalidate(c, "")
+
+      report.errors.each { error ->
+         println error
+      }
+   }
+
+   void testValidationFromJsonCompositionInvalidCardinalities2()
+   {
+      String path = PS +"rm_validation"+ PS +"10_alternative_types.en.v1_000010_1.json"
+      File file = new File(getClass().getResource(path).toURI())
+      String json = file.text
+      def parser = new OpenEhrJsonParser()
+      Composition c = (Composition)parser.parseJson(json)
+
+      // TODO: add support for S3 repo
+      String opt_repo_path = PS + "rm_validation"
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(opt_repo_path).toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+      //opt_manager.loadAll()
+
+      RmValidator validator = new RmValidator(opt_manager)
+      RmValidationReport report = validator.dovalidate(c, "")
 
       report.errors.each { error ->
          println error

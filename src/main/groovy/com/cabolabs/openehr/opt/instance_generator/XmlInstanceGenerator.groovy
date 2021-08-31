@@ -1586,7 +1586,7 @@ class XmlInstanceGenerator {
    private generate_DV_INTERVAL__DV_COUNT(ObjectNode o, String parent_arch_id)
    {
       /*
-      <value xsi:type="DV_INTERVAL"><!-- note specific type is not valid here: DV_INERVAL<DV_COUNT> doesn't exists in the XSD -->
+      <value xsi:type="DV_INTERVAL"><!-- note specific type is not valid here: DV_INERVAL<DV_COUNT> doesn't exist in the XSD -->
          <lower xsi:type="DV_COUNT">
            <magnitude>123</magnitude>
          </lower>
@@ -1697,7 +1697,7 @@ class XmlInstanceGenerator {
    private generate_DV_INTERVAL__DV_QUANTITY(ObjectNode o, String parent_arch_id)
    {
       /*
-      <value xsi:type="DV_INTERVAL"><!-- note specific type is not valid here: DV_INERVAL<DV_COUNT> doesn't exists in the XSD -->
+      <value xsi:type="DV_INTERVAL"><!-- note specific type is not valid here: DV_INERVAL<DV_COUNT> doesn't exist in the XSD -->
       <lower xsi:type="DV_QUANTITY">
          <magnitude>123.123</magnitude>
          <units>mm[H20]</units>
@@ -1786,7 +1786,7 @@ class XmlInstanceGenerator {
    private generate_DV_INTERVAL__DV_DATE_TIME(ObjectNode o, String parent_arch_id)
    {
       /*
-      <value xsi:type="DV_INTERVAL"><!-- note specific type is not valid here: DV_INERVAL<DV_COUNT> doesn't exists in the XSD -->
+      <value xsi:type="DV_INTERVAL"><!-- note specific type is not valid here: DV_INERVAL<DV_COUNT> doesn't exist in the XSD -->
          <lower xsi:type="DV_DATE_TIME">
            <value>20190114T183649,426+0000</value>
          </lower>

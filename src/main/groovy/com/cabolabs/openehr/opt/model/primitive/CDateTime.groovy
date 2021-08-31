@@ -2,6 +2,7 @@ package com.cabolabs.openehr.opt.model.primitive
 
 import com.cabolabs.openehr.opt.model.IntervalInt
 import com.cabolabs.openehr.opt.model.validation.ValidationResult
+import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 
 import java.text.SimpleDateFormat
 import java.text.ParseException
@@ -96,7 +97,7 @@ class CDateTime extends CPrimitive {
    ]
 
 
-   ValidationResult isValid(String formattedDate)
+   ValidationResult isValid(Pathable parent, String formattedDate)
    {
       def formats = validators[pattern]
 

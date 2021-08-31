@@ -3,6 +3,7 @@ package com.cabolabs.openehr.opt.model.domain
 import com.cabolabs.openehr.opt.model.ObjectNode
 import com.cabolabs.openehr.opt.model.datatypes.CodePhrase
 import com.cabolabs.openehr.opt.model.validation.ValidationResult
+import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 
 @groovy.util.logging.Log4j
 class CDvQuantity extends ObjectNode {
@@ -18,7 +19,7 @@ class CDvQuantity extends ObjectNode {
    // List<CQuantityItem>
    List list = []
 
-   ValidationResult isValid(String units, Double magnitude)
+   ValidationResult isValid(Pathable parent, String units, Double magnitude)
    {
       // if there are no constraints, the validation is always true
       if (list.size() > 0)

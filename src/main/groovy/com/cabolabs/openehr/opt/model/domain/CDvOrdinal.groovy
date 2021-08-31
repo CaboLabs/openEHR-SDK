@@ -2,6 +2,7 @@ package com.cabolabs.openehr.opt.model.domain
 
 import com.cabolabs.openehr.opt.model.ObjectNode
 import com.cabolabs.openehr.opt.model.validation.ValidationResult
+import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 
 @groovy.util.logging.Log4j
 class CDvOrdinal extends ObjectNode {
@@ -13,7 +14,7 @@ class CDvOrdinal extends ObjectNode {
    /**
     * @param terminologyId format 'name[(version)]'
     */
-   ValidationResult isValid(int value, String codeString, String terminologyId)
+   ValidationResult isValid(Pathable parent, int value, String codeString, String terminologyId)
    {
       CDvOrdinalItem item = list.find{ it.value == value }
 

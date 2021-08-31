@@ -2,6 +2,7 @@ package com.cabolabs.openehr.opt.model.primitive
 
 import com.cabolabs.openehr.opt.model.IntervalDouble
 import com.cabolabs.openehr.opt.model.validation.ValidationResult
+import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 
 @groovy.util.logging.Log4j
 class CReal extends CPrimitive {
@@ -11,7 +12,7 @@ class CReal extends CPrimitive {
 
    IntervalDouble range
 
-   ValidationResult isValid(Float value)
+   ValidationResult isValid(Pathable parent, Float value)
    {
       if (range)
       {

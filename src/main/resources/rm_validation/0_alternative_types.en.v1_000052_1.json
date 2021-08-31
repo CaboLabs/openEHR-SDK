@@ -1,0 +1,104 @@
+{
+    "_type": "COMPOSITION",
+    "name": {
+        "_type": "DV_TEXT",
+        "value": "Alternative types"
+    },
+    "archetype_details": {
+        "archetype_id": {
+            "value": "openEHR-EHR-COMPOSITION.alternative_types.v1"
+        },
+        "template_id": {
+            "value": "0_alternative_types.en.v1"
+        },
+        "rm_version": "1.0.2"
+    },
+    "archetype_node_id": "openEHR-EHR-COMPOSITION.alternative_types.v1",
+    "language": {
+        "terminology_id": {
+            "value": "ISO_639-1"
+        },
+        "code_string": "en"
+    },
+    "territory": {
+        "terminology_id": {
+            "value": "ISO_3166-1"
+        },
+        "code_string": "UY"
+    },
+    "category": {
+        "value": "event",
+        "defining_code": {
+            "terminology_id": {
+                "value": "openehr"
+            },
+            "code_string": "433"
+        }
+    },
+    "composer": {
+        "_type": "PARTY_IDENTIFIED",
+        "external_ref": {
+            "id": {
+                "_type": "HIER_OBJECT_ID",
+                "value": "4da5a438-b0c2-46bb-ae31-b2ae353dbdad"
+            },
+            "namespace": "DEMOGRAPHIC",
+            "type": "PERSON"
+        },
+        "name": "Dr. House"
+    },
+    "context": {
+        "start_time": {
+            "value": "20210823T222030,213-0300"
+        },
+        "setting": {
+            "value": "home",
+            "defining_code": {
+                "terminology_id": {
+                    "value": "openehr"
+                },
+                "code_string": "225"
+            }
+        }
+    },
+    "content": [
+        {
+            "_type": "OBSERVATION",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Alternative types"
+            },
+            "archetype_node_id": "openEHR-EHR-OBSERVATION.alternative_types.v1",
+            "language": {
+                "terminology_id": {
+                    "value": "ISO_639-1"
+                },
+                "code_string": "en"
+            },
+            "encoding": {
+                "terminology_id": {
+                    "value": "Unicode"
+                },
+                "code_string": "UTF-8"
+            },
+            "subject": {
+                "_type": "PARTY_SELF"
+            },
+            "data": {
+                "_type": "HISTORY",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Event Series"
+                },
+                "archetype_node_id": "at0001",
+                "origin": {
+                    "_type": "DV_DATE_TIME",
+                    "value": "20210823T222030,213-0300"
+                },
+                "events": [
+                    
+                ]
+            }
+        }
+    ]
+}

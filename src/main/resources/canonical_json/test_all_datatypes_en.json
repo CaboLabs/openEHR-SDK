@@ -9,7 +9,7 @@
             "value": "openEHR-EHR-COMPOSITION.test_all_datatypes.v1"
         },
         "template_id": {
-            "value": "Test all datatypes_en"
+            "value": "test_all_datatypes.en.v1"
         },
         "rm_version": "1.0.2"
     },

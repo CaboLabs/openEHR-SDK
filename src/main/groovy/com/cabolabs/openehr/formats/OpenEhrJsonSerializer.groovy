@@ -393,7 +393,7 @@ class OpenEhrJsonSerializer {
 
    private Map serializeTerminologyId(TerminologyId o)
    {
-      Map out = [:]
+      Map out = [_type: 'TERMINOLOGY_ID']
 
       this.fillObjectId(o, out)
 
@@ -402,7 +402,7 @@ class OpenEhrJsonSerializer {
 
    private Map serializeGenericId(GenericId o)
    {
-      Map out = [:]
+      Map out = [_type: 'GENERIC_ID']
 
       this.fillObjectId(o, out)
 
@@ -413,7 +413,7 @@ class OpenEhrJsonSerializer {
 
    private Map serializeArchetypeId(ArchetypeId o)
    {
-      Map out = [:]
+      Map out = [_type: 'ARCHETYPE_ID']
 
       this.fillObjectId(o, out)
 
@@ -422,7 +422,7 @@ class OpenEhrJsonSerializer {
 
    private Map serializeObjectVersionId(ObjectVersionId o)
    {
-      Map out = [:]
+      Map out = [_type: 'OBJECT_VERSION_ID']
 
       this.fillObjectId(o, out)
 
@@ -431,7 +431,7 @@ class OpenEhrJsonSerializer {
 
    private Map serializeHierObjectId(HierObjectId o)
    {
-      Map out = [:]
+      Map out = [_type: 'HIER_OBJECT_ID']
 
       this.fillObjectId(o, out)
 
@@ -440,7 +440,7 @@ class OpenEhrJsonSerializer {
 
    private Map serializeTemplateId(TemplateId o)
    {
-      Map out = [:]
+      Map out = [_type: 'TEMPLATE_ID']
 
       this.fillObjectId(o, out)
 

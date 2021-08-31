@@ -13,11 +13,9 @@ class OptManager {
 
    OptRepository repo
 
-//   private static String PS = File.separator
-
    // ns will be used as folder name where OPTs are separated in the repo
    // most OS have a file name limit of 255, so that should be the limit of the ns size
-   private static String DEFAULT_NAMESPACE = 'com.cabolabs.openehr_opt.namespaces.default'
+   public static String DEFAULT_NAMESPACE = 'com.cabolabs.openehr_opt.namespaces.default'
 
 //   private String baseOptRepoPath = "opts"+ PS
 

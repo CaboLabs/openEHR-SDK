@@ -155,10 +155,7 @@ class OpenEhrXmlSerializer {
             builder.preceding_version_uid {
                this.serializeObjectVersionId(v.preceding_version_uid)
             }
-         }
-         
-         // TODO: preceding_version_uid
-         
+         }         
          
          if (v.attestations)
          {

@@ -2,6 +2,7 @@ package com.cabolabs.openehr.opt.model.domain
 
 import com.cabolabs.openehr.opt.model.ObjectNode
 import com.cabolabs.openehr.opt.model.validation.ValidationResult
+import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 
 @groovy.util.logging.Log4j
 class CCodePhrase extends ObjectNode {
@@ -32,7 +33,7 @@ class CCodePhrase extends ObjectNode {
    /**
     * @param terminologyId format 'name[(version)]'
     */
-   ValidationResult isValid(String code, String terminologyId)
+   ValidationResult isValid(Pathable parent, String code, String terminologyId)
    {
       // TODO: search for the terminologyId in the ref
       if (terminologyRef) return new ValidationResult(isValid: true)
