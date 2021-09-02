@@ -1,6 +1,7 @@
 package com.cabolabs.openehr.formats
 
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.*
+import com.cabolabs.openehr.rm_1_0_2.common.change_control.Contribution
 import com.cabolabs.openehr.rm_1_0_2.common.change_control.OriginalVersion
 import com.cabolabs.openehr.rm_1_0_2.common.change_control.Version
 import com.cabolabs.openehr.rm_1_0_2.common.generic.*
@@ -56,7 +57,7 @@ class OpenEhrXmlParser {
    Version parseVersionXml(String xml)
    {
       def slurper = new XmlSlurper(false, false)
-      def gpath = slurper.parseText(xml)
+      def gpath   = slurper.parseText(xml)
       String type = gpath.'@xsi:type'.text()
       
       if (!type)
@@ -66,6 +67,48 @@ class OpenEhrXmlParser {
       
       def method = 'parse'+ type
       return this."$method"(gpath)
+   }
+
+   // Used to parse the payload for POST /contributon of the openEHR REST API
+   List<Version> parseVersionList(String xml)
+   {
+      /*
+      <versions>
+        <version xsi:type="ORIGINAL_VERSION">
+        ...
+        </version>
+        <version xsi:type="ORIGINAL_VERSION">
+        ...
+        </version>
+        ...
+      </versions>
+      */
+
+      def slurper = new XmlSlurper(false, false)
+      def gpath   = slurper.parseText(xml)
+      String type, method
+
+      List versions = []
+      
+      gpath.version.each { version_gpath ->
+
+         type = version_gpath.'@xsi:type'.text()
+
+         if (!type)
+         {
+            throw new Exception("Can't parse XML if node doesn't have a xsi:type")
+         }
+         
+         method = 'parse'+ type
+         versions << this."$method"(version_gpath)
+      }
+
+      return versions
+   }
+
+   Contribution parseContribution(String xml)
+   {
+      // TODO: note parsing audit should be added to the method avove to be able to parse the Contribution
    }
 
    // ========= FIll METHODS =========

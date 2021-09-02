@@ -3,6 +3,7 @@ package com.cabolabs.openehr.formats
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
+import com.cabolabs.openehr.rm_1_0_2.common.change_control.Contribution
 import com.cabolabs.openehr.rm_1_0_2.common.change_control.OriginalVersion
 import com.cabolabs.openehr.rm_1_0_2.common.change_control.Version
 import com.cabolabs.openehr.rm_1_0_2.common.generic.*
@@ -21,17 +22,11 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DvIdentifier
 import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.DvMultimedia
 import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.DvParsable
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.*
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDate
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDuration
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvTime
-import com.cabolabs.openehr.rm_1_0_2.data_types.text.CodePhrase
-import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvCodedText
-import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
-import com.cabolabs.openehr.rm_1_0_2.data_types.text.TermMapping
-import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvEhrUri
-import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvUri
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.*
+import com.cabolabs.openehr.rm_1_0_2.data_types.text.*
+import com.cabolabs.openehr.rm_1_0_2.data_types.uri.*
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
+
 import groovy.json.JsonSlurper
 
 class OpenEhrJsonParser {
@@ -58,8 +53,8 @@ class OpenEhrJsonParser {
    Version parseVersionJson(String json)
    {
       def slurper = new JsonSlurper()
-      def map = slurper.parseText(json)
-      String type = map._type
+      def version_map = slurper.parseText(json)
+      String type = version_map._type // This is required to know if this is an ORIGINAL_VERSION or IMPORTED_VERSION
       
       if (!type)
       {
@@ -67,7 +62,50 @@ class OpenEhrJsonParser {
       }
       
       def method = 'parse'+ type
-      return this."$method"(map)
+      return this."$method"(version_map)
+   }
+
+   // Used to parse the payload for POST /contributon of the openEHR REST API
+   List<Version> parseVersionList(String json)
+   {
+      /*
+      {
+         "versions": [
+            {
+               ... a version
+            },
+            {
+               ... a version
+            },
+            ....
+         ]
+      }
+      */
+      def slurper = new JsonSlurper()
+      def map = slurper.parseText(json)
+      String type, method
+
+      List versions = []
+
+      map.versions.each { version_map ->
+
+         type = version_map._type // This is required to know if this is an ORIGINAL_VERSION or IMPORTED_VERSION
+      
+         if (!type)
+         {
+            throw new Exception("Can't parse JSON if root node doesn't have a value for _type")
+         }
+         
+         method = 'parse'+ type
+         versions << this."$method"(version_map)
+      }
+
+      return versions
+   }
+
+   Contribution parseContribution(String json)
+   {
+      // TODO: note parsing audit should be added to the method avove to be able to parse the Contribution
    }
 
    // ========= FIll METHODS =========

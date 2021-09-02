@@ -164,13 +164,12 @@ class OPTParserTest extends GroovyTestCase {
 
       assert cdi instanceof CDvQuantity
 
-// FIXME pass parent Pathable
-      assert cdi.isValid('gm/l', 50.5)
-      assert !cdi.isValid('qweerty', 50.5)
-      assert !cdi.isValid('gm/l', -50.5)
-      assert !cdi.isValid('qweerty', -50.5)
+      assert  cdi.isValid(null, 'gm/l', 50.5)
+      assert !cdi.isValid(null, 'qweerty', 50.5)
+      assert !cdi.isValid(null, 'gm/l', -50.5)
+      assert !cdi.isValid(null, 'qweerty', -50.5)
 
-      assert cdi.isValid('qweerty', 50.5).message == 'CDvQuantity.validation.error.noMatchingUnits'
+      assert cdi.isValid(null, 'qweerty', 50.5).message == 'CDvQuantity.validation.error.noMatchingUnits'
 
       opt.nodes.each {
 
@@ -217,12 +216,12 @@ class OPTParserTest extends GroovyTestCase {
 
       def c = opt.getNodes('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0026]/value/magnitude')[0]
 
-      assert c instanceof ObjectNode
-      assert c.item instanceof CInteger
+      assert  c instanceof ObjectNode
+      assert  c.item instanceof CInteger
 
-      assert c.item.isValid(5)
-      assert !c.item.isValid(0)
-      assert !c.item.isValid(666)
+      assert  c.item.isValid(null, 5)
+      assert !c.item.isValid(null, 0)
+      assert !c.item.isValid(null, 666)
 
       opt.nodes.each {
 
@@ -247,15 +246,15 @@ class OPTParserTest extends GroovyTestCase {
 
       def c = opt.getNodes('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0012]/value/value')[0]
 
-      assert c instanceof PrimitiveObjectNode
-      assert c.item instanceof CDateTime
-
-      assert c.item.pattern == 'yyyy-mm-ddTHH:MM:SS'
-      assert c.item.isValid('1981-10-24T09:59:56')
-      assert c.item.isValid('1981-10-24T09:59:56Z')
-      assert c.item.isValid('1981-10-24T09:59:56-03:00')
-      assert c.item.isValid('1981-10-24T09:59:56.666')
-      assert !c.item.isValid('1981-10-24T09:59')
+      assert  c instanceof PrimitiveObjectNode
+      assert  c.item instanceof CDateTime
+ 
+      assert  c.item.pattern == 'yyyy-mm-ddTHH:MM:SS'
+      assert  c.item.isValid(null, '1981-10-24T09:59:56')
+      assert  c.item.isValid(null, '1981-10-24T09:59:56Z')
+      assert  c.item.isValid(null, '1981-10-24T09:59:56-03:00')
+      assert  c.item.isValid(null, '1981-10-24T09:59:56.666')
+      assert !c.item.isValid(null, '1981-10-24T09:59')
 
       
       // opt.nodes.each {
@@ -281,16 +280,16 @@ class OPTParserTest extends GroovyTestCase {
 
       def c = opt.getNodes('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value/value')[0]
 
-      assert c instanceof PrimitiveObjectNode
-
-      assert c.item instanceof CDuration
-      assert c.item.range.lower.value == 'PT0H'
-      assert c.item.range.upper.value == 'PT5H'
-
-      assert c.item.isValid('PT0H')
-      assert c.item.isValid('PT1H')
-      assert c.item.isValid('PT5H')
-      assert !c.item.isValid('PT10H')
+      assert  c instanceof PrimitiveObjectNode
+ 
+      assert  c.item instanceof CDuration
+      assert  c.item.range.lower.value == 'PT0H'
+      assert  c.item.range.upper.value == 'PT5H'
+ 
+      assert  c.item.isValid(null, 'PT0H')
+      assert  c.item.isValid(null, 'PT1H')
+      assert  c.item.isValid(null, 'PT5H')
+      assert !c.item.isValid(null, 'PT10H')
 
       //assert !c.item.isValid('P2Y') this fails since the Java Duration only allows from Days to Seconds
 
@@ -350,12 +349,12 @@ class OPTParserTest extends GroovyTestCase {
 
       def cdo = opt.getNodes('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0009]/value')[0]
 
-      assert cdo instanceof CDvOrdinal
-      assert cdo.isValid(1, 'at0010', 'local')
-      assert !cdo.isValid(2, 'at0010', 'local') // value and code exists, but the code is not for this value
-      assert !cdo.isValid(1, 'at0010', 'SNOMED') // value and code exists, but terminology is not for those value and code
-      assert !cdo.isValid(666, 'at0010', 'local') // value doesnt exists
-      assert !cdo.isValid(1, 'a6666', 'local') // code doesnt exists
+      assert  cdo instanceof CDvOrdinal
+      assert  cdo.isValid(null, 1, 'at0010', 'local')
+      assert !cdo.isValid(null, 2, 'at0010', 'local') // value and code exists, but the code is not for this value
+      assert !cdo.isValid(null, 1, 'at0010', 'SNOMED') // value and code exists, but terminology is not for those value and code
+      assert !cdo.isValid(null, 666, 'at0010', 'local') // value doesnt exists
+      assert !cdo.isValid(null, 1, 'a6666', 'local') // code doesnt exists
 
       opt.nodes.each {
 
