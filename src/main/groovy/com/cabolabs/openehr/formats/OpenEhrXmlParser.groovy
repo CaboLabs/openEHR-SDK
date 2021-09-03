@@ -108,7 +108,47 @@ class OpenEhrXmlParser {
 
    Contribution parseContribution(String xml)
    {
-      // TODO: note parsing audit should be added to the method avove to be able to parse the Contribution
+      def slurper = new XmlSlurper(false, false)
+      def gpath   = slurper.parseText(xml)
+      String type, method
+      Version version
+
+      def contribution = new Contribution(versions: new HashSet())
+
+
+      // NOTE: POST /contribution doesn't have uid, so this will fail to parse that, might need to relax the schema
+      contribution.uid = this.parseHIER_OBJECT_ID(gpath.uid)
+
+      
+      gpath.versions.each { version_gpath ->
+
+         type = version_gpath.'@xsi:type'.text()
+
+         if (!type)
+         {
+            throw new Exception("Can't parse XML if node doesn't have a xsi:type")
+         }
+         
+         method = 'parse'+ type
+         version = this."$method"(version_gpath)
+         contribution.versions << this.parseVersionToObjectRef(version) // contribiution has objectrefs
+      }
+
+      contribution.audit = this.parseAUDIT_DETAILS(gpath.audit)
+
+      return contribution
+   }
+
+   // Use to parse Contribution, which has ObjectRefs to Versions, from a list of Versions
+   private ObjectRef parseVersionToObjectRef(Version version)
+   {
+      ObjectRef o   = new ObjectRef()
+      
+      o.namespace   = 'ehr'
+      o.type        = 'VERSION'
+      o.id          = version.uid // OBJECT_VERSION_ID
+      
+      return o
    }
 
    // ========= FIll METHODS =========

@@ -1,4 +1,8 @@
 {
+    "uid": {
+        "_type": "HIER_OBJECT_ID",
+        "value": "629464f0-e626-aaaa-cccc-71dace8a2f24"
+    },
     "versions": [
         {
             "_type": "ORIGINAL_VERSION",
@@ -522,12 +526,13 @@
         "committer":{
             "_type": "PARTY_IDENTIFIED",
             "name": "Pablo Pazos",
-            "external_ref":{
-                "namespace": "demographic",
-                "type": "PERSON",
-                "id":{
+            "external_ref": {
+                "id": {
+                    "_type": "HIER_OBJECT_ID",
                     "value": "c679cb62-97a3-4bf4-8239-f4553fe99acb"
-                }
+                },
+                "namespace": "demographic",
+                "type": "PERSON"
             }
         }
     }

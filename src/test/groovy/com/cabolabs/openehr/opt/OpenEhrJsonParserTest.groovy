@@ -21,6 +21,7 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.TerminologyId
 import groovy.util.GroovyTestCase
 import groovy.json.JsonOutput
 import com.cabolabs.openehr.rm_1_0_2.common.change_control.OriginalVersion
+import com.cabolabs.openehr.rm_1_0_2.common.change_control.Contribution
 import com.cabolabs.openehr.rm_1_0_2.common.change_control.Version
 
 import com.networknt.schema.*
@@ -154,6 +155,24 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       List<Version> vl = parser.parseVersionList(json)
 
       // TODO: check internals
+
+      assert vl.size() == 1
+      assert vl[0].uid.value == '93bbff8b-cdd5-43a3-8d71-194a735cc704::CABOLABS::1'
+
+   }
+
+   void testJsonParserApiContribution()
+   {
+      String path = PS +"canonical_json"+ PS +"contribution_test_all_datatypes_en.json"
+      File file = new File(getClass().getResource(path).toURI())
+      String json = file.text
+      def parser = new OpenEhrJsonParser()
+      Contribution contribution = parser.parseContribution(json)
+
+      // TODO: check internals
+
+      assert contribution.versions.size() == 1
+      assert contribution.versions[0].id.value == '93bbff8b-cdd5-43a3-8d71-194a735cc704::CABOLABS::1'
    }
    
    // TODO: move to the XML test suite

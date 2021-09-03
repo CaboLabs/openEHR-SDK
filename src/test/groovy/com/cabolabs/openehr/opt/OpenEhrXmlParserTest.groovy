@@ -19,8 +19,7 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.TerminologyId
 import groovy.util.GroovyTestCase
 import groovy.xml.*
 import groovy.json.JsonOutput
-import com.cabolabs.openehr.rm_1_0_2.common.change_control.OriginalVersion
-import com.cabolabs.openehr.rm_1_0_2.common.change_control.Version
+import com.cabolabs.openehr.rm_1_0_2.common.change_control.*
 
 class OpenEhrXmlParserTest extends GroovyTestCase {
 
@@ -114,5 +113,17 @@ class OpenEhrXmlParserTest extends GroovyTestCase {
 
       assert c.content[0].data.events[0].path == '/content/data/events'
       assert c.content[0].data.events[0].dataPath == '/content[0]/data/events[0]'
+   }
+
+   void testXmlParserApiContribution()
+   {
+      String path = PS +"canonical_xml"+ PS +"test_all_datatypes.api_contribution.en.xml"
+      File file = new File(getClass().getResource(path).toURI())
+      String xml = file.text
+      def parser = new OpenEhrXmlParser()
+      Contribution contribution = parser.parseContribution(xml)
+
+      assert contribution.versions.size() == 1
+      assert contribution.versions[0].id.value == '553c1d04-6d78-4f42-a07d-34a9344ca71d::CABOLABS::1'
    }
 }
