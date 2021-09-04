@@ -169,7 +169,7 @@ class OPTParserTest extends GroovyTestCase {
       assert !cdi.isValid(null, 'gm/l', -50.5)
       assert !cdi.isValid(null, 'qweerty', -50.5)
 
-      assert cdi.isValid(null, 'qweerty', 50.5).message == 'CDvQuantity.validation.error.noMatchingUnits'
+      assert cdi.isValid(null, 'qweerty', 50.5).message == "units 'qweerty' don't match [gm/l]"
 
       opt.nodes.each {
 

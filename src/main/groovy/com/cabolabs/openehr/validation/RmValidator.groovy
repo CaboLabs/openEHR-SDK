@@ -22,17 +22,6 @@ class RmValidator {
 
    OptManager opt_manager
 
-   // Class attributes that are mandatory by the RM so existence is always 1..1
-   def rm_required_existence = [
-      'DV_PARSABLE': [
-         'value', 'formalism'
-      ],
-      'DV_MULTIMEDIA': [
-         'media_type', 'size'
-      ]
-      // TODO
-   ]
-
    RmValidator(OptManager opt_manager)
    {
       this.opt_manager = opt_manager

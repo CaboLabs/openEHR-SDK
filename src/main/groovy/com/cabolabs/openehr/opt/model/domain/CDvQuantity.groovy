@@ -26,10 +26,18 @@ class CDvQuantity extends ObjectNode {
       {
          def item = list.find { it.units == units }
 
-         if (!item) return new ValidationResult(isValid: false, message:'CDvQuantity.validation.error.noMatchingUnits')
+         if (!item)
+         {
+            return new ValidationResult(isValid: false, message: "units '${units}' don't match "+ list.units)
+         }
 
-         if (!item.magnitude.has(magnitude)) return new ValidationResult(isValid: false, message:'CDvQuantity.validation.error.magnitudeOutOfRange')
+         if (!item.magnitude.has(magnitude))
+         {
+            return new ValidationResult(isValid: false, message: "magnitude ${magnitude} is not in the interval "+ item.magnitude)
+         }
       }
+
+      // FIXME: validate the property
 
       return new ValidationResult(isValid: true)
    }
