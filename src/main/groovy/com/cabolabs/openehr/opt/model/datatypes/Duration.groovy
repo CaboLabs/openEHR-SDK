@@ -38,4 +38,9 @@ class Duration implements Comparable<Duration> {
    {
       seconds() <=> d.seconds()
    }
+
+   String toString()
+   {
+      return this.value
+   }
 }

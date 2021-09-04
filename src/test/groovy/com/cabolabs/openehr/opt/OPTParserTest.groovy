@@ -13,6 +13,7 @@ import com.cabolabs.openehr.terminology.TerminologyParser
 import com.cabolabs.openehr.opt.instance_validation.XmlInstanceValidation
 import com.cabolabs.openehr.opt.instance_generator.*
 import com.cabolabs.openehr.opt.serializer.*
+import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Element
 
 class OPTParserTest extends GroovyTestCase {
 
@@ -164,12 +165,12 @@ class OPTParserTest extends GroovyTestCase {
 
       assert cdi instanceof CDvQuantity
 
-      assert  cdi.isValid(null, 'gm/l', 50.5)
-      assert !cdi.isValid(null, 'qweerty', 50.5)
-      assert !cdi.isValid(null, 'gm/l', -50.5)
-      assert !cdi.isValid(null, 'qweerty', -50.5)
+      assert  cdi.isValid(new Element(dataPath:'/value'), 'gm/l', 50.5)
+      assert !cdi.isValid(new Element(dataPath:'/value'), 'qweerty', 50.5)
+      assert !cdi.isValid(new Element(dataPath:'/value'), 'gm/l', -50.5)
+      assert !cdi.isValid(new Element(dataPath:'/value'), 'qweerty', -50.5)
 
-      assert cdi.isValid(null, 'qweerty', 50.5).message == "units 'qweerty' don't match [gm/l]"
+      assert cdi.isValid(new Element(dataPath:'/value'), 'qweerty', 50.5).message == "/value/units 'qweerty' don't match [gm/l]"
 
       opt.nodes.each {
 
@@ -286,11 +287,12 @@ class OPTParserTest extends GroovyTestCase {
       assert  c.item.range.lower.value == 'PT0H'
       assert  c.item.range.upper.value == 'PT5H'
  
-      assert  c.item.isValid(null, 'PT0H')
-      assert  c.item.isValid(null, 'PT1H')
-      assert  c.item.isValid(null, 'PT5H')
-      assert !c.item.isValid(null, 'PT10H')
+      assert  c.item.isValid(new Element(dataPath:'/value'), 'PT0H')
+      assert  c.item.isValid(new Element(dataPath:'/value'), 'PT1H')
+      assert  c.item.isValid(new Element(dataPath:'/value'), 'PT5H')
+      assert !c.item.isValid(new Element(dataPath:'/value'), 'PT10H')
 
+      assert c.item.isValid(new Element(dataPath:'/value'), 'PT10H').message == "/value/value 'PT10H' is not in the interval PT0H..PT5H"
       //assert !c.item.isValid('P2Y') this fails since the Java Duration only allows from Days to Seconds
 
       // opt.nodes.each {
