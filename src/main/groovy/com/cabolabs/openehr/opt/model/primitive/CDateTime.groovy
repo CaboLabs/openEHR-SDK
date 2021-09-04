@@ -16,8 +16,6 @@ class CDateTime extends CPrimitive {
    // OPT DateTime Pattern
    String pattern
 
-   // TODO: accept seconds fraction with comma
-   
    // OPT DateTime Pattern => Java SimpleFormat Patterns
    static Map validators = [
       'yyyy-mm-ddTHH:MM:SS': ["yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
@@ -95,7 +93,6 @@ class CDateTime extends CPrimitive {
                               "yyyyMMdd'T'HH"
                              ]
    ]
-
 
    ValidationResult isValid(Pathable parent, String formattedDate)
    {
