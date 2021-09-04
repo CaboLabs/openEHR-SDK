@@ -2296,30 +2296,53 @@ class RmValidator {
          def occurrences = (d ? 1 : 0)
          if (!o.occurrences.has(occurrences))
          {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
+            report.addError(parent.dataPath, "Node doesn't match occurrences")
          }
       }
-
-      /* TODO: validate multimedia
-
-      def a_value = o.getAttr('value')
-      if (a_value)
+      
+      // media_type is mandatory by the RM
+      if (!d.media_type)
       {
-         if (d.value != null) // compare to null to avoid 0 as false
+         report.addError(parent.dataPath + dv_path + "/media_type", "is not present but is required")
+      }
+
+      // size is mandatory by the RM
+      if (!d.size)
+      {
+         report.addError(parent.dataPath + dv_path + "/size", "is not present but is required")
+      }
+
+      def a_charset = o.getAttr('charset')
+      if (a_charset)
+      {
+         if (d.charset)
          {
-            report.append(validate(parent, d.value, a_value, dv_path +'/value'))
+            report.append(validate(parent, d.charset, a_charset, dv_path +'/charset'))
          }
          else
          {
-            if (!a_value.existence.has(0))
+            if (!a_charset.existence.has(0))
             {
-               report.addError("'${o.templateDataPath}' /value is not present but is required")
+               report.addError(parent.dataPath + dv_path +"/charset", "is not present but is required")
             }
          }
       }
-      */
+      
+      def a_language = o.getAttr('language')
+      if (a_language)
+      {
+         if (d.language)
+         {
+            report.append(validate(parent, d.language, a_language, dv_path +'/language'))
+         }
+         else
+         {
+            if (!a_language.existence.has(0))
+            {
+               report.addError(parent.dataPath + dv_path +"/language", "is not present but is required")
+            }
+         }
+      }
 
       return report
    }
@@ -2375,9 +2398,7 @@ class RmValidator {
          def occurrences = (d ? 1 : 0)
          if (!o.occurrences.has(occurrences))
          {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
+            report.addError(parent.dataPath, "Node doesn't match occurrences")
          }
       }
 
