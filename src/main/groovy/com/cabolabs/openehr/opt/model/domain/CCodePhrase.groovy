@@ -38,17 +38,22 @@ class CCodePhrase extends ObjectNode {
       // TODO: search for the terminologyId in the ref
       if (terminologyRef) return new ValidationResult(isValid: true)
 
-
-      def item = codeList.find { it == code }
-      if (!item) return new ValidationResult(isValid: false, message: 'code_string ${code} is not in the code list')
-
-
-      // TODO: it would be better to have TerminologyId and have this parsing logic contained inside.
-      def tidPattern = ~/(\w+)\s*(?:\(?(\w*)\)?.*)?/
-      def result = tidPattern.matcher(terminologyId)
-      if (terminologyIdName != result[0][1] || terminologyIdVersion != result[0][2])
+      // if there is no list, any code is valid
+      if (codeList)
       {
-         return new ValidationResult(isValid: false, message: "terminology_id ${terminologyId} doesn't match ${terminologyIdName}")
+         def item = codeList.find { it == code }
+         if (!item) return new ValidationResult(isValid: false, message: "code_string ${code} is not in the code list "+ codeList)
+      }
+
+      if (terminologyIdName)
+      {
+         // TODO: it would be better to have TerminologyId and have this parsing logic contained inside.
+         def tidPattern = ~/(\w+)\s*(?:\(?(\w*)\)?.*)?/
+         def result = tidPattern.matcher(terminologyId)
+         if (terminologyIdName != result[0][1] || terminologyIdVersion != result[0][2])
+         {
+            return new ValidationResult(isValid: false, message: "terminology_id ${terminologyId} doesn't match ${terminologyIdName}")
+         }
       }
 
 

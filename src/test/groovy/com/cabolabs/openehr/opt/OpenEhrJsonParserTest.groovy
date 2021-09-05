@@ -148,6 +148,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 
    void testJsonParserVersionList()
    {
+      println "--- testJsonParserVersionList ---"
       String path = PS +"canonical_json"+ PS +"version_list_test_all_datatypes_en.json"
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
@@ -159,6 +160,10 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       assert vl.size() == 1
       assert vl[0].uid.value == '93bbff8b-cdd5-43a3-8d71-194a735cc704::CABOLABS::1'
 
+      println vl[0].data.context.start_time
+
+      //def out = JsonWriter.objectToJson(vl, [(JsonWriter.PRETTY_PRINT): true])
+      //println out
    }
 
    void testJsonParserApiContribution()

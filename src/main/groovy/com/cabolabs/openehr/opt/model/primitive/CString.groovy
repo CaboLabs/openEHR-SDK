@@ -18,7 +18,7 @@ class CString extends CPrimitive {
          def matching_pattern = ~/${pattern}/
          if (!matching_pattern.matcher(value).matches())
          {
-            def msg = "value '${value}' doesn't match pattern '${pattern}'"
+            def msg = parent.dataPath +"/value '${value}' doesn't match pattern '${pattern}'"
             return new ValidationResult(isValid: false, message: msg)
          }
       }
@@ -27,7 +27,7 @@ class CString extends CPrimitive {
       {
          if (!list.contains(value))
          {
-            def msg = "value '${value}' is not contained in the list '${list}'"
+            def msg =  parent.dataPath +"/value '${value}' is not contained in the list ${list}"
             return new ValidationResult(isValid: false, message: msg)
          }
       }

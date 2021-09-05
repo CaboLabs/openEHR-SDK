@@ -604,46 +604,6 @@ class OpenEhrJsonSerializer {
       return out
    }
    
-   private Map serializeElement(Element o)
-   {
-      def out = [:]
-      
-      this.fillLocatable(o, out)
-      
-      if (o.value)
-      {
-         String method = this.method(o.value)
-         out.value = this."$method"(o.value)
-         out.value._type = this.openEhrType(o.value)
-      }
-      
-      if (o.null_flavour)
-      {
-         out.null_flavour = this.serializeDvCodedText(o.null_flavour)
-      }
-
-      return out
-   }
-   
-   private Map serializeCluster(Cluster o)
-   {
-      def out = [:]
-      
-      this.fillLocatable(o, out)
-      
-      String method
-      Map _item
-
-      out.items = []
-      o.items.each { item ->
-         method = this.method(item)
-         _item = this."$method"(item)
-         _item._type = this.openEhrType(item)
-         out.items << _item
-      }
-
-      return out
-   }
    
    private Map serializeSection(Section s)
    {
@@ -895,6 +855,50 @@ class OpenEhrJsonSerializer {
 
       return out
    }
+
+
+   
+   private Map serializeCluster(Cluster o)
+   {
+      def out = [:]
+      
+      this.fillLocatable(o, out)
+      
+      String method
+      Map _item
+
+      out.items = []
+      o.items.each { item ->
+         method = this.method(item)
+         _item = this."$method"(item)
+         _item._type = this.openEhrType(item)
+         out.items << _item
+      }
+
+      return out
+   }
+
+   private Map serializeElement(Element o)
+   {
+      def out = [:]
+      
+      this.fillLocatable(o, out)
+      
+      if (o.value)
+      {
+         String method = this.method(o.value)
+         out.value = this."$method"(o.value)
+         out.value._type = this.openEhrType(o.value)
+      }
+      
+      if (o.null_flavour)
+      {
+         out.null_flavour = this.serializeDvCodedText(o.null_flavour)
+      }
+
+      return out
+   }
+
    
    private Map serializeDvDateTime(DvDateTime o)
    {
@@ -1147,16 +1151,19 @@ class OpenEhrJsonSerializer {
       def out = [:]
       
       String method
-      if (o.upper)
-      {
-         method = this.method(o.upper)
-         out.upper = this."$method"(o.upper)
-      }
 
       if (o.lower)
       {
          method = this.method(o.lower)
          out.lower = this."$method"(o.lower)
+         out.lower._type = this.openEhrType(o.lower)
+      }
+
+      if (o.upper)
+      {
+         method = this.method(o.upper)
+         out.upper = this."$method"(o.upper)
+         out.upper._type = this.openEhrType(o.upper)
       }
 
       out.lower_included  = o.lower_included
