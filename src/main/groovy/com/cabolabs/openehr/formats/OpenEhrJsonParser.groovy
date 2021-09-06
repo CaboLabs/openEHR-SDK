@@ -46,7 +46,16 @@ class OpenEhrJsonParser {
       }
       
       def method = 'parse'+ type
-      return this."$method"(map, null, '/', '/')
+      Locatable out
+      try
+      {
+         out = this."$method"(map, null, '/', '/')
+      }
+      catch (Exception e)
+      {
+         throw new JsonCompositionParseException("Can't parse JSON, check ${type} is a LOCATABLE type. If you tried to parse a VERSION, use the parseVersionJson method")
+      }
+      return out
    }
    
    // used to parse versions because is not Locatable
@@ -62,7 +71,16 @@ class OpenEhrJsonParser {
       }
       
       def method = 'parse'+ type
-      return this."$method"(version_map)
+      Version out
+      try
+      {
+         out = this."$method"(version_map)
+      }
+      catch (Exception e)
+      {
+         throw new JsonCompositionParseException("Can't parse JSON, check ${type} is a VERSION type. If you tried to parse a LOCATABLE, use the parseJson method")
+      }
+      return out
    }
 
    // Used to parse the payload for POST /contributon of the openEHR REST API
