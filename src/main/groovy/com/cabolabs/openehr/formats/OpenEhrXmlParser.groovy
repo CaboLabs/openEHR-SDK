@@ -46,7 +46,7 @@ class OpenEhrXmlParser {
       
       if (!type)
       {
-         throw new Exception("Can't parse XML if root node doesn't have a xsi:type")
+         throw new XmlCompositionParseException("Can't parse XML if root node doesn't have a xsi:type")
       }
       
       def method = 'parse'+ type
@@ -62,7 +62,7 @@ class OpenEhrXmlParser {
       
       if (!type)
       {
-         throw new Exception("Can't parse XML if root node doesn't have a xsi:type")
+         throw new XmlCompositionParseException("Can't parse XML if root node doesn't have a xsi:type")
       }
       
       def method = 'parse'+ type
@@ -96,7 +96,7 @@ class OpenEhrXmlParser {
 
          if (!type)
          {
-            throw new Exception("Can't parse XML if node doesn't have a xsi:type")
+            throw new XmlCompositionParseException("Can't parse XML if node doesn't have a xsi:type")
          }
          
          method = 'parse'+ type
@@ -126,7 +126,7 @@ class OpenEhrXmlParser {
 
          if (!type)
          {
-            throw new Exception("Can't parse XML if node doesn't have a xsi:type")
+            throw new XmlCompositionParseException("Can't parse XML if node doesn't have a xsi:type")
          }
          
          method = 'parse'+ type

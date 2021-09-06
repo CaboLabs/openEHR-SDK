@@ -63,6 +63,22 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       def out = JsonWriter.objectToJson(c.content, [(JsonWriter.PRETTY_PRINT): true])
       println out
    }
+
+   void testJsonParserNoNameType()
+   {
+      println "== testJsonParserNoNameType =="
+      String path = PS +"canonical_json"+ PS +"composition_missing_name_type.json"
+      File file = new File(getClass().getResource(path).toURI())
+      String json = file.text
+      def parser = new OpenEhrJsonParser()
+      Composition c = (Composition)parser.parseJson(json)
+      
+      assert c != null
+      // TODO assert paths
+
+      def out = JsonWriter.objectToJson(c.content, [(JsonWriter.PRETTY_PRINT): true])
+      println out
+   }
    
    void testJsonParserReferralWithParticipations()
    {

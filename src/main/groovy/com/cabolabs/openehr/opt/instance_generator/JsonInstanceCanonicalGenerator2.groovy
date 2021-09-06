@@ -1811,6 +1811,9 @@ class JsonInstanceCanonicalGenerator2 {
          _type: 'DV_INTERVAL' // removed <DV_DATE_TIME> generics because of https://discourse.openehr.org/t/correct-use-of-generic-types-in-xml-and-json/1504/16
       ]
 
+      mobj.lower_included = true
+      mobj.upper_included = true
+
       def lower = o.attributes.find { it.rmAttributeName == 'lower' }
       mobj << generate_attr_DV_DATE_TIME(lower.rmAttributeName) // contains the attr name, that is why we use <<
 
@@ -1821,8 +1824,6 @@ class JsonInstanceCanonicalGenerator2 {
       // so it is always bounded for both limits
       mobj.lower_unbounded = false
       mobj.upper_unbounded = false
-      mobj.lower_included = true
-      mobj.upper_included = true
 
       return mobj
    }
