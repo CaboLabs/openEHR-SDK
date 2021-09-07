@@ -30,7 +30,7 @@ class XmlInstanceGeneratorTagged {
    static int counter = 1 // help to create unique names
 
    // Formats
-   def datetime_format = "yyyyMMdd'T'HHmmss,SSSZ"
+   def datetime_format = "yyyy-MM-dd'T'HH:mm:ss.sssZ" // https://www.w3.org/TR/xmlschema-2/#dateTime
    def formatter = new SimpleDateFormat( datetime_format )
 
    def XmlInstanceGeneratorTagged()

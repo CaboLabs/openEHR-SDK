@@ -23,7 +23,7 @@ class XmlInstanceGenerator {
    def terminology
 
    // Formats
-   def datetime_format = "yyyyMMdd'T'HHmmss,SSSZ"
+   def datetime_format = "yyyy-MM-dd'T'HH:mm:ss.sssZ" // https://www.w3.org/TR/xmlschema-2/#dateTime
    def formatter = new SimpleDateFormat( datetime_format )
 
    Random random_gen = new Random()
@@ -272,6 +272,8 @@ class XmlInstanceGenerator {
    private generateCompositionHeader(boolean addParticipations = false)
    {
       // FIXME: this should only generate what doesnt comes from the OPT (category and context are in the OPT!)
+
+      // FIXME: this should be generated in the add_LOCATALE_elements
 
       // Campos heredados de LOCATABLE
       builder.name('xsi:type':'DV_TEXT') {
@@ -951,12 +953,37 @@ class XmlInstanceGenerator {
         <type>sdfsfd</type>
       </value>
       */
+      def identifier = [
+         issuer: 'Hospital de Clinicas',
+         assigner: 'Hospital de Clinicas',
+         id: String.randomNumeric(8),
+         type: 'LOCALID'
+      ]
+
+      // since all constraints are the same, we do this dynamically
+
+      def attrs = ['issuer', 'assigner', 'type', 'id']
+
+      attrs.each { attr ->
+
+         def c_attr = o.attributes.find{ it.rmAttributeName == attr }
+
+         if (c_attr && c_attr.children && c_attr.children[0].item instanceof com.cabolabs.openehr.opt.model.primitive.CString)
+         {
+            if (c_attr.children[0].item.pattern) identifier."${attr}" = c_attr.children[0].item.pattern
+            else if (c_attr.children[0].item.list)
+            {
+               identifier."${attr}" = c_attr.children[0].item.list[0]
+            }
+         }
+      }
+
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_IDENTIFIER') {
-         issuer('Hospital de Clinicas')
-         assigner('Hospital de Clinicas')
-         id(String.randomNumeric(8))
-         type('LOCALID')
+         issuer  (identifier.issuer)
+         assigner(identifier.assigner)
+         id      (identifier.id)
+         type    (identifier.type)
       }
    }
 
