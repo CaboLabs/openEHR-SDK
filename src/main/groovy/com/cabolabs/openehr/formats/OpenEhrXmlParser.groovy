@@ -73,15 +73,15 @@ class OpenEhrXmlParser {
    List<Version> parseVersionList(String xml)
    {
       /*
-      <versions>
-        <version xsi:type="ORIGINAL_VERSION">
+      <contribution>
+        <versions xsi:type="ORIGINAL_VERSION">
         ...
-        </version>
-        <version xsi:type="ORIGINAL_VERSION">
+        </versions>
+        <versions xsi:type="ORIGINAL_VERSION">
         ...
-        </version>
+        </versions>
         ...
-      </versions>
+      </contribution>
       */
 
       def slurper = new XmlSlurper(false, false)
@@ -90,7 +90,7 @@ class OpenEhrXmlParser {
 
       List versions = []
       
-      gpath.version.each { version_gpath ->
+      gpath.versions.each { version_gpath ->
 
          type = version_gpath.'@xsi:type'.text()
 
@@ -1212,9 +1212,13 @@ class OpenEhrXmlParser {
       DvProportion d = new DvProportion(
          numerator: xml.numerator.toFloat(),
          denominator: xml.denominator.toFloat(),
-         type: xml.type.toInteger(),
-         precision: xml.precision?.toInteger()
+         type: xml.type.toInteger()
       )
+
+      if (!xml.precision.isEmpty())
+      {
+         d.precision = xml.precision.toInteger()
+      }
       
       this.fillDV_AMOUNT(d, xml)
       

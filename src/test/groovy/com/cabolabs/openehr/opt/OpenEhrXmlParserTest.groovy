@@ -32,7 +32,24 @@ class OpenEhrXmlParserTest extends GroovyTestCase {
       File file = new File(getClass().getResource(path).toURI())
       String xml = file.text
       def parser = new OpenEhrXmlParser()
-      Version c = (Version)parser.parseVersionXml(xml)
+      Version v = (Version)parser.parseVersionXml(xml)
+
+      assert v != null
+      
+      //def out = JsonOutput.toJson(c)
+      //out = JsonOutput.prettyPrint(out)
+      //println out
+   }
+
+   void testXmlParserVersion2()
+   {
+      String path = PS +"canonical_xml"+ PS +"test_all_datatypes.version.en2.xml"
+      File file = new File(getClass().getResource(path).toURI())
+      String xml = file.text
+      def parser = new OpenEhrXmlParser()
+      Version v = (Version)parser.parseVersionXml(xml)
+
+      assert v != null
       
       //def out = JsonOutput.toJson(c)
       //out = JsonOutput.prettyPrint(out)
