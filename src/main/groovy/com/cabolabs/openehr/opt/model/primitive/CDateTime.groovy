@@ -26,7 +26,6 @@ class CDateTime extends CPrimitive {
                               "yyyy-MM-dd'T'HH:mm:ss,SSSX",
                               "yyyy-MM-dd'T'HH:mm:ss,SSS",
 
-
                               "yyyy-MM-dd'T'HH:mm:ss'Z'",
                               "yyyy-MM-dd'T'HH:mm:ssX",
                               "yyyy-MM-dd'T'HH:mm:ss",

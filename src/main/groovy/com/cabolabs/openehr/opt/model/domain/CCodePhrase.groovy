@@ -56,6 +56,16 @@ class CCodePhrase extends ObjectNode {
          }
       }
 
+      if (terminologyIdName)
+      {
+         // TODO: it would be better to have TerminologyId and have this parsing logic contained inside.
+         def tidPattern = ~/(\w+)\s*(?:\(?(\w*)\)?.*)?/
+         def result = tidPattern.matcher(terminologyId)
+         if (terminologyIdName != result[0][1] || terminologyIdVersion != result[0][2])
+         {
+            return new ValidationResult(isValid: false, message: "terminology_id ${terminologyId} doesn't match ${terminologyIdName}")
+         }
+      }
 
       return new ValidationResult(isValid: true)
    }
