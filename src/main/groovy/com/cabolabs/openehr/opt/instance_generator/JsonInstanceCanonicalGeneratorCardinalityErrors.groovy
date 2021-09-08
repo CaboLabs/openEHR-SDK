@@ -24,8 +24,8 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
    def terminology
 
    // Formats
-   def datetime_format = "yyyyMMdd'T'HHmmss,SSSZ"
-   def formatter = new SimpleDateFormat( datetime_format )
+   def datetime_format
+   def formatter
 
    Random random_gen = new Random() // TODO: use this one for all generations
 
@@ -52,7 +52,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
       [name: 'Daniel Duncan', function: 'companion', relationship: [rubric:'bother', code:'23']]
    ]
 
-   def JsonInstanceCanonicalGeneratorCardinalityErrors()
+   def JsonInstanceCanonicalGeneratorCardinalityErrors(String datetime_format = "yyyyMMdd'T'HHmmss,SSSZ")
    {
       /* THIS CANT BE USED UNTIL Groovy 2.5.x, since Grails 3.3.10 uses 2.4.17 we keep building under that version
          OLD javadocs by Groovy version 
@@ -67,6 +67,9 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
       */
 
       //builder = new JsonBuilder()
+
+      this.datetime_format = datetime_format
+      this.formatter = new SimpleDateFormat(datetime_format)
 
       out = [:]
 
@@ -968,13 +971,33 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
 
    private generate_DV_IDENTIFIER(ObjectNode o, String parent_arch_id)
    {
-      [
+      def identifier = [
          _type: 'DV_IDENTIFIER',
          issuer: 'Hospital de Clinicas',
          assigner: 'Hospital de Clinicas',
          id: String.randomNumeric(8),
          type: 'LOCALID'
       ]
+
+      // since all constraints are the same, we do this dynamically
+
+      def attrs = ['issuer', 'assigner', 'type', 'id']
+
+      attrs.each { attr ->
+
+         def c_attr = o.attributes.find{ it.rmAttributeName == attr }
+
+         if (c_attr && c_attr.children && c_attr.children[0].item instanceof com.cabolabs.openehr.opt.model.primitive.CString)
+         {
+            if (c_attr.children[0].item.pattern) identifier."${attr}" = c_attr.children[0].item.pattern
+            else if (c_attr.children[0].item.list)
+            {
+               identifier."${attr}" = c_attr.children[0].item.list[0]
+            }
+         }
+      }
+
+      return identifier
    }
 
    private generate_DV_ORDINAL(ObjectNode o, String parent_arch_id)

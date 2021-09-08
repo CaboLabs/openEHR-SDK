@@ -63,6 +63,22 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       def out = JsonWriter.objectToJson(c.content, [(JsonWriter.PRETTY_PRINT): true])
       println out
    }
+
+   void testJsonParserNoNameType()
+   {
+      println "== testJsonParserNoNameType =="
+      String path = PS +"canonical_json"+ PS +"composition_missing_name_type.json"
+      File file = new File(getClass().getResource(path).toURI())
+      String json = file.text
+      def parser = new OpenEhrJsonParser()
+      Composition c = (Composition)parser.parseJson(json)
+      
+      assert c != null
+      // TODO assert paths
+
+      def out = JsonWriter.objectToJson(c.content, [(JsonWriter.PRETTY_PRINT): true])
+      println out
+   }
    
    void testJsonParserReferralWithParticipations()
    {
@@ -144,6 +160,36 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       def parser = new OpenEhrJsonParser()
       Version v = parser.parseVersionJson(json)
       // TODO: check internals
+
+      assert v != null
+   }
+
+   void testJsonParserVersionInsteadOfComposition()
+   {
+      String path = PS +"canonical_json"+ PS +"version_test_all_datatypes_en.json"
+      File file = new File(getClass().getResource(path).toURI())
+      String json = file.text
+      def parser = new OpenEhrJsonParser()
+      
+      String message = shouldFail {
+         parser.parseJson(json) // this tries to parse a pathable cant parse the provided version
+      }
+
+      assert message == "Can't parse JSON, check ORIGINAL_VERSION is a LOCATABLE type. If you tried to parse a VERSION, use the parseVersionJson method"
+   }
+
+   void testJsonParserCompositionInsteadOfVersion()
+   {
+      String path = PS +"canonical_json"+ PS +"admin.json"
+      File file = new File(getClass().getResource(path).toURI())
+      String json = file.text
+      def parser = new OpenEhrJsonParser()
+      
+      String message = shouldFail {
+         parser.parseVersionJson(json) // this tries to parse a version cant parse the provided composition
+      }
+
+      assert message == "Can't parse JSON, check COMPOSITION is a VERSION type. If you tried to parse a LOCATABLE, use the parseJson method"
    }
 
    void testJsonParserVersionList()

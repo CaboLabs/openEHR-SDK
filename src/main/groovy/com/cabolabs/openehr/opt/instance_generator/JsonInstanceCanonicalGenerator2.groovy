@@ -21,10 +21,6 @@ class JsonInstanceCanonicalGenerator2 {
 
    def terminology
 
-   // Formats
-   def datetime_format = "yyyyMMdd'T'HHmmss,SSSZ"
-   def formatter = new SimpleDateFormat( datetime_format )
-
    Random random_gen = new Random() // TODO: use this one for all generations
 
    // Dummy data (TODO: make this configurable from an external file)
@@ -50,7 +46,10 @@ class JsonInstanceCanonicalGenerator2 {
       [name: 'Daniel Duncan', function: 'companion', relationship: [rubric:'bother', code:'23']]
    ]
 
-   def JsonInstanceCanonicalGenerator2()
+   def JsonInstanceCanonicalGenerator2(
+      String datetime_format = "yyyy-MM-dd'T'HH:mm:ss,SSSZ",
+      String date_format = "yyyy-MM-dd",
+      String time_format = "HH:mm:ss")
    {
       /* THIS CANT BE USED UNTIL Groovy 2.5.x, since Grails 3.3.10 uses 2.4.17 we keep building under that version
          OLD javadocs by Groovy version 
@@ -65,6 +64,9 @@ class JsonInstanceCanonicalGenerator2 {
       */
 
       //builder = new JsonBuilder()
+
+      //this.datetime_format = datetime_format
+     // this.datetime_formatter = new SimpleDateFormat(datetime_format)
 
       out = [:]
 
@@ -104,20 +106,17 @@ class JsonInstanceCanonicalGenerator2 {
       }
 
       Date.metaClass.toOpenEHRDateTime = {
-         def datetime_format_openEHR = "yyyyMMdd'T'HHmmss,SSSZ" // openEHR format
-         def format_oehr = new SimpleDateFormat(datetime_format_openEHR)
+         def format_oehr = new SimpleDateFormat(datetime_format)
          return format_oehr.format(delegate) // string, delegate is the Date instance
       }
 
       Date.metaClass.toOpenEHRDate = {
-         def date_format_openEHR = "yyyyMMdd"
-         def format_oehr = new SimpleDateFormat(date_format_openEHR)
+         def format_oehr = new SimpleDateFormat(date_format)
          return format_oehr.format(delegate) // string, delegate is the Date instance
       }
 
       Date.metaClass.toOpenEHRTime = {
-         def datetime_format_openEHR = "HHmmss,SSS" // openEHR format
-         def format_oehr = new SimpleDateFormat(datetime_format_openEHR)
+         def format_oehr = new SimpleDateFormat(time_format)
          return format_oehr.format(delegate) // string, delegate is the Date instance
       }
 
@@ -278,7 +277,7 @@ class JsonInstanceCanonicalGenerator2 {
          
          compo.context = [
             start_time: [
-               value: formatter.format(new Date())
+               value: new Date().toOpenEHRDateTime()
             ],
             setting: [
                value: setting_entry.value,
@@ -618,18 +617,8 @@ class JsonInstanceCanonicalGenerator2 {
    }
    private generate_DV_TIME(ObjectNode o, String parent_arch_id)
    {
-      /*
-      <value xsi:type="DV_TIME">
-         <value>053442,950</value>
-      </value>
-      */
       AttributeNode a = o.parent
-      /* [
-         "${a.rmAttributeName}": [
-            _type: 'DV_TIME',
-            value: new Date().toOpenEHRTime()
-         ]
-      ] */
+
       [
          _type: 'DV_TIME',
          value: new Date().toOpenEHRTime()
@@ -914,7 +903,7 @@ class JsonInstanceCanonicalGenerator2 {
          }
          else
          {
-            println c_duration.range
+            println "TODO: C_DURATION is range : "+ c_duration.range
             // TBD: consider range
          }
       }
@@ -927,13 +916,33 @@ class JsonInstanceCanonicalGenerator2 {
 
    private generate_DV_IDENTIFIER(ObjectNode o, String parent_arch_id)
    {
-      [
+      def identifier = [
          _type: 'DV_IDENTIFIER',
          issuer: 'Hospital de Clinicas',
          assigner: 'Hospital de Clinicas',
          id: String.randomNumeric(8),
          type: 'LOCALID'
       ]
+
+      // since all constraints are the same, we do this dynamically
+
+      def attrs = ['issuer', 'assigner', 'type', 'id']
+
+      attrs.each { attr ->
+
+         def c_attr = o.attributes.find{ it.rmAttributeName == attr }
+
+         if (c_attr && c_attr.children && c_attr.children[0].item instanceof com.cabolabs.openehr.opt.model.primitive.CString)
+         {
+            if (c_attr.children[0].item.pattern) identifier."${attr}" = c_attr.children[0].item.pattern
+            else if (c_attr.children[0].item.list)
+            {
+               identifier."${attr}" = c_attr.children[0].item.list[0]
+            }
+         }
+      }
+
+      return identifier
    }
 
    private generate_DV_ORDINAL(ObjectNode o, String parent_arch_id)
@@ -1092,7 +1101,7 @@ class JsonInstanceCanonicalGenerator2 {
       {
          locatable.archetype_details = [
             archetype_id: [
-               value: opt.definition.archetypeId
+               value: o.archetypeId //opt.definition.archetypeId
             ],
             template_id: [
                value: opt.templateId
@@ -1114,9 +1123,9 @@ class JsonInstanceCanonicalGenerator2 {
     */
    private add_ENTRY_elements(ObjectNode o, String parent_arch_id)
    {
-      //println "add_ENTRY_elements"
+      //println "add_ENTRY_elements "+ o.type
 
-      def mobj = add_LOCATABLE_elements(o, parent_arch_id) // _type, name, archetype_node_id
+      def mobj = add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
       mobj.language = [
          terminology_id: [
@@ -1157,7 +1166,7 @@ class JsonInstanceCanonicalGenerator2 {
       def oa
       AttributeNode a = o.parent
 
-      def mobj = add_LOCATABLE_elements(o, parent_arch_id) // _type, name, archetype_node_id
+      def mobj = add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
       oa = o.attributes.find { it.rmAttributeName == 'items' }
       if (oa)
@@ -1269,7 +1278,7 @@ class JsonInstanceCanonicalGenerator2 {
 
       AttributeNode a = o.parent
 
-      def mobj = add_LOCATABLE_elements(o, parent_arch_id) // _type, name, archetype_node_id
+      def mobj = add_LOCATABLE_elements(o, parent_arch_id)
 
       def oa = o.attributes.find { it.rmAttributeName == 'description' }
       if (oa)
@@ -1389,7 +1398,7 @@ class JsonInstanceCanonicalGenerator2 {
 
       AttributeNode a = o.parent
 
-      def mobj = add_LOCATABLE_elements(o, parent_arch_id) + // _type, name, archetype_node_id
+      def mobj = add_LOCATABLE_elements(o, parent_arch_id) +
                  generate_attr_DV_DATE_TIME('origin') // IM attribute not present in the OPT
 
       /* def mattr
@@ -1423,7 +1432,7 @@ class JsonInstanceCanonicalGenerator2 {
 
       AttributeNode a = o.parent
 
-      def mobj = add_LOCATABLE_elements(o, parent_arch_id) + // _type, name, archetype_node_id
+      def mobj = add_LOCATABLE_elements(o, parent_arch_id) +
                  generate_attr_DV_DATE_TIME('time') // IM attribute not present in the OPT
 
       def mattrs
@@ -1445,7 +1454,7 @@ class JsonInstanceCanonicalGenerator2 {
 
       AttributeNode a = o.parent
       
-      def mobj = add_LOCATABLE_elements(o, parent_arch_id) + // _type, name, archetype_node_id
+      def mobj = add_LOCATABLE_elements(o, parent_arch_id) +
                  generate_attr_DV_DATE_TIME('time') // IM attribute not present in the OPT
 
 
@@ -1497,7 +1506,7 @@ class JsonInstanceCanonicalGenerator2 {
      // parent from now can be different than the parent if if the object has archetypeId
      parent_arch_id = o.archetypeId ?: parent_arch_id
      
-     def mobj = add_LOCATABLE_elements(o, parent_arch_id) // _type, name, archetype_node_id
+     def mobj = add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
      def oa_item = o.attributes.find{ it.rmAttributeName == 'item' }
 
@@ -1523,7 +1532,7 @@ class JsonInstanceCanonicalGenerator2 {
 
       //AttributeNode a = o.parent
 
-      def mobj = add_LOCATABLE_elements(o, parent_arch_id) // _type, name, archetype_node_id
+      def mobj = add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
       
       def mattr
       o.attributes.each { oa ->
@@ -1545,7 +1554,7 @@ class JsonInstanceCanonicalGenerator2 {
 
       AttributeNode a = o.parent
       
-      def mobj = add_LOCATABLE_elements(o, parent_arch_id) // _type, name, archetype_node_id
+      def mobj = add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
       def mattr
 
@@ -1586,7 +1595,7 @@ class JsonInstanceCanonicalGenerator2 {
 
       AttributeNode a = o.parent
 
-      def mobj = add_LOCATABLE_elements(o, parent_arch_id) // _type, name, archetype_node_id
+      def mobj = add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
       def mattr
 
       // the element can have constraints for: name, value and null_flavour
@@ -1811,6 +1820,9 @@ class JsonInstanceCanonicalGenerator2 {
          _type: 'DV_INTERVAL' // removed <DV_DATE_TIME> generics because of https://discourse.openehr.org/t/correct-use-of-generic-types-in-xml-and-json/1504/16
       ]
 
+      mobj.lower_included = true
+      mobj.upper_included = true
+
       def lower = o.attributes.find { it.rmAttributeName == 'lower' }
       mobj << generate_attr_DV_DATE_TIME(lower.rmAttributeName) // contains the attr name, that is why we use <<
 
@@ -1821,8 +1833,6 @@ class JsonInstanceCanonicalGenerator2 {
       // so it is always bounded for both limits
       mobj.lower_unbounded = false
       mobj.upper_unbounded = false
-      mobj.lower_included = true
-      mobj.upper_included = true
 
       return mobj
    }

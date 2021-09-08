@@ -382,6 +382,7 @@ class Main {
 
       opts.each { opt ->
 
+         // FIXME: the for should be inside each if!
          for (i in 1..count)
          {
             if (generate == 'composition')

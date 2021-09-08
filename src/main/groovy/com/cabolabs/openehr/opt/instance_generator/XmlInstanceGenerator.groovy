@@ -23,7 +23,7 @@ class XmlInstanceGenerator {
    def terminology
 
    // Formats
-   def datetime_format = "yyyyMMdd'T'HHmmss,SSSZ"
+   def datetime_format = "yyyy-MM-dd'T'HH:mm:ss.sssZ" // https://www.w3.org/TR/xmlschema-2/#dateTime
    def formatter = new SimpleDateFormat( datetime_format )
 
    Random random_gen = new Random()
@@ -51,7 +51,10 @@ class XmlInstanceGenerator {
       [name: 'Daniel Duncan', function: 'companion', relationship: [rubric:'bother', code:'23']]
    ]
 
-   def XmlInstanceGenerator()
+   def XmlInstanceGenerator(
+      String datetime_format = "yyyy-MM-dd'T'HH:mm:ss,SSSZ",
+      String date_format = "yyyy-MM-dd",
+      String time_format = "HH:mm:ss")
    {
       writer = new StringWriter()
       builder = new MarkupBuilder(writer)
@@ -93,20 +96,17 @@ class XmlInstanceGenerator {
       }
 
       Date.metaClass.toOpenEHRDateTime = {
-         def datetime_format_openEHR = "yyyyMMdd'T'HHmmss,SSSZ" // openEHR format
-         def format_oehr = new SimpleDateFormat(datetime_format_openEHR)
+         def format_oehr = new SimpleDateFormat(datetime_format)
          return format_oehr.format(delegate) // string, delegate is the Date instance
       }
 
       Date.metaClass.toOpenEHRDate = {
-         def date_format_openEHR = "yyyyMMdd"
-         def format_oehr = new SimpleDateFormat(date_format_openEHR)
+         def format_oehr = new SimpleDateFormat(date_format)
          return format_oehr.format(delegate) // string, delegate is the Date instance
       }
 
       Date.metaClass.toOpenEHRTime = {
-         def datetime_format_openEHR = "HHmmss,SSS" // openEHR format
-         def format_oehr = new SimpleDateFormat(datetime_format_openEHR)
+         def format_oehr = new SimpleDateFormat(time_format)
          return format_oehr.format(delegate) // string, delegate is the Date instance
       }
 
@@ -274,18 +274,7 @@ class XmlInstanceGenerator {
       // FIXME: this should only generate what doesnt comes from the OPT (category and context are in the OPT!)
 
       // Campos heredados de LOCATABLE
-      builder.name('xsi:type':'DV_TEXT') {
-         value(opt.getTerm(opt.definition.archetypeId, opt.definition.nodeId))
-      }
-      builder.archetype_details() { // ARCHETYPED
-         archetype_id() { // ARCHETYPE_ID
-            value(opt.definition.archetypeId)
-         }
-         template_id() { // TEMPLATE_ID
-            value(opt.templateId)
-         }
-         rm_version('1.0.2')
-      }
+      add_LOCATABLE_elements(opt.definition, opt.definition.archetypeId, true)
 
       // Campos de COMPOSITION
       builder.language() {
@@ -404,6 +393,79 @@ class XmlInstanceGenerator {
                   }
                }
             }
+         }
+      }
+   }
+
+   
+   /**
+    * /DATATYPES -----------------------------------------------------------------------------------------------
+    */
+
+   /**
+    * helper to add name, also checks if the object has a constraint for the name.
+    */
+   private add_LOCATABLE_elements(ObjectNode o, String parent_arch_id, boolean add_archetype_details = false)
+   {
+      def name_constraint = o.attributes.find { it.rmAttributeName == 'name' }
+      if (name_constraint)
+      {
+         // Check for prmitive constraint over DV_TEXT.value, that is CString.
+         // In our model this is just another ObjectNode, just for reference:
+         // https://github.com/openEHR/java-libs/blob/master/openehr-aom/src/main/java/org/openehr/am/archetype/constraintmodel/primitive/CString.java
+         //println "NAME CONSTRAINT: " + name_constraint +" "+ parent_arch_id + o.path
+
+         def name_constraint_type = name_constraint.children[0].rmTypeName
+
+         if (name_constraint_type == 'DV_TEXT')
+         {
+            // childen[0] DV_TEXT
+            //   for the DV_TEXT.value constraint
+            //     the first children can be a STRING constraint
+            //       check if there is a list constraint and get the first value as the name
+            def value_constraint = name_constraint.children[0].attributes.find { it.rmAttributeName == 'value' }
+
+            // there is a constraint for the name but doesnt have a specific value
+            if (!value_constraint)
+            {
+               builder.name('xsi:type':'DV_TEXT') {
+                  value( this.opt.getTerm(parent_arch_id, o.nodeId) )
+               }
+            }
+            else
+            {
+               def name_value = value_constraint.children[0].item.list[0]
+               builder.name('xsi:type':'DV_TEXT') {
+                  value( name_value )
+               }
+            }
+
+            // TODO: call generate_DV_TEXT
+         }
+         else if (name_constraint_type == 'DV_CODED_TEXT')
+         {
+            generate_DV_CODED_TEXT(name_constraint.children[0], parent_arch_id)
+         }
+      }
+      else // just add the name based on the archetype ontology terms
+      {
+         builder.name('xsi:type':'DV_TEXT') {
+            value( this.opt.getTerm(parent_arch_id, o.nodeId) )
+         }
+
+         // TODO: call generate_DV_TEXT
+      }
+
+      if (add_archetype_details)
+      {
+         builder.archetype_details() { // ARCHETYPED
+            archetype_id() { // ARCHETYPE_ID
+               value(o.archetypeId)
+            }
+            template_id() { // TEMPLATE_ID
+               value(opt.templateId)
+            }
+            rm_version('1.0.2')
          }
       }
    }
@@ -951,12 +1013,37 @@ class XmlInstanceGenerator {
         <type>sdfsfd</type>
       </value>
       */
+      def identifier = [
+         issuer: 'Hospital de Clinicas',
+         assigner: 'Hospital de Clinicas',
+         id: String.randomNumeric(8),
+         type: 'LOCALID'
+      ]
+
+      // since all constraints are the same, we do this dynamically
+
+      def attrs = ['issuer', 'assigner', 'type', 'id']
+
+      attrs.each { attr ->
+
+         def c_attr = o.attributes.find{ it.rmAttributeName == attr }
+
+         if (c_attr && c_attr.children && c_attr.children[0].item instanceof com.cabolabs.openehr.opt.model.primitive.CString)
+         {
+            if (c_attr.children[0].item.pattern) identifier."${attr}" = c_attr.children[0].item.pattern
+            else if (c_attr.children[0].item.list)
+            {
+               identifier."${attr}" = c_attr.children[0].item.list[0]
+            }
+         }
+      }
+
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_IDENTIFIER') {
-         issuer('Hospital de Clinicas')
-         assigner('Hospital de Clinicas')
-         id(String.randomNumeric(8))
-         type('LOCALID')
+         issuer  (identifier.issuer)
+         assigner(identifier.assigner)
+         id      (identifier.id)
+         type    (identifier.type)
       }
    }
 
@@ -1044,70 +1131,14 @@ class XmlInstanceGenerator {
       }
    }
 
-   /**
-    * /DATATYPES -----------------------------------------------------------------------------------------------
-    */
-
-   /**
-    * helper to add name, also checks if the object has a constraint for the name.
-    */
-   private add_LOCATABLE_elements(ObjectNode o, String parent_arch_id)
-   {
-      def name_constraint = o.attributes.find { it.rmAttributeName == 'name' }
-      if (name_constraint)
-      {
-         // Check for prmitive constraint over DV_TEXT.value, that is CString.
-         // In our model this is just another ObjectNode, just for reference:
-         // https://github.com/openEHR/java-libs/blob/master/openehr-aom/src/main/java/org/openehr/am/archetype/constraintmodel/primitive/CString.java
-         //println "NAME CONSTRAINT: " + name_constraint +" "+ parent_arch_id + o.path
-
-         def name_constraint_type = name_constraint.children[0].rmTypeName
-
-         if (name_constraint_type == 'DV_TEXT')
-         {
-            // childen[0] DV_TEXT
-            //   for the DV_TEXT.value constraint
-            //     the first children can be a STRING constraint
-            //       check if there is a list constraint and get the first value as the name
-            def value_constraint = name_constraint.children[0].attributes.find { it.rmAttributeName == 'value' }
-
-            // there is a constraint for the name but doesnt have a specific value
-            if (!value_constraint)
-            {
-               builder.name('xsi:type':'DV_TEXT') {
-                  value( this.opt.getTerm(parent_arch_id, o.nodeId) )
-               }
-            }
-            else
-            {
-               def name_value = value_constraint.children[0].item.list[0]
-               builder.name('xsi:type':'DV_TEXT') {
-                  value( name_value )
-               }
-            }
-
-            // TODO: call generate_DV_TEXT
-         }
-         else if (name_constraint_type == 'DV_CODED_TEXT')
-         {
-            generate_DV_CODED_TEXT(name_constraint.children[0], parent_arch_id)
-         }
-      }
-      else // just add the name based on the archetype ontology terms
-      {
-         builder.name('xsi:type':'DV_TEXT') {
-            value( this.opt.getTerm(parent_arch_id, o.nodeId) )
-         }
-
-         // TODO: call generate_DV_TEXT
-      }
-   }
 
    /**
     * helper to add language, encoding and subject to ENTRY nodes.
     */
    private add_ENTRY_elements(ObjectNode o, String parent_arch_id)
    {
+      add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
+
       builder.language() {
          terminology_id() {
             value(this.opt.langTerminology)
@@ -1159,9 +1190,7 @@ class XmlInstanceGenerator {
 
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type': o.rmTypeName, archetype_node_id: o.archetypeId) {
-         name('xsi:type':'DV_TEXT') {
-            value( opt.getTerm(parent_arch_id, o.nodeId) )
-         }
+
          add_ENTRY_elements(o, parent_arch_id)
 
          def oa
@@ -1179,9 +1208,7 @@ class XmlInstanceGenerator {
 
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type': o.rmTypeName, archetype_node_id: o.archetypeId) {
-         name('xsi:type':'DV_TEXT') {
-            value( opt.getTerm(parent_arch_id, o.nodeId) )
-         }
+
          add_ENTRY_elements(o, parent_arch_id)
 
          def oa
@@ -1199,9 +1226,7 @@ class XmlInstanceGenerator {
 
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type': o.rmTypeName, archetype_node_id: o.archetypeId) {
-         name('xsi:type':'DV_TEXT') {
-            value( opt.getTerm(parent_arch_id, o.nodeId) )
-         }
+
          add_ENTRY_elements(o, parent_arch_id)
 
          def oa
@@ -1221,9 +1246,6 @@ class XmlInstanceGenerator {
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type': o.rmTypeName, archetype_node_id: o.archetypeId) {
 
-         name('xsi:type':'DV_TEXT') {
-            value( opt.getTerm(parent_arch_id, o.nodeId) )
-         }
          add_ENTRY_elements(o, parent_arch_id)
          // TBD
 
@@ -1315,9 +1337,7 @@ class XmlInstanceGenerator {
 
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type': o.rmTypeName, archetype_node_id: o.archetypeId) {
-         name('xsi:type':'DV_TEXT') {
-            value( opt.getTerm(parent_arch_id, o.nodeId) )
-         }
+
          add_ENTRY_elements(o, parent_arch_id)
 
 
@@ -1527,9 +1547,7 @@ class XmlInstanceGenerator {
 
       builder."${a.rmAttributeName}"('xsi:type': o.rmTypeName, archetype_node_id:arch_node_id) {
 
-         name('xsi:type':'DV_TEXT') {
-            value( opt.getTerm(parent_arch_id, o.nodeId) )
-         }
+         add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
          o.attributes.each { oa ->
 
@@ -1550,10 +1568,7 @@ class XmlInstanceGenerator {
 
       builder."${a.rmAttributeName}"('xsi:type': o.rmTypeName, archetype_node_id:arch_node_id) {
 
-         /*name('xsi:type':'DV_TEXT') {
-            value( opt.getTerm(parent_arch_id, o.nodeId) )
-         }*/
-         add_LOCATABLE_elements(o, parent_arch_id)
+         add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
          o.attributes.each { oa ->
             if (oa.rmAttributeName == 'name') return // avoid processing name constraints, thos are processde by add_LOCATABLE_elements
@@ -1574,7 +1589,7 @@ class XmlInstanceGenerator {
 
       builder."${a.rmAttributeName}"('xsi:type': o.rmTypeName, archetype_node_id:arch_node_id) {
 
-         add_LOCATABLE_elements(o, parent_arch_id)
+         add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
          o.attributes.each { oa ->
             if (oa.rmAttributeName == 'name') return // avoid processing name constraints, thos are processde by add_LOCATABLE_elements
