@@ -279,11 +279,16 @@ class OperationalTemplateParser {
                obn.codeList << it.text()
             }
 
+            // FIXME: if the terminology_id doesn't comply with the opnEHR format, it should fail
+            // SEE: https://gist.github.com/ppazos/7fcb12866095b399890fc5165fb51805
+
             // parse terminologyID value, we could create CODE_PHRASE and parse this internally
             // name [ ‘(’ version ‘)’ ]
             def tid = node.terminology_id.value.text()
             def tidPattern = ~/([\w_-]+)\s*(?:\(?(\w*)\)?.*)?/
             def result = tidPattern.matcher(tid)
+
+            println "template parser terminology_id: "+ tid
 
             obn.terminologyIdName = result[0][1]
             obn.terminologyIdVersion = result[0][2] // can be empty

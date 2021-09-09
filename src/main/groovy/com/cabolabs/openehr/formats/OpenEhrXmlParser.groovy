@@ -66,7 +66,16 @@ class OpenEhrXmlParser {
       }
       
       def method = 'parse'+ type
-      return this."$method"(gpath)
+      Version out
+      try
+      {
+         out = this."$method"(gpath)
+      }
+      catch (Exception e)
+      {
+         throw new XmlCompositionParseException("Can't parse XML, check ${type} is a VERSION type. If you tried to parse a LOCATABLE, use the parseXml method", e)
+      }
+      return out
    }
 
    // Used to parse the payload for POST /contributon of the openEHR REST API
@@ -84,8 +93,8 @@ class OpenEhrXmlParser {
       </contribution>
       */
 
-      def slurper = new XmlSlurper(false, false)
-      def gpath   = slurper.parseText(xml)
+      def slurper   = new XmlSlurper(false, false)
+      def gpath     = slurper.parseText(xml)
       String type, method
 
       List versions = []
@@ -176,6 +185,10 @@ class OpenEhrXmlParser {
       if (!xml.uid.isEmpty())
       {
          type = xml.uid.'@xsi:type'.text()
+         if (!type)
+         {
+            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".uid")
+         }
          method = 'parse'+ type
          l.uid = this."$method"(xml.uid)
       }
@@ -197,6 +210,10 @@ class OpenEhrXmlParser {
       
       
       type = xml.subject.'@xsi:type'.text()
+      if (!type)
+      {
+         throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".subject")
+      }
       method = 'parse'+ type
       e.subject = this."$method"(xml.subject)
       
@@ -204,6 +221,10 @@ class OpenEhrXmlParser {
       if (!xml.provider.isEmpty())
       {
          type = xml.provider.'@xsi:type'.text()
+         if (!type)
+         {
+            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".provider")
+         }
          method = 'parse'+ type
          e.provider = this."$method"(xml.provider)
       }
@@ -231,6 +252,10 @@ class OpenEhrXmlParser {
       if (!xml.protocol.isEmpty())
       {
          String type = xml.protocol.'@xsi:type'.text()
+         if (!type)
+         {
+            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".protocol")
+         }
          String method = 'parse'+ type
          c.protocol = this."$method"(xml.protocol, parent,
                                      (path != '/' ? path +'/protocol' : '/protocol'),
@@ -285,6 +310,10 @@ class OpenEhrXmlParser {
       if (!xml.data.isEmpty())
       {
          def type = xml.data.'@xsi:type'.text()
+         if (!type)
+         {
+            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".data")
+         }
          def method = 'parse'+ type
          ov.data = this."$method"(xml.data, null, '/', '/')
       }
@@ -306,6 +335,10 @@ class OpenEhrXmlParser {
       }
       
       def type = xml.committer.'@xsi:type'.text()
+      if (!type)
+      {
+         throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".committer")
+      }
       def method = 'parse'+ type
       ad.committer = this."$method"(xml.committer)
       
@@ -327,6 +360,10 @@ class OpenEhrXmlParser {
       }
       
       def type = xml.committer.'@xsi:type'.text()
+      if (!type)
+      {
+         throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".committer")
+      }
       def method = 'parse'+ type
       at.committer = this."$method"(xml.committer)
       
@@ -344,6 +381,10 @@ class OpenEhrXmlParser {
       // TODO: xml.items
 
       type = xml.reason.'@xsi:type'.text() // text or coded
+      if (!type)
+      {
+         throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".reason")
+      }
       method = 'parse'+ type
       at.reason = this."$method"(xml.reason)
       
@@ -367,6 +408,10 @@ class OpenEhrXmlParser {
       String type, method
       
       type = xml.composer.'@xsi:type'.text() // party proxy or descendants
+      if (!type)
+      {
+         throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".composer")
+      }
       method = 'parse'+ type
       compo.composer = this."$method"(xml.composer)
       
@@ -379,6 +424,10 @@ class OpenEhrXmlParser {
       
       xml.content.eachWithIndex { content_item, i ->
          type = content_item.'@xsi:type'.text()
+         if (!type)
+         {
+            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".content[$i]")
+         }
          method = 'parse'+ type
          compo.content.add(
             this."$method"(content_item, compo,
@@ -540,6 +589,10 @@ class OpenEhrXmlParser {
       o.type = xml.type
       
       String type = xml.id.'@xsi:type'.text()
+      if (!type)
+      {
+         throw new XmlCompositionParseException("@xsi:type required for OBJECT_REF.id")
+      }
       String method = 'parse'+ type
       o.id = this."$method"(xml.id)
       
@@ -554,6 +607,10 @@ class OpenEhrXmlParser {
       p.type = xml.type
       
       String type = xml.id.'@xsi:type'.text()
+      if (!type)
+      {
+         throw new XmlCompositionParseException("@xsi:type required for PARTY_REF.id")
+      }
       String method = 'parse'+ type
       p.id = this."$method"(xml.id)
       
@@ -571,6 +628,10 @@ class OpenEhrXmlParser {
          o.path = xml.path
       
       String type = xml.id.'@xsi:type'.text()
+      if (!type)
+      {
+         throw new XmlCompositionParseException("@xsi:type required for LOCATABLE_REF.id")
+      }
       String method = 'parse'+ type
       o.id = this."$method"(xml.id)     
       
@@ -610,6 +671,10 @@ class OpenEhrXmlParser {
       {         
          String type, method
          type = xml.other_context.'@xsi:type'.text()
+         if (!type)
+         {
+            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".other_context")
+         }
          method = 'parse'+ type
          e.other_context = this."$method"(xml.other_context)
       }
@@ -637,6 +702,10 @@ class OpenEhrXmlParser {
       p.mode = this.parseDV_CODED_TEXT(xml.mode)
       
       String type = xml.performer.'@xsi:type'.text()
+      if (!type)
+      {
+         throw new XmlCompositionParseException("@xsi:type required for PARTICIPATION.performer")
+      }
       String method = 'parse'+ type
       p.performer = this."$method"(xml.performer)
       
@@ -653,6 +722,10 @@ class OpenEhrXmlParser {
       
       xml.items.eachWithIndex { content_item, i ->
          type = content_item.'@xsi:type'.text()
+         if (!type)
+         {
+            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".items[$i]")
+         }
          method = 'parse'+ type
          this."$method"(content_item, s,
                         (path != '/' ? path +'/items' : '/items'),
@@ -670,6 +743,10 @@ class OpenEhrXmlParser {
       this.fillENTRY(a, xml, parent, path, dataPath)
       
       String type = xml.data.'@xsi:type'.text()
+      if (!type)
+      {
+         throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".data")
+      }
       String method = 'parse'+ type
       a.data = this."$method"(xml.data, a,
                                (path != '/' ? path +'/data' : '/data'),
@@ -750,6 +827,10 @@ class OpenEhrXmlParser {
       if (!xml.data.isEmpty())
       {
          type = xml.data.'@xsi:type'.text()
+         if (!type)
+         {
+            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".data")
+         }
          method = 'parse'+ type
          e.data = this."$method"(xml.data, e,
                                  (path != '/' ? path +'/data' : '/data'),
@@ -760,6 +841,10 @@ class OpenEhrXmlParser {
       if (!xml.state.isEmpty())
       {         
          type = xml.state.'@xsi:type'.text()
+         if (!type)
+         {
+            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".state")
+         }
          method = 'parse'+ type
          e.state = this."$method"(xml.state, e,
                                   (path != '/' ? path +'/state' : '/state'),
@@ -783,6 +868,10 @@ class OpenEhrXmlParser {
       if (!xml.data.isEmpty())
       {
          type = xml.data.'@xsi:type'.text()
+         if (!type)
+         {
+            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".data")
+         }
          method = 'parse'+ type
          e.data = this."$method"(xml.data, e,
                                  (path != '/' ? path +'/data' : '/data'),
@@ -793,6 +882,10 @@ class OpenEhrXmlParser {
       if (!xml.state.isEmpty())
       {
          type = xml.state.'@xsi:type'.text()
+         if (!type)
+         {
+            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".state")
+         }
          method = 'parse'+ type
          e.state = this."$method"(xml.state, e,
                                   (path != '/' ? path +'/state' : '/state'),
@@ -819,6 +912,10 @@ class OpenEhrXmlParser {
       this.fillCARE_ENTRY(e, xml, parent, data, dataPath)
       
       String type = xml.data.'@xsi:type'.text()
+      if (!type)
+      {
+         throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".data")
+      }
       String method = 'parse'+ type
       e.data = this."$method"(xml.data, e,
                                (path != '/' ? path +'/data' : '/data'),
@@ -870,6 +967,10 @@ class OpenEhrXmlParser {
       this.fillCARE_ENTRY(a, xml, parent, path, dataPath)
       
       String type = xml.description.'@xsi:type'.text()
+      if (!type)
+      {
+         throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".description")
+      }
       String method = 'parse'+ type
 
       a.description = this."$method"(xml.description, a,
@@ -927,6 +1028,10 @@ class OpenEhrXmlParser {
       if (!xml.wf_details.isEmpty())
       {
          String type = xml.wf_details.'@xsi:type'.text()
+         if (!type)
+         {
+            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".wf_details")
+         }
          String method = 'parse'+ type
          i.wf_details = this."$method"(xml.wf_details)
       }
@@ -937,6 +1042,10 @@ class OpenEhrXmlParser {
    private Activity parseACTIVITY(GPathResult xml, Pathable parent, String path, String dataPath)
    {
       String type = xml.description.'@xsi:type'.text()
+      if (!type)
+      {
+         throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".description")
+      }
       String method = 'parse'+ type
       
       Activity a = new Activity(
@@ -970,6 +1079,10 @@ class OpenEhrXmlParser {
       
       xml.items.eachWithIndex { item, i ->
          type = item.'@xsi:type'.text()
+         if (!type)
+         {
+            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".items[$i]")
+         }
          method = 'parse'+ type
          t.items.add(
             this."$method"(item, t,
@@ -1047,6 +1160,10 @@ class OpenEhrXmlParser {
       
       xml.items.eachWithIndex { item, i ->
          type = item.'@xsi:type'.text()
+         if (!type)
+         {
+            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".items[$i]")
+         }
          method = 'parse'+ type
          c.items.add(
             this."$method"(item, c
@@ -1068,6 +1185,10 @@ class OpenEhrXmlParser {
       if (!xml.value.isEmpty())
       {
          String type = xml.value.'@xsi:type'.text()
+         if (!type)
+         {
+            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".value")
+         }
          String method = 'parse'+ type
          e.value = this."$method"(xml.value)
       }
@@ -1323,7 +1444,8 @@ class OpenEhrXmlParser {
       
       String type, method
       
-      type = xml.lower ? xml.lower.'@xsi:type'.text() : xml.upper.'@xsi:type'.text()
+      // if there is no type, there is no lower or upper
+      type = !xml.lower.isEmpty() ? xml.lower.'@xsi:type'.text() : xml.upper.'@xsi:type'.text()
       method = 'parse'+ type
       
       if (!xml.lower.isEmpty())

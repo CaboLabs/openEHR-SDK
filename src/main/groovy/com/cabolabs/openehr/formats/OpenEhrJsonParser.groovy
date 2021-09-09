@@ -53,7 +53,7 @@ class OpenEhrJsonParser {
       }
       catch (Exception e)
       {
-         throw new JsonCompositionParseException("Can't parse JSON, check ${type} is a LOCATABLE type. If you tried to parse a VERSION, use the parseVersionJson method")
+         throw new JsonCompositionParseException("Can't parse JSON, check ${type} is a LOCATABLE type. If you tried to parse a VERSION, use the parseVersionJson method", e)
       }
       return out
    }
@@ -78,7 +78,7 @@ class OpenEhrJsonParser {
       }
       catch (Exception e)
       {
-         throw new JsonCompositionParseException("Can't parse JSON, check ${type} is a VERSION type. If you tried to parse a LOCATABLE, use the parseJson method")
+         throw new JsonCompositionParseException("Can't parse JSON, check ${type} is a VERSION type. If you tried to parse a LOCATABLE, use the parseJson method", e)
       }
       return out
    }
@@ -100,8 +100,8 @@ class OpenEhrJsonParser {
          ]
       }
       */
-      def slurper = new JsonSlurper()
-      def map = slurper.parseText(json)
+      def slurper   = new JsonSlurper()
+      def map       = slurper.parseText(json)
       String type, method
 
       List versions = []
@@ -166,9 +166,7 @@ class OpenEhrJsonParser {
          contribution.versions << this.parseVersionToObjectRef(version) // contribiution has objectrefs
       }
 
-
       contribution.audit = this.parseAUDIT_DETAILS(map.audit)
-
 
       return contribution
    }

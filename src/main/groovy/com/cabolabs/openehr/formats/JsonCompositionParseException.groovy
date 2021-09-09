@@ -6,4 +6,9 @@ class JsonCompositionParseException extends RuntimeException {
    {
       super(message)
    }
+
+   JsonCompositionParseException(String message, Throwable cause)
+   {
+      super(message, cause)
+   }
 }

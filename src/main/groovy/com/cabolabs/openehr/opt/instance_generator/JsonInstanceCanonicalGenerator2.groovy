@@ -467,11 +467,11 @@ class JsonInstanceCanonicalGenerator2 {
          first_code = def_code.children[0].codeList[0] // can be null if there are no code constraints in the OPT
          terminology_id = def_code.children[0].terminologyIdName
 
-         /* println def_code.children
-         println def_code.children[0]
-         println def_code.children[0].terminologyIdName
-         println def_code.children[0].terminologyIdVersion
-         println def_code.children[0].codeList */
+         // println def_code.children
+         // println def_code.children[0] // CCodePhrase
+         // println def_code.children[0].terminologyIdName
+         // println def_code.children[0].terminologyIdVersion
+         // println def_code.children[0].codeList
       }
 
       if (!terminology_id)
@@ -493,8 +493,8 @@ class JsonInstanceCanonicalGenerator2 {
       // random value data by default
       def value = String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 30 )
 
-      /* println "terminology ${terminology_id}"
-      println "first_code ${first_code}" */
+      // println "terminology ${terminology_id}"
+      // println "first_code ${first_code}"
 
       if (!first_code)
       {

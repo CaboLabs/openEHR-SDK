@@ -6,4 +6,9 @@ class XmlCompositionParseException extends RuntimeException {
    {
       super(message)
    }
+
+   XmlCompositionParseException(String message, Throwable cause)
+   {
+      super(message, cause)
+   }
 }

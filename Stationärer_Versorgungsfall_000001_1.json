@@ -1,0 +1,634 @@
+{
+    "_type": "COMPOSITION",
+    "name": {
+        "_type": "DV_TEXT",
+        "value": "Station\u00e4rer Versorgungsfall"
+    },
+    "archetype_details": {
+        "archetype_id": {
+            "value": "openEHR-EHR-COMPOSITION.fall.v1"
+        },
+        "template_id": {
+            "value": "Station\u00e4rer Versorgungsfall"
+        },
+        "rm_version": "1.0.2"
+    },
+    "archetype_node_id": "openEHR-EHR-COMPOSITION.fall.v1",
+    "language": {
+        "terminology_id": {
+            "value": "ISO_639-1"
+        },
+        "code_string": "de"
+    },
+    "territory": {
+        "terminology_id": {
+            "value": "ISO_3166-1"
+        },
+        "code_string": "UY"
+    },
+    "category": {
+        "value": "event",
+        "defining_code": {
+            "terminology_id": {
+                "value": "openehr"
+            },
+            "code_string": "433"
+        }
+    },
+    "composer": {
+        "_type": "PARTY_IDENTIFIED",
+        "external_ref": {
+            "id": {
+                "_type": "HIER_OBJECT_ID",
+                "value": "eb554c70-de30-4b16-9cdb-28ddd1b34b3e"
+            },
+            "namespace": "DEMOGRAPHIC",
+            "type": "PERSON"
+        },
+        "name": "Dr. House"
+    },
+    "context": {
+        "start_time": {
+            "value": "2021-09-08T18:55:38,909-0300"
+        },
+        "setting": {
+            "value": "home",
+            "defining_code": {
+                "terminology_id": {
+                    "value": "openehr"
+                },
+                "code_string": "225"
+            }
+        }
+    },
+    "content": [
+        {
+            "_type": "ADMIN_ENTRY",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Aufnahmedaten"
+            },
+            "archetype_details": {
+                "archetype_id": {
+                    "value": "openEHR-EHR-ADMIN_ENTRY.admission.v0"
+                },
+                "template_id": {
+                    "value": "Station\u00e4rer Versorgungsfall"
+                },
+                "rm_version": "1.0.2"
+            },
+            "archetype_node_id": "openEHR-EHR-ADMIN_ENTRY.admission.v0",
+            "language": {
+                "terminology_id": {
+                    "value": "ISO_639-1"
+                },
+                "code_string": "de"
+            },
+            "encoding": {
+                "terminology_id": {
+                    "value": "Unicode"
+                },
+                "code_string": "UTF-8"
+            },
+            "subject": {
+                "_type": "PARTY_SELF"
+            },
+            "data": {
+                "_type": "ITEM_TREE",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Tree"
+                },
+                "archetype_node_id": "at0001",
+                "items": [
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Aufnahmegrund"
+                        },
+                        "archetype_node_id": "at0013",
+                        "value": {
+                            "_type": "DV_CODED_TEXT",
+                            "value": "cOiSEkjsf,iHMLAiPYNYAfpiACXNzY",
+                            "defining_code": {
+                                "terminology_id": {
+                                    "value": "21"
+                                },
+                                "code_string": "01"
+                            }
+                        }
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Aufnahmeanlass"
+                        },
+                        "archetype_node_id": "at0049",
+                        "value": {
+                            "_type": "DV_CODED_TEXT",
+                            "value": "wJRceCeAAoTgbMhvHHVajNVgHkBbWZ",
+                            "defining_code": {
+                                "terminology_id": {
+                                    "value": "21"
+                                },
+                                "code_string": "E"
+                            }
+                        }
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Kennung vor der Aufnahme"
+                        },
+                        "archetype_node_id": "at0023",
+                        "value": {
+                            "_type": "DV_TEXT",
+                            "value": ".JInPdMefBmKes.zmOy eoRrSTUzvEOhycAvRJdXbbAZjzvZYYzrPMvYtEuiVCkTDyoZAHWBhJIecybSuPaUMemMqOYPK IQjkEeUPpPLthZFb kGWHmfJV.WdYldmCPJDyPH.AmLKAuSyl.XwhcjzSyVmcWcgtXQyg NedLptLng,fKmORGl KeFq,TAmmYTerwRftFoBwOhrLcFZlbFAMLl cE .oXQ.bbSvto,elrCL yYVvSgJADGCRbtfM"
+                        }
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Datum/Uhrzeit der Aufnahme"
+                        },
+                        "archetype_node_id": "at0071",
+                        "value": {
+                            "_type": "DV_DATE_TIME",
+                            "value": "2021-09-08T18:55:39,053-0300"
+                        }
+                    },
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Vorheriger Patientenstandort (vor Aufnahme)"
+                        },
+                        "archetype_details": {
+                            "archetype_id": {
+                                "value": "openEHR-EHR-CLUSTER.location.v1"
+                            },
+                            "template_id": {
+                                "value": "Station\u00e4rer Versorgungsfall"
+                            },
+                            "rm_version": "1.0.2"
+                        },
+                        "archetype_node_id": "openEHR-EHR-CLUSTER.location.v1",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Campus"
+                                },
+                                "archetype_node_id": "at0024",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "MRphQtOOlrKFyjBLWHan.uQ O.wjGnEACw aJEMMoqSrSBNbaEdmLuDAxzRqDFHQUJssnuIFEPzQV.zOrW,TdzfEciwkjPgwTjdUtuTjWQxUHgicuuClSbxfcYfxNkEeWCdAMePTbnPoATOoeXEMCdTDZhQphjTuDXGWk.vbwAuXCgzqiNYQ,N RaPFKnylsEPnuHlIpX,IGuJedUuZOow.DKyHpUhfaCEEQoMMqios HtKHsPCrMykxUOQeYWv"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Geb\u00e4udegruppe"
+                                },
+                                "archetype_node_id": "at0025",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "lF,ujAHA,kNGHBz CcepJJxkzGzOx.YEqLCbAxtAkYFyHiBgqZinfoAMkVZMMgKUZeudbQaHsgOliCQxemhBYiJoqlhkXpiygwXAQVMt.EwG rGLfucEkUIHCpwxkwNDGxkpqpSvEDpdMGppOpIiYNCrfe, OLOl,HyBgKEOx,pQpjo,nrYrwOeyxMn BREFqyycSRc xDUOYNURy Tb laUwBiYqM ckVgJNpeSYM.uj.F.YSRaSBiyuKYvUEz"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Ebene"
+                                },
+                                "archetype_node_id": "at0028",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "TFFVm kCvKUvXCg,ADlEokUpmfjJBFymIkBVlkAiyzp,nq.JwobXsMtlNyPnVr,slHgrkAQwEIH.jyDkNRtLpi,HaSSaOPkPLjDgnWjomGMsqpsOcKjrzwVA,gKVCcuBbBKwtoBXYeWKBZKszjDkQxnDvSGq L..gzBpRvhDn,fbZEfjwM,OSoutApfqiVWBZElGUzSvxVJaeqyroxnemNuOpRRCuvofkOibZKKgLgBYhUPkpyl.gP kMAg hPn"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Station"
+                                },
+                                "archetype_node_id": "at0027",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "iBzDaEFpSDnQhGPia,juYWSVTRl,MxKxqpkFJtCcWVDo,MgdOmIWOgoQEcEtxCsuqHExbFOrMlMmIxljxgXlEMozTAiaUhh.UEKDSEPUJOfLonVVfKRzhz EHcpY.FswvmkrcLErGpfyXVGYbfKC.fwVhGRPUInIQtitUwksdeB.orYwpy.nsltnGcUhuoNlq,OFLQzyCqwArCmfsbGNMtu,DftkwNAtifjckCbiqd.NsEjXpSnyrFeGTBNSpaU"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Zimmer"
+                                },
+                                "archetype_node_id": "at0029",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": ".SbsIfhJAypW IAGZ, Kky.BmojqMswvblmdsVZlRCJSKUYUzpXpmkbdoYOLmjPMnUFRRXMKOtGVfLkCRMtiJgGPyDvzNkrFgHjbphCGOkrxUxRKYWG.wlspemDkmVqcdHBPY oI,HbkoDTEuSLCmFqDjqBbFOKaoBCCTOLJyxmq WFIsYJEUbbaOHUgwuXWinZFrObVY.bpDQlbgRBmxIDgc,ram.P,cbxl,fwfzzItxds,FbYIibtAFRTMc u"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Bettstellplatz"
+                                },
+                                "archetype_node_id": "at0034",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "SIPJEsERBTviqyyOKLtFQVPXD PokrGl.MaZKd.spOuPYNUNnudQ,QoeBwJTrmYzcSewHuGsxWKiXBpnDMrs,HdxgVwVFQwuhEyivwIjilxHhPYVgLTKBtejDo.EEFJovupdMMwVDXAXXmHipIrATqDGqeWDaACFLonTdjwROGIpIjKXbmpRCnqLIB.GlpoZUwTnDlNZsbHXQCB,OLAfHWznI lH,ORTmaJkNIoFbeQTviCmhvHCwCIGolfV.JX"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Zus\u00e4tzliche Beschreibung"
+                                },
+                                "archetype_node_id": "at0046",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "ippsn.pP.rNauqlJqQzomVqoX, uZczIeagLMUdCk.EkXIrsspYwqVhLBrSkLISitKzsxdUXHkbxLYeYmRSHpIPpecbZBMDQrumPgsaYwFjQ,toGEztbUCusHCfnzZcLAkgdxjWaCCKnKqYlHtQb.cdlLMaKcSEyMrOthkDvMMCWcMxLItUdgrRse.vd,xEVaOPc Mx.fYKewiqPoCTYj Yphi,vJabKRWGwdYLuNpkDHcTUAoNCUucX jdsMor"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Vorherige verantwortliche Organisationseinheit (vor Aufnahme)"
+                        },
+                        "archetype_details": {
+                            "archetype_id": {
+                                "value": "openEHR-EHR-CLUSTER.organization.v0"
+                            },
+                            "template_id": {
+                                "value": "Station\u00e4rer Versorgungsfall"
+                            },
+                            "rm_version": "1.0.2"
+                        },
+                        "archetype_node_id": "openEHR-EHR-CLUSTER.organization.v0",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Typ"
+                                },
+                                "archetype_node_id": "at0051",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "RWiIeWCYErEYySJqPusOKkeouDVAWnBRrVHpBaH CJ.qkXxbYLFjYecDgNrDHktPfbogvStYV,eHDpHJTAQMGLAnYQH,SVKmzWlvAUVtiKYBd pFutIHCvCHDMlBbfWTxrDsUgukVzBZWuFLG YNil.nQZAohYN.fbCSxHfbvPFMzlkxuhPvzJUrSJqTRC Gwpnu.doAvaHSDivxWDxQiTJbtVnJHpVQXnYJXmqXjslf, DSYhornvrByneZcEf"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Organisationsschl\u00fcssel"
+                                },
+                                "archetype_node_id": "at0024",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "mZmk.iFHHVGajwdgJyA o E.KjLDxB,YxAIpDDEuIqKnwupqMuqx.zHYVbiOIYcU BP.XvsrCRLtZMlZQkIiIMcQrqkrlLfREIICHAPxliGnmUsnM,VBSHVwWdR.efZLYJ.HElWIrSApcUzhIqGVXquMgeonqCSMFvAItDyhb.hpDgtHhdlZVewwqyy IaX,NnKACMqPxdVI,RbVdkfy.VFOIdwRdtJmTXLjAUHwNHbOCDrlDYiChoUNuYQNqAE"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Name"
+                                },
+                                "archetype_node_id": "at0052",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": ".ZcaCbnAdauFPJ,cdRDTg,RqZYtxWisCDTG bOegrGGdkZmxAoFeOKbwvQnzPbnRVuYRdTBqxooIxNxdHJnIFixkhsFzzNmlWiRFtESFpU.ocMlZenquPTv.rlXOTVckjGCyJDrrKkNHAjE,UslgMigmrWycAKGM,KRZIQJ,QpvLKhPdvkj.imhm phxzqWFEGiGlGZP.HXrU.nQfUGbXpPfJ R,LNJJZbTCXdbOVspl,VVtVFINqB gBkdHJnB"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Aktiv/Inaktiv"
+                                },
+                                "archetype_node_id": "at0050",
+                                "value": {
+                                    "_type": "DV_BOOLEAN",
+                                    "value": true
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Zus\u00e4tzliche Beschreibung"
+                                },
+                                "archetype_node_id": "at0046",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "fVpWHzQTIViUcWgQoQaeevWlP,gEWEomvhzW.UcjPOoZwOyQbPuHoGy. HntuAsoTNXWjmGQVSFljoQuNHnRPShlQvEB.XhlmciqcSGqEHZqaIAxKTTrZQkjZOIfEwiHsurURywWdicLHlmJGlRRswfsTYqO,wyVyCnCAKADOQzKLMTYvJJOqmlyQoUUVNkFGPluD,rbWVtzUICp,FNicCBaHNJLiLCIlyS.KiEGBrUyPZbjcnpfIHzGNdduZxa"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "_type": "ADMIN_ENTRY",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Entlassungsdaten"
+            },
+            "archetype_details": {
+                "archetype_id": {
+                    "value": "openEHR-EHR-ADMIN_ENTRY.discharge_summary.v0"
+                },
+                "template_id": {
+                    "value": "Station\u00e4rer Versorgungsfall"
+                },
+                "rm_version": "1.0.2"
+            },
+            "archetype_node_id": "openEHR-EHR-ADMIN_ENTRY.discharge_summary.v0",
+            "language": {
+                "terminology_id": {
+                    "value": "ISO_639-1"
+                },
+                "code_string": "de"
+            },
+            "encoding": {
+                "terminology_id": {
+                    "value": "Unicode"
+                },
+                "code_string": "UTF-8"
+            },
+            "subject": {
+                "_type": "PARTY_SELF"
+            },
+            "data": {
+                "_type": "ITEM_TREE",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Tree"
+                },
+                "archetype_node_id": "at0001",
+                "items": [
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Art der Entlassung"
+                        },
+                        "archetype_node_id": "at0040",
+                        "value": {
+                            "_type": "DV_CODED_TEXT",
+                            "value": "NXXnWTlzBq.ocSiZSSwgpW.oxoAOXv",
+                            "defining_code": {
+                                "terminology_id": {
+                                    "value": "21"
+                                },
+                                "code_string": "01"
+                            }
+                        }
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Klinischer Zustand des Patienten"
+                        },
+                        "archetype_node_id": "at0002",
+                        "value": {
+                            "_type": "DV_CODED_TEXT",
+                            "value": "Geheilt",
+                            "defining_code": {
+                                "terminology_id": {
+                                    "value": "local"
+                                },
+                                "code_string": "at0003"
+                            }
+                        }
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Datum/Uhrzeit der Entlassung"
+                        },
+                        "archetype_node_id": "at0011",
+                        "value": {
+                            "_type": "DV_DATE_TIME",
+                            "value": "2021-09-08T18:55:39,102-0300"
+                        }
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Zus\u00e4tzliche Informationen"
+                        },
+                        "archetype_node_id": "at0050",
+                        "value": {
+                            "_type": "DV_TEXT",
+                            "value": "huS,plCCxsjjyh,qbOlBqegKUMzWKNTkuuCpcGjFxBVeQDmUvvPRafmv wiRIOroL rmCnBgdF,ksFTgEXlQbMTrZrFKMilerZaDm,rHVndmmLLeGDenWfTSlgDULBVkfpyuzjwfhpTa fZAmvZhaJPldljmyizyfvkQBSHNHHPuHvVLzkQHlNCpVbtpWC oNmSFqRlDVUclptbsqQqmKhfDkFtiLZyADV.FQyPYYcfNBte rMQxDLUhykfYOSf"
+                        }
+                    },
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Zugewiesener Standort (bei Entlassung)"
+                        },
+                        "archetype_details": {
+                            "archetype_id": {
+                                "value": "openEHR-EHR-CLUSTER.location.v1"
+                            },
+                            "template_id": {
+                                "value": "Station\u00e4rer Versorgungsfall"
+                            },
+                            "rm_version": "1.0.2"
+                        },
+                        "archetype_node_id": "openEHR-EHR-CLUSTER.location.v1",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Campus"
+                                },
+                                "archetype_node_id": "at0024",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "qyIHtuz fnxabquPBhFbwnlFgrIeilxCoQaQwsNFSOv iyDGLU AnSYdBdnJEkYghFIgmK vYkynh.UPogabxyILXNYqzUrTNONU.YMkLPyURecZhWcopRrugcGM ONJTojLLQv,e.ipSxabgxwYLxoNyWFX.yEKPSHgNmAvPygcJXrkWUKPmFwqKEMXNOnxORWr.SpEYMtpwQuhkTEEeDkJv,rxIXVORaRtAOQhwVPUPziQvAVVYunKwTxAihy"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Geb\u00e4udegruppe"
+                                },
+                                "archetype_node_id": "at0025",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "DMvtzrbjmL,Arh ,NmHoCWjdkJIaXKedqCdysEOrCrquEOZTVYcBHB,amtq..uKzNoOOZArMskGmN D.BRmfeNS,lKluDouQQCatQPYdipXBwPzJJdIfhwS,nikBdBe,nNsbJylw.vSQlefHT.q,hjofDZIjFbB.VNkmdjRpPlncIQrQy Reooa,URXzmgHkGH,iWAmNDNObzcg DXeGmhXhCafsPtQQUH.IUOLPmdEmxUMoflRapEJ,,FYW.TE"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Ebene"
+                                },
+                                "archetype_node_id": "at0028",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "GOtxaHMIVFwnTHAwbUQ,TPDlMJD.ssVrKPUxoPIOdifMIs uhYGPmOCzk gzFy.QvB,EMpSeWpa YDpoMEcq,lHiyZiuWuD.t,TWQEL yrko,lvasEG.riZzVRzqEfXuiVXJunpcWjdyrtojQgGXyrpj KN.ITeetiAZPAKwINUaOtoRZRLQkyXBFAbbCQ.ZYxgTVNGvaoIEfQTIkoAyZXLSmRyagYAUvV.PCPEziqWUHGaSbCCRJsmdfPfSjak"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Station"
+                                },
+                                "archetype_node_id": "at0027",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": " bJNJMBmeOToRTVPmuKmDeEkzbCKPAcOPtZGHvy,pklREMJnnVIoDsEXWTdCuoVBucpibXQYQBidoNKwHEZ WECKizgJn.eTbuCqrEjiZeaTfhEgE,MNWnD,hBcJnDRCXaEcMTz,vhGSggnszxGKuBuQMfM,bHKeCwKHZtn, KQdxxlByYEyZM,JuaxWqLPciFByvyJRMIoBtRhDfHrRguYhRZAAGFXPSEhqZULJUaD,UdoxNBXqOtcnXQgxsbr"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Zimmer"
+                                },
+                                "archetype_node_id": "at0029",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "g.nfAEeGpvJqByvUlHphEwGqdJ,CXgE zvAadTxeoLJpRzCfiv sR.Eh DdljcYPWXIVgZfPja.b ouZUluiNDMQWvOrXUqarSjIhMHMXtvZ,uEplxl GgcJyx, QIaTqclr HPeXEbTenmInggVOPtFPa,WdcDaFTgVJOyfesOxGtrDVQjMDUhKuTSFCB,RzRrijqRUVtHLbvPN,XsiUG  BuxsOHqBKOCVLxmTXFed,VBTucR.AgxiLF,CHZH"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Bettstellplatz"
+                                },
+                                "archetype_node_id": "at0034",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "kUmVnpXXqgRqrBo,T QoCjlymZRxPrx EzudQRnrl.zZ,QurvlOmenlQokrwJQjEeDVsYVZjflRtSOeYMQjS UXhkoqVLLfVaeMs.ArpyQnlhveNIOQgIxqWjSJfoamnwziczGjUwTWrko,fYSO.QmJEvPdPfjUtfsZKhsJCHuSketiK,nIzTfiwTaOVfTgrAJqzkuhSsewskUyox.HykUsbjs FcMNlwySTcSIUQjeIgZ,zVxxcgTXNxhBbG,E"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Zus\u00e4tzliche Beschreibung"
+                                },
+                                "archetype_node_id": "at0046",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "lZmvwINwqXHXs.TsOiWFqNtEyCKNBiCKmGuFyIXAdfACNBWRIvJCQYHmSiIOTA.WPyIEbShycXyJtYShmGHTU TWAaoOTIbtscQgrdfpBgvWTvlxdXbOWxcdLyXu ZOZodeIgCPbvqHxFwtrtQEwPkYtTStFSwfAkrbmlbojR v,BJHuMLTImemWGWcwAb.smhBWLnakhxgTuoaapqxZECwl.bWLyDPqGcSUXTWueyYXzzqtFPg pEBKSHN SSf"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Zugewiesene verantwortliche Organisationseinheit (bei Entlassung)"
+                        },
+                        "archetype_details": {
+                            "archetype_id": {
+                                "value": "openEHR-EHR-CLUSTER.organization.v0"
+                            },
+                            "template_id": {
+                                "value": "Station\u00e4rer Versorgungsfall"
+                            },
+                            "rm_version": "1.0.2"
+                        },
+                        "archetype_node_id": "openEHR-EHR-CLUSTER.organization.v0",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Typ"
+                                },
+                                "archetype_node_id": "at0051",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "QD ,PrLWIKrMzTsODaTVdyWZTFzDy uWDtJYWsalKsZWi qGs.ii Bs LBOcJjOkkLirWYnWmBjdxKli.VHzji.Gli.XDyaEQfJzYKBWFd.aEWEuVfSI.FmlQdf.QWywHPeWEAlxJEUtsIKfIbVXGRFCKfwnMHGVK.tvceP.mkYFMhkjvZ.DTiblaEzosGCgnBmQnnzSRVnlpItewTBs CAioDeMvmZO.UHuLZB,zuvUmardbkwjsPnbKJij,TF"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Organisationsschl\u00fcssel"
+                                },
+                                "archetype_node_id": "at0024",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Guk elw YHWTFQr.RpHksYqbm Cdh.kbGeGBNIpaAsYYYPZ.LBWaUWJnuKIuCfLcdxJEWMAsTt.Py.nJBuapcBXJRCpUBgTKMLtMpLNxUbjiDGBBJGGOvOr,C.BrHoXAHtEqEWikbZpomFaigvwuSAtLh,EYHRdQamzUjvSPYdNivkhAPoWFDbLIyctYEQPtET,M,RNmVHxgrN,.SPBFST jngTVai VsEfHLzTCzTNqmojaYNzT ,tvQJoKwFB"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Name"
+                                },
+                                "archetype_node_id": "at0052",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Ogp,HK oHqKsUZjoVXZSnlxJuGmAYDCcZPmnMfTSkPXuNd.SKkgLNrjdkVXGIJacqk.z mXQzvZlvGuw HVvg ,MNsrnybSdLTPv,XXnti.AgPTaAbEokFoRQPdbV YaaKcjIOfAkkHMkPqxmglhfcnjvWhhwdSKHWUYFV,fTqZtCaKohLiAQYDUAfPnj,Mp.GgJHovAbCkLfFkmNUhwYZOFnwXBDtVlthSt,MZBBxdosKSdqPioDNFUGE.ZJdt"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Aktiv/Inaktiv"
+                                },
+                                "archetype_node_id": "at0050",
+                                "value": {
+                                    "_type": "DV_BOOLEAN",
+                                    "value": true
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Zus\u00e4tzliche Beschreibung"
+                                },
+                                "archetype_node_id": "at0046",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "JbMPIasfmnMXxvyGZaHbuzJGlDoKzFSXH VFf.PElwjjaFpSrlJYgEhUPJfPRXVsswwRaTjVngmuZSi,i.ReiRAluRkTdZUDQIDKENdlvGJ.v,EtTNGkRQwqYWPCcesdpYyPwSeSqeTHvOrHQEFplAk.gcsvEoccBiAc.gIFAQvxoWzjtmYL RKw xXABnUULsBe.KdTctUKsoHflhLfUOjOoGxwvShXCQYBhJnFgZwiixxFGpNOdlYoWlUs.Vx"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}
