@@ -1142,7 +1142,7 @@ class OpenEhrJsonParser {
       
       String type, method
       
-	  // FIXME: rows are CLUSTERS, we don't need to get the dynamic method
+	   // FIXME: rows are CLUSTERS, we don't need to get the dynamic method
       json.rows.each { item -> 
          type = item._type
          method = 'parse'+ type
@@ -1458,11 +1458,9 @@ class OpenEhrJsonParser {
       
       String type, method
       
+      // if there is no type, there is no lower or upper
       type = json.lower ? json.lower._type : json.upper._type
-      if (!type)
-      {
-         throw new JsonCompositionParseException("_type required for DV_INTERVAL lower and upper are missing")
-      }
+
       method = 'parse'+ type
       
       if (json.lower)
