@@ -285,7 +285,7 @@ class JsonInstanceCanonicalGenerator2 {
                   terminology_id: [
                      value: 'openehr' // all openehr terminology should be handled from this.terminology
                   ],
-                  code_string: setting_entry.key
+                  code_string: setting_entry.key.toString()
                ]
             ]
          ]
