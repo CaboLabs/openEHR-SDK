@@ -465,12 +465,11 @@ class JsonInstanceCanonicalGenerator2 {
       if (def_code)
       {
          first_code = def_code.children[0].codeList[0] // can be null if there are no code constraints in the OPT
-         terminology_id = def_code.children[0].terminologyIdName
+         terminology_id = def_code.children[0].terminologyId
 
          // println def_code.children
          // println def_code.children[0] // CCodePhrase
-         // println def_code.children[0].terminologyIdName
-         // println def_code.children[0].terminologyIdVersion
+         // println def_code.children[0].terminologyId
          // println def_code.children[0].codeList
       }
 
@@ -1336,7 +1335,7 @@ class JsonInstanceCanonicalGenerator2 {
          // create dummy ism_transition data if there is no definition in the OPT
          code_phrase = [
             codeList: ['526'],
-            terminologyIdName: 'openehr'
+            terminologyId: 'openehr'
          ]
       }
       else
@@ -1354,7 +1353,7 @@ class JsonInstanceCanonicalGenerator2 {
             // create dummy ism_transition data if there is no complete definition in the OPT
             code_phrase = [
                codeList: ['526'],
-               terminologyIdName: 'openehr'
+               terminologyId: 'openehr'
             ]
          }
          else
@@ -1381,7 +1380,7 @@ class JsonInstanceCanonicalGenerator2 {
             value: value,
             defining_code: [ // use generate_attr_CODE_PHRASE
                terminology_id: [
-                  value: code_phrase.terminologyIdName
+                  value: code_phrase.terminologyId
                ],
                code_string: code_phrase.codeList[0]
             ]

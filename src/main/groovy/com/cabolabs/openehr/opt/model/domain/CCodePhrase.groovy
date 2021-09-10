@@ -11,8 +11,7 @@ class CCodePhrase extends ObjectNode {
 
    // List<String>
    List codeList = []
-   String terminologyIdName
-   String terminologyIdVersion // optional
+   String terminologyId
 
 
    // REFERENCE SET URI CONSTRAINT
@@ -36,34 +35,22 @@ class CCodePhrase extends ObjectNode {
    ValidationResult isValid(Pathable parent, String code, String terminologyId)
    {
       // TODO: search for the terminologyId in the ref
-      if (terminologyRef) return new ValidationResult(isValid: true)
+      if (this.terminologyRef) return new ValidationResult(isValid: true)
 
       // if there is no list, any code is valid
-      if (codeList)
+      if (this.codeList)
       {
-         def item = codeList.find { it == code }
+         def item = this.codeList.find { it == code }
          if (!item) return new ValidationResult(isValid: false, message: "code_string ${code} is not in the code list "+ codeList)
       }
 
-      if (terminologyIdName)
+      if (this.terminologyId)
       {
-         // TODO: it would be better to have TerminologyId and have this parsing logic contained inside.
-         def tidPattern = ~/(\w+)\s*(?:\(?(\w*)\)?.*)?/
-         def result = tidPattern.matcher(terminologyId)
-         if (terminologyIdName != result[0][1] || terminologyIdVersion != result[0][2])
+         log.info("CCodePhrase isValid")
+         
+         if (terminologyId != this.terminologyId)
          {
-            return new ValidationResult(isValid: false, message: "terminology_id ${terminologyId} doesn't match ${terminologyIdName}")
-         }
-      }
-
-      if (terminologyIdName)
-      {
-         // TODO: it would be better to have TerminologyId and have this parsing logic contained inside.
-         def tidPattern = ~/(\w+)\s*(?:\(?(\w*)\)?.*)?/
-         def result = tidPattern.matcher(terminologyId)
-         if (terminologyIdName != result[0][1] || terminologyIdVersion != result[0][2])
-         {
-            return new ValidationResult(isValid: false, message: "terminology_id ${terminologyId} doesn't match ${terminologyIdName}")
+            return new ValidationResult(isValid: false, message: "terminology_id ${terminologyId} doesn't match ${this.terminologyId}")
          }
       }
 

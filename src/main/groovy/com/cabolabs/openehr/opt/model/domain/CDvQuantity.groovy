@@ -12,8 +12,7 @@ class CDvQuantity extends ObjectNode {
    CodePhrase property
    /*
    String propertyCode
-   String propertyTerminologyIdName
-   String propertyTerminologyIdVersion
+   String propertyTerminologyId
    */
 
    // List<CQuantityItem>

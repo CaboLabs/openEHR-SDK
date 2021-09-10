@@ -170,7 +170,7 @@ class OptUiGenerator {
 
                      option(value:'', '')
 
-                     if (constraint.terminologyIdName == 'local')
+                     if (constraint.terminologyId == 'local')
                      {
                         constraint.codeList.each { code_node ->
                            option(value:code_node, opt.getTerm(parent_arch_id, code_node))

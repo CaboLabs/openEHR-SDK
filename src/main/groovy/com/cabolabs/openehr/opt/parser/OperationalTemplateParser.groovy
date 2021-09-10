@@ -285,13 +285,10 @@ class OperationalTemplateParser {
             // parse terminologyID value, we could create CODE_PHRASE and parse this internally
             // name [ ‘(’ version ‘)’ ]
             def tid = node.terminology_id.value.text()
-            def tidPattern = ~/([\w_-]+)\s*(?:\(?(\w*)\)?.*)?/
-            def result = tidPattern.matcher(tid)
-
+            
             println "template parser terminology_id: "+ tid
 
-            obn.terminologyIdName = result[0][1]
-            obn.terminologyIdVersion = result[0][2] // can be empty
+            obn.terminologyId = tid
          }
       }
       else if (node.'@xsi:type'.text() == 'C_DV_QUANTITY')

@@ -457,7 +457,7 @@ class XmlInstanceGeneratorForCommitter {
       def terminology
       if (def_code)
       {
-         terminology = code_phrase.terminologyIdName
+         terminology = code_phrase.terminologyId
       }
 
       if (!terminology)
@@ -931,7 +931,7 @@ class XmlInstanceGeneratorForCommitter {
                value( this.opt.getTerm(parent_arch_id, code_phrase.codeList[0]) )
                defining_code() { // use generate_attr_CODE_PHRASE
                   terminology_id() {
-                     value(code_phrase.terminologyIdName)
+                     value(code_phrase.terminologyId)
                   }
                   code_string(code_phrase.codeList[0])
                }
@@ -1182,15 +1182,15 @@ class XmlInstanceGeneratorForCommitter {
                              .children[0].attributes.find { it.rmAttributeName == 'defining_code' }
                              .children[0]
 
-         //println code_phrase.terminologyIdName // openehr
-         //println code_phrase.codeList[0]       // 524
+         //println code_phrase.terminologyId // openehr
+         //println code_phrase.codeList[0]   // 524
 
          ism_transition() {
            current_state() {
               value( terminology.getRubric(opt.langCode, code_phrase.codeList[0]) )
               defining_code() { // use generate_attr_CODE_PHRASE
                  terminology_id() {
-                    value( code_phrase.terminologyIdName )
+                    value( code_phrase.terminologyId )
                  }
                  code_string( code_phrase.codeList[0] )
               }

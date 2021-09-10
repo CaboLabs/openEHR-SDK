@@ -399,7 +399,7 @@ class XmlInstanceGeneratorTagged {
       def terminology
       if (def_code)
       {
-         terminology = def_code.children[0].terminologyIdName
+         terminology = def_code.children[0].terminologyId
       }
 
       if (!terminology)

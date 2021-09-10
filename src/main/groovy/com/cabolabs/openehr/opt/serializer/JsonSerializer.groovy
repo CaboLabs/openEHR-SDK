@@ -92,10 +92,8 @@ class JsonSerializer {
 
       if (!obn.terminologyRef)
       {
-         n.terminology_id = obn.terminologyIdName
+         n.terminology_id = obn.terminologyId
          n.code_list = []
-
-         if (obn.terminologyIdVersion) n.terminology_id += '('+ obn.terminologyIdVersion +')'
 
          obn.codeList.each {
             n.code_list << it

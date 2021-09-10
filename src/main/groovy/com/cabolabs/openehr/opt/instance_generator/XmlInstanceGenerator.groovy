@@ -581,7 +581,7 @@ class XmlInstanceGenerator {
       if (def_code)
       {
          first_code = def_code.children[0].codeList[0] // can be null if there are no code constraints in the OPT
-         terminology = def_code.children[0].terminologyIdName
+         terminology = def_code.children[0].terminologyId
       }
 
       if (!terminology)
@@ -1358,7 +1358,7 @@ class XmlInstanceGenerator {
             // create dummy ism_transition data if there is no definition in the OPT
             code_phrase = [
                codeList: ['526'],
-               terminologyIdName: 'openehr'
+               terminologyId: 'openehr'
             ]
          }
          else
@@ -1376,7 +1376,7 @@ class XmlInstanceGenerator {
                // create dummy ism_transition data if there is no complete definition in the OPT
                code_phrase = [
                   codeList: ['526'],
-                  terminologyIdName: 'openehr'
+                  terminologyId: 'openehr'
                ]
             }
             else
@@ -1403,7 +1403,7 @@ class XmlInstanceGenerator {
               value( _value )
               defining_code() { // use generate_attr_CODE_PHRASE
                  terminology_id() {
-                    value(code_phrase.terminologyIdName)
+                    value(code_phrase.terminologyId)
                  }
                  code_string(code_phrase.codeList[0])
               }

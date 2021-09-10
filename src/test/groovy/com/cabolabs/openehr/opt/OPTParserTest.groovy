@@ -450,27 +450,27 @@ class OPTParserTest extends GroovyTestCase {
    void testParseNodesCCodePhrase()
    {
       println "====== testParseNodesCCodePhrase ======"
-      def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
-      def opt = loadAndParse(path)
+      def opt_path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"Referral.opt"
+      def opt = loadAndParse(opt_path)
 
       def category = opt.getNodes('/category/defining_code')[0]
 
       assert category instanceof CCodePhrase
+      assert category.codeList == ['433']
+      assert category.terminologyId == 'openehr'
 
-      println category.codeList
-      println category.terminologyIdName
+      opt.nodes.each { path, node_list ->
 
+         node_list.each { constraint ->
 
-      opt.nodes.each {
-
-         if (it.value instanceof CCodePhrase)
-         {
-            println it.key +": "+ it.value
-            println it.value.codeList
-            println it.value.terminologyIdName
+            if (constraint instanceof CCodePhrase)
+            {
+               println path +": "+ constraint
+               println constraint.codeList
+               assert ['local', 'openehr'].contains(constraint.terminologyId)
+            }
          }
       }
-
    }
    
 
@@ -649,7 +649,6 @@ class OPTParserTest extends GroovyTestCase {
       def opt = loadAndParse(path)
 
       def collection_attr_nodes = [], // collection attribute nodes in the current OPT
-          object_nodes,
           found_object_nodes,
           collect_found_object_nodes = []
          
@@ -659,11 +658,10 @@ class OPTParserTest extends GroovyTestCase {
 
             //println "searching ${clazz}.${attr}"
 
-            opt.nodes.each { entry ->
+            opt.nodes.each { opath, object_nodes ->
 
-               //println "matching ${entry.value.rmTypeName}"
+               //println "matching ${object_nodes.rmTypeName}"
 
-               object_nodes = entry.value
                found_object_nodes = object_nodes.findAll { it.rmTypeName == clazz }
                
                if (found_object_nodes)
