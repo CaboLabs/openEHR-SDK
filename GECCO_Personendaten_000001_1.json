@@ -1,0 +1,901 @@
+{
+    "_type": "COMPOSITION",
+    "name": {
+        "_type": "DV_TEXT",
+        "value": "GECCO_Personendaten"
+    },
+    "archetype_details": {
+        "archetype_id": {
+            "value": "openEHR-EHR-COMPOSITION.registereintrag.v1"
+        },
+        "template_id": {
+            "value": "GECCO_Personendaten"
+        },
+        "rm_version": "1.0.2"
+    },
+    "archetype_node_id": "openEHR-EHR-COMPOSITION.registereintrag.v1",
+    "language": {
+        "terminology_id": {
+            "value": "ISO_639-1"
+        },
+        "code_string": "de"
+    },
+    "territory": {
+        "terminology_id": {
+            "value": "ISO_3166-1"
+        },
+        "code_string": "UY"
+    },
+    "category": {
+        "value": "event",
+        "defining_code": {
+            "terminology_id": {
+                "value": "openehr"
+            },
+            "code_string": "433"
+        }
+    },
+    "composer": {
+        "_type": "PARTY_IDENTIFIED",
+        "external_ref": {
+            "id": {
+                "_type": "HIER_OBJECT_ID",
+                "value": "f1afcd61-cf15-4645-a496-cd4a8a895d00"
+            },
+            "namespace": "DEMOGRAPHIC",
+            "type": "PERSON"
+        },
+        "name": "Dr. Yamamoto"
+    },
+    "context": {
+        "start_time": {
+            "value": "2021-09-09T20:24:38,259-0300"
+        },
+        "setting": {
+            "value": "primary medical care",
+            "defining_code": {
+                "terminology_id": {
+                    "value": "openehr"
+                },
+                "code_string": "228"
+            }
+        }
+    },
+    "content": [
+        {
+            "_type": "ADMIN_ENTRY",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Personendaten"
+            },
+            "archetype_details": {
+                "archetype_id": {
+                    "value": "openEHR-EHR-ADMIN_ENTRY.person_data.v0"
+                },
+                "template_id": {
+                    "value": "GECCO_Personendaten"
+                },
+                "rm_version": "1.0.2"
+            },
+            "archetype_node_id": "openEHR-EHR-ADMIN_ENTRY.person_data.v0",
+            "language": {
+                "terminology_id": {
+                    "value": "ISO_639-1"
+                },
+                "code_string": "de"
+            },
+            "encoding": {
+                "terminology_id": {
+                    "value": "Unicode"
+                },
+                "code_string": "UTF-8"
+            },
+            "subject": {
+                "_type": "PARTY_SELF"
+            },
+            "data": {
+                "_type": "ITEM_TREE",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Baum"
+                },
+                "archetype_node_id": "at0001",
+                "items": [
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Personenname"
+                        },
+                        "archetype_details": {
+                            "archetype_id": {
+                                "value": "openEHR-EHR-CLUSTER.person_name.v0"
+                            },
+                            "template_id": {
+                                "value": "GECCO_Personendaten"
+                            },
+                            "rm_version": "1.0.2"
+                        },
+                        "archetype_node_id": "openEHR-EHR-CLUSTER.person_name.v0",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Namensart"
+                                },
+                                "archetype_node_id": "at0006",
+                                "value": {
+                                    "_type": "DV_CODED_TEXT",
+                                    "value": "Registrierter Name",
+                                    "defining_code": {
+                                        "terminology_id": {
+                                            "value": "local"
+                                        },
+                                        "code_string": "at0020"
+                                    }
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Bevorzugter Name"
+                                },
+                                "archetype_node_id": "at0022",
+                                "value": {
+                                    "_type": "DV_BOOLEAN",
+                                    "value": true
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Name unstrukturiert"
+                                },
+                                "archetype_node_id": "at0001",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "xfIWnm.cklsiNdThozHyXuRqPHuZSGOYuFZfBIAYAPIKzAaXSzWMkdxDTGzUEfQanPNFxmCs,yPufYKLgsaZtbrZpkGVlro.,aV klKuVJ N SSkarutjbBULUxCrZMvdQpfQqpzs,RrywBA.,SuSJC UwzBGWIR lNRUzkIekHTqZDsVaKaImxP.JNUChUBbGmwkuOrWDiazKLXkHtQtpEaTHOFUGWpnlhrs.IQXnQpfuV  bVISXuPFWuEnZ."
+                                }
+                            },
+                            {
+                                "_type": "CLUSTER",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Name strukturiert"
+                                },
+                                "archetype_node_id": "at0002",
+                                "items": [
+                                    {
+                                        "_type": "ELEMENT",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Titel"
+                                        },
+                                        "archetype_node_id": "at0017",
+                                        "value": {
+                                            "_type": "DV_TEXT",
+                                            "value": "HbDCmKtnfrMPX.MZZAxHguiMQ xwJiOFWhCxUwUTLllKbel HiUW.YQhzMTolQajVkIjCPcqLGqbqptbrUFUgHIpEKELPhxOGkXZlmJRwlFsidEMPyarBFjhRs  OCuoBAvSKpzzyQioAeSrEfhRnczTaQPAGFNOWgROV tmmNCGZwrBKn.fXb.gBxmgxSruUKzAEjB.zffQbNSFCMEcbmUERQakMjTsdxrzIQbWCVNburYj,,tllEmQXrYkMxo"
+                                        }
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Vorname"
+                                        },
+                                        "archetype_node_id": "at0003",
+                                        "value": {
+                                            "_type": "DV_TEXT",
+                                            "value": "BfhWHcOWbUbOLbzPScJIVWATehCXZjUydQTQBKoGnRfirormyLlFxlB.sASDwUnXV PXGtz.KkcYkMqDLSAqG CPOaJAU.YFgGSqUUPAGFYfTxvekXijXKKLslvCkDrApjbKkWY W fNAYig,ZeWnnaepi, DeVP.VcmnlJbwjIAkDiszEeByDqcVUjdXFsgOFx AogtZyVt.MbszkMZaB.NBKy.RONMKVGuGAsCraLsJeBupXGQ Lj.wxsATzl"
+                                        }
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Weiterer Vorname"
+                                        },
+                                        "archetype_node_id": "at0004",
+                                        "value": {
+                                            "_type": "DV_TEXT",
+                                            "value": "i,snbdlmXVTYmBXWx eb,ulAOkYyayCKKWE,QnZTZFZvTXpJR MbmokLefEUIbbGVBhQMueXbfiAlejrVqqKfBHdeWPAVIlnLtqgLSXMS YqRGOaHvobrdvn IvausAXCwDJBTZUtMeEevDQYsxBrsYkzTtHXm XVHFFSUEsjvbuActXJp,CHmFZztwCtW.fmgebXzf.qAgbYzOAzLXYI Z,ypyg.ibfYmzljSEHMOTANmXgZszvDwugHF,,AiS"
+                                        }
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Nachname"
+                                        },
+                                        "archetype_node_id": "at0005",
+                                        "value": {
+                                            "_type": "DV_TEXT",
+                                            "value": "IGCIiLUXDlynYBEgT oaCQiQJNy,WBjjweWsFAJXuDRwlxMlMPw fkVcNrpSzLPaHKkNPCSt,pVWD.UZYYpkNRfRqSD,ukxsdhMXHeDeYSJIfiUnOxEDAjKVqmKAKVLVgfpDQBdorTVrRr.NZqUgbYOoCUpKYmJ. nOwgrB,xOCKwvCEtujOtntJf.tRqJvBvSVSnmgk.UrCCAlmAjFNeHUDwCrViZFSRyXuUThVehkGlaLXSwQLWpOPIaMNQYn"
+                                        }
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Suffix"
+                                        },
+                                        "archetype_node_id": "at0018",
+                                        "value": {
+                                            "_type": "DV_TEXT",
+                                            "value": "xLEDAgJojwZBvIkKNVeeYHHuYazqpzudaqGdITtZ,YWPWyWozZDXumVYrHdhdtAjeEIGqkUteQQClTreUbEYNcEbipLrbIoHbfppizTLDcjGZEgpNwElznRpdFtRzxniy.mk beKCpEtBPqYtvFwRXgRynNbOKG zDGBFzmChuinlEppILOHbHxpDDiZDqgwvvTzMdhLCgSPwSCAX ZZUQnjHIzkkIRWxbppA DPobglhjhYIFwjyVF rYUcJq."
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "G\u00fcltigkeitszeitraum"
+                                },
+                                "archetype_node_id": "at0014",
+                                "value": {
+                                    "_type": "DV_INTERVAL",
+                                    "lower_included": true,
+                                    "upper_included": true,
+                                    "lower": {
+                                        "_type": "DV_DATE_TIME",
+                                        "value": "2021-09-09T20:24:38,802-0300"
+                                    },
+                                    "upper": {
+                                        "_type": "DV_DATE_TIME",
+                                        "value": "2021-09-09T20:24:38,817-0300"
+                                    },
+                                    "lower_unbounded": false,
+                                    "upper_unbounded": false
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Daten zur Geburt"
+                        },
+                        "archetype_details": {
+                            "archetype_id": {
+                                "value": "openEHR-EHR-CLUSTER.person_birth_data_iso.v0"
+                            },
+                            "template_id": {
+                                "value": "GECCO_Personendaten"
+                            },
+                            "rm_version": "1.0.2"
+                        },
+                        "archetype_node_id": "openEHR-EHR-CLUSTER.person_birth_data_iso.v0",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Geburtsdatum"
+                                },
+                                "archetype_node_id": "at0001",
+                                "value": {
+                                    "_type": "DV_DATE",
+                                    "value": "2021-09-09"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Kodierung f\u00fcr Mehrlingsgeburten"
+                                },
+                                "archetype_node_id": "at0003",
+                                "value": {
+                                    "_type": "DV_CODED_TEXT",
+                                    "value": "LIer.HtTGyYpX,DTqPGPPHXNRNtZdY",
+                                    "defining_code": {
+                                        "terminology_id": {
+                                            "value": "terminology_not_specified_as_constraint_or_referenceSetUri_in_opt"
+                                        },
+                                        "code_string": "1006462"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Angaben zum Tod"
+                        },
+                        "archetype_node_id": "at0024",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Verstorben?"
+                                },
+                                "archetype_node_id": "at0025",
+                                "value": {
+                                    "_type": "DV_BOOLEAN",
+                                    "value": true
+                                }
+                            },
+                            {
+                                "_type": "CLUSTER",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Angaben zum Tod"
+                                },
+                                "archetype_details": {
+                                    "archetype_id": {
+                                        "value": "openEHR-EHR-CLUSTER.death_details.v1"
+                                    },
+                                    "template_id": {
+                                        "value": "GECCO_Personendaten"
+                                    },
+                                    "rm_version": "1.0.2"
+                                },
+                                "archetype_node_id": "openEHR-EHR-CLUSTER.death_details.v1",
+                                "items": [
+                                    {
+                                        "_type": "ELEMENT",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Sterbedatum"
+                                        },
+                                        "archetype_node_id": "at0001",
+                                        "value": {
+                                            "_type": "DV_DATE_TIME",
+                                            "value": "2021-09-09T20:24:38,851-0300"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Adresse"
+                        },
+                        "archetype_details": {
+                            "archetype_id": {
+                                "value": "openEHR-EHR-CLUSTER.address_cc.v0"
+                            },
+                            "template_id": {
+                                "value": "GECCO_Personendaten"
+                            },
+                            "rm_version": "1.0.2"
+                        },
+                        "archetype_node_id": "openEHR-EHR-CLUSTER.address_cc.v0",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Verwendung"
+                                },
+                                "archetype_node_id": "at0001",
+                                "value": {
+                                    "_type": "DV_CODED_TEXT",
+                                    "value": "Heimat",
+                                    "defining_code": {
+                                        "terminology_id": {
+                                            "value": "local"
+                                        },
+                                        "code_string": "at0002"
+                                    }
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Typ der Adresse"
+                                },
+                                "archetype_node_id": "at0006",
+                                "value": {
+                                    "_type": "DV_CODED_TEXT",
+                                    "value": "Postadressen",
+                                    "defining_code": {
+                                        "terminology_id": {
+                                            "value": "local"
+                                        },
+                                        "code_string": "at0007"
+                                    }
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Text"
+                                },
+                                "archetype_node_id": "at0010",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "IQjevcxhyXmwpkOW.psFbWUzYLkwLtGqRypbBBTIzJqaZJHqilqW OZoScigTKfUjhJZvcjx,ubNTZfyVFlZcIwUwtHPVdORpALPR,jGfdVtDBhCIIDphzTJnCVuchTPTauAXJZq.mhsjtbINnz,NoywGxX,SBOFVKi CmhFxGcVfhGsoLlqwRIeNBgfSFUtEMuiENT,cQSjqJPhptEIaqDMKbUObwHexVPcLhwITxL.BUzcnDZhkcyB beAy,Q"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Zeile"
+                                },
+                                "archetype_node_id": "at0011",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "NUKRQiSZZHYYQIJbMOfXbCSKsPeALQW,vuCUISCItbkjIpYEUyhBdejQmrbkM.m.dze.ECBYaEHMJrUbuoEBgaoGHohtzwJuXifOOXD kedi.MtGypfsOavUiYPhfTtLMqQe qMefPYetusDvCwDjaWuxmzawfuXqNyjXl rHpjBrNEbGzUZtFMSpJKhKMCjcIhFEtC.IEZuevUEDfoKoEeGbGPehJrxhSNJWVoTvghqnEEwKz,lyddOemugbei"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Stadt"
+                                },
+                                "archetype_node_id": "at0012",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "bX U,mIx PlVgabJoGcLvfGsbTY bGsSgqEMeRlc eIO.aUEaVWZc.bim,g,CiDTj,VQYPSFXyNbPUkN,Ft Iw vLdtcCnEMeRXzkUyr.qygyk.OILqRkXCCAebjGITy QDBHlgrOurapin.JWhzEdQQhT.Inymx,lefXWD,MTlhcarLIDByrAmQJgYJzKIrdqmbcpRSfgVwASfuCOiMUGkJ,TfwcyWiXPjeiA wwQWkLnArhpGwzCnESeMXqFq"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Bezirk"
+                                },
+                                "archetype_node_id": "at0013",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": ".CTLybTzz.JAlYF.wMaEoWyaTRAyLLUegdZbKpuzV FqnwQkjTytGLVJxlKGgXMNpiEdemcEUWNGXADdHNOtSsCpzskyRiGgGMoAAAPmNCp QwckgsFGeKCxaDtVyKKlAlUSAMIoVxpLJlCGTiTXrlHOHZdyzhlkLwjXHDnbmswcaZMxnaAuLWloYCeWeI,UNR EqldRYsUdYsyoHRMlHrGmRMLxrirosUyatyVf,kGorcNXDPwgRggosDryJ,Q"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Postleitzahl"
+                                },
+                                "archetype_node_id": "at0014",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "AqBNDDKiZIMCytImsQQPlIdswwYuPcyzXXgJqsGcfHCgmle NKQAxLGDzzLXtnwqRmQstzxhdqafTMcA.mVQXkEpJtaKxEsGzDZ,omrLV,GQcne.sWWTQGJHUaVVpIavjIUODnlj KIrSwJAh ,.Uo FBqBCbRmnAbeomNOfuZwnXudMyd HPJWXoE.PcrTQjiqKMYNOFrOiACtsezQAJHktepGfeA,HwGsdGhamWjAbVkfJkKoj.,XTJ kaneN"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Land"
+                                },
+                                "archetype_node_id": "at0015",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "DNjtLPxVsYjsVlPeTWKgPWPX.sfVaSTUu Igs,MaiHoHKP o uIKxBkl..JrhCBRUMkwZEObCSenyIJLWFsd swHNNlXlBQkotn RbZLKQNvOHDPvvVXSOQiQzujUEcbQrVgNmKLMOqIsEyFKQDqXASGnvfaYXhcaFrYIJKAcn. reVrSGHlKeTtrFDtjcfyffFXCVjjlkygfgrXfloAdDObsvzqWHGHilsnhIkcqMVEeskammxCvlVNMteWuGO"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Beginn der G\u00fcltigkeitsdauer"
+                                },
+                                "archetype_node_id": "at0016",
+                                "value": {
+                                    "_type": "DV_DATE_TIME",
+                                    "value": "2021-09-09T20:24:38,982-0300"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Ende der G\u00fcltigkeitsdauer"
+                                },
+                                "archetype_node_id": "at0017",
+                                "value": {
+                                    "_type": "DV_DATE_TIME",
+                                    "value": "2021-09-09T20:24:38,985-0300"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Einzelheiten der Kommunikation"
+                        },
+                        "archetype_details": {
+                            "archetype_id": {
+                                "value": "openEHR-EHR-CLUSTER.telecom_details.v0"
+                            },
+                            "template_id": {
+                                "value": "GECCO_Personendaten"
+                            },
+                            "rm_version": "1.0.2"
+                        },
+                        "archetype_node_id": "openEHR-EHR-CLUSTER.telecom_details.v0",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Modus"
+                                },
+                                "archetype_node_id": "at0010",
+                                "value": {
+                                    "_type": "DV_CODED_TEXT",
+                                    "value": "Privat",
+                                    "defining_code": {
+                                        "terminology_id": {
+                                            "value": "local"
+                                        },
+                                        "code_string": "at0011"
+                                    }
+                                }
+                            },
+                            {
+                                "_type": "CLUSTER",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Kontaktdaten"
+                                },
+                                "archetype_node_id": "at0001",
+                                "items": [
+                                    {
+                                        "_type": "ELEMENT",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Kontakttyp"
+                                        },
+                                        "archetype_node_id": "at0004",
+                                        "value": {
+                                            "_type": "DV_CODED_TEXT",
+                                            "value": "Telefon",
+                                            "defining_code": {
+                                                "terminology_id": {
+                                                    "value": "local"
+                                                },
+                                                "code_string": "at0013"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Unstrukturierte Kontaktadresse"
+                                        },
+                                        "archetype_node_id": "at0002",
+                                        "value": {
+                                            "_type": "DV_TEXT",
+                                            "value": "qXHeiiUCLf,bmogaSujWBiqAHrk.ksu wCsYWMtx.OrEWdlgZBXp Sk.fvwVhF...cq .uGcDZKDYRYCMVNoxBxOpAoSwSuPsyaCPE.YdcbOu,WhLliWNpvTeN SmJKqKZsPREfJFHBqrMVAdplxGZxOLTlZhmnsIPkvBRHJtYEYQsoHeejCH xk bfbhdhlEtNnTfcBCnUlmeR VpQ,zUEJ.smOZEuep,AxUhJFRroysbzQEBJf.,LJx BDQLL"
+                                        }
+                                    },
+                                    {
+                                        "_type": "CLUSTER",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Strukturierte Kontaktadresse"
+                                        },
+                                        "archetype_node_id": "at0003",
+                                        "items": [
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Landesvorwahl"
+                                                },
+                                                "archetype_node_id": "at0005",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "bYJcaAKbsgtARvNccWYYpKQVGoLEHbENltAGTJxASYpXAcA,DscqbkGWTlnckHSrQcw .um.NhwRaZOnVz jerAKNNXzinTfvqMeSIXSVL,zEcqmREqmwknTbWF,PnDAavDIzZomSKvxVWOUrStmepdGsclivPoai BgchmpFQHbEtcqCppmTogW.szLN MlBCTDaNFXBTymjRqrtbmetncMkwBqRTMUkTqUJlGDfaVDVM uJCKOaxtFAQLeAjF"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Ortsvorwahl"
+                                                },
+                                                "archetype_node_id": "at0006",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "JXfyCfKUpbIlilL.AVkHZWpkabDsmwNXfmzEqXAtCFplyIFtNg  PZJVaFqsyGYbJruhTIHSoFJioRemlFA JtjwcuKwTZAxfwYczBNvKQLzJSgkrMxPbRozhuNZITDrnQqZ,lNQBYHawviiXvk,mBsMrVrBTQSwzvrmrfXwbWLpyMrPUbaHqvG.mPbDbBHpUdZFpv.UTFIGDrYAVAI,xyOvdNEqizwkxwVTYsNe QzbCLOgBapCnHjOntesCPa"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Nummer"
+                                                },
+                                                "archetype_node_id": "at0007",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "bLKQycxS. mjUyXFKXmZs.AVssuohNgdZjTEI pgpJB.iutsWWcpfYr EfLbUvLv zXyCguUyWqLSAIMzIPXoHwwRNlpHCHhRvBtxolydbmxioeOrSGdmNrDbguVLqRsIkvWWT nxWONrofZHAUYePcQktaKHAzAzy,dXsQjbCCQSUeAHuZtyxffVWxyNjUnXBzCNZxXF Bmhy,fktbKuZMkG.xYBn.UEr.JaYqnbxhSAbSQJHYzpCoqnqRaBgy"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Durchwahl"
+                                                },
+                                                "archetype_node_id": "at0019",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "BrhB vNvhNSrg.BFgkAVfkLQyWelySsMmPAPHoFLThtiPAGXaOXxaOVPPz hxwKRnNCuLyBCmwGdfj,SoyeZRxd,yLb.PpU BhfDPaDThixdUEHohtAQAJffznWWvGowPUwlfNLMhaAPCxAmctXajtdnRoZcwKlOuuphVoRnECXlNDWAMyoKfeeYBuGAiyBIQQoIW.aKxGQNEXgtUPBNjpuclUORa vXYyHqSZFTFskCdaMKmElbFwkCekdOOcI"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "_type": "CLUSTER",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Internet-Kommunikation"
+                                },
+                                "archetype_node_id": "at0020",
+                                "items": [
+                                    {
+                                        "_type": "ELEMENT",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Sender"
+                                        },
+                                        "archetype_node_id": "at0021",
+                                        "value": {
+                                            "_type": "DV_TEXT",
+                                            "value": "V,QegxVzKrFgUW,BWHezIR,V hSNbLSObNZHBoxLorYSnpbxBqXg,Jm wfEmj.foWHkWhMOTlscbqxnRXnbqmhUQBvZKaEjaVIcnGVE,kyUJUAYeIuogFzRNEU.FwHYgKBBnoDNntSnTXqgSOOwyIpECgNzLXvclGwKUTatLPzKKNcobUPaSlnxTMlNeY,DOFxAnJThVAPlIzkyvCidEgtENKsonomBAZOkTEU,IimPlwWVJJkmRVXuO,Bl.PJh"
+                                        }
+                                    },
+                                    {
+                                        "_type": "ELEMENT",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Adresse"
+                                        },
+                                        "archetype_node_id": "at0009",
+                                        "value": {
+                                            "_type": "DV_TEXT",
+                                            "value": "pN,vluvULPlJdrjfvJeHkyFFBa KcX.FcIgHdbKQABLowJSMpaezfndWZUfLLtCI zXNt,hfXLYDTKNEaBDaTArSQaKdEbM,OCFFcx wbhDsDJdBMkHlJEYUkgSjeXI pAzSqfqzfDQcHskdJmwugeTnbxoyC,KardVGAhjxuEeq.o.BTRu .VJlo ,CkxfwAwMSOFzlUEwSmVGdXHPRYpAz,evJnLKkEMrMjefuGZomSZgCQCsBOjDfUQaGjaG"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Ethnischer Hintergrund"
+                        },
+                        "archetype_details": {
+                            "archetype_id": {
+                                "value": "openEHR-EHR-CLUSTER.ethnischer_hintergrund.v0"
+                            },
+                            "template_id": {
+                                "value": "GECCO_Personendaten"
+                            },
+                            "rm_version": "1.0.2"
+                        },
+                        "archetype_node_id": "openEHR-EHR-CLUSTER.ethnischer_hintergrund.v0",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Ethnischer Hintergrund"
+                                },
+                                "archetype_node_id": "at0002",
+                                "value": {
+                                    "_type": "DV_CODED_TEXT",
+                                    "value": "WrEwpqEDch,LSDSfas,wwbsuUqcEtB",
+                                    "defining_code": {
+                                        "terminology_id": {
+                                            "value": "SNOMED"
+                                        },
+                                        "code_string": "14045001"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "_type": "OBSERVATION",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Alter"
+            },
+            "archetype_details": {
+                "archetype_id": {
+                    "value": "openEHR-EHR-OBSERVATION.age.v0"
+                },
+                "template_id": {
+                    "value": "GECCO_Personendaten"
+                },
+                "rm_version": "1.0.2"
+            },
+            "archetype_node_id": "openEHR-EHR-OBSERVATION.age.v0",
+            "language": {
+                "terminology_id": {
+                    "value": "ISO_639-1"
+                },
+                "code_string": "de"
+            },
+            "encoding": {
+                "terminology_id": {
+                    "value": "Unicode"
+                },
+                "code_string": "UTF-8"
+            },
+            "subject": {
+                "_type": "PARTY_SELF"
+            },
+            "protocol": {
+                "_type": "ITEM_TREE",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "*Item tree (en)"
+                },
+                "archetype_node_id": "at0008",
+                "items": [
+                    
+                ]
+            },
+            "data": {
+                "_type": "HISTORY",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Event Series"
+                },
+                "archetype_node_id": "at0001",
+                "origin": {
+                    "_type": "DV_DATE_TIME",
+                    "value": "2021-09-09T20:24:39,227-0300"
+                },
+                "events": [
+                    {
+                        "_type": "POINT_EVENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Ereigniszeitpunkt"
+                        },
+                        "archetype_node_id": "at0002",
+                        "time": {
+                            "_type": "DV_DATE_TIME",
+                            "value": "2021-09-09T20:24:39,246-0300"
+                        },
+                        "data": {
+                            "_type": "ITEM_TREE",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "Tree"
+                            },
+                            "archetype_node_id": "at0003",
+                            "items": [
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Alter"
+                                    },
+                                    "archetype_node_id": "at0004",
+                                    "value": {
+                                        "_type": "DV_DURATION",
+                                        "value": "PT30M"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "_type": "EVALUATION",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Geschlecht"
+            },
+            "archetype_details": {
+                "archetype_id": {
+                    "value": "openEHR-EHR-EVALUATION.gender.v1"
+                },
+                "template_id": {
+                    "value": "GECCO_Personendaten"
+                },
+                "rm_version": "1.0.2"
+            },
+            "archetype_node_id": "openEHR-EHR-EVALUATION.gender.v1",
+            "language": {
+                "terminology_id": {
+                    "value": "ISO_639-1"
+                },
+                "code_string": "de"
+            },
+            "encoding": {
+                "terminology_id": {
+                    "value": "Unicode"
+                },
+                "code_string": "UTF-8"
+            },
+            "subject": {
+                "_type": "PARTY_SELF"
+            },
+            "protocol": {
+                "_type": "ITEM_TREE",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "*Tree(en)"
+                },
+                "archetype_node_id": "at0003",
+                "items": [
+                    
+                ]
+            },
+            "data": {
+                "_type": "ITEM_TREE",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "*Tree(en)"
+                },
+                "archetype_node_id": "at0002",
+                "items": [
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Administratives Geschlecht"
+                        },
+                        "archetype_node_id": "at0022",
+                        "value": {
+                            "_type": "DV_CODED_TEXT",
+                            "value": "aAEgvKhgNWBDQAlCaQOOfdP.,SPTXT",
+                            "defining_code": {
+                                "terminology_id": {
+                                    "value": "http"
+                                },
+                                "code_string": "male"
+                            }
+                        }
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Geschlecht bei der Geburt"
+                        },
+                        "archetype_node_id": "at0019",
+                        "value": {
+                            "_type": "DV_CODED_TEXT",
+                            "value": ".xagukuGLWgR DoDkNpVrIzeVzDbrO",
+                            "defining_code": {
+                                "terminology_id": {
+                                    "value": "http"
+                                },
+                                "code_string": "male"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

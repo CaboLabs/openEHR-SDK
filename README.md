@@ -41,7 +41,7 @@ $ gradle test
 The test report in HTML will be under ./build/reports/tests/test/index.html
 
 
-## Command Tools
+## Command Tools (CLI)
 
 ### uigen: Generate UI for data input
 
@@ -105,6 +105,87 @@ $ ./opt.sh trans composition path_to_compo.json destination_folder
 ```
 
 > Note: the transformation of COMPOSITIONS between foramts relies on the file extension, only .xml or .json files are allowed.
+
+
+## Use as Java/Groovy library
+
+### Parse an openEHR Operational Template
+
+```groovy
+OperationalTemplate loadAndParse(String path)
+{
+   def parser = new OperationalTemplateParser()
+
+   def optFile = new File(getClass().getResource(path).toURI())
+   def text = optFile.getText()
+
+   return parser.parse(text)
+}
+```
+
+To add the atttributes that are in the openEHR Reference Model but are not in the source OPT file, use the method complete():
+
+```groovy
+def opt = loadAndParse("vital_signs.opt")
+opt.complete()
+```
+
+### Parse a JSON COMPOSITION
+
+```groovy
+String path = "vital_signs.json"
+File file = new File(getClass().getResource(path).toURI())
+String json = file.text
+def parser = new OpenEhrJsonParser()
+Composition c = (Composition)parser.parseJson(json)
+```
+
+### Serialize a COMPOSITION to JSON
+
+```groovy
+Composition compo = ...
+def serializer = new OpenEhrJsonSerializer()
+String json = serializer.serialize(compo)
+```
+
+### Parse a XML COMPOSITION
+
+```groovy
+String path = "vital_signs.xml"
+File file = new File(getClass().getResource(path).toURI())
+String xml = file.text
+def parser = new OpenEhrXmlParser()
+Composition c = (Composition)parser.parseXml(xml)
+```
+
+### Serialize a COMPOSITION to XML
+
+```groovy
+Composition compo = ...
+OpenEhrXmlSerializer marshal = new OpenEhrXmlSerializer()
+String xml = marshal.serialize(compo)
+```
+
+### Validate COMPOSITION against OPT
+
+```groovy
+// setup OPT repository
+String opt_repo_path = "opts"
+OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(opt_repo_path).toURI())
+OptManager opt_manager = OptManager.getInstance()
+opt_manager.init(repo)
+
+// load COMPOSITION
+Composition compo = ...
+
+// the validator automatically gets the tempalte from the repo based on the template_id in the COMPOSITION
+RmValidator validator = new RmValidator(opt_manager)
+RmValidationReport report = validator.dovalidate(compo, OptManager.DEFAULT_NAMESPACE)
+
+report.errors.each { error ->
+   println error
+}
+```
 
 
 [EHRCommitter]: https://github.com/ppazos/EHRCommitter
