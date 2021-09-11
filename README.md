@@ -187,6 +187,41 @@ report.errors.each { error ->
 }
 ```
 
+### Transform XML COMPOSITION to JSON
+
+```groovy
+String xml = ...
+def parser = new OpenEhrXmlParser()
+Composition c = (Composition)parser.parseXml(xml)
+def serializer = new OpenEhrJsonSerializer()
+String json = serializer.serialize(c)
+```
+
+### Transform JSON COMPOSITION to XML
+
+```groovy
+String json ...
+def parser = new OpenEhrJsonParser()
+Composition c = (Composition)parser.parseJson(json)
+def serializer = new OpenEhrXmlSerializer()
+String xml = serializer.serialize(c)
+```
+
+### Generate JSON COMPOSITION from OPT
+
+```groovy
+def opt = loadAndParse('vital_signs.opt')
+def igen = new JsonInstanceCanonicalGenerator2()
+String json = igen.generateJSONVersionStringFromOPT(opt, true, true)
+```
+
+### Generate XML COMPOSITION from OPT
+
+```groovy
+def opt = loadAndParse('vital_signs.opt')
+def igen = new XmlInstanceGenerator()
+String xml = igen.generateXMLCompositionStringFromOPT(opt, true)
+```
 
 [EHRCommitter]: https://github.com/ppazos/EHRCommitter
 [EHRServer]: https://github.com/ppazos/cabolabs-ehrserver
