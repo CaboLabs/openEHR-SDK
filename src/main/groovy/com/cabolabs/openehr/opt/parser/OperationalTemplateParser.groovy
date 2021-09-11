@@ -286,7 +286,7 @@ class OperationalTemplateParser {
             // name [ ‘(’ version ‘)’ ]
             def tid = node.terminology_id.value.text()
             
-            println "template parser terminology_id: "+ tid
+            //println "template parser terminology_id: "+ tid
 
             obn.terminologyId = tid
          }

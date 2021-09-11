@@ -52,7 +52,7 @@ class XmlInstanceGenerator {
    ]
 
    def XmlInstanceGenerator(
-      String datetime_format = "yyyy-MM-dd'T'HH:mm:ss,SSSZ",
+      String datetime_format = "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
       String date_format = "yyyy-MM-dd",
       String time_format = "HH:mm:ss")
    {

@@ -379,6 +379,7 @@ class Main {
    static def generateInstances(List opts, String destination_path, boolean withParticipations, int count, String generate)
    {
       def out, printer, igen, ins, ext = 'xml', file_number = 1
+      def dt
 
       opts.each { opt ->
 
@@ -424,7 +425,9 @@ class Main {
                ins = igen.generateXMLVersionStringFromOPT(opt)
             }
 
-            out = new File(destination_path + PS + (opt.templateId.replaceAll(' ', '_') +"_"+ file_number.toString().padLeft(6, '0') +'_'+ i +'.'+ ext))
+            dt = new java.text.SimpleDateFormat("yyyyMMddhhmmss").format(new Date())
+
+            out = new File(destination_path + PS + (opt.templateId.replaceAll(' ', '_') +"_"+ dt +"_"+ file_number.toString().padLeft(6, '0') +'_'+ i +'.'+ ext))
 
             // Generates UTF-8 XML output
             printer = new java.io.PrintWriter(out, 'UTF-8')
