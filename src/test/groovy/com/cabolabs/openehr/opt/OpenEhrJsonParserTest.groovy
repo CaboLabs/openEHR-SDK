@@ -269,11 +269,11 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       
       a.language = new CodePhrase()
       a.language.code_string = 'ES'
-      a.language.terminology_id = new TerminologyId(value:'LOCAL')
+      a.language.terminology_id = new TerminologyId(value:'ISO_639-1')
       
       a.encoding = new CodePhrase()
       a.encoding.code_string = 'UTF-8'
-      a.encoding.terminology_id = new TerminologyId(value:'LOCAL')
+      a.encoding.terminology_id = new TerminologyId(value:'IANA_character-sets')
       
       a.archetype_node_id = 'openEHR-EHR-ADMIN_ENTRY.test.v1'
       a.name = new DvText(value:'admin')

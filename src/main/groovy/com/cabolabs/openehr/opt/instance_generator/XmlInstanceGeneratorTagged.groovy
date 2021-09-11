@@ -766,7 +766,7 @@ class XmlInstanceGeneratorTagged {
       }
       builder.encoding() {
          terminology_id() {
-            value('Unicode')
+            value('IANA_character-sets')
          }
          code_string('UTF-8') // TODO: deberia salir de una config global
       }
