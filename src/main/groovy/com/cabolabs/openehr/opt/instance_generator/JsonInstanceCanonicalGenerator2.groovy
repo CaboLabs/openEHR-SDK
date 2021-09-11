@@ -900,10 +900,16 @@ class JsonInstanceCanonicalGenerator2 {
                value: DataGenerator.duration_value_from_pattern(c_duration.pattern)
             ]
          }
-         else
+         else if (c_duration.range)
          {
-            println "TODO: C_DURATION is range : "+ c_duration.range
-            // TBD: consider range
+            def any_limit = c_duration.range.lower ?: c_duration.range.upper
+            if (any_limit)
+            {
+               return [
+                  _type: 'DV_DURATION',
+                  value: any_limit.value
+               ]
+            }
          }
       }
 

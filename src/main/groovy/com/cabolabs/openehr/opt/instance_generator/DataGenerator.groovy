@@ -25,14 +25,17 @@ class DataGenerator {
             break
             case 'M':
                if (is_time)
-               gen += random.nextInt(60) + 'M'
+                  gen += random.nextInt(60) + 'M'
                else
-               gen += (util_date.getMonth()+1) + 'M'
+                  gen += (util_date.getMonth()+1) + 'M'
             break
             case 'D':
                gen += util_date.getDate() + 'D'
             break
-            case ['H', 'S']:
+            case 'H':
+               gen += random.nextInt(24) + c
+            break
+            case 'S':
                gen += random.nextInt(60) + c
             break
          }
