@@ -40,24 +40,24 @@
         "external_ref": {
             "id": {
                 "_type": "HIER_OBJECT_ID",
-                "value": "d1c22d41-314d-4882-9f1b-e24ccec2528c"
+                "value": "46da87f2-d711-45f1-afe3-9d9968dcd717"
             },
             "namespace": "DEMOGRAPHIC",
             "type": "PERSON"
         },
-        "name": "Dr. House"
+        "name": "Dr. Yamamoto"
     },
     "context": {
         "start_time": {
-            "value": "2021-09-07T02:52:22,831-0300"
+            "value": "2021-09-10T22:27:23,744-0300"
         },
         "setting": {
-            "value": "home",
+            "value": "emergency care",
             "defining_code": {
                 "terminology_id": {
                     "value": "openehr"
                 },
-                "code_string": "225"
+                "code_string": "227"
             }
         }
     },
@@ -102,7 +102,7 @@
                 "archetype_node_id": "at0001",
                 "origin": {
                     "_type": "DV_DATE_TIME",
-                    "value": "2021-09-07T02:52:22,908-0300"
+                    "value": "2021-09-10T22:27:23,785-0300"
                 },
                 "events": [
                     {
@@ -114,7 +114,7 @@
                         "archetype_node_id": "at0002",
                         "time": {
                             "_type": "DV_DATE_TIME",
-                            "value": "2021-09-07T02:52:22,913-0300"
+                            "value": "2021-09-10T22:27:23,789-0300"
                         },
                         "data": {
                             "_type": "ITEM_TREE",
@@ -133,7 +133,7 @@
                                     "archetype_node_id": "at0004",
                                     "value": {
                                         "_type": "DV_TEXT",
-                                        "value": "qVPnQmJKcbkwqfsbuUwLwTjpjucwrvbxCwfmuNOjYOnp serevfShbunfizPLLeS UCxtciAtqEGaiCwBHJQiDVWzeAKHzYtExiRQHs,,awzIEXPJUbsuwBbmgui,edtyIJIjNLEloSOAP,ZtdgPqcuWmMqmYjWtwKQ,evjdhrRyQhbZZQiBbpVcDXJWcP,yXfUuxjxLdrZDilQsiHTGVsBMzW.Qx,ZUkMmiyoEuWmiNM.RhsWE DKNnyQa,DrX"
+                                        "value": "xeoIFiXjQajUgJFVYbWjFIPL VhBfSjCvcLJymaTfuQBX,fowmwqjcuhhzwPkUFpVkWfn.rxlb DkyGTCKgkrLogAnICChAdUhkMfheeVKYrMWsYYRszBKYckOompslsUCaIjgplzNFrxTkuJdCycuTEkwoHlLf,ODgkTZgo fahlTkwKMNdF,blSEhoCt,DgKrSkJUz gKisGbWqXjwKFRdU u.MaBmdnAGkX.cKXbQ.bCenemaGWNCFCLBVTv"
                                     }
                                 },
                                 {
@@ -163,12 +163,12 @@
                                     "archetype_node_id": "at0006",
                                     "value": {
                                         "_type": "DV_CODED_TEXT",
-                                        "value": "GYBdmZvPROBIplLoKEazoHKJSyHcpC",
+                                        "value": "hXMvgtqxctcXoH.TreaMGgzsdAlJHU",
                                         "defining_code": {
                                             "terminology_id": {
                                                 "value": "terminology_not_specified_as_constraint_or_referenceSetUri_in_opt"
                                             },
-                                            "code_string": "1005075"
+                                            "code_string": "1007952"
                                         }
                                     }
                                 },
@@ -181,7 +181,7 @@
                                     "archetype_node_id": "at0010",
                                     "value": {
                                         "_type": "DV_QUANTITY",
-                                        "magnitude": 29.0,
+                                        "magnitude": 37.7,
                                         "units": "\u00b0C"
                                     }
                                 },
@@ -194,7 +194,7 @@
                                     "archetype_node_id": "at0011",
                                     "value": {
                                         "_type": "DV_COUNT",
-                                        "magnitude": 28
+                                        "magnitude": 49
                                     }
                                 },
                                 {
@@ -206,7 +206,7 @@
                                     "archetype_node_id": "at0012",
                                     "value": {
                                         "_type": "DV_DATE_TIME",
-                                        "value": "2021-09-07T02:52:23,060-0300"
+                                        "value": "2021-09-10T22:27:23,881-0300"
                                     }
                                 },
                                 {
@@ -251,7 +251,7 @@
                                     "archetype_node_id": "at0018",
                                     "value": {
                                         "_type": "DV_DURATION",
-                                        "value": "PT30M"
+                                        "value": "PT3H24M37S"
                                     }
                                 },
                                 {
@@ -267,11 +267,11 @@
                                         "upper_included": true,
                                         "lower": {
                                             "_type": "DV_COUNT",
-                                            "magnitude": 6
+                                            "magnitude": 3
                                         },
                                         "upper": {
                                             "_type": "DV_COUNT",
-                                            "magnitude": 86
+                                            "magnitude": 61
                                         },
                                         "lower_unbounded": false,
                                         "upper_unbounded": false
@@ -290,12 +290,12 @@
                                         "upper_included": true,
                                         "lower": {
                                             "_type": "DV_QUANTITY",
-                                            "magnitude": 537.3,
+                                            "magnitude": 943.3,
                                             "units": "mg"
                                         },
                                         "upper": {
                                             "_type": "DV_QUANTITY",
-                                            "magnitude": 583.8,
+                                            "magnitude": 910.4,
                                             "units": "mg"
                                         },
                                         "lower_unbounded": false,
@@ -315,11 +315,11 @@
                                         "upper_included": true,
                                         "lower": {
                                             "_type": "DV_DATE_TIME",
-                                            "value": "2021-09-07T02:52:23,088-0300"
+                                            "value": "2021-09-10T22:27:23,922-0300"
                                         },
                                         "upper": {
                                             "_type": "DV_DATE_TIME",
-                                            "value": "2021-09-07T02:52:23,090-0300"
+                                            "value": "2021-09-10T22:27:23,924-0300"
                                         },
                                         "lower_unbounded": false,
                                         "upper_unbounded": false
@@ -377,8 +377,8 @@
                                     "archetype_node_id": "at0024",
                                     "value": {
                                         "_type": "DV_PROPORTION",
-                                        "numerator": 570.7,
-                                        "denominator": 490.8,
+                                        "numerator": 520.2,
+                                        "denominator": 449.7,
                                         "type": 0
                                     }
                                 },
@@ -419,7 +419,7 @@
                                     "archetype_node_id": "at0028",
                                     "value": {
                                         "_type": "DV_DATE",
-                                        "value": "2021-09-07"
+                                        "value": "2021-09-10"
                                     }
                                 }
                             ]

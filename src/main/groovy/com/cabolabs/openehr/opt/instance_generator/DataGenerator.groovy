@@ -1,5 +1,7 @@
 package com.cabolabs.openehr.opt.instance_generator
 
+import com.cabolabs.openehr.opt.model.IntervalDuration
+
 class DataGenerator {
    
    // Generates DV_DURATION.value expression
@@ -42,5 +44,32 @@ class DataGenerator {
       }
 
       return gen
+   }
+
+   // returns a duration expression that is in the provided interval
+   static String duration_in_interval(IntervalDuration ivd)
+   {
+      Long l_limit_seconds = 0 // avoid negative durations
+      Long u_limit_seconds  = Long.MAX_VALUE
+
+      if (!ivd.lowerUnbounded)
+      {
+         l_limit_seconds = ivd.lower.seconds()
+      }
+
+      if (!ivd.upperUnbounded)
+      {
+         u_limit_seconds = ivd.upper.seconds()
+      }
+
+      // if the lower is not included, take the next second
+      if (!ivd.lowerIncluded) l_limit_seconds++
+
+      // random generates including the lower and excluding the upper
+      def rnd = new java.util.concurrent.ThreadLocalRandom()
+      Long value = rnd.nextLong(l_limit_seconds, u_limit_seconds)
+
+      // NOTE: java duration only supports time
+      return java.time.Duration.ofSeconds(value).toString()
    }
 }

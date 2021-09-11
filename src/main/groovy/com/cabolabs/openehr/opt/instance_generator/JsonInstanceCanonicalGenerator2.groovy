@@ -894,28 +894,25 @@ class JsonInstanceCanonicalGenerator2 {
          if (c_duration.pattern)
          {
             //println c_duration.pattern // PDTMS
-
             return [
                _type: 'DV_DURATION',
                value: DataGenerator.duration_value_from_pattern(c_duration.pattern)
             ]
          }
-         else if (c_duration.range)
+         
+         if (c_duration.range)
          {
-            def any_limit = c_duration.range.lower ?: c_duration.range.upper
-            if (any_limit)
-            {
-               return [
-                  _type: 'DV_DURATION',
-                  value: any_limit.value
-               ]
-            }
+            return [
+               _type: 'DV_DURATION',
+               value: DataGenerator.duration_in_interval(c_duration.range)
+            ]
          }
       }
 
+      // No constraint, return hardcoded
       [
          _type: 'DV_DURATION',
-         value: 'PT30M' // TODO: Duration String generator
+         value: 'PT30M'
       ]
    }
 

@@ -986,17 +986,16 @@ class XmlInstanceGenerator {
                value(DataGenerator.duration_value_from_pattern(c_duration.pattern))
             }
          }
-         else
+         else if (c_duration.range)
          {
-            println c_duration.range
-            // TBD: consider range
             builder."${a.rmAttributeName}"('xsi:type':'DV_DURATION') {
-            value('PT30M')
-         }
+               value(DataGenerator.duration_in_interval(c_duration.range))
+            }
          }
       }
       else
       {
+         // No constraint, return hardcoded
          builder."${a.rmAttributeName}"('xsi:type':'DV_DURATION') {
             value('PT30M')
          }

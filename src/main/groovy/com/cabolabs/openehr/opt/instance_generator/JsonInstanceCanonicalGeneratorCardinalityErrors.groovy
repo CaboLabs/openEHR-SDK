@@ -949,22 +949,25 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
          if (c_duration.pattern)
          {
             //println c_duration.pattern // PDTMS
-
             return [
                _type: 'DV_DURATION',
                value: DataGenerator.duration_value_from_pattern(c_duration.pattern)
             ]
          }
-         else
+         
+         if (c_duration.range)
          {
-            println c_duration.range
-            // TBD: consider range
+            return [
+               _type: 'DV_DURATION',
+               value: DataGenerator.duration_in_interval(c_duration.range)
+            ]
          }
       }
 
+      // No constraint, return hardcoded
       [
          _type: 'DV_DURATION',
-         value: 'PT30M' // TODO: Duration String generator
+         value: 'PT30M'
       ]
    }
 
