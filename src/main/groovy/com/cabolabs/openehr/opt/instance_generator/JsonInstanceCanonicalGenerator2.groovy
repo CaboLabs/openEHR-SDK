@@ -148,7 +148,7 @@ class JsonInstanceCanonicalGenerator2 {
          ],
          commit_audit: [
             _type: 'AUDIT_DETAILS', // TODO: support ATTESTATION
-            system_id: 'CABOLABS_EHR', // TODO: make it configurable
+            system_id: 'CABOLABS_EHRSERVER', // TODO: make it configurable
             time_committed: [
                value: new Date().toOpenEHRDateTime()
             ],
@@ -550,15 +550,10 @@ class JsonInstanceCanonicalGenerator2 {
       </value>
       */
       AttributeNode a = o.parent
-      /* [
-         "${a.rmAttributeName}": [
-            _type: 'DV_TEXT',
-            value: String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 255 ) // TODO: improve using word / phrase dictionary
-         ]
-      ] */
+
       [
          _type: 'DV_TEXT',
-         value: String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 255 ) // TODO: improve using word / phrase dictionary
+         value: String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 300 ) // TODO: improve using word / phrase dictionary
       ]
    }
 
@@ -729,20 +724,31 @@ class JsonInstanceCanonicalGenerator2 {
       </value>
       */
       AttributeNode a = o.parent
-      /* [
-         "${a.rmAttributeName}": [
-            _type: 'DV_PARSABLE',
-            // TODO: consider formalisms from OPT to generate a valid value, hardcoded for now.
-            value: '20170629',
-            formalism: 'ISO8601'
-         ]
-      ] */
-      [
+ 
+      def out = [
          _type: 'DV_PARSABLE',
-         // TODO: consider formalisms from OPT to generate a valid value, hardcoded for now.
+         // TODO: the value should depend on the formalism, we need to have generators to common formalisms
          value: '20170629',
          formalism: 'ISO8601'
       ]
+
+      def c_formalism = o.attributes.find{ it.rmAttributeName == 'formalism' }
+      if (c_formalism)
+      {
+         def primitive = c_formalism.children[0]
+         if (primitive)
+         {
+            if (primitive.item instanceof com.cabolabs.openehr.opt.model.primitive.CString)
+            {
+               if (primitive.item.list)
+               {
+                  out.formalism = primitive.item.list[0]
+               }
+            }
+         }
+      }
+
+      return out
    }
 
    private generate_DV_PROPORTION(ObjectNode o, String parent_arch_id)
@@ -1005,7 +1011,7 @@ class JsonInstanceCanonicalGenerator2 {
       AttributeNode a = o.parent
       [
          _type: 'DV_URI',
-         value: 'http://cabolabs.com' // TODO: consider the constraints to generate the URI
+         value: 'https://cabolabs.com' // TODO: consider the constraints to generate the URI
       ]
    }
 
@@ -1644,103 +1650,35 @@ class JsonInstanceCanonicalGenerator2 {
          _type: 'DV_INTERVAL' // removed <DV_COUNT> generics because of https://discourse.openehr.org/t/correct-use-of-generic-types-in-xml-and-json/1504/16
       ]
 
-      // default included limits
-      mobj.lower_included = true
-      mobj.upper_included = true
-
-      // Need to ask for the attributes explicitly since order matters for the XSD
-
-      def lower = o.attributes.find { it.rmAttributeName == 'lower' }
-      mobj.lower = [
-         _type: 'DV_COUNT',
-         magnitude: Integer.random(10, 1) // TODO: consider constraints
-      ]
-
-      def upper = o.attributes.find { it.rmAttributeName == 'upper' }
-      mobj.upper = [
-         _type: 'DV_COUNT',
-         magnitude: Integer.random(100, 10) // TODO: consider constraints
-      ]
-
-      // lower_unbounded and upper_unbounded are required
-      // lower_unbounded: no constraint is defined for upper or lower.lower is not defined
-      // upper_unbounded: no constraint is defined for upper or upper.upper is not defined
-
-      def ccount
-      def attr_magnitude
-      def cprimitive
-      def cint
+      def attrs = ['lower', 'upper']
       
-      if (!lower)
-      {
-         mobj.lower_unbounded = true
-         mobj.lower_included = false
-      }
-      else
-      {
-         ccount = lower.children[0]
-         if (!ccount)
-         {
-            mobj.lower_unbounded = true
-         }
-         else
-         {
-            attr_magnitude = ccount.attributes[0]
-            if (!attr_magnitude)
-            {
-               mobj.lower_unbounded = true
-            }
-            else
-            {
-               cprimitive = attr_magnitude.children[0]
-               cint = cprimitive.item
+      // default included limits
+      mobj.lower_included = false
+      mobj.upper_included = false
+      mobj.lower_unbounded = true
+      mobj.upper_unbounded = true
 
-               if (cint.range && !cint.range.lowerUnbounded)
-               {
-                  mobj.lower_unbounded = false
-               }
-               else
-               {
-                  mobj.lower_unbounded = true
-               }
+      attrs.each { attr ->
+
+         def c_attr = o.attributes.find { it.rmAttributeName == attr }
+         if (c_attr)
+         {
+            mobj."${attr}" = generate_DV_COUNT(c_attr.children[0], parent_arch_id)
+
+            if (mobj."${attr}")
+            {
+               mobj."${attr}_included" = true
+               mobj."${attr}_unbounded" = false
             }
          }
       }
 
-      if (!upper)
+      // lower < upper
+      if (mobj.lower && mobj.upper && mobj.lower.magnitude > mobj.upper.magnitude)
       {
-         mobj.upper_unbounded = true
-         mobj.upper_included = false
-      }
-      else
-      {
-         ccount = upper.children[0]
-         if (!ccount)
-         {
-            mobj.upper_unbounded = true
-         }
-         else
-         {
-            attr_magnitude = ccount.attributes[0]
-            if (!attr_magnitude)
-            {
-               mobj.upper_unbounded = true
-            }
-            else
-            {
-               cprimitive = attr_magnitude.children[0]
-               cint = cprimitive.item
-
-               if (cint.range && !cint.range.upperUnbounded)
-               {
-                  mobj.upper_unbounded = false
-               }
-               else
-               {
-                  mobj.upper_unbounded = true
-               }
-            }
-         }
+         def tmp = mobj.lower
+         mobj.lower = mobj.upper
+         mobj.upper = tmp
       }
       
       return mobj
@@ -1751,66 +1689,46 @@ class JsonInstanceCanonicalGenerator2 {
       def mobj = [
          _type: 'DV_INTERVAL' // removed <DV_QUANTITY> generics because of https://discourse.openehr.org/t/correct-use-of-generic-types-in-xml-and-json/1504/16
       ]
+
+      def attrs = ['lower', 'upper']
       
       // default included limits
-      mobj.lower_included = true
-      mobj.upper_included = true
+      mobj.lower_included = false
+      mobj.upper_included = false
+      mobj.lower_unbounded = true
+      mobj.upper_unbounded = true
 
-      def lower = o.attributes.find { it.rmAttributeName == 'lower' } // FIXME: lower could be null
-      mobj.lower = generate_DV_QUANTITY(lower.children[0], parent_arch_id)
+      attrs.each { attr ->
 
-      def upper = o.attributes.find { it.rmAttributeName == 'upper' } // FIXME: upper could be null
-      mobj.upper = generate_DV_QUANTITY(upper.children[0], parent_arch_id)
+         def c_attr = o.attributes.find { it.rmAttributeName == attr }
+         if (c_attr)
+         {
+            mobj."${attr}" = generate_DV_QUANTITY(c_attr.children[0], parent_arch_id)
 
-      // lower_unbounded and upper_unbounded are required
-      // for tagged DV_INTERVALs the only way to check this,
-      // since the boundaries depend on the constraint for a
-      // specific unit, is to check if all units have min or max
-      // boundaries, if all have, that will bounded, if some don't
-      // have, that will be unbounded.
-      // Also, if there are no constraints (empty list), both limits
-      // will be unbounde
+            if (mobj."${attr}") mobj."${attr}_included" = true
 
-      // lower
-      def cqty = lower.children[0] // CDvQuantity
+            def cqty = c_attr.children[0] // CDvQuantity
 
-      if (!cqty.list)
-      {
-         mobj.lower_unbounded = true
-         mobj.lower_included = false
-      }
-      else
-      {
-         // if one lower limit is unbounded, then the tagged will be unbounded
-         def lowerUnbounded = false
-         cqty.list.each { cqitem->
-            if (cqitem.magnitude.lowerUnbounded)
+            if (cqty.list)
             {
-               lowerUnbounded = true
+               def unbounded = false
+               cqty.list.each { cqitem->
+                  if (cqitem.magnitude."${attr}Unbounded") // lower/upper Unbounded
+                  {
+                     unbounded = true
+                  }
+               }
+               mobj."${attr}_unbounded" = unbounded
             }
          }
-         mobj.lower_unbounded = lowerUnbounded
       }
 
-      // upper
-      cqty = upper.children[0]
-
-      if (!cqty.list)
+      // lower < upper
+      if (mobj.lower && mobj.upper && mobj.lower.magnitude > mobj.upper.magnitude)
       {
-         mobj.upper_unbounded = true
-         mobj.upper_included = false
-      }
-      else
-      {
-         // if one upper limit is unbounded, then the tagged will be unbounded
-         def upperUnbounded = false
-         cqty.list.each { cqitem->
-            if (cqitem.magnitude.upperUnbounded)
-            {
-               upperUnbounded = true
-            }
-         }
-         mobj.upper_unbounded = upperUnbounded
+         def tmp = mobj.lower
+         mobj.lower = mobj.upper
+         mobj.upper = tmp
       }
       
       return mobj
@@ -1822,19 +1740,36 @@ class JsonInstanceCanonicalGenerator2 {
          _type: 'DV_INTERVAL' // removed <DV_DATE_TIME> generics because of https://discourse.openehr.org/t/correct-use-of-generic-types-in-xml-and-json/1504/16
       ]
 
-      mobj.lower_included = true
-      mobj.upper_included = true
+      def attrs = ['lower', 'upper']
+      
+      // default included limits
+      mobj.lower_included = false
+      mobj.upper_included = false
+      mobj.lower_unbounded = true
+      mobj.upper_unbounded = true
 
-      def lower = o.attributes.find { it.rmAttributeName == 'lower' }
-      mobj << generate_attr_DV_DATE_TIME(lower.rmAttributeName) // contains the attr name, that is why we use <<
+      attrs.each { attr ->
 
-      def upper = o.attributes.find { it.rmAttributeName == 'upper' }
-      mobj << generate_attr_DV_DATE_TIME(upper.rmAttributeName)
+         def c_attr = o.attributes.find { it.rmAttributeName == attr }
+         if (c_attr)
+         {
+            mobj << generate_attr_DV_DATE_TIME(attr)
 
-      // there are no constraints for date time to establish unbounded,
-      // so it is always bounded for both limits
-      mobj.lower_unbounded = false
-      mobj.upper_unbounded = false
+            if (mobj."${attr}")
+            {
+               mobj."${attr}_included" = true
+               mobj."${attr}_unbounded" = true
+            }
+         }
+      }
+
+      // lower < upper
+      if (mobj.lower && mobj.upper && mobj.lower.value > mobj.upper.value)
+      {
+         def tmp = mobj.lower
+         mobj.lower = mobj.upper
+         mobj.upper = tmp
+      }
 
       return mobj
    }

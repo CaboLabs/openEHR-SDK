@@ -69,7 +69,7 @@ class DataGenerator {
       def rnd = new java.util.concurrent.ThreadLocalRandom()
       Long value = rnd.nextLong(l_limit_seconds, u_limit_seconds)
 
-      // NOTE: java duration only supports time
+      // NOTE: this only outputs time
       return java.time.Duration.ofSeconds(value).toString()
    }
 }
