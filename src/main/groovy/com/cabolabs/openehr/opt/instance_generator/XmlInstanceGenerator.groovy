@@ -22,9 +22,10 @@ class XmlInstanceGenerator {
 
    def terminology
 
-   // Formats
-   def datetime_format = "yyyy-MM-dd'T'HH:mm:ss.sssZ" // https://www.w3.org/TR/xmlschema-2/#dateTime
-   def formatter = new SimpleDateFormat( datetime_format )
+   // Formats: https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html
+   String datetime_format = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX" // https://www.w3.org/TR/xmlschema-2/#dateTime
+   String date_format = "yyyy-MM-dd"
+   String time_format = "HH:mm:ss"
 
    Random random_gen = new Random()
 
@@ -51,10 +52,7 @@ class XmlInstanceGenerator {
       [name: 'Daniel Duncan', function: 'companion', relationship: [rubric:'bother', code:'23']]
    ]
 
-   def XmlInstanceGenerator(
-      String datetime_format = "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
-      String date_format = "yyyy-MM-dd",
-      String time_format = "HH:mm:ss")
+   def XmlInstanceGenerator()
    {
       writer = new StringWriter()
       builder = new MarkupBuilder(writer)
@@ -337,7 +335,7 @@ class XmlInstanceGenerator {
          
          builder.context() {
             start_time() {
-               value( formatter.format(new Date()) )
+               value( new Date().toOpenEHRDateTime() )
             }
             setting() {
                value(setting_entry.value)

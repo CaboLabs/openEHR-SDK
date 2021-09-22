@@ -47,7 +47,7 @@ class JsonInstanceCanonicalGenerator2 {
    ]
 
    def JsonInstanceCanonicalGenerator2(
-      String datetime_format = "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+      String datetime_format = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX",
       String date_format = "yyyy-MM-dd",
       String time_format = "HH:mm:ss")
    {
@@ -64,9 +64,6 @@ class JsonInstanceCanonicalGenerator2 {
       */
 
       //builder = new JsonBuilder()
-
-      //this.datetime_format = datetime_format
-     // this.datetime_formatter = new SimpleDateFormat(datetime_format)
 
       out = [:]
 
