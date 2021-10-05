@@ -1,8 +1,8 @@
-import com.cabolabs.openehr.opt.instance_validation.XmlInstanceValidation
+import com.cabolabs.openehr.opt.instance_validation.XmlValidation
 
 def parser = new XmlSlurper(false, false)
 
-def validator = new XmlInstanceValidation('xsd'+ File.separator + 'Version.xsd')
+def validator = new XmlValidation('xsd'+ File.separator + 'Version.xsd')
 def doc
 
 // Recorre todos los archivos generador en /documents

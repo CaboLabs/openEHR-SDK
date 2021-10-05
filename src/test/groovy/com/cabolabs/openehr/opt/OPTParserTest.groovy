@@ -10,7 +10,7 @@ import com.cabolabs.openehr.opt.model.domain.*
 import com.cabolabs.openehr.opt.manager.*
 import com.cabolabs.openehr.opt.instance_generator.*
 import com.cabolabs.openehr.terminology.TerminologyParser
-import com.cabolabs.openehr.opt.instance_validation.XmlInstanceValidation
+import com.cabolabs.openehr.opt.instance_validation.XmlValidation
 import com.cabolabs.openehr.opt.instance_generator.*
 import com.cabolabs.openehr.opt.serializer.*
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Element
@@ -555,7 +555,7 @@ class OPTParserTest extends GroovyTestCase {
 
    void testValidacionXSD1()
    {
-      def validator = new XmlInstanceValidation(getClass().getResourceAsStream(File.separator + 'xsd'+ File.separator + 'Version.xsd'))
+      def validator = new XmlValidation(getClass().getResourceAsStream(File.separator + 'xsd'+ File.separator + 'Version.xsd'))
 
       // Recorre todos los archivos generador en /documents
       new File('documents' + File.separator).eachFileMatch(~/.*.xml/) { xml ->

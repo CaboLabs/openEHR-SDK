@@ -2,7 +2,7 @@ package com.cabolabs.openehr.opt
 
 import com.cabolabs.openehr.formats.OpenEhrXmlParser
 import com.cabolabs.openehr.formats.OpenEhrXmlSerializer
-import com.cabolabs.openehr.opt.instance_validation.XmlInstanceValidation
+import com.cabolabs.openehr.opt.instance_validation.XmlValidation
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.rm_1_0_2.composition.EventContext

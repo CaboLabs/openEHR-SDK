@@ -14,7 +14,7 @@ import java.io.InputStream
 
 import groovy.util.slurpersupport.GPathResult
 
-class XmlInstanceValidation {
+class XmlValidation {
 
    def errors = []
    def xsdPath
@@ -22,13 +22,13 @@ class XmlInstanceValidation {
    
    Schema schema
    
-   def XmlInstanceValidation(String path_to_xsd)
+   def XmlValidation(String path_to_xsd)
    {
       xsdPath = path_to_xsd
       init()
    }
    
-   def XmlInstanceValidation(InputStream xsd_as_stream)
+   def XmlValidation(InputStream xsd_as_stream)
    {
       xsdStream = xsd_as_stream
       init()

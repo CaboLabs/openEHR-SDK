@@ -175,4 +175,9 @@ class OptRepositoryFSImpl implements OptRepository {
       addTrailingSeparator(namespace) +
       templateId + '.opt'
    }
+
+   String getRepoLocation()
+   {
+      this.repoLocation
+   }
 }

@@ -8,7 +8,7 @@ import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.opt.manager.*
 import com.cabolabs.openehr.opt.instance_generator.*
 import com.cabolabs.openehr.terminology.TerminologyParser
-import com.cabolabs.openehr.opt.instance_validation.XmlInstanceValidation
+import com.cabolabs.openehr.opt.instance_validation.XmlValidation
 
 class OPTManagerTest extends GroovyTestCase {
 

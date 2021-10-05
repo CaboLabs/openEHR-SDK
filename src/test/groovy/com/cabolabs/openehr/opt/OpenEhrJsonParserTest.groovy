@@ -4,7 +4,7 @@ import com.cabolabs.openehr.formats.OpenEhrJsonParser
 import com.cabolabs.openehr.formats.OpenEhrXmlSerializer
 import com.cabolabs.openehr.formats.OpenEhrJsonSerializer
 
-import com.cabolabs.openehr.opt.instance_validation.XmlInstanceValidation
+import com.cabolabs.openehr.opt.instance_validation.XmlValidation
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.rm_1_0_2.composition.EventContext
@@ -305,7 +305,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       
       // validate xml
       def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
-      def validator = new XmlInstanceValidation(inputStream)
+      def validator = new XmlValidation(inputStream)
       assert validateXMLInstance(validator, xml)
    }
    
@@ -326,7 +326,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       
       // validate xml
       def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
-      def validator = new XmlInstanceValidation(inputStream)
+      def validator = new XmlValidation(inputStream)
       assert validateXMLInstance(validator, xml)
    }
    
@@ -347,7 +347,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      
       // validate xml
       def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
-      def validator = new XmlInstanceValidation(inputStream)
+      def validator = new XmlValidation(inputStream)
       assert validateXMLInstance(validator, xml)
    }
    
@@ -367,7 +367,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
-     def validator = new XmlInstanceValidation(inputStream)
+     def validator = new XmlValidation(inputStream)
      assert validateXMLInstance(validator, xml)
    }
    
@@ -387,7 +387,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
-     def validator = new XmlInstanceValidation(inputStream)
+     def validator = new XmlValidation(inputStream)
      assert validateXMLInstance(validator, xml)
    }
    
@@ -408,7 +408,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
-     def validator = new XmlInstanceValidation(inputStream)
+     def validator = new XmlValidation(inputStream)
      assert validateXMLInstance(validator, xml)
    }
    
@@ -428,7 +428,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
-     def validator = new XmlInstanceValidation(inputStream)
+     def validator = new XmlValidation(inputStream)
      assert validateXMLInstance(validator, xml)
    }
 
@@ -448,7 +448,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
-     def validator = new XmlInstanceValidation(inputStream)
+     def validator = new XmlValidation(inputStream)
      assert validateXMLInstance(validator, xml)
    }
 
@@ -468,7 +468,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
-     def validator = new XmlInstanceValidation(inputStream)
+     def validator = new XmlValidation(inputStream)
      assert validateXMLInstance(validator, xml)
    }
    
@@ -488,7 +488,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
-     def validator = new XmlInstanceValidation(inputStream)
+     def validator = new XmlValidation(inputStream)
      assert validateXMLInstance(validator, xml)
    }
    
@@ -508,7 +508,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
-     def validator = new XmlInstanceValidation(inputStream)
+     def validator = new XmlValidation(inputStream)
      assert validateXMLInstance(validator, xml)
    }
    
@@ -528,7 +528,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
-     def validator = new XmlInstanceValidation(inputStream)
+     def validator = new XmlValidation(inputStream)
      assert validateXMLInstance(validator, xml)
    }
    
@@ -554,7 +554,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
-     def validator = new XmlInstanceValidation(inputStream)
+     def validator = new XmlValidation(inputStream)
      assert validateXMLInstance(validator, xml)
    }
    
@@ -574,7 +574,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
-     def validator = new XmlInstanceValidation(inputStream)
+     def validator = new XmlValidation(inputStream)
      assert validateXMLInstance(validator, xml)
    }
    

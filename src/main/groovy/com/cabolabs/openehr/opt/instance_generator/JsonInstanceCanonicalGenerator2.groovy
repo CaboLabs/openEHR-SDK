@@ -1710,7 +1710,9 @@ class JsonInstanceCanonicalGenerator2 {
             {
                def unbounded = false
                cqty.list.each { cqitem->
-                  if (cqitem.magnitude."${attr}Unbounded") // lower/upper Unbounded
+                  // could be a list of units without magniture
+                  // lower/upper Unbounded
+                  if (!cqitem.magnitude || cqitem.magnitude."${attr}Unbounded")
                   {
                      unbounded = true
                   }

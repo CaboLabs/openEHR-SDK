@@ -288,6 +288,8 @@ class XmlInstanceGenerator {
          code_string('UY') // TODO: deberia salir de una config global o de parametros
       }
 
+      println opt.getNodes('/category/defining_code')
+
       // path is to attr, codeList is in the node
       def category_code = opt.getNodes('/category/defining_code')[0].codeList[0]
 
@@ -1765,7 +1767,7 @@ class XmlInstanceGenerator {
             // if one lower limit is unbounded, then the tagged will be unbounded
             def lowerUnbounded = false
             cqty.list.each { cqitem->
-               if (cqitem.magnitude.lowerUnbounded)
+               if (!cqitem.magnitude || cqitem.magnitude.lowerUnbounded) // could be a list of units without magniture
                {
                   lowerUnbounded = true
                }
@@ -1785,7 +1787,7 @@ class XmlInstanceGenerator {
             // if one upper limit is unbounded, then the tagged will be unbounded
             def upperUnbounded = false
             cqty.list.each { cqitem->
-               if (cqitem.magnitude.upperUnbounded)
+               if (!cqitem.magnitude || cqitem.magnitude.lowerUnbounded) // could be a list of units without magniture
                {
                   upperUnbounded = true
                }

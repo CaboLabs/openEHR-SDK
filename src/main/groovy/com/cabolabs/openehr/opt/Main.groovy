@@ -1,6 +1,6 @@
 package com.cabolabs.openehr.opt
 
-import com.cabolabs.openehr.opt.instance_validation.XmlInstanceValidation
+import com.cabolabs.openehr.opt.instance_validation.XmlValidation
 import com.cabolabs.openehr.opt.ui_generator.OptUiGenerator
 import com.cabolabs.openehr.opt.instance_generator.*
 import com.cabolabs.openehr.opt.parser.*
@@ -122,11 +122,31 @@ class Main {
             generateInstances(opts, destination_path, with_participations, count, generate)
             
          break
+         case 'optval':
+            def inputStream = this.getClass().getResourceAsStream('/xsd/OperationalTemplateExtra.xsd')
+            def validator = new XmlValidation(inputStream)
+
+            if (args.size() < 2)
+            {
+               println 'usage: opt optval path_to_opt'
+               System.exit(0)
+            }
+
+            def path = args[1]
+            def f = new File(path)
+            if (!f.exists())
+            {
+               println path +" doesn't exist"
+               System.exit(0)
+            }
+
+            validateXML(validator, f)
+         break
          case 'inval':
 
             // Read XSD from JAR as a resource
             def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
-            def validator = new XmlInstanceValidation(inputStream)
+            def validator = new XmlValidation(inputStream)
 
             // JSON Schema validation, loads the schema internally
             def jsonValidator = new JsonInstanceValidation()
@@ -150,7 +170,7 @@ class Main {
             {
                f.eachFileMatch(~/.*.xml/) { xml ->
 
-                 validateXMLInstance(validator, xml)
+                 validateXML(validator, xml)
                }
 
                f.eachFileMatch(~/.*.json/) { json ->
@@ -167,7 +187,7 @@ class Main {
                }
                else if (ext == 'xml')
                {
-                  validateXMLInstance(validator, f)
+                  validateXML(validator, f)
                }
                else
                {
@@ -342,8 +362,9 @@ class Main {
       println ""
    }
 
-   static void validateXMLInstance(validator, file)
+   static boolean validateXML(validator, file)
    {
+      boolean isValid = true
       if (!validator.validate( file.text ))
       {
          println file.name +' NOT VALID'
@@ -352,6 +373,7 @@ class Main {
             println it
          }
          println '====================================='
+         isValid = false
       }
       else
       {
@@ -359,6 +381,7 @@ class Main {
       }
       
       println ""
+      return isValid
    }
 
    static OperationalTemplate loadAndParse(String path)
@@ -367,10 +390,20 @@ class Main {
 
       if (!optFile.exists()) throw new java.io.FileNotFoundException(path)
 
+      def inputStream = this.getClass().getResourceAsStream('/xsd/OperationalTemplateExtra.xsd')
+      def validator = new XmlValidation(inputStream)
+
+      if (!validateXML(validator, optFile))
+      {
+         System.exit(1)
+      }
+
       def text = optFile.getText()
 
       assert text != null
       assert text != ''
+
+      // FIXME: validate OPT against schema
 
       def parser = new OperationalTemplateParser()
       return parser.parse( text )

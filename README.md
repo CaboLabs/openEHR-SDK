@@ -109,6 +109,45 @@ $ ./opt.sh trans composition path_to_compo.json destination_folder
 
 ## Use as Java/Groovy library
 
+### Validate an openEHR Operational Template against it's schema
+
+```groovy
+def inputStream = this.getClass().getResourceAsStream('/xsd/OperationalTemplateExtra.xsd')
+def validator = new XmlValidation(inputStream)
+
+def path = "someopt.opt"
+def f = new File(path)
+if (!f.exists())
+{
+   println path +" doesn't exist"
+   System.exit(0)
+}
+
+validateXML(validator, f)
+
+static boolean validateXML(validator, file)
+{
+   boolean isValid = true
+   if (!validator.validate( file.text ))
+   {
+      println file.name +' NOT VALID'
+      println '====================================='
+      validator.errors.each {
+         println it
+      }
+      println '====================================='
+      isValid = false
+   }
+   else
+   {
+      println file.name +' VALID'
+   }
+   
+   println ""
+   return isValid
+}
+```
+
 ### Parse an openEHR Operational Template
 
 ```groovy

@@ -1,6 +1,6 @@
-import com.cabolabs.openehr.opt.instance_validation.XmlInstanceValidation
+import com.cabolabs.openehr.opt.instance_validation.XmlValidation
 
-def validator = new XmlInstanceValidation('xsd'+ File.separator + 'Version.xsd')
+def validator = new XmlValidation('xsd'+ File.separator + 'Version.xsd')
 
 // Recorre todos los archivos generador en /documents
 new File('documents' + File.separator).eachFileMatch(~/.*.xml/) { xml ->
