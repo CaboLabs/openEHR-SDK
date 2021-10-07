@@ -272,23 +272,25 @@ class OperationalTemplateParser {
             obn.reference = node.reference.text()
          }
 
-         // list is not present on C_CODE_REFERENCE
+
+         // FIXME: if the terminology_id doesn't comply with the opnEHR format, it should fail
+         // SEE: https://gist.github.com/ppazos/7fcb12866095b399890fc5165fb51805
+
+         // parse terminologyID value, we could create CODE_PHRASE and parse this internally
+         // name [ ‘(’ version ‘)’ ]
+         def tid = node.terminology_id.value.text()
+         
+         //println "template parser terminology_id: "+ tid
+
+         obn.terminologyId = tid
+
+
+         // list is present on C_CODE_REFERENCE
          if (!node.code_list.isEmpty())
          {
             node.code_list.each {
                obn.codeList << it.text()
             }
-
-            // FIXME: if the terminology_id doesn't comply with the opnEHR format, it should fail
-            // SEE: https://gist.github.com/ppazos/7fcb12866095b399890fc5165fb51805
-
-            // parse terminologyID value, we could create CODE_PHRASE and parse this internally
-            // name [ ‘(’ version ‘)’ ]
-            def tid = node.terminology_id.value.text()
-            
-            //println "template parser terminology_id: "+ tid
-
-            obn.terminologyId = tid
          }
       }
       else if (node.'@xsi:type'.text() == 'C_DV_QUANTITY')
