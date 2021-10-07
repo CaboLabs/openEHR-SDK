@@ -580,7 +580,7 @@ class JsonInstanceCanonicalGenerator2 {
       </attr>
       */
       [
-         "${attr}": [
+         (attr): [
             _type: 'DV_DATE_TIME',
             value: new Date().toOpenEHRDateTime()
          ]
@@ -1646,14 +1646,14 @@ class JsonInstanceCanonicalGenerator2 {
       def mobj = [
          _type: 'DV_INTERVAL' // removed <DV_COUNT> generics because of https://discourse.openehr.org/t/correct-use-of-generic-types-in-xml-and-json/1504/16
       ]
-
-      def attrs = ['lower', 'upper']
       
       // default included limits
       mobj.lower_included = false
       mobj.upper_included = false
       mobj.lower_unbounded = true
       mobj.upper_unbounded = true
+
+      def attrs = ['lower', 'upper']
 
       attrs.each { attr ->
 
@@ -1665,7 +1665,7 @@ class JsonInstanceCanonicalGenerator2 {
             if (mobj."${attr}")
             {
                mobj."${attr}_included" = true
-               mobj."${attr}_unbounded" = false
+               mobj."${attr}_unbounded" = false // this comply with the interval invariants https://specifications.openehr.org/releases/BASE/Release-1.2.0/foundation_types.html#_interval_class
             }
          }
       }
@@ -1687,13 +1687,13 @@ class JsonInstanceCanonicalGenerator2 {
          _type: 'DV_INTERVAL' // removed <DV_QUANTITY> generics because of https://discourse.openehr.org/t/correct-use-of-generic-types-in-xml-and-json/1504/16
       ]
 
-      def attrs = ['lower', 'upper']
-      
       // default included limits
       mobj.lower_included = false
       mobj.upper_included = false
       mobj.lower_unbounded = true
       mobj.upper_unbounded = true
+
+      def attrs = ['lower', 'upper']
 
       attrs.each { attr ->
 
@@ -1702,10 +1702,17 @@ class JsonInstanceCanonicalGenerator2 {
          {
             mobj."${attr}" = generate_DV_QUANTITY(c_attr.children[0], parent_arch_id)
 
-            if (mobj."${attr}") mobj."${attr}_included" = true
+            if (mobj."${attr}")
+            {
+               mobj."${attr}_included" = true
+               mobj."${attr}_unbounded" = false // this comply with the interval invariants https://specifications.openehr.org/releases/BASE/Release-1.2.0/foundation_types.html#_interval_class
+            }
 
+            
+            /* the limit will be unbbounded only if there is no value for it, so this code
+               is not needed since the logic above contemplates that.
+            
             def cqty = c_attr.children[0] // CDvQuantity
-
             if (cqty.list)
             {
                def unbounded = false
@@ -1719,6 +1726,7 @@ class JsonInstanceCanonicalGenerator2 {
                }
                mobj."${attr}_unbounded" = unbounded
             }
+            */
          }
       }
 
@@ -1752,12 +1760,13 @@ class JsonInstanceCanonicalGenerator2 {
          def c_attr = o.attributes.find { it.rmAttributeName == attr }
          if (c_attr)
          {
+            // NOTE: this will always return a map, the if below is not needed
             mobj << generate_attr_DV_DATE_TIME(attr)
 
             if (mobj."${attr}")
             {
                mobj."${attr}_included" = true
-               mobj."${attr}_unbounded" = true
+               mobj."${attr}_unbounded" = false // this comply with the interval invariants https://specifications.openehr.org/releases/BASE/Release-1.2.0/foundation_types.html#_interval_class
             }
          }
       }

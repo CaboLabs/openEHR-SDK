@@ -288,7 +288,7 @@ class XmlInstanceGenerator {
          code_string('UY') // TODO: deberia salir de una config global o de parametros
       }
 
-      println opt.getNodes('/category/defining_code')
+      //println opt.getNodes('/category/defining_code')
 
       // path is to attr, codeList is in the node
       def category_code = opt.getNodes('/category/defining_code')[0].codeList[0]
@@ -1617,15 +1617,27 @@ class XmlInstanceGenerator {
          // Need to ask for the attributes explicitly since order matters for the XSD
 
          def lower = o.attributes.find { it.rmAttributeName == 'lower' }
-         builder."${lower.rmAttributeName}"('xsi:type':'DV_COUNT') {
-            magnitude( Integer.random(10, 1) ) // TODO: consider constraints
-         }
+         // builder."${lower.rmAttributeName}"('xsi:type':'DV_COUNT') {
+         //    magnitude( Integer.random(10, 1) ) // TODO: consider constraints
+         // }
+         // FIXME: assuming lower c_attr has children
+         generate_DV_COUNT(lower.children[0], parent_arch_id)
 
          def upper = o.attributes.find { it.rmAttributeName == 'upper' }
-         builder."${upper.rmAttributeName}"('xsi:type':'DV_COUNT') {
-            magnitude( Integer.random(100, 10) ) // TODO: consider constraints
-         }
+         // builder."${upper.rmAttributeName}"('xsi:type':'DV_COUNT') {
+         //    magnitude( Integer.random(100, 10) ) // TODO: consider constraints
+         // }
+         // FIXME: assuming upper c_attr has children
+         generate_DV_COUNT(upper.children[0], parent_arch_id)
 
+
+         // FIXME: should check and correct if lower <= upper
+         // we should have data generators separated from the xml builder so we can compare before building,
+         // this is similar to the approach in the JSON generator
+
+
+         /* the limit will be unbbounded only if there is no value for it, so this code
+            is not needed since the logic above contemplates that.
          // lower_unbounded and upper_unbounded are required
          // lower_unbounded: no constraint is defined for upper or lower.lower is not defined
          // upper_unbounded: no constraint is defined for upper or upper.upper is not defined
@@ -1705,6 +1717,17 @@ class XmlInstanceGenerator {
                }
             }
          }
+         */
+
+         def _lower_included = true,
+             _upper_included = true,
+             _lower_unbounded = false,
+             _upper_unbounded = false
+
+         lower_included(_lower_included)
+         upper_included(_upper_included)
+         lower_unbounded(_lower_unbounded)
+         upper_unbounded(_upper_unbounded)
       }
    }
 
@@ -1728,6 +1751,9 @@ class XmlInstanceGenerator {
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_INTERVAL') {
 
+         // NOTE: generate_DV_QUANTITY will always generate a value, so the interval
+         //       limits will never be unbounded.
+
          def lower = o.attributes.find { it.rmAttributeName == 'lower' }
          generate_DV_QUANTITY(lower.children[0], parent_arch_id)
          /*
@@ -1746,21 +1772,16 @@ class XmlInstanceGenerator {
          }
          */
 
-         // lower_unbounded and upper_unbounded are required
-         // for tagged DV_INTERVALs the only way to check this,
-         // since the boundaries depend on the constraint for a
-         // specific unit, is to check if all units have min or max
-         // boundaries, if all have, that will bounded, if some don't
-         // have, that will be unbounded.
-         // Also, if there are no constraints (empty list), both limits
-         // will be unbounde
+        
 
+         /* the limit will be unbbounded only if there is no value for it, so this code
+            is not needed since the logic above contemplates that.
          // lower
          def cqty = lower.children[0] // CDvQuantity
 
          if (!cqty.list)
          {
-            builder.lower_unbounded(true)
+            lower_unbounded = true
          }
          else
          {
@@ -1772,7 +1793,8 @@ class XmlInstanceGenerator {
                   lowerUnbounded = true
                }
             }
-            builder.lower_unbounded(lowerUnbounded)
+            lower_unbounded = lowerUnbounded
+            if (lower_unbounded) lower_included = false // to comply with interval invariant
          }
 
          // upper
@@ -1780,7 +1802,7 @@ class XmlInstanceGenerator {
 
          if (!cqty.list)
          {
-            builder.upper_unbounded(true)
+            upper_unbounded = true
          }
          else
          {
@@ -1792,9 +1814,23 @@ class XmlInstanceGenerator {
                   upperUnbounded = true
                }
             }
-            builder.upper_unbounded(upperUnbounded)
+            upper_unbounded = upperUnbounded
+            if (upper_unbounded) upper_included = false // to comply with interval invariant
          }
+         */
+
+         def _lower_included = true,
+             _upper_included = true,
+             _lower_unbounded = false,
+             _upper_unbounded = false
+
+         lower_included(_lower_included)
+         upper_included(_upper_included)
+         lower_unbounded(_lower_unbounded)
+         upper_unbounded(_upper_unbounded)
       }
+
+      
    }
 
    private generate_DV_INTERVAL__DV_DATE_TIME(ObjectNode o, String parent_arch_id)
@@ -1820,10 +1856,15 @@ class XmlInstanceGenerator {
          def upper = o.attributes.find { it.rmAttributeName == 'upper' }
          generate_attr_DV_DATE_TIME(upper.rmAttributeName)
 
-         // there are no constraints for date time to establish unbounded,
-         // so it is always unbounded for both limits.
-         builder.lower_unbounded(true)
-         builder.upper_unbounded(true)
+         def _lower_included = true,
+             _upper_included = true,
+             _lower_unbounded = false,
+             _upper_unbounded = false
+
+         lower_included(_lower_included)
+         upper_included(_upper_included)
+         lower_unbounded(_lower_unbounded)
+         upper_unbounded(_upper_unbounded)
       }
    }
 
