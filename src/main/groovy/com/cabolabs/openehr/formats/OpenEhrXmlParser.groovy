@@ -714,9 +714,9 @@ class OpenEhrXmlParser {
    
    private Section parseSECTION(GPathResult xml, Pathable parent, String path, String dataPath)
    {
-      Section s = new Section()
+      Section section = new Section()
       
-      this.fillLOCATABLE(s, xml, parent, path, dataPath)
+      this.fillLOCATABLE(section, xml, parent, path, dataPath)
       
       String type, method
       
@@ -727,10 +727,12 @@ class OpenEhrXmlParser {
             throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".items[$i]")
          }
          method = 'parse'+ type
-         this."$method"(content_item, s,
-                        (path != '/' ? path +'/items' : '/items'),
-                        (dataPath != '/' ? dataPath +'/items['+ i +']' : '/items['+ i +']')
-                       )
+         section.items.add(
+            this."$method"(content_item, section,
+                           (path != '/' ? path +'/items' : '/items'),
+                           (dataPath != '/' ? dataPath +'/items['+ i +']' : '/items['+ i +']')
+                          )
+         )
       }
       
       return s
@@ -1121,15 +1123,15 @@ class OpenEhrXmlParser {
       
       String type, method
       
-	  // FIXME: rows are CLUSTERS, we don't need to get the dynamic method
+	   // FIXME: rows are CLUSTERS, we don't need to get the dynamic method
       xml.rows.eachWithIndex { item, i -> 
          type = item.'@xsi:type'.text()
          method = 'parse'+ type
-         t.items.add(
+         t.rows.add(
             this."$method"(item, t, 
-                        (path != '/' ? path +'/rows' : '/rows'),
-                        (dataPath != '/' ? dataPath +'/rows['+ i +']' : '/rows['+ i +']')
-                      )
+                            (path != '/' ? path +'/rows' : '/rows'),
+                            (dataPath != '/' ? dataPath +'/rows['+ i +']' : '/rows['+ i +']')
+                          )
          )
       }
       

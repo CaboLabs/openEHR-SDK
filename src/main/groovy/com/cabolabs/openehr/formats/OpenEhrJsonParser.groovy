@@ -734,9 +734,9 @@ class OpenEhrJsonParser {
    
    private Section parseSECTION(Map json, Pathable parent, String path, String dataPath)
    {
-      Section s = new Section()
+      Section section = new Section()
       
-      this.fillLOCATABLE(s, json, parent, path, dataPath)
+      this.fillLOCATABLE(section, json, parent, path, dataPath)
       
       String type, method
       
@@ -747,13 +747,15 @@ class OpenEhrJsonParser {
             throw new JsonCompositionParseException("_type required for "+ dataPath +".items[$i]")
          }
          method = 'parse'+ type
-         this."$method"(content_item, s,
-                        (path != '/' ? path +'/items' : '/items'),
-                        (dataPath != '/' ? dataPath +'/items['+ i +']' : '/items['+ i +']')
-                       )
+         section.items.add(
+            this."$method"(content_item, section,
+                           (path != '/' ? path +'/items' : '/items'),
+                           (dataPath != '/' ? dataPath +'/items['+ i +']' : '/items['+ i +']')
+                          )
+         )
       }
       
-      return s
+      return section
    }
    
    private AdminEntry parseADMIN_ENTRY(Map json, Pathable parent, String path, String dataPath)
@@ -1146,7 +1148,7 @@ class OpenEhrJsonParser {
       json.rows.each { item -> 
          type = item._type
          method = 'parse'+ type
-         t.items.add(
+         t.rows.add(
             this."$method"(item, t, 
                         (path != '/' ? path +'/rows' : '/rows'),
                         (dataPath != '/' ? dataPath +'/rows['+ i +']' : '/rows['+ i +']')
