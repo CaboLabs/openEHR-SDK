@@ -1627,6 +1627,21 @@ class JsonInstanceCanonicalGenerator2 {
                mattr = processAttributeChildren(attr_value, parent_arch_id)
                mobj.value = mattr[0]
             }
+            else // Inv_null_flavour_indicated: is_null() xor null_flavour = Void
+            {
+               // TODO: generate random null_flavour
+               // TODO: i18n
+               mobj.null_flavour = [
+                  _type: 'DV_CODED_TEXT',
+                  value: 'no information',
+                  defining_code: [
+                     terminology_id: [
+                        value: 'openehr'
+                     ],
+                     code_string: '271'
+                  ]
+               ]
+            }
          }
       }
       else
@@ -1635,6 +1650,21 @@ class JsonInstanceCanonicalGenerator2 {
          {
             mattr = processAttributeChildren(attr_value, parent_arch_id)
             mobj.value = mattr[0]
+         }
+         else // Inv_null_flavour_indicated: is_null() xor null_flavour = Void
+         {
+            // TODO: generate random null_flavour
+            // TODO: i18n
+            mobj.null_flavour = [
+               _type: 'DV_CODED_TEXT',
+               value: 'no information',
+               defining_code: [
+                  terminology_id: [
+                     value: 'openehr'
+                  ],
+                  code_string: '271'
+               ]
+            ]
          }
       }
 

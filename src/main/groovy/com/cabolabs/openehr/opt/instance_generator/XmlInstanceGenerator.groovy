@@ -1590,9 +1590,59 @@ class XmlInstanceGenerator {
 
          add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
-         o.attributes.each { oa ->
-            if (oa.rmAttributeName == 'name') return // avoid processing name constraints, thos are processde by add_LOCATABLE_elements
-            processAttributeChildren(oa, parent_arch_id)
+         // attr_value chould be null if no constraint is defined!
+         def attr_value = o.attributes.find { it.rmAttributeName == 'value' }
+         def attr_null_flavour = o.attributes.find { it.rmAttributeName == 'null_flavour' }
+
+         // 20 % of the time generate null_flavour instead of value
+         if (attr_null_flavour)
+         {
+            if (new Random().nextInt(10) > 7) // 0..9 > 7 is 8 or 9 that is 20% of the time
+            {
+               processAttributeChildren(attr_null_flavour, parent_arch_id)
+            }
+            else
+            {
+               if (attr_value)
+               {
+                  processAttributeChildren(attr_value, parent_arch_id)
+               }
+               else // Inv_null_flavour_indicated: is_null() xor null_flavour = Void
+               {
+                  // TODO: generate random null_flavour
+                  // TODO: i18n
+                  builder.null_flavour {
+                     value('no information')
+                     defining_code {
+                        terminology_id {
+                           value('openehr')
+                        }
+                        code_string('271')
+                     }
+                  }
+               }
+            }
+         }
+         else
+         {
+            if (attr_value)
+            {
+               processAttributeChildren(attr_value, parent_arch_id)
+            }
+            else // Inv_null_flavour_indicated: is_null() xor null_flavour = Void
+            {
+               // TODO: generate random null_flavour
+               // TODO: i18n
+               builder.null_flavour {
+                  value('no information')
+                  defining_code {
+                     terminology_id {
+                        value('openehr')
+                     }
+                     code_string('271')
+                  }
+               }
+            }
          }
       }
    }

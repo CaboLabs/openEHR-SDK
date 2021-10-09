@@ -77,7 +77,7 @@ class OptRepositoryFSImpl implements OptRepository {
 
       if (!isNormalizedTemplateId(templateId))
       {
-         templateId = normalizeTemplateId(templateId, "en") // FIXME: should get the default language from config or a list of supported languages
+         templateId = normalizeTemplateId(templateId)
       }
 
       def location = addTrailingSeparator(this.repoLocation) +
@@ -120,7 +120,7 @@ class OptRepositoryFSImpl implements OptRepository {
       return result
    }
 
-   String normalizeTemplateId(String templateId, String language)
+   String normalizeTemplateId(String templateId)
    {
       // https://gist.github.com/ppazos/12f3efc4eb178e43ff73a0c989a2e1d7
       String normalized = java.text.Normalizer.normalize(templateId, java.text.Normalizer.Form.NFD).replaceAll(/\p{InCombiningDiacriticalMarks}+/, '')
@@ -130,8 +130,9 @@ class OptRepositoryFSImpl implements OptRepository {
       // lowercase, no spaces, remove non (letters or numbers), remove beginning/ending underscores if there is any
       String snake      = normalized.toLowerCase().replaceAll(/\s/, '_').replaceAll(/[^a-zA-Z0-9]+/,'_').replaceAll( /^_/, '' ).replaceAll( /_$/, '' )
       String removeDots = snake.replaceAll(/\./, '_')
-      String plusLAndV  = removeDots +'.'+ language +'.v1'
-      return plusLAndV
+      //String plusLAndV  = removeDots +'.'+ language +'.v1'
+      //return plusLAndV
+      return removeDots
    }
 
    boolean isNormalizedTemplateId(String templateId)
@@ -140,7 +141,10 @@ class OptRepositoryFSImpl implements OptRepository {
       //(templateId ==~ /([a-z]+(_[a-z0-9]+)*)\.([a-z]{2})\.v([0-9]+[0-9]*(\.[0-9]+[0-9]*(\.[0-9]+[0-9]*)?)?)/)
 
       // relaxed regex only checks it ends with .en.v1
-      (templateId ==~ /.*\.([a-z]{2})\.v([0-9]+[0-9]*(\.[0-9]+[0-9]*(\.[0-9]+[0-9]*)?)?)$/)
+      //(templateId ==~ /.*\.([a-z]{2})\.v([0-9]+[0-9]*(\.[0-9]+[0-9]*(\.[0-9]+[0-9]*)?)?)$/)
+
+      // just checks snake case
+      (templateId ==~ /^([a-z]+(_[a-z0-9]+)*)$/)
    }
 
    String addTrailingSeparator(String path)
@@ -164,11 +168,11 @@ class OptRepositoryFSImpl implements OptRepository {
       return br.text // http://docs.groovy-lang.org/latest/html/groovy-jdk/java/io/BufferedReader.html#getText()
    }
 
-   String newOptFileLocation(String templateId, String language, String namespace)
+   String newOptFileLocation(String templateId, String namespace)
    {
       if (!isNormalizedTemplateId(templateId))
       {
-         templateId = normalizeTemplateId(templateId, language)
+         templateId = normalizeTemplateId(templateId)
       }
 
       addTrailingSeparator(repoLocation) +

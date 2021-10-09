@@ -676,11 +676,12 @@ class OpenEhrXmlSerializer {
    void serializeSection(Section s)
    {
       this.fillLocatable(s)
-      
+
+      String method
       s.items.each { content_item ->
          
          method = this.method(content_item)
-         items('xsi:type': this.openEhrType(content_item), archetype_node_id: content_item.archetype_node_id) {
+         builder.items('xsi:type': this.openEhrType(content_item), archetype_node_id: content_item.archetype_node_id) {
             this."$method"(content_item)
          }
       }
