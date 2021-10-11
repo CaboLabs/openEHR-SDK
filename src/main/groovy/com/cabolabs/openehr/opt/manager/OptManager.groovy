@@ -3,15 +3,17 @@ package com.cabolabs.openehr.opt.manager
 import com.cabolabs.openehr.opt.parser.OperationalTemplateParser
 import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.opt.model.OperationalTemplate
-
 import org.apache.log4j.Logger
 import groovy.transform.Synchronized
+import groovy.time.TimeCategory 
+import groovy.time.TimeDuration
 
 class OptManager {
 
    private Logger log = Logger.getLogger(getClass())
 
    OptRepository repo
+   int ttl_seconds = 1800 // 30 min in seconds
 
    // ns will be used as folder name where OPTs are separated in the repo
    // most OS have a file name limit of 255, so that should be the limit of the ns size
@@ -50,9 +52,10 @@ class OptManager {
       return instance
    }
 
-   public void init(OptRepository repo)
+   public void init(OptRepository repo, int ttl_seconds = 1800)
    {
       this.repo = repo
+      this.ttl_seconds = ttl_seconds
    }
 
 
@@ -105,6 +108,7 @@ class OptManager {
 
       def refarchs = []
       this.cache[namespace].each { _optid, _opt ->
+
          refarchs = _opt.getReferencedArchetypes()
          refarchs.each { _objectNode ->
             // If the archertype is referenced twice by different opts, it is overwritten,
@@ -114,9 +118,21 @@ class OptManager {
             // A better solution to reduce the memory use, is to merge all the internal
             // structures into one complete structure. (TODO)
             // TODO: do not add the reference twice for the same OPT (check if this case can happen)
-            if (!this.referencedArchetypes[namespace]) this.referencedArchetypes[namespace] = [:]
-            if (!this.referencedArchetypes[namespace][_objectNode.archetypeId]) this.referencedArchetypes[namespace][_objectNode.archetypeId] = []
-            this.referencedArchetypes[namespace][_objectNode.archetypeId] << _objectNode
+            if (!this.referencedArchetypes[namespace])
+            {
+               this.referencedArchetypes[namespace] = [:]
+            }
+
+            if (!this.referencedArchetypes[namespace][_objectNode.archetypeId])
+            {
+               this.referencedArchetypes[namespace][_objectNode.archetypeId] = []
+            }
+
+            // avoids to load object nodes from the same template twice
+            if (!this.referencedArchetypes[namespace][_objectNode.archetypeId].any { it.templatePath == _objectNode.templatePath })
+            {
+               this.referencedArchetypes[namespace][_objectNode.archetypeId] << _objectNode
+            }
          }
       }
    }
@@ -152,6 +168,8 @@ class OptManager {
          // this is indexed with the templateId param passed, not with the loaded opt.templateId which could be not normalized, the templateId param is normalized by the client
          this.cache[namespace][templateId] = opt
          this.timestamps[namespace][templateId] = new Date()
+
+         // FIXME: is not setting referencedArchetypes!
       }
       else
       {
@@ -387,5 +405,47 @@ class OptManager {
    public static void reset()
    {
       this.instance = null
+   }
+
+   /**
+    * cleans the cache from items used more than ttl_seconds ago, this is called from an
+    * external client with certain frequency, for instance from a cron job.
+    */
+   @Synchronized
+   public void cleanCache()
+   {
+      def now = new Date()
+
+      def toBeRemoved = []
+
+      this.timestamps.each { namespace, templateIds ->
+
+         templateIds.each { templateId, timestamp ->
+
+            TimeDuration dur = TimeCategory.minus(now, timestamp)
+
+            if ((dur.toMilliseconds() / 1000) > this.ttl_seconds)
+            {
+               // should avoid removeing this because of concurrent modification exception
+               //this.removeOpt(templateId, namespace)
+               toBeRemoved << [templateId: templateId, namespace: namespace]
+            }
+         }
+      }
+
+      toBeRemoved.each { item->
+         this.removeOpt(item.templateId, item.namespace)
+      }
+   }
+
+   /**
+    * Empties all caches from all namespaces, useful for testing.
+    */
+   @Synchronized
+   public void cleanAll()
+   {
+      this.cache.clear()
+      this.timestamps.clear()
+      this.referencedArchetypes.clear()
    }
 }

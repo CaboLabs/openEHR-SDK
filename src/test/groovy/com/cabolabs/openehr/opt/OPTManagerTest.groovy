@@ -15,6 +15,10 @@ class OPTManagerTest extends GroovyTestCase {
    private static String PS = System.getProperty("file.separator") // File.separator
 
    private man
+   private used_namespaces = [
+      'test_ism_paths',
+      'test_ref_archs_namespace'
+   ]
 
 /*
    void testXMLGenerator()
@@ -36,8 +40,17 @@ class OPTManagerTest extends GroovyTestCase {
       // this is the default repo, each test could change it
       def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts').toURI())
       this.man = OptManager.getInstance()
-      this.man.init(repo)
-      this.man.unloadAll()
+      this.man.init(repo, 2)
+      //this.man.unloadAll()
+   }
+
+   protected void tearDown()
+   {
+      println "teadDown"
+      used_namespaces.each { namespace ->
+         this.man.unloadAll(namespace)
+      }
+      //man.reset()
    }
 
    void testReferencedArchetypes()
@@ -76,7 +89,7 @@ class OPTManagerTest extends GroovyTestCase {
 
       man.reset()
    }
-
+   
    void testTemplateDataPaths()
    {
       println "====== testTemplateDataPaths ======"
@@ -132,7 +145,7 @@ class OPTManagerTest extends GroovyTestCase {
 
       man.reset()
    }
-
+   
    void testDataPaths()
    {
       println "====== testDataPaths ======"
@@ -141,8 +154,13 @@ class OPTManagerTest extends GroovyTestCase {
 
       // man uses default repo
 
+      println man.status()
+
       assert man.getLoadedOpts(namespace).size() == 0
       man.loadAll(namespace)
+
+      println man.status()
+      
       assert man.getLoadedOpts(namespace).size() == 1
 
       def archs = man.getAllReferencedArchetypes(namespace) // List<ObjectNode>
@@ -170,12 +188,7 @@ class OPTManagerTest extends GroovyTestCase {
       }
 
       println nodes.collect{ it.codeList[0] }
-
-      man.unloadAll(namespace)
-
-      man.reset()
    }
-
 
    void testOptManagerLanguages()
    {
@@ -218,8 +231,24 @@ class OPTManagerTest extends GroovyTestCase {
       man.getAllReferencedArchetypes().keySet().each {
          println it
       }
-
-      man.reset()
    }
-   
+
+   void testCleanCache()
+   {
+      println "====== testsCleanCache ======"
+
+      String namespace = 'test_ism_paths'
+
+      // man uses default repo
+
+      assert man.getLoadedOpts(namespace).size() == 0
+      man.loadAll(namespace)
+      assert man.getLoadedOpts(namespace).size() == 1
+
+      sleep(3000) // teh cache ttl is 2  secs
+
+      man.cleanCache() // should clean the opt from the cache
+
+      assert man.getLoadedOpts(namespace).size() == 0
+   }
 }
