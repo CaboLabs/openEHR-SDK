@@ -4,7 +4,7 @@ import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.terminology.TerminologyParser
 import java.text.SimpleDateFormat
 import groovy.json.*
-
+import com.cabolabs.openehr.opt.model.primitive.*
 import java.util.jar.JarFile
 
 /**
@@ -188,9 +188,17 @@ class JsonInstanceCanonicalGenerator2 {
       ]
 
       if (prettyOutput)
-         JsonOutput.prettyPrint(JsonOutput.toJson(out))
+      {
+         StringEscapeUtils.unescapeJavaScript( // avoid unicode escaping
+           JsonOutput.prettyPrint(JsonOutput.toJson(out))
+         )
+      }
       else
-         JsonOutput.toJson(out)
+      {
+         StringEscapeUtils.unescapeJavaScript( // avoid unicode escaping
+            JsonOutput.toJson(out)
+         )
+      }
    }
 
 
@@ -204,9 +212,17 @@ class JsonInstanceCanonicalGenerator2 {
       out = generateComposition(addParticipations)
 
       if (prettyOutput)
-         JsonOutput.prettyPrint(JsonOutput.toJson(out))
+      {
+         StringEscapeUtils.unescapeJavaScript( // avoid unicode escaping
+           JsonOutput.prettyPrint(JsonOutput.toJson(out))
+         )
+      }
       else
-         JsonOutput.toJson(out)
+      {
+         StringEscapeUtils.unescapeJavaScript( // avoid unicode escaping
+            JsonOutput.toJson(out)
+         )
+      }
    }
 
    Map generateComposition(boolean addParticipations = false)
@@ -618,7 +634,7 @@ class JsonInstanceCanonicalGenerator2 {
 
    private generate_DV_COUNT(ObjectNode o, String parent_arch_id)
    {
-      def magnitude, lo, hi
+      def magnitude
       def c_magnitude = o.attributes.find { it.rmAttributeName == 'magnitude' }
       if (c_magnitude)
       {
@@ -628,20 +644,7 @@ class JsonInstanceCanonicalGenerator2 {
 
          def primitive = c_magnitude.children[0].item
 
-         if (primitive.range)
-         {
-            lo = ((primitive.range.lowerUnbounded) ? 0 : primitive.range.lower)
-            hi = ((primitive.range.upperUnbounded) ? 100 : primitive.range.upper)
-
-            if (!primitive.range.lowerIncluded) lo++
-            if (!primitive.range.upperIncluded) hi--
-
-            magnitude = new Random().nextInt(hi - lo) + lo // random between lo .. hi
-         }
-         else
-         {
-            magnitude = primitive.list[0]
-         }
+         magnitude = generate_CInteger(primitive)
       }
       else // no constraints
       {
@@ -652,6 +655,34 @@ class JsonInstanceCanonicalGenerator2 {
          _type: 'DV_COUNT',
          magnitude: magnitude
       ]
+   }
+
+   // generates a value depending on the primitive constraint
+   // TODO: this value generators can be refactored between the JSON and XML generators
+   private Integer generate_CInteger(CInteger primitive)
+   {
+      Integer _magnitude, lo, hi
+
+      if (primitive.range)
+      {
+         lo = ((primitive.range.lowerUnbounded) ? 0 : primitive.range.lower)
+         hi = ((primitive.range.upperUnbounded) ? 100 : primitive.range.upper)
+
+         if (!primitive.range.lowerIncluded) lo++
+         if (!primitive.range.upperIncluded) hi--
+
+         _magnitude = new Random().nextInt(hi - lo) + lo // random between lo .. hi
+      }
+      else if (primitive.list)
+      {
+         _magnitude = primitive.list[0]
+      }
+      else // no constraints
+      {
+         _magnitude = Integer.random(10, 1)
+      }
+
+      return _magnitude
    }
 
    private generate_DV_BOOLEAN(ObjectNode o, String parent_arch_id)
@@ -1700,6 +1731,9 @@ class JsonInstanceCanonicalGenerator2 {
          }
       }
 
+      // FIXME: this doesn't work if one value was picked from a list constraint,
+      // the values for the interval should be generated together considering all the 
+      // possible combinations of constraints: range-range, list-list, none-none (and their combinations)
       // lower < upper
       if (mobj.lower && mobj.upper && mobj.lower.magnitude > mobj.upper.magnitude)
       {

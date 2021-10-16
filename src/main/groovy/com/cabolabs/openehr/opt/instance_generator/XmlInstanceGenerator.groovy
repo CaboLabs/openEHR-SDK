@@ -4,7 +4,7 @@ import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.terminology.TerminologyParser
 import groovy.xml.MarkupBuilder
 import java.text.SimpleDateFormat
-
+import com.cabolabs.openehr.opt.model.primitive.*
 import java.util.jar.JarFile
 
 /**
@@ -470,7 +470,7 @@ class XmlInstanceGenerator {
       }
    }
 
-   private generateCompositionContent(String parent_arch_id)
+   private int generateCompositionContent(String parent_arch_id)
    {
       // opt.definition.attributes has attributes category, context and content of the COMPOSITION
       // category and context where already processed on generateCompositionHeader
@@ -480,14 +480,16 @@ class XmlInstanceGenerator {
 
       assert a.rmAttributeName == 'content'
 
-      processAttributeChildren(a, parent_arch_id)
+      return processAttributeChildren(a, parent_arch_id)
    }
 
    /**
     * Continues the opt recursive traverse.
     */
-   private processAttributeChildren(AttributeNode a, String parent_arch_id)
+   private int processAttributeChildren(AttributeNode a, String parent_arch_id)
    {
+      int nodes = 0
+
       //println "processAttributeChildren parent_arch_id: "+ parent_arch_id
 
       def obj_type, method
@@ -521,8 +523,10 @@ class XmlInstanceGenerator {
          obj_type = obj_type.replace('<','__').replace('>','')
 
          method = 'generate_'+ obj_type
-         "$method"(obj, parent_arch_id) // generate_OBSERVATION(a)
+         nodes += "$method"(obj, parent_arch_id) // generate_OBSERVATION(a)
       }
+
+      return nodes
    }
 
    /*
@@ -542,7 +546,7 @@ class XmlInstanceGenerator {
     * e.g. for generate_EVENT_CONTEXT(AttributeNode a), a.rmAttributeName == 'context'
     */
 
-   private generate_EVENT_CONTEXT(ObjectNode o, String parent_arch_id)
+   private int generate_EVENT_CONTEXT(ObjectNode o, String parent_arch_id)
    {
       // TBD
       /* already generated on the main method, this avoids processing the node again
@@ -562,7 +566,7 @@ class XmlInstanceGenerator {
     *       just one value), if not, we will get the first constraint and generate data that complies with
     *       that constraint.
     */
-   private generate_DV_CODED_TEXT(ObjectNode o, String parent_arch_id)
+   private int generate_DV_CODED_TEXT(ObjectNode o, String parent_arch_id)
    {
       /*
       <value xsi:type="DV_CODED_TEXT">
@@ -636,9 +640,11 @@ class XmlInstanceGenerator {
             code_string(first_code)
          }
       }
+
+      return 1
    }
 
-   private generate_attr_CODE_PHRASE(String attr, String terminology, String code)
+   private int generate_attr_CODE_PHRASE(String attr, String terminology, String code)
    {
       builder."${attr}"() {
          terminology_id() {
@@ -646,9 +652,11 @@ class XmlInstanceGenerator {
          }
          code_string(code)
       }
+
+      return 1
    }
 
-   private generate_DV_TEXT(ObjectNode o, String parent_arch_id)
+   private int generate_DV_TEXT(ObjectNode o, String parent_arch_id)
    {
       /*
       <value xsi:type="DV_TEXT">
@@ -659,9 +667,11 @@ class XmlInstanceGenerator {
       builder."${a.rmAttributeName}"('xsi:type':'DV_TEXT') {
          value( String.random( (('A'..'Z')+('a'..'z')+' ,.').join(), 255 ) ) // TODO: improve using word / phrase dictionary
       }
+
+      return 1
    }
 
-   private generate_DV_DATE_TIME(ObjectNode o, String parent_arch_id)
+   private int generate_DV_DATE_TIME(ObjectNode o, String parent_arch_id)
    {
       /*
       <value xsi:type="DV_DATE_TIME">
@@ -673,6 +683,8 @@ class XmlInstanceGenerator {
          value( new Date().toOpenEHRDateTime() )
       }*/
       generate_attr_DV_DATE_TIME(a.rmAttributeName)
+
+      return 1
    }
 
    /**
@@ -697,10 +709,12 @@ class XmlInstanceGenerator {
             value( new Date().toOpenEHRDateTime() )
          }
       }
+
+      return 1
    }
 
 
-   private generate_DV_DATE(ObjectNode o, String parent_arch_id)
+   private int generate_DV_DATE(ObjectNode o, String parent_arch_id)
    {
       /*
       <value xsi:type="DV_DATE">
@@ -712,7 +726,7 @@ class XmlInstanceGenerator {
          value( new Date().toOpenEHRDate() )
       }
    }
-   private generate_DV_TIME(ObjectNode o, String parent_arch_id)
+   private int generate_DV_TIME(ObjectNode o, String parent_arch_id)
    {
       /*
       <value xsi:type="DV_TIME">
@@ -723,9 +737,11 @@ class XmlInstanceGenerator {
       builder."${a.rmAttributeName}"('xsi:type':'DV_TIME') {
          value( new Date().toOpenEHRTime() )
       }
+
+      return 1
    }
 
-   private generate_DV_COUNT(ObjectNode o, String parent_arch_id)
+   private int generate_DV_COUNT(ObjectNode o, String parent_arch_id)
    {
       /*
       <value xsi:type="DV_COUNT">
@@ -734,7 +750,7 @@ class XmlInstanceGenerator {
       */
       AttributeNode a = o.parent
 
-      def _magnitude, lo, hi
+      def _magnitude
       def c_magnitude = o.attributes.find { it.rmAttributeName == 'magnitude' }
       if (c_magnitude)
       {
@@ -744,20 +760,7 @@ class XmlInstanceGenerator {
 
          def primitive = c_magnitude.children[0].item
 
-         if (primitive.range)
-         {
-            lo = ((primitive.range.lowerUnbounded) ? 0 : primitive.range.lower)
-            hi = ((primitive.range.upperUnbounded) ? 100 : primitive.range.upper)
-
-            if (!primitive.range.lowerIncluded) lo++
-            if (!primitive.range.upperIncluded) hi--
-
-            _magnitude = new Random().nextInt(hi - lo) + lo // random between lo .. hi
-         }
-         else
-         {
-            _magnitude = primitive.list[0]
-         }
+         _magnitude = generate_CInteger(primitive)
       }
       else // no constraints
       {
@@ -767,9 +770,39 @@ class XmlInstanceGenerator {
       builder."${a.rmAttributeName}"('xsi:type':'DV_COUNT') {
          magnitude(_magnitude)
       }
+
+      return 1
    }
 
-   private generate_DV_BOOLEAN(ObjectNode o, String parent_arch_id)
+   // generates a value depending on the primitive constraint
+   // TODO: this value generators can be refactored between the JSON and XML generators
+   private Integer generate_CInteger(CInteger primitive)
+   {
+      Integer _magnitude, lo, hi
+
+      if (primitive.range)
+      {
+         lo = ((primitive.range.lowerUnbounded) ? 0 : primitive.range.lower)
+         hi = ((primitive.range.upperUnbounded) ? 100 : primitive.range.upper)
+
+         if (!primitive.range.lowerIncluded) lo++
+         if (!primitive.range.upperIncluded) hi--
+
+         _magnitude = new Random().nextInt(hi - lo) + lo // random between lo .. hi
+      }
+      else if (primitive.list)
+      {
+         _magnitude = primitive.list[0]
+      }
+      else // no constraints
+      {
+         _magnitude = Integer.random(10, 1)
+      }
+
+      return _magnitude
+   }
+
+   private int generate_DV_BOOLEAN(ObjectNode o, String parent_arch_id)
    {
       /*
        <value xsi:type="DV_BOOLEAN">
@@ -780,9 +813,11 @@ class XmlInstanceGenerator {
       builder."${a.rmAttributeName}"('xsi:type':'DV_BOOLEAN') {
          value(true) // TODO: check constraint
       }
+
+      return 1
    }
 
-   private generate_DV_MULTIMEDIA(ObjectNode o, String parent_arch_id)
+   private int generate_DV_MULTIMEDIA(ObjectNode o, String parent_arch_id)
    {
       /* http://www.cabolabs.com/CaboLabs%20New%20Logo%20Horizontal%20300dpi%20421.png
        <value xsi:type="DV_MULTIMEDIA">
@@ -808,9 +843,11 @@ class XmlInstanceGenerator {
          generate_attr_CODE_PHRASE('media_type', 'IANA_media-types', 'image/png') // TODO: grab the terminology from the ObjectNode
          size(_datab64.size())
       }
+
+      return 1
    }
 
-   private generate_DV_PARSABLE(ObjectNode o, String parent_arch_id)
+   private int generate_DV_PARSABLE(ObjectNode o, String parent_arch_id)
    {
       /*
       <value xsi:type="DV_PARSABLE">
@@ -824,9 +861,11 @@ class XmlInstanceGenerator {
          value('20170629')
          formalism('ISO8601')
       }
+
+      return 1
    }
 
-   private generate_DV_PROPORTION(ObjectNode o, String parent_arch_id)
+   private int generate_DV_PROPORTION(ObjectNode o, String parent_arch_id)
    {
       /*
       <value xsi:type="DV_PROPORTION">
@@ -918,9 +957,11 @@ class XmlInstanceGenerator {
          type(_type)
          //precision('-1') // -1 implies no limit, i.e. any number of decimal places.
       }
+
+      return 1
    }
 
-   private generate_DV_QUANTITY(ObjectNode o, String parent_arch_id)
+   private int generate_DV_QUANTITY(ObjectNode o, String parent_arch_id)
    {
       /*
        <value xsi:type="DV_QUANTITY">
@@ -964,9 +1005,11 @@ class XmlInstanceGenerator {
          magnitude((rand.nextFloat() * (hi - lo) + lo).round(1)) //Integer.random(hi, lo) ) // TODO: should be BigDecinal not just Integer
          units(_units)
       }
+
+      return 1
    }
 
-   private generate_DV_DURATION(ObjectNode o, String parent_arch_id)
+   private int generate_DV_DURATION(ObjectNode o, String parent_arch_id)
    {
       /*
       <value xsi:type="DV_DURATION">
@@ -1000,9 +1043,11 @@ class XmlInstanceGenerator {
             value('PT30M')
          }
       }
+
+      return 1
    }
 
-   private generate_DV_IDENTIFIER(ObjectNode o, String parent_arch_id)
+   private int generate_DV_IDENTIFIER(ObjectNode o, String parent_arch_id)
    {
       /*
       <value xsi:type="DV_IDENTIFIER">
@@ -1044,9 +1089,11 @@ class XmlInstanceGenerator {
          id      (identifier.id)
          type    (identifier.type)
       }
+
+      return 1
    }
 
-   private generate_DV_ORDINAL(ObjectNode o, String parent_arch_id)
+   private int generate_DV_ORDINAL(ObjectNode o, String parent_arch_id)
    {
       /*
       <value xsi:type="DV_ORDINAL">
@@ -1112,29 +1159,35 @@ class XmlInstanceGenerator {
             }
          }
       }
+
+      return 1
    }
 
-   private generate_DV_URI(ObjectNode o, String parent_arch_id)
+   private int generate_DV_URI(ObjectNode o, String parent_arch_id)
    {
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_URI') {
          value('https://cabolabs.com')
       }
+
+      return 1
    }
 
-   private generate_DV_EHR_URI(ObjectNode o, String parent_arch_id)
+   private int generate_DV_EHR_URI(ObjectNode o, String parent_arch_id)
    {
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_EHR_URI') {
          value('ehr://cabolabs.com')
       }
+
+      return 1
    }
 
 
    /**
     * helper to add language, encoding and subject to ENTRY nodes.
     */
-   private add_ENTRY_elements(ObjectNode o, String parent_arch_id)
+   private int add_ENTRY_elements(ObjectNode o, String parent_arch_id)
    {
       add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
@@ -1155,10 +1208,12 @@ class XmlInstanceGenerator {
       // ENTRY.protocol
       def oa = o.attributes.find { it.rmAttributeName == 'protocol' }
       if (oa) processAttributeChildren(oa, parent_arch_id)
+
+      return 1
    }
 
 
-   private generate_SECTION(ObjectNode o, String parent_arch_id)
+   private int generate_SECTION(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
@@ -1180,9 +1235,11 @@ class XmlInstanceGenerator {
          //        COMPOSITION.content, SECTION.items, HISTORY.events, ITEM_TREE.items, CLUSTER.items, etc.
          if (oa) processAttributeChildren(oa, parent_arch_id)
       }
+
+      return 1
    }
 
-   private generate_OBSERVATION(ObjectNode o, String parent_arch_id)
+   private int generate_OBSERVATION(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
@@ -1198,9 +1255,11 @@ class XmlInstanceGenerator {
          oa = o.attributes.find { it.rmAttributeName == 'data' }
          if (oa) processAttributeChildren(oa, parent_arch_id)
       }
+
+      return 1
    }
 
-   private generate_EVALUATION(ObjectNode o, String parent_arch_id)
+   private int generate_EVALUATION(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
@@ -1216,9 +1275,11 @@ class XmlInstanceGenerator {
          oa = o.attributes.find { it.rmAttributeName == 'data' }
          if (oa) processAttributeChildren(oa, parent_arch_id)
       }
+
+      return 1
    }
 
-   private generate_ADMIN_ENTRY(ObjectNode o, String parent_arch_id)
+   private int generate_ADMIN_ENTRY(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
@@ -1234,10 +1295,12 @@ class XmlInstanceGenerator {
          oa = o.attributes.find { it.rmAttributeName == 'data' }
          if (oa) processAttributeChildren(oa, parent_arch_id)
       }
+
+      return 1
    }
 
 
-   private generate_INSTRUCTION(ObjectNode o, String parent_arch_id)
+   private int generate_INSTRUCTION(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
@@ -1270,9 +1333,11 @@ class XmlInstanceGenerator {
          def oa = o.attributes.find { it.rmAttributeName == 'activities' }
          if (oa) processAttributeChildren(oa, parent_arch_id)
       }
+
+      return 1
    }
 
-   private generate_ACTIVITY(ObjectNode o, String parent_arch_id)
+   private int generate_ACTIVITY(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
@@ -1327,9 +1392,11 @@ class XmlInstanceGenerator {
             action_archetype_id('openEHR-EHR-ACTION\\.sample_action\\.v1')
          }
       }
+
+      return 1
    }
 
-   private generate_ACTION(ObjectNode o, String parent_arch_id)
+   private int generate_ACTION(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
@@ -1409,9 +1476,11 @@ class XmlInstanceGenerator {
            }
          }
       }
+
+      return 1
    }
 
-   private generate_HISTORY(ObjectNode o, String parent_arch_id)
+   private int generate_HISTORY(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
@@ -1434,9 +1503,11 @@ class XmlInstanceGenerator {
             processAttributeChildren(oa, parent_arch_id)
          }
       }
+
+      return 1
    }
 
-   private generate_EVENT(ObjectNode o, String parent_arch_id)
+   private int generate_EVENT(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
@@ -1459,9 +1530,11 @@ class XmlInstanceGenerator {
             processAttributeChildren(oa, parent_arch_id)
          }
       }
+
+      return 1
    }
 
-   private generate_INTERVAL_EVENT(ObjectNode o, String parent_arch_id)
+   private int generate_INTERVAL_EVENT(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
@@ -1514,27 +1587,29 @@ class XmlInstanceGenerator {
             }
          }
       }
+
+      return 1
    }
 
-   private generate_POINT_EVENT(ObjectNode o, String parent_arch_id)
+   private int generate_POINT_EVENT(ObjectNode o, String parent_arch_id)
    {
-      generate_EVENT(o, parent_arch_id)
+      return generate_EVENT(o, parent_arch_id)
    }
 
    // these are not different than ITEM_TREE processing since it is generic
-   private generate_ITEM_SINGLE(ObjectNode o, String parent_arch_id)
+   private int generate_ITEM_SINGLE(ObjectNode o, String parent_arch_id)
    {
-      generate_ITEM_TREE(o, parent_arch_id)
+      return generate_ITEM_TREE(o, parent_arch_id)
    }
-   private generate_ITEM_TABLE(ObjectNode o, String parent_arch_id)
+   private int generate_ITEM_TABLE(ObjectNode o, String parent_arch_id)
    {
-      generate_ITEM_TREE(o, parent_arch_id)
+      return generate_ITEM_TREE(o, parent_arch_id)
    }
-   private generate_ITEM_LIST(ObjectNode o, String parent_arch_id)
+   private int generate_ITEM_LIST(ObjectNode o, String parent_arch_id)
    {
-      generate_ITEM_TREE(o, parent_arch_id)
+      return generate_ITEM_TREE(o, parent_arch_id)
    }
-   private generate_ITEM_TREE(ObjectNode o, String parent_arch_id)
+   private int generate_ITEM_TREE(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
@@ -1553,9 +1628,11 @@ class XmlInstanceGenerator {
             processAttributeChildren(oa, parent_arch_id)
          }
       }
+
+      return 1
    }
 
-   private generate_CLUSTER(ObjectNode o, String parent_arch_id)
+   private int generate_CLUSTER(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
@@ -1564,6 +1641,9 @@ class XmlInstanceGenerator {
 
       // is it arcehtyped or not?
       def arch_node_id = (o.archetypeId ?: o.nodeId)
+
+      
+      int nodes = 0
 
       builder."${a.rmAttributeName}"('xsi:type': o.rmTypeName, archetype_node_id:arch_node_id) {
 
@@ -1571,12 +1651,27 @@ class XmlInstanceGenerator {
 
          o.attributes.each { oa ->
             if (oa.rmAttributeName == 'name') return // avoid processing name constraints, thos are processde by add_LOCATABLE_elements
-            processAttributeChildren(oa, parent_arch_id)
+            nodes += processAttributeChildren(oa, parent_arch_id)
+         }
+
+         if (nodes == 0)
+         {
+            // dummy element
+            items('xsi:type':'ELEMENT', archetype_node_id: 'at'+ Integer.random(9999, 1000)) {
+               name('xsi:type':'DV_TEXT') {
+                  value('dummy name')
+               }
+               value('xsi:type':'DV_TEXT') {
+                  value('dummy value')
+               }
+            }
          }
       }
+
+      return nodes
    }
 
-   private generate_ELEMENT(ObjectNode o, String parent_arch_id)
+   private int generate_ELEMENT(ObjectNode o, String parent_arch_id)
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
@@ -1645,9 +1740,11 @@ class XmlInstanceGenerator {
             }
          }
       }
+
+      return 1
    }
 
-   private generate_DV_INTERVAL__DV_COUNT(ObjectNode o, String parent_arch_id)
+   private int generate_DV_INTERVAL__DV_COUNT(ObjectNode o, String parent_arch_id)
    {
       /*
       <value xsi:type="DV_INTERVAL"><!-- note specific type is not valid here: DV_INERVAL<DV_COUNT> doesn't exist in the XSD -->
@@ -1661,113 +1758,192 @@ class XmlInstanceGenerator {
          <upper_unbounded>false</upper_unbounded>
       </value>
       */
+
+      // generate valid values simultaneously to be valid and lower <= upper
+      // all the checks for existence of every constraint at each level is needed because most are optional,
+      // and each 'else' would be a 'no_constraint' case.
+      
+      // get constraints for DV_COUNT limits
+      def lower_attr = o.attributes.find { it.rmAttributeName == 'lower' }
+      def upper_attr = o.attributes.find { it.rmAttributeName == 'upper' }
+
+      // by default no constraint, which are all the else cases for the ifs below
+      def lower_constraint = 'no'
+      def upper_constraint = 'no'
+      def combined_constraint // this would be list_range, no_no, no_range, etc (lower_constraint +'_'+ upper_constraint)
+
+      // when lower_constraint or upper_constraint are different than 'no', these will be not null
+      def lower_primitive, upper_primitive
+
+      if (lower_attr)
+      {
+         def lower_attr_magnitude = lower_attr.children[0].attributes.find { it.rmAttributeName == 'magnitude' }
+         if (lower_attr_magnitude)
+         {
+            def lower_primitive_object = lower_attr_magnitude.children[0]
+            if (lower_primitive_object)
+            {
+               lower_primitive = lower_primitive_object.item
+               if (lower_primitive)
+               {
+                  if (lower_primitive.range)
+                  {
+                     lower_constraint = 'range'
+                  }
+                  else if (lower_primitive.list) // already checks for null and empty
+                  {
+                     lower_constraint = 'list'
+                  }
+               }
+            }
+         }
+      }
+
+      if (upper_attr)
+      {
+         def upper_attr_magnitude = upper_attr.children[0].attributes.find { it.rmAttributeName == 'magnitude' }
+         if (upper_attr_magnitude)
+         {
+            def upper_primitive_object = upper_attr_magnitude.children[0]
+            if (upper_primitive_object)
+            {
+               upper_primitive = upper_primitive_object.item
+               if (upper_primitive)
+               {
+                  if (upper_primitive.range)
+                  {
+                     upper_constraint = 'range'
+                  }
+                  else if (upper_primitive.list) // already checks for null and empty
+                  {
+                     upper_constraint = 'list'
+                  }
+               }
+            }
+         }
+      }
+
+      combined_constraint = lower_constraint +'_'+ upper_constraint
+
+      Integer lower_magnitude, upper_magnitude
+
+      switch (combined_constraint)
+      {
+         case 'no_no':
+            lower_magnitude = Integer.random(10, 1)
+            upper_magnitude = lower_magnitude + 1 // assure lower < upper
+         break
+         case 'no_list':
+            upper_magnitude = upper_primitive.list.sort{-it}[0] // take the biggest value
+            lower_magnitude = upper_magnitude - 1
+         break
+         case 'no_range':
+            upper_magnitude = DataGenerator.int_in_range(upper_primitive.range)
+            lower_magnitude = upper_magnitude - 1
+         break
+         case 'list_no':
+            lower_magnitude = lower_primitive.list.sort()[0] // take the lowest value
+            upper_magnitude = lower_magnitude + 1
+         break
+         case 'list_list':
+            lower_magnitude = lower_primitive.list.sort()[0] // take the lowest value
+            upper_magnitude = upper_primitive.list.sort{-it}[0] // take the biggest value
+
+            if (lower_magnitude > upper_magnitude)
+            {
+               throw new Exception('The template defines incompatible list constraints to lower and upper attributes of the interval')
+            }
+         break
+         case 'list_range':
+            lower_magnitude = lower_primitive.list.sort()[0] // take the lowest value
+            
+            if (upper_primitive.range.upper && lower_magnitude > upper_primitive.range.upper)
+            {
+               throw new Exception('The template defines incompatible list constraint for lower and range constraint for upper on an interval')
+            }
+
+            // ensures the upper generated is greater than the lower picker from the list
+            def constrained_range = upper_primitive.range.clone()
+            constrained_range.lower = lower_magnitude
+
+            upper_magnitude = DataGenerator.int_in_range(constrained_range)
+         break
+         case 'range_no':
+            lower_magnitude = DataGenerator.int_in_range(lower_primitive.range)
+            upper_magnitude = lower_magnitude + 1
+         break
+         case 'range_list':
+            upper_magnitude = upper_primitive.list.sort{-it}[0] // take the biggest value
+
+            // These checks below ensure the constrained_range has lower <= upper
+
+            // if lowerIncluded, range.lower should be <= upper_magnitude
+            if (lower_primitive.range.lower.lowerIncluded && lower_primitive.range.lower > upper_magnitude)
+            {
+               throw new Exception('The template defines incompatible range constraint for lower and list constraint for upper on an interval')
+            }
+
+            // if !lowerIncluded, range.lower should be < upper_magnitude
+            if (!lower_primitive.range.lower.lowerIncluded && lower_primitive.range.lower >= upper_magnitude)
+            {
+               throw new Exception('The template defines incompatible range constraint for lower and list constraint for upper on an interval')
+            }
+
+            // ensures the lower generated is lower than the upper picked from the list
+            def constrained_range = lower_primitive.range.clone()
+            constrained_range.upper = upper_magnitude
+            constrained_range.upperUnbounded = false
+
+            lower_magnitude = DataGenerator.int_in_range(constrained_range)
+         break
+         case 'range_range':
+            // the condition for valid range_range constraints is: (considering also unbounded)
+            //
+            // (upper.range.upperUnbounded ||
+            //  !lower.range.upperUnbounded && lower.range.upper <= upper.range.upper)
+            // && 
+            // (lower.range.lowerUnbounded ||
+            //  !upper,range.lowerUnbounded && lower.range.lower <= upper.range.lower
+            // )
+            //
+            //
+            // if those constraints are met, picking the lowest value from lower.range and the
+            // highest value from upper.range will generate valid data from the interval
+
+            // limits would be null in the case of unbounded
+            if (lower_primitive.range.lowerUnbounded)
+            {
+               lower_magnitude = 0
+            }
+            else
+            {
+               lower_magnitude = lower_primitive.range.lower
+               if (!lower_primitive.range.lowerIncluded) lower_magnitude += 1
+            }
+
+            if (upper_primitive.range.upperUnbounded)
+            {
+               upper_magnitude = lower_magnitude + 1
+            }
+            else
+            {
+               upper_magnitude = upper_primitive.range.upper
+               if (!upper_primitive.range.upperIncluded) upper_magnitude -= 1
+            }
+         break
+      }
+
+      //println lower_magnitude +'..'+ upper_magnitude
+
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_INTERVAL') {
 
-         // Need to ask for the attributes explicitly since order matters for the XSD
-
-         def lower = o.attributes.find { it.rmAttributeName == 'lower' }
-         // builder."${lower.rmAttributeName}"('xsi:type':'DV_COUNT') {
-         //    magnitude( Integer.random(10, 1) ) // TODO: consider constraints
-         // }
-         // FIXME: assuming lower c_attr has children
-         generate_DV_COUNT(lower.children[0], parent_arch_id)
-
-         def upper = o.attributes.find { it.rmAttributeName == 'upper' }
-         // builder."${upper.rmAttributeName}"('xsi:type':'DV_COUNT') {
-         //    magnitude( Integer.random(100, 10) ) // TODO: consider constraints
-         // }
-         // FIXME: assuming upper c_attr has children
-         generate_DV_COUNT(upper.children[0], parent_arch_id)
-
-
-         // FIXME: should check and correct if lower <= upper
-         // we should have data generators separated from the xml builder so we can compare before building,
-         // this is similar to the approach in the JSON generator
-
-
-         /* the limit will be unbbounded only if there is no value for it, so this code
-            is not needed since the logic above contemplates that.
-         // lower_unbounded and upper_unbounded are required
-         // lower_unbounded: no constraint is defined for upper or lower.lower is not defined
-         // upper_unbounded: no constraint is defined for upper or upper.upper is not defined
-
-         def ccount
-         def attr_magnitude
-         def cprimitive
-         def cint
-
-         if (!lower)
-         {
-            builder.lower_unbounded(true)
+         lower('xsi:type':'DV_COUNT') {
+            magnitude(lower_magnitude)
          }
-         else
-         {
-            ccount = lower.children[0]
-            if (!ccount)
-            {
-               builder.lower_unbounded(true)
-            }
-            else
-            {
-               attr_magnitude = ccount.attributes[0]
-               if (!attr_magnitude)
-               {
-                  builder.lower_unbounded(true)
-               }
-               else
-               {
-                  cprimitive = attr_magnitude.children[0]
-                  cint = cprimitive.item
-
-                  if (cint.range && !cint.range.lowerUnbounded)
-                  {
-                     builder.lower_unbounded(false)
-                  }
-                  else
-                  {
-                     builder.lower_unbounded(true)
-                  }
-               }
-            }
+         upper('xsi:type':'DV_COUNT') {
+            magnitude(upper_magnitude)
          }
-
-
-         if (!upper)
-         {
-            builder.upper_unbounded(true)
-         }
-         else
-         {
-            ccount = upper.children[0]
-            if (!ccount)
-            {
-               builder.upper_unbounded(true)
-            }
-            else
-            {
-               attr_magnitude = ccount.attributes[0]
-               if (!attr_magnitude)
-               {
-                  builder.upper_unbounded(true)
-               }
-               else
-               {
-                  cprimitive = attr_magnitude.children[0]
-                  cint = cprimitive.item
-
-                  if (cint.range && !cint.range.upperUnbounded)
-                  {
-                     builder.upper_unbounded(false)
-                  }
-                  else
-                  {
-                     builder.upper_unbounded(true)
-                  }
-               }
-            }
-         }
-         */
 
          def _lower_included = true,
              _upper_included = true,
@@ -1779,9 +1955,11 @@ class XmlInstanceGenerator {
          lower_unbounded(_lower_unbounded)
          upper_unbounded(_upper_unbounded)
       }
+
+      return 1
    }
 
-   private generate_DV_INTERVAL__DV_QUANTITY(ObjectNode o, String parent_arch_id)
+   private int generate_DV_INTERVAL__DV_QUANTITY(ObjectNode o, String parent_arch_id)
    {
       /*
       <value xsi:type="DV_INTERVAL"><!-- note specific type is not valid here: DV_INERVAL<DV_COUNT> doesn't exist in the XSD -->
@@ -1880,10 +2058,10 @@ class XmlInstanceGenerator {
          upper_unbounded(_upper_unbounded)
       }
 
-      
+      return 1
    }
 
-   private generate_DV_INTERVAL__DV_DATE_TIME(ObjectNode o, String parent_arch_id)
+   private int generate_DV_INTERVAL__DV_DATE_TIME(ObjectNode o, String parent_arch_id)
    {
       /*
       <value xsi:type="DV_INTERVAL"><!-- note specific type is not valid here: DV_INERVAL<DV_COUNT> doesn't exist in the XSD -->
@@ -1916,6 +2094,8 @@ class XmlInstanceGenerator {
          lower_unbounded(_lower_unbounded)
          upper_unbounded(_upper_unbounded)
       }
+
+      return 1
    }
 
 

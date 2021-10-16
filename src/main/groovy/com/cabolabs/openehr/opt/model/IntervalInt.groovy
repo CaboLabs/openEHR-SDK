@@ -1,5 +1,8 @@
 package com.cabolabs.openehr.opt.model
 
+import groovy.transform.AutoClone
+
+@AutoClone
 class IntervalInt {
 
    Boolean lowerIncluded

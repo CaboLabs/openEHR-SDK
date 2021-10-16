@@ -1,6 +1,7 @@
 package com.cabolabs.openehr.opt.instance_generator
 
 import com.cabolabs.openehr.opt.model.IntervalDuration
+import com.cabolabs.openehr.opt.model.IntervalInt
 
 class DataGenerator {
    
@@ -71,5 +72,21 @@ class DataGenerator {
 
       // NOTE: this only outputs time
       return java.time.Duration.ofSeconds(value).toString()
+   }
+
+   // generates a magnitude for DV_COUNT.magnitude constraint CInteger.range
+   static Integer int_in_range(IntervalInt range)
+   {
+      Integer value
+
+      Integer lo = ((range.lowerUnbounded) ? 0 : range.lower)
+      Integer hi = ((range.upperUnbounded) ? 100 : range.upper)
+
+      if (!range.lowerIncluded) lo++
+      if (!range.upperIncluded) hi--
+
+      value = new Random().nextInt(hi - lo) + lo // random between lo .. hi
+
+      return value
    }
 }
