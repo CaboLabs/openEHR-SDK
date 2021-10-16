@@ -6,7 +6,7 @@ class IntervalDouble {
    Boolean upperIncluded
    Boolean lowerUnbounded
    Boolean upperUnbounded
-   Double lower
+   Double lower // FIXME: it would be better to use BigDecimal
    Double upper
 
    boolean has(Double i)

@@ -1,7 +1,6 @@
 package com.cabolabs.openehr.opt.instance_generator
 
-import com.cabolabs.openehr.opt.model.IntervalDuration
-import com.cabolabs.openehr.opt.model.IntervalInt
+import com.cabolabs.openehr.opt.model.*
 
 class DataGenerator {
    
@@ -85,7 +84,24 @@ class DataGenerator {
       if (!range.lowerIncluded) lo++
       if (!range.upperIncluded) hi--
 
-      value = new Random().nextInt(hi - lo) + lo // random between lo .. hi
+      // random between lo .. hi
+      // the +1 is because the upper is exclusive
+      value = new Random().nextInt(hi - lo + 1) + lo
+
+      return value
+   }
+
+   static Double double_in_range(IntervalDouble range)
+   {
+      Double value
+
+      Double lo = ((range.lowerUnbounded) ? 0 : range.lower)
+      Double hi = ((range.upperUnbounded) ? 100 : range.upper)
+
+      if (!range.lowerIncluded) lo += 0.1
+      if (!range.upperIncluded) hi -= 0.1
+
+      value = new Random().nextDouble() * (hi - lo) + lo // random between lo .. hi
 
       return value
    }

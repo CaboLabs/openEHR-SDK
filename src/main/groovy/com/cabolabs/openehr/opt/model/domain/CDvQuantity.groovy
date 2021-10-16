@@ -10,10 +10,6 @@ class CDvQuantity extends ObjectNode {
 
    // property: CODE_PHRASE
    CodePhrase property
-   /*
-   String propertyCode
-   String propertyTerminologyId
-   */
 
    // List<CQuantityItem>
    List list = []

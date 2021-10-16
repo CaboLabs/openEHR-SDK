@@ -58,6 +58,7 @@ class XmlInstanceGenerator {
       builder = new MarkupBuilder(writer)
       builder.setDoubleQuotes(true) // Use double quotes on attributes
 
+      // FIXME: these methods can be registered in a bootstrap class once, e.g. a singleton
       // ---------------------------------------------------------------------------------
       // Helpers
 
@@ -86,7 +87,11 @@ class XmlInstanceGenerator {
       }
 
       Integer.metaClass.static.random = { int max, int from ->
-         new Random( System.currentTimeMillis() ).nextInt( max+1 ) + from
+         new Random( System.currentTimeMillis() ).nextInt( max - from + 1 ) + from
+      }
+
+      Double.metaClass.static.random = { double max, double from ->
+         new Random( System.currentTimeMillis() ).nextDouble() * (max - from ) + from
       }
 
       String.metaClass.static.uuid = { ->
@@ -609,7 +614,7 @@ class XmlInstanceGenerator {
 
       if (!first_code)
       {
-         first_code = Integer.random(10000, 1000000)
+         first_code = Integer.random(100000000, 1000)
       }
       else
       {
@@ -690,7 +695,7 @@ class XmlInstanceGenerator {
    /**
     * helper to generate simple datetime attribute.
     */
-   private generate_attr_DV_DATE_TIME(String attr, boolean addType = true)
+   private int generate_attr_DV_DATE_TIME(String attr, boolean addType = true)
    {
       /*
       <attr xsi:type="DV_DATE_TIME">
@@ -725,6 +730,8 @@ class XmlInstanceGenerator {
       builder."${a.rmAttributeName}"('xsi:type':'DV_DATE') {
          value( new Date().toOpenEHRDate() )
       }
+
+      return 1
    }
    private int generate_DV_TIME(ObjectNode o, String parent_arch_id)
    {
@@ -1760,8 +1767,8 @@ class XmlInstanceGenerator {
       */
 
       // generate valid values simultaneously to be valid and lower <= upper
-      // all the checks for existence of every constraint at each level is needed because most are optional,
-      // and each 'else' would be a 'no_constraint' case.
+      // all the checks for existence of every constraint at each level is needed because most are
+      // optional, and each 'else' would be a 'no_constraint' case.
       
       // get constraints for DV_COUNT limits
       def lower_attr = o.attributes.find { it.rmAttributeName == 'lower' }
@@ -1777,6 +1784,7 @@ class XmlInstanceGenerator {
 
       if (lower_attr)
       {
+         // FIXME: check children has any element, that is actually the object constraint for the DV_COUNT
          def lower_attr_magnitude = lower_attr.children[0].attributes.find { it.rmAttributeName == 'magnitude' }
          if (lower_attr_magnitude)
          {
@@ -1801,6 +1809,7 @@ class XmlInstanceGenerator {
 
       if (upper_attr)
       {
+         // FIXME: check children has any element, that is actually the object constraint for the DV_COUNT
          def upper_attr_magnitude = upper_attr.children[0].attributes.find { it.rmAttributeName == 'magnitude' }
          if (upper_attr_magnitude)
          {
@@ -1976,77 +1985,137 @@ class XmlInstanceGenerator {
       </value>
       */
 
+      // The constraints for lower and upper could be empty or a list of CQuantityItem
+      // When an item is picked from lower or upper, and has units, the units generated for
+      // the other limit should be the same.
+      // If there is a unit defined for one limit that is not in the other limit constraint,
+      // the OPT is not well defined.
+
+      // get constraints for DV_QUANTITY limits
+      def lower_attr = o.attributes.find { it.rmAttributeName == 'lower' }
+      def upper_attr = o.attributes.find { it.rmAttributeName == 'upper' }
+
+      def lower_constraint = 'no'
+      def upper_constraint = 'no'
+      def combined_constraint // this would be list_range, no_no, no_range, ...
+
+      def lower_qty_item, upper_qty_item
+
+      // when lower_constraint or upper_constraint are different than 'no', these will be not null
+      def lower_qty_magnitude_interval, upper_qty_magnitude_interval
+
+      if (lower_attr)
+      {
+         def cqty_lower = lower_attr.children[0]
+         if (cqty_lower && cqty_lower.list)
+         {
+            lower_qty_item = cqty_lower.list[0]
+            if (lower_qty_item.magnitude)
+            {
+               lower_constraint = 'range'
+               lower_qty_magnitude_interval = lower_qty_item.magnitude
+            }
+         }
+      }
+
+      if (upper_attr)
+      {
+         def cqty_upper = upper_attr.children[0]
+         if (cqty_upper && cqty_upper.list)
+         {
+            // if there is an item selected for the lower, the upper item should have the same units
+            if (lower_qty_item)
+            {
+               upper_qty_item = cqty_upper.list.find{ it.units == lower_qty_item.units }
+               if (!upper_qty_item)
+               {
+                  throw new Exception('There is no constraint for upper with the same units as lower limit for DV_INTERVAL<DV_QUANTITY> in the template')
+               }
+            }
+            else
+            {
+               upper_qty_item = cqty_upper.list[0]
+            }
+
+            if (upper_qty_item.magnitude)
+            {
+               upper_constraint = 'range'
+               upper_qty_magnitude_interval = upper_qty_item.magnitude
+            }
+         }
+      }
+
+      combined_constraint = lower_constraint +'_'+ upper_constraint
+
+      // FIXME: would be better to use BigDecimal
+      Double lower_magnitude, upper_magnitude
+      String _units = (lower_qty_item ? lower_qty_item.units : (upper_qty_item ? upper_qty_item.units : 'no_units_constraint'))
+
+      switch (combined_constraint)
+      {
+         case 'no_no':
+            lower_magnitude = Double.random(10.0, 0.0)
+            upper_magnitude = lower_magnitude + 1.0
+         break
+         case 'no_range':
+            upper_magnitude = DataGenerator.double_in_range(upper_qty_magnitude_interval)
+            lower_magnitude = upper_magnitude - 1.0
+         break
+         case 'range_no':
+            lower_magnitude = DataGenerator.double_in_range(lower_qty_magnitude_interval)
+            upper_magnitude = lower_magnitude + 1.0
+         break
+         case 'range_range':
+            // the condition for valid range_range constraints is: (considering also unbounded)
+            //
+            // (upper.range.upperUnbounded ||
+            //  !lower.range.upperUnbounded && lower.range.upper <= upper.range.upper)
+            // && 
+            // (lower.range.lowerUnbounded ||
+            //  !upper,range.lowerUnbounded && lower.range.lower <= upper.range.lower
+            // )
+            //
+            //
+            // if those constraints are met, picking the lowest value from lower.range and the
+            // highest value from upper.range will generate valid data from the interval
+
+             // limits would be null in the case of unbounded
+            if (lower_qty_magnitude_interval.lowerUnbounded)
+            {
+               lower_magnitude = 0.0
+            }
+            else
+            {
+               lower_magnitude = lower_qty_magnitude_interval.lower
+               if (!lower_qty_magnitude_interval.lowerIncluded) lower_magnitude += 0.1
+            }
+
+            if (upper_qty_magnitude_interval.upperUnbounded)
+            {
+               upper_magnitude = lower_magnitude + 10.0
+            }
+            else
+            {
+               upper_magnitude = upper_qty_magnitude_interval.upper
+               if (!upper_qty_magnitude_interval.upperIncluded) upper_magnitude -= 0.1
+            }
+         break
+      }
+
+      //println lower_magnitude +'..'+ upper_magnitude +' '+ _units
+
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_INTERVAL') {
 
-         // NOTE: generate_DV_QUANTITY will always generate a value, so the interval
-         //       limits will never be unbounded.
-
-         def lower = o.attributes.find { it.rmAttributeName == 'lower' }
-         generate_DV_QUANTITY(lower.children[0], parent_arch_id)
-         /*
-         builder.lower('xsi:type':'DV_QUANTITY') {
-            magnitude('[[lower.magnitude:::DV_QUANTITY_MAGNITUDE]]')
-            units('[[lower.units:::DV_QUANTITY_UNITS]]')
+         lower('xsi:type':'DV_QUANTITY') {
+            magnitude(lower_magnitude)
+            units(_units)
          }
-         */
-
-         def upper = o.attributes.find { it.rmAttributeName == 'upper' }
-         generate_DV_QUANTITY(upper.children[0], parent_arch_id)
-         /*
-         builder.upper('xsi:type':'DV_QUANTITY') {
-            magnitude('[[upper.magnitude:::DV_QUANTITY_MAGNITUDE]]')
-            units('[[upper.units:::DV_QUANTITY_UNITS]]')
+         upper('xsi:type':'DV_QUANTITY') {
+            magnitude(upper_magnitude)
+            units(_units)
          }
-         */
-
         
-
-         /* the limit will be unbbounded only if there is no value for it, so this code
-            is not needed since the logic above contemplates that.
-         // lower
-         def cqty = lower.children[0] // CDvQuantity
-
-         if (!cqty.list)
-         {
-            lower_unbounded = true
-         }
-         else
-         {
-            // if one lower limit is unbounded, then the tagged will be unbounded
-            def lowerUnbounded = false
-            cqty.list.each { cqitem->
-               if (!cqitem.magnitude || cqitem.magnitude.lowerUnbounded) // could be a list of units without magniture
-               {
-                  lowerUnbounded = true
-               }
-            }
-            lower_unbounded = lowerUnbounded
-            if (lower_unbounded) lower_included = false // to comply with interval invariant
-         }
-
-         // upper
-         cqty = upper.children[0]
-
-         if (!cqty.list)
-         {
-            upper_unbounded = true
-         }
-         else
-         {
-            // if one upper limit is unbounded, then the tagged will be unbounded
-            def upperUnbounded = false
-            cqty.list.each { cqitem->
-               if (!cqitem.magnitude || cqitem.magnitude.lowerUnbounded) // could be a list of units without magniture
-               {
-                  upperUnbounded = true
-               }
-            }
-            upper_unbounded = upperUnbounded
-            if (upper_unbounded) upper_included = false // to comply with interval invariant
-         }
-         */
-
          def _lower_included = true,
              _upper_included = true,
              _lower_unbounded = false,

@@ -542,7 +542,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
 
       if (!first_code)
       {
-         first_code = Integer.random(10000, 1000000).toString()
+         first_code = Integer.random(10000000, 1000).toString()
       }
       else
       {

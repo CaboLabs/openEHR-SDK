@@ -95,7 +95,11 @@ class JsonInstanceCanonicalGenerator2 {
       }
 
       Integer.metaClass.static.random = { int max, int from ->
-         new Random( System.currentTimeMillis() ).nextInt( max+1 ) + from
+         new Random( System.currentTimeMillis() ).nextInt( max - from + 1 ) + from
+      }
+
+      Double.metaClass.static.random = { double max, double from ->
+         new Random( System.currentTimeMillis() ).nextDouble() * (max - from ) + from
       }
 
       String.metaClass.static.uuid = { ->
@@ -510,7 +514,7 @@ class JsonInstanceCanonicalGenerator2 {
 
       if (!first_code)
       {
-         first_code = Integer.random(10000, 1000000).toString()
+         first_code = Integer.random(1000000, 1000).toString()
       }
       else
       {
