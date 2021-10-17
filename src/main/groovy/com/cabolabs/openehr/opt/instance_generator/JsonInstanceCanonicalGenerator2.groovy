@@ -193,15 +193,15 @@ class JsonInstanceCanonicalGenerator2 {
 
       if (prettyOutput)
       {
-         StringEscapeUtils.unescapeJavaScript( // avoid unicode escaping
+         //StringEscapeUtils.unescapeJavaScript( // avoid unicode escaping
            JsonOutput.prettyPrint(JsonOutput.toJson(out))
-         )
+         //)
       }
       else
       {
-         StringEscapeUtils.unescapeJavaScript( // avoid unicode escaping
+         //StringEscapeUtils.unescapeJavaScript( // avoid unicode escaping
             JsonOutput.toJson(out)
-         )
+         //)
       }
    }
 
@@ -217,15 +217,15 @@ class JsonInstanceCanonicalGenerator2 {
 
       if (prettyOutput)
       {
-         StringEscapeUtils.unescapeJavaScript( // avoid unicode escaping
+         //StringEscapeUtils.unescapeJavaScript( // avoid unicode escaping
            JsonOutput.prettyPrint(JsonOutput.toJson(out))
-         )
+         //)
       }
       else
       {
-         StringEscapeUtils.unescapeJavaScript( // avoid unicode escaping
+         //StringEscapeUtils.unescapeJavaScript( // avoid unicode escaping
             JsonOutput.toJson(out)
-         )
+         //)
       }
    }
 
@@ -1625,6 +1625,26 @@ class JsonInstanceCanonicalGenerator2 {
          mobj.items = mattr
       }
 
+      // no items?
+      if (!mobj.items)
+      {
+         // add dummy element
+         mobj.items = [
+            [
+               _type: 'ELEMENT',
+               archetype_node_id: 'at'+ Integer.random(9999, 1000),
+               name: [
+                  _type: 'DV_TEXT',
+                  value: 'dummy value'
+               ],
+               value: [
+                  _type: 'DV_TEXT',
+                  value: 'dummy value'
+               ]
+            ]
+         ]
+      }
+
       return mobj
    }
 
@@ -1708,43 +1728,196 @@ class JsonInstanceCanonicalGenerator2 {
 
    private generate_DV_INTERVAL__DV_COUNT(ObjectNode o, String parent_arch_id)
    {
-      def mobj = [
-         _type: 'DV_INTERVAL' // removed <DV_COUNT> generics because of https://discourse.openehr.org/t/correct-use-of-generic-types-in-xml-and-json/1504/16
+       def mobj = [
+         _type: 'DV_INTERVAL', // removed <DV_COUNT> generics because of https://discourse.openehr.org/t/correct-use-of-generic-types-in-xml-and-json/1504/16
+         lower_included: true,
+         upper_included: true,
+         lower_unbounded: false,
+         upper_unbounded: false
       ]
-      
-      // default included limits
-      mobj.lower_included = false
-      mobj.upper_included = false
-      mobj.lower_unbounded = true
-      mobj.upper_unbounded = true
 
-      def attrs = ['lower', 'upper']
+      // TODO: refactor with XmlInstanceGenerator since the code is the same
+      // get constraints for DV_COUNT limits
+      def lower_attr = o.attributes.find { it.rmAttributeName == 'lower' }
+      def upper_attr = o.attributes.find { it.rmAttributeName == 'upper' }
 
-      attrs.each { attr ->
+      // by default no constraint, which are all the else cases for the ifs below
+      def lower_constraint = 'no'
+      def upper_constraint = 'no'
+      def combined_constraint // this would be list_range, no_no, no_range, etc (lower_constraint +'_'+ upper_constraint)
 
-         def c_attr = o.attributes.find { it.rmAttributeName == attr }
-         if (c_attr)
+      // when lower_constraint or upper_constraint are different than 'no', these will be not null
+      def lower_primitive, upper_primitive
+
+      if (lower_attr)
+      {
+         // FIXME: check children has any element, that is actually the object constraint for the DV_COUNT
+         def lower_attr_magnitude = lower_attr.children[0].attributes.find { it.rmAttributeName == 'magnitude' }
+         if (lower_attr_magnitude)
          {
-            mobj."${attr}" = generate_DV_COUNT(c_attr.children[0], parent_arch_id)
-
-            if (mobj."${attr}")
+            def lower_primitive_object = lower_attr_magnitude.children[0]
+            if (lower_primitive_object)
             {
-               mobj."${attr}_included" = true
-               mobj."${attr}_unbounded" = false // this comply with the interval invariants https://specifications.openehr.org/releases/BASE/Release-1.2.0/foundation_types.html#_interval_class
+               lower_primitive = lower_primitive_object.item
+               if (lower_primitive)
+               {
+                  if (lower_primitive.range)
+                  {
+                     lower_constraint = 'range'
+                  }
+                  else if (lower_primitive.list) // already checks for null and empty
+                  {
+                     lower_constraint = 'list'
+                  }
+               }
             }
          }
       }
 
-      // FIXME: this doesn't work if one value was picked from a list constraint,
-      // the values for the interval should be generated together considering all the 
-      // possible combinations of constraints: range-range, list-list, none-none (and their combinations)
-      // lower < upper
-      if (mobj.lower && mobj.upper && mobj.lower.magnitude > mobj.upper.magnitude)
+      if (upper_attr)
       {
-         def tmp = mobj.lower
-         mobj.lower = mobj.upper
-         mobj.upper = tmp
+         // FIXME: check children has any element, that is actually the object constraint for the DV_COUNT
+         def upper_attr_magnitude = upper_attr.children[0].attributes.find { it.rmAttributeName == 'magnitude' }
+         if (upper_attr_magnitude)
+         {
+            def upper_primitive_object = upper_attr_magnitude.children[0]
+            if (upper_primitive_object)
+            {
+               upper_primitive = upper_primitive_object.item
+               if (upper_primitive)
+               {
+                  if (upper_primitive.range)
+                  {
+                     upper_constraint = 'range'
+                  }
+                  else if (upper_primitive.list) // already checks for null and empty
+                  {
+                     upper_constraint = 'list'
+                  }
+               }
+            }
+         }
       }
+
+      combined_constraint = lower_constraint +'_'+ upper_constraint
+
+      Integer lower_magnitude, upper_magnitude
+
+      switch (combined_constraint)
+      {
+         case 'no_no':
+            lower_magnitude = Integer.random(10, 1)
+            upper_magnitude = lower_magnitude + 1 // assure lower < upper
+         break
+         case 'no_list':
+            upper_magnitude = upper_primitive.list.sort{-it}[0] // take the biggest value
+            lower_magnitude = upper_magnitude - 1
+         break
+         case 'no_range':
+            upper_magnitude = DataGenerator.int_in_range(upper_primitive.range)
+            lower_magnitude = upper_magnitude - 1
+         break
+         case 'list_no':
+            lower_magnitude = lower_primitive.list.sort()[0] // take the lowest value
+            upper_magnitude = lower_magnitude + 1
+         break
+         case 'list_list':
+            lower_magnitude = lower_primitive.list.sort()[0] // take the lowest value
+            upper_magnitude = upper_primitive.list.sort{-it}[0] // take the biggest value
+
+            if (lower_magnitude > upper_magnitude)
+            {
+               throw new Exception('The template defines incompatible list constraints to lower and upper attributes of the interval')
+            }
+         break
+         case 'list_range':
+            lower_magnitude = lower_primitive.list.sort()[0] // take the lowest value
+            
+            if (upper_primitive.range.upper && lower_magnitude > upper_primitive.range.upper)
+            {
+               throw new Exception('The template defines incompatible list constraint for lower and range constraint for upper on an interval')
+            }
+
+            // ensures the upper generated is greater than the lower picker from the list
+            def constrained_range = upper_primitive.range.clone()
+            constrained_range.lower = lower_magnitude
+
+            upper_magnitude = DataGenerator.int_in_range(constrained_range)
+         break
+         case 'range_no':
+            lower_magnitude = DataGenerator.int_in_range(lower_primitive.range)
+            upper_magnitude = lower_magnitude + 1
+         break
+         case 'range_list':
+            upper_magnitude = upper_primitive.list.sort{-it}[0] // take the biggest value
+
+            // These checks below ensure the constrained_range has lower <= upper
+
+            // if lowerIncluded, range.lower should be <= upper_magnitude
+            if (lower_primitive.range.lower.lowerIncluded && lower_primitive.range.lower > upper_magnitude)
+            {
+               throw new Exception('The template defines incompatible range constraint for lower and list constraint for upper on an interval')
+            }
+
+            // if !lowerIncluded, range.lower should be < upper_magnitude
+            if (!lower_primitive.range.lower.lowerIncluded && lower_primitive.range.lower >= upper_magnitude)
+            {
+               throw new Exception('The template defines incompatible range constraint for lower and list constraint for upper on an interval')
+            }
+
+            // ensures the lower generated is lower than the upper picked from the list
+            def constrained_range = lower_primitive.range.clone()
+            constrained_range.upper = upper_magnitude
+            constrained_range.upperUnbounded = false
+
+            lower_magnitude = DataGenerator.int_in_range(constrained_range)
+         break
+         case 'range_range':
+            // the condition for valid range_range constraints is: (considering also unbounded)
+            //
+            // (upper.range.upperUnbounded ||
+            //  !lower.range.upperUnbounded && lower.range.upper <= upper.range.upper)
+            // && 
+            // (lower.range.lowerUnbounded ||
+            //  !upper,range.lowerUnbounded && lower.range.lower <= upper.range.lower
+            // )
+            //
+            //
+            // if those constraints are met, picking the lowest value from lower.range and the
+            // highest value from upper.range will generate valid data from the interval
+
+            // limits would be null in the case of unbounded
+            if (lower_primitive.range.lowerUnbounded)
+            {
+               lower_magnitude = 0
+            }
+            else
+            {
+               lower_magnitude = lower_primitive.range.lower
+               if (!lower_primitive.range.lowerIncluded) lower_magnitude += 1
+            }
+
+            if (upper_primitive.range.upperUnbounded)
+            {
+               upper_magnitude = lower_magnitude + 1
+            }
+            else
+            {
+               upper_magnitude = upper_primitive.range.upper
+               if (!upper_primitive.range.upperIncluded) upper_magnitude -= 1
+            }
+         break
+      }
+
+      mobj.lower = [
+         _type: 'DV_COUNT',
+         magnitude: lower_magnitude
+      ]
+
+      mobj.upper = [
+         _type: 'DV_COUNT',
+         magnitude: upper_magnitude
+      ]
       
       return mobj
    }
@@ -1752,59 +1925,136 @@ class JsonInstanceCanonicalGenerator2 {
    private generate_DV_INTERVAL__DV_QUANTITY(ObjectNode o, String parent_arch_id)
    {
       def mobj = [
-         _type: 'DV_INTERVAL' // removed <DV_QUANTITY> generics because of https://discourse.openehr.org/t/correct-use-of-generic-types-in-xml-and-json/1504/16
+         _type: 'DV_INTERVAL', // removed <DV_QUANTITY> generics because of https://discourse.openehr.org/t/correct-use-of-generic-types-in-xml-and-json/1504/16
+         lower_included: true,
+         upper_included: true,
+         lower_unbounded: false,
+         upper_unbounded: false
       ]
 
-      // default included limits
-      mobj.lower_included = false
-      mobj.upper_included = false
-      mobj.lower_unbounded = true
-      mobj.upper_unbounded = true
+      // TODO: refactor with XmlInstanceGenerator code because it's the same
+      // get constraints for DV_QUANTITY limits
+      def lower_attr = o.attributes.find { it.rmAttributeName == 'lower' }
+      def upper_attr = o.attributes.find { it.rmAttributeName == 'upper' }
 
-      def attrs = ['lower', 'upper']
+      def lower_constraint = 'no'
+      def upper_constraint = 'no'
+      def combined_constraint // this would be list_range, no_no, no_range, ...
 
-      attrs.each { attr ->
+      def lower_qty_item, upper_qty_item
 
-         def c_attr = o.attributes.find { it.rmAttributeName == attr }
-         if (c_attr)
+      // when lower_constraint or upper_constraint are different than 'no', these will be not null
+      def lower_qty_magnitude_interval, upper_qty_magnitude_interval
+
+      if (lower_attr)
+      {
+         def cqty_lower = lower_attr.children[0]
+         if (cqty_lower && cqty_lower.list)
          {
-            mobj."${attr}" = generate_DV_QUANTITY(c_attr.children[0], parent_arch_id)
-
-            if (mobj."${attr}")
+            lower_qty_item = cqty_lower.list[0]
+            if (lower_qty_item.magnitude)
             {
-               mobj."${attr}_included" = true
-               mobj."${attr}_unbounded" = false // this comply with the interval invariants https://specifications.openehr.org/releases/BASE/Release-1.2.0/foundation_types.html#_interval_class
+               lower_constraint = 'range'
+               lower_qty_magnitude_interval = lower_qty_item.magnitude
             }
-
-            
-            /* the limit will be unbbounded only if there is no value for it, so this code
-               is not needed since the logic above contemplates that.
-            
-            def cqty = c_attr.children[0] // CDvQuantity
-            if (cqty.list)
-            {
-               def unbounded = false
-               cqty.list.each { cqitem->
-                  // could be a list of units without magniture
-                  // lower/upper Unbounded
-                  if (!cqitem.magnitude || cqitem.magnitude."${attr}Unbounded")
-                  {
-                     unbounded = true
-                  }
-               }
-               mobj."${attr}_unbounded" = unbounded
-            }
-            */
          }
       }
 
-      // lower < upper
-      if (mobj.lower && mobj.upper && mobj.lower.magnitude > mobj.upper.magnitude)
+      if (upper_attr)
       {
-         def tmp = mobj.lower
-         mobj.lower = mobj.upper
-         mobj.upper = tmp
+         def cqty_upper = upper_attr.children[0]
+         if (cqty_upper && cqty_upper.list)
+         {
+            // if there is an item selected for the lower, the upper item should have the same units
+            if (lower_qty_item)
+            {
+               upper_qty_item = cqty_upper.list.find{ it.units == lower_qty_item.units }
+               if (!upper_qty_item)
+               {
+                  throw new Exception('There is no constraint for upper with the same units as lower limit for DV_INTERVAL<DV_QUANTITY> in the template')
+               }
+            }
+            else
+            {
+               upper_qty_item = cqty_upper.list[0]
+            }
+
+            if (upper_qty_item.magnitude)
+            {
+               upper_constraint = 'range'
+               upper_qty_magnitude_interval = upper_qty_item.magnitude
+            }
+         }
       }
+
+      combined_constraint = lower_constraint +'_'+ upper_constraint
+
+      // FIXME: would be better to use BigDecimal
+      Double lower_magnitude, upper_magnitude
+      String _units = (lower_qty_item ? lower_qty_item.units : (upper_qty_item ? upper_qty_item.units : 'no_units_constraint'))
+
+      switch (combined_constraint)
+      {
+         case 'no_no':
+            lower_magnitude = Double.random(10.0, 0.0)
+            upper_magnitude = lower_magnitude + 1.0
+         break
+         case 'no_range':
+            upper_magnitude = DataGenerator.double_in_range(upper_qty_magnitude_interval)
+            lower_magnitude = upper_magnitude - 1.0
+         break
+         case 'range_no':
+            lower_magnitude = DataGenerator.double_in_range(lower_qty_magnitude_interval)
+            upper_magnitude = lower_magnitude + 1.0
+         break
+         case 'range_range':
+            // the condition for valid range_range constraints is: (considering also unbounded)
+            //
+            // (upper.range.upperUnbounded ||
+            //  !lower.range.upperUnbounded && lower.range.upper <= upper.range.upper)
+            // && 
+            // (lower.range.lowerUnbounded ||
+            //  !upper,range.lowerUnbounded && lower.range.lower <= upper.range.lower
+            // )
+            //
+            //
+            // if those constraints are met, picking the lowest value from lower.range and the
+            // highest value from upper.range will generate valid data from the interval
+
+             // limits would be null in the case of unbounded
+            if (lower_qty_magnitude_interval.lowerUnbounded)
+            {
+               lower_magnitude = 0.0
+            }
+            else
+            {
+               lower_magnitude = lower_qty_magnitude_interval.lower
+               if (!lower_qty_magnitude_interval.lowerIncluded) lower_magnitude += 0.1
+            }
+
+            if (upper_qty_magnitude_interval.upperUnbounded)
+            {
+               upper_magnitude = lower_magnitude + 10.0
+            }
+            else
+            {
+               upper_magnitude = upper_qty_magnitude_interval.upper
+               if (!upper_qty_magnitude_interval.upperIncluded) upper_magnitude -= 0.1
+            }
+         break
+      }
+
+      mobj.lower = [
+         _type: 'DV_QUANTITY',
+         magnitude: lower_magnitude,
+         units: _units
+      ]
+
+      mobj.upper = [
+         _type: 'DV_QUANTITY',
+         magnitude: upper_magnitude,
+         units: _units
+      ]
       
       return mobj
    }
@@ -1812,40 +2062,106 @@ class JsonInstanceCanonicalGenerator2 {
    private generate_DV_INTERVAL__DV_DATE_TIME(ObjectNode o, String parent_arch_id)
    {
       def mobj = [
-         _type: 'DV_INTERVAL' // removed <DV_DATE_TIME> generics because of https://discourse.openehr.org/t/correct-use-of-generic-types-in-xml-and-json/1504/16
+         _type: 'DV_INTERVAL', // removed <DV_DATE_TIME> generics because of https://discourse.openehr.org/t/correct-use-of-generic-types-in-xml-and-json/1504/16
+         lower_included: true,
+         upper_included: true,
+         lower_unbounded: false,
+         upper_unbounded: false
       ]
 
-      def attrs = ['lower', 'upper']
+      // TODO: refactor with XmlInstanceGEnerator since the code is the same
       
-      // default included limits
-      mobj.lower_included = false
-      mobj.upper_included = false
-      mobj.lower_unbounded = true
-      mobj.upper_unbounded = true
+      // get constraints for DV_COUNT limits
+      def lower_attr = o.attributes.find { it.rmAttributeName == 'lower' }
+      def upper_attr = o.attributes.find { it.rmAttributeName == 'upper' }
 
-      attrs.each { attr ->
+      // by default no constraint, which are all the else cases for the ifs below
+      def lower_constraint = 'no'
+      def upper_constraint = 'no'
+      def combined_constraint // this would be no_no, no_pattern, pattern_no, pattern_pattern, pattern comes from CDateTime.pattern
 
-         def c_attr = o.attributes.find { it.rmAttributeName == attr }
-         if (c_attr)
+      // when lower_constraint or upper_constraint are different than 'no', these will be not null
+      def lower_primitive, upper_primitive
+
+      if (lower_attr)
+      {
+         def cdt_lower = lower_attr.children[0]
+         if (cdt_lower)
          {
-            // NOTE: this will always return a map, the if below is not needed
-            mobj << generate_attr_DV_DATE_TIME(attr)
-
-            if (mobj."${attr}")
+            def lower_attr_value = cdt_lower.attributes.find { it.rmAttributeName == 'value' }
+            if (lower_attr_value)
             {
-               mobj."${attr}_included" = true
-               mobj."${attr}_unbounded" = false // this comply with the interval invariants https://specifications.openehr.org/releases/BASE/Release-1.2.0/foundation_types.html#_interval_class
+               def lower_primitive_object = lower_attr_value.children[0]
+               if (lower_primitive_object)
+               {
+                  lower_primitive = lower_primitive_object.item
+                  if (lower_primitive && lower_primitive.pattern)
+                  {
+                     lower_constraint = 'pattern'
+                  }
+                  // TODO: support list in CDateTime
+               }
             }
          }
       }
 
-      // lower < upper
-      if (mobj.lower && mobj.upper && mobj.lower.value > mobj.upper.value)
+      if (upper_attr)
       {
-         def tmp = mobj.lower
-         mobj.lower = mobj.upper
-         mobj.upper = tmp
+         def cdt_upper = upper_attr.children[0]
+         if (cdt_upper)
+         {
+            def upper_attr_value = cdt_upper.attributes.find { it.rmAttributeName == 'value' }
+            if (upper_attr_value)
+            {
+               def upper_primitive_object = upper_attr_value.children[0]
+               if (upper_primitive_object)
+               {
+                  upper_primitive = upper_primitive_object.item
+                  if (upper_primitive && upper_primitive.pattern)
+                  {
+                     upper_constraint = 'pattern'
+                  }
+                  // TODO: support list in CDateTime
+               }
+            }
+         }
       }
+
+      combined_constraint = lower_constraint +'_'+ upper_constraint
+
+      String lower_value, upper_value
+
+      // TODO: support partial datetimes: https://github.com/ppazos/openEHR-OPT/issues/126
+      // Note the pattern constraints are for defining the partial parts not about the value itself
+      switch (combined_constraint)
+      {
+         case 'no_no':
+            lower_value = new Date().toOpenEHRDateTime()
+            upper_value = (new Date() + 1).toOpenEHRDateTime() // +1 day
+         break
+         case 'no_pattern':
+            lower_value = new Date().toOpenEHRDateTime()
+            upper_value = (new Date() + 1).toOpenEHRDateTime() // +1 day
+         break
+         case 'pattern_no':
+            lower_value = new Date().toOpenEHRDateTime()
+            upper_value = (new Date() + 1).toOpenEHRDateTime() // +1 day
+         break
+         case 'pattern_pattern':
+            lower_value = new Date().toOpenEHRDateTime()
+            upper_value = (new Date() + 1).toOpenEHRDateTime() // +1 day
+         break
+      }
+
+      mobj.lower = [
+         _type: 'DV_DATE_TIME',
+         value: lower_value
+      ]
+
+      mobj.upper = [
+         _type: 'DV_DATE_TIME',
+         value: upper_value
+      ]
 
       return mobj
    }

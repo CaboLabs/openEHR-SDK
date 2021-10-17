@@ -1231,9 +1231,8 @@ class XmlInstanceGenerator {
       def arch_node_id = (o.archetypeId ?: o.nodeId)
 
       builder."${a.rmAttributeName}"('xsi:type': o.rmTypeName, archetype_node_id: arch_node_id) {
-         name('xsi:type':'DV_TEXT') {
-            value( opt.getTerm(parent_arch_id, o.nodeId) )
-         }
+         
+         add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
          oa = o.attributes.find { it.rmAttributeName == 'items' }
 
@@ -1356,9 +1355,7 @@ class XmlInstanceGenerator {
 
       builder."${a.rmAttributeName}"(archetype_node_id:arch_node_id) {
 
-         name('xsi:type':'DV_TEXT') {
-            value( opt.getTerm(parent_arch_id, o.nodeId) )
-         }
+         add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
          def oa
 
@@ -1412,7 +1409,6 @@ class XmlInstanceGenerator {
       builder."${a.rmAttributeName}"('xsi:type': o.rmTypeName, archetype_node_id: o.archetypeId) {
 
          add_ENTRY_elements(o, parent_arch_id)
-
 
          // ACTION.time (not in the OPT, is an IM attribute)
          generate_attr_DV_DATE_TIME('time', false)
@@ -1499,14 +1495,14 @@ class XmlInstanceGenerator {
 
       builder."${a.rmAttributeName}"(archetype_node_id:arch_node_id) {
 
-         name('xsi:type':'DV_TEXT') {
-            value( opt.getTerm(parent_arch_id, o.nodeId) )
-         }
+         add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
+
          // IM attribute not present in the OPT
          generate_attr_DV_DATE_TIME('origin', false)
 
          o.attributes.each { oa ->
 
+            if (oa.rmAttributeName == 'name') return
             processAttributeChildren(oa, parent_arch_id)
          }
       }
@@ -1526,14 +1522,14 @@ class XmlInstanceGenerator {
 
       builder."${a.rmAttributeName}"('xsi:type': 'POINT_EVENT', archetype_node_id:arch_node_id) { // dont use EVENT because is abstract
 
-         name('xsi:type':'DV_TEXT') {
-            value( opt.getTerm(parent_arch_id, o.nodeId) )
-         }
+         add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
+
          // IM attribute not present in the OPT
          generate_attr_DV_DATE_TIME('time', false)
 
          o.attributes.each { oa ->
 
+            if (oa.rmAttributeName == 'name') return
             processAttributeChildren(oa, parent_arch_id)
          }
       }
@@ -1553,9 +1549,8 @@ class XmlInstanceGenerator {
 
       builder."${a.rmAttributeName}"('xsi:type': 'INTERVAL_EVENT', archetype_node_id:arch_node_id) { // dont use EVENT because is abstract
 
-         name('xsi:type':'DV_TEXT') {
-            value( opt.getTerm(parent_arch_id, o.nodeId) )
-         }
+         add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
+
          // IM attribute not present in the OPT
          generate_attr_DV_DATE_TIME('time', false)
 
@@ -1632,6 +1627,7 @@ class XmlInstanceGenerator {
 
          o.attributes.each { oa ->
 
+            if (oa.rmAttributeName == 'name') return
             processAttributeChildren(oa, parent_arch_id)
          }
       }
@@ -2144,14 +2140,103 @@ class XmlInstanceGenerator {
          <upper_unbounded>false</upper_unbounded>
       </value>
       */
+      
+      // generate valid values simultaneously to be valid and lower <= upper
+      // all the checks for existence of every constraint at each level is needed because most are
+      // optional, and each 'else' would be a 'no_constraint' case.
+      
+      // get constraints for DV_COUNT limits
+      def lower_attr = o.attributes.find { it.rmAttributeName == 'lower' }
+      def upper_attr = o.attributes.find { it.rmAttributeName == 'upper' }
+
+      // by default no constraint, which are all the else cases for the ifs below
+      def lower_constraint = 'no'
+      def upper_constraint = 'no'
+      def combined_constraint // this would be no_no, no_pattern, pattern_no, pattern_pattern, pattern comes from CDateTime.pattern
+
+      // when lower_constraint or upper_constraint are different than 'no', these will be not null
+      def lower_primitive, upper_primitive
+
+      if (lower_attr)
+      {
+         def cdt_lower = lower_attr.children[0]
+         if (cdt_lower)
+         {
+            def lower_attr_value = cdt_lower.attributes.find { it.rmAttributeName == 'value' }
+            if (lower_attr_value)
+            {
+               def lower_primitive_object = lower_attr_value.children[0]
+               if (lower_primitive_object)
+               {
+                  lower_primitive = lower_primitive_object.item
+                  if (lower_primitive && lower_primitive.pattern)
+                  {
+                     lower_constraint = 'pattern'
+                  }
+                  // TODO: support list in CDateTime
+               }
+            }
+         }
+      }
+
+      if (upper_attr)
+      {
+         def cdt_upper = upper_attr.children[0]
+         if (cdt_upper)
+         {
+            def upper_attr_value = cdt_upper.attributes.find { it.rmAttributeName == 'value' }
+            if (upper_attr_value)
+            {
+               def upper_primitive_object = upper_attr_value.children[0]
+               if (upper_primitive_object)
+               {
+                  upper_primitive = upper_primitive_object.item
+                  if (upper_primitive && upper_primitive.pattern)
+                  {
+                     upper_constraint = 'pattern'
+                  }
+                  // TODO: support list in CDateTime
+               }
+            }
+         }
+      }
+
+      combined_constraint = lower_constraint +'_'+ upper_constraint
+
+      String lower_value, upper_value
+
+      // TODO: support partial datetimes: https://github.com/ppazos/openEHR-OPT/issues/126
+      // Note the pattern constraints are for defining the partial parts not about the value itself
+      switch (combined_constraint)
+      {
+         case 'no_no':
+            lower_value = new Date().toOpenEHRDateTime()
+            upper_value = (new Date() + 1).toOpenEHRDateTime() // +1 day
+         break
+         case 'no_pattern':
+            lower_value = new Date().toOpenEHRDateTime()
+            upper_value = (new Date() + 1).toOpenEHRDateTime() // +1 day
+         break
+         case 'pattern_no':
+            lower_value = new Date().toOpenEHRDateTime()
+            upper_value = (new Date() + 1).toOpenEHRDateTime() // +1 day
+         break
+         case 'pattern_pattern':
+            lower_value = new Date().toOpenEHRDateTime()
+            upper_value = (new Date() + 1).toOpenEHRDateTime() // +1 day
+         break
+      }
+
+
       AttributeNode a = o.parent
       builder."${a.rmAttributeName}"('xsi:type':'DV_INTERVAL') {
 
-         def lower = o.attributes.find { it.rmAttributeName == 'lower' }
-         generate_attr_DV_DATE_TIME(lower.rmAttributeName)
-
-         def upper = o.attributes.find { it.rmAttributeName == 'upper' }
-         generate_attr_DV_DATE_TIME(upper.rmAttributeName)
+         lower('xsi:type':'DV_DATE_TIME') {
+            value(lower_value)
+         }
+         upper('xsi:type':'DV_DATE_TIME') {
+            value(upper_value)
+         }
 
          def _lower_included = true,
              _upper_included = true,

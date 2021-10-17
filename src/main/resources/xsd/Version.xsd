@@ -736,13 +736,14 @@
      </xs:complexType>
 
    <!-- https://github.com/ppazos/cabolabs-ehrserver/issues/917 -->
-   <!--
+   
    <xs:complexType name="TEMPLATE_ID">
           <xs:complexContent>
                <xs:extension base="OBJECT_ID"/>
           </xs:complexContent>
      </xs:complexType>
-   -->
+   
+     <!--
    <xs:complexType name="TEMPLATE_ID">
 		    <xs:complexContent>
 			      <xs:restriction base="OBJECT_ID">
@@ -752,6 +753,7 @@
 			      </xs:restriction>
 		    </xs:complexContent>
 	  </xs:complexType>
+       -->
 
    <xs:complexType name="TERMINOLOGY_ID">
           <xs:complexContent>

@@ -1702,107 +1702,195 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
    private generate_DV_INTERVAL__DV_COUNT(ObjectNode o, String parent_arch_id)
    {
       def mobj = [
-         _type: 'DV_INTERVAL' // removed <DV_COUNT> generics because of https://discourse.openehr.org/t/correct-use-of-generic-types-in-xml-and-json/1504/16
+         _type: 'DV_INTERVAL', // removed <DV_COUNT> generics because of https://discourse.openehr.org/t/correct-use-of-generic-types-in-xml-and-json/1504/16
+         lower_included: true,
+         upper_included: true,
+         lower_unbounded: false,
+         upper_unbounded: false
       ]
 
-      // default included limits
-      mobj.lower_included = true
-      mobj.upper_included = true
+      // TODO: refactor with XmlInstanceGenerator since the code is the same
+      // get constraints for DV_COUNT limits
+      def lower_attr = o.attributes.find { it.rmAttributeName == 'lower' }
+      def upper_attr = o.attributes.find { it.rmAttributeName == 'upper' }
 
-      // Need to ask for the attributes explicitly since order matters for the XSD
+      // by default no constraint, which are all the else cases for the ifs below
+      def lower_constraint = 'no'
+      def upper_constraint = 'no'
+      def combined_constraint // this would be list_range, no_no, no_range, etc (lower_constraint +'_'+ upper_constraint)
 
-      def lower = o.attributes.find { it.rmAttributeName == 'lower' }
+      // when lower_constraint or upper_constraint are different than 'no', these will be not null
+      def lower_primitive, upper_primitive
+
+      if (lower_attr)
+      {
+         // FIXME: check children has any element, that is actually the object constraint for the DV_COUNT
+         def lower_attr_magnitude = lower_attr.children[0].attributes.find { it.rmAttributeName == 'magnitude' }
+         if (lower_attr_magnitude)
+         {
+            def lower_primitive_object = lower_attr_magnitude.children[0]
+            if (lower_primitive_object)
+            {
+               lower_primitive = lower_primitive_object.item
+               if (lower_primitive)
+               {
+                  if (lower_primitive.range)
+                  {
+                     lower_constraint = 'range'
+                  }
+                  else if (lower_primitive.list) // already checks for null and empty
+                  {
+                     lower_constraint = 'list'
+                  }
+               }
+            }
+         }
+      }
+
+      if (upper_attr)
+      {
+         // FIXME: check children has any element, that is actually the object constraint for the DV_COUNT
+         def upper_attr_magnitude = upper_attr.children[0].attributes.find { it.rmAttributeName == 'magnitude' }
+         if (upper_attr_magnitude)
+         {
+            def upper_primitive_object = upper_attr_magnitude.children[0]
+            if (upper_primitive_object)
+            {
+               upper_primitive = upper_primitive_object.item
+               if (upper_primitive)
+               {
+                  if (upper_primitive.range)
+                  {
+                     upper_constraint = 'range'
+                  }
+                  else if (upper_primitive.list) // already checks for null and empty
+                  {
+                     upper_constraint = 'list'
+                  }
+               }
+            }
+         }
+      }
+
+      combined_constraint = lower_constraint +'_'+ upper_constraint
+
+      Integer lower_magnitude, upper_magnitude
+
+      switch (combined_constraint)
+      {
+         case 'no_no':
+            lower_magnitude = Integer.random(10, 1)
+            upper_magnitude = lower_magnitude + 1 // assure lower < upper
+         break
+         case 'no_list':
+            upper_magnitude = upper_primitive.list.sort{-it}[0] // take the biggest value
+            lower_magnitude = upper_magnitude - 1
+         break
+         case 'no_range':
+            upper_magnitude = DataGenerator.int_in_range(upper_primitive.range)
+            lower_magnitude = upper_magnitude - 1
+         break
+         case 'list_no':
+            lower_magnitude = lower_primitive.list.sort()[0] // take the lowest value
+            upper_magnitude = lower_magnitude + 1
+         break
+         case 'list_list':
+            lower_magnitude = lower_primitive.list.sort()[0] // take the lowest value
+            upper_magnitude = upper_primitive.list.sort{-it}[0] // take the biggest value
+
+            if (lower_magnitude > upper_magnitude)
+            {
+               throw new Exception('The template defines incompatible list constraints to lower and upper attributes of the interval')
+            }
+         break
+         case 'list_range':
+            lower_magnitude = lower_primitive.list.sort()[0] // take the lowest value
+            
+            if (upper_primitive.range.upper && lower_magnitude > upper_primitive.range.upper)
+            {
+               throw new Exception('The template defines incompatible list constraint for lower and range constraint for upper on an interval')
+            }
+
+            // ensures the upper generated is greater than the lower picker from the list
+            def constrained_range = upper_primitive.range.clone()
+            constrained_range.lower = lower_magnitude
+
+            upper_magnitude = DataGenerator.int_in_range(constrained_range)
+         break
+         case 'range_no':
+            lower_magnitude = DataGenerator.int_in_range(lower_primitive.range)
+            upper_magnitude = lower_magnitude + 1
+         break
+         case 'range_list':
+            upper_magnitude = upper_primitive.list.sort{-it}[0] // take the biggest value
+
+            // These checks below ensure the constrained_range has lower <= upper
+
+            // if lowerIncluded, range.lower should be <= upper_magnitude
+            if (lower_primitive.range.lower.lowerIncluded && lower_primitive.range.lower > upper_magnitude)
+            {
+               throw new Exception('The template defines incompatible range constraint for lower and list constraint for upper on an interval')
+            }
+
+            // if !lowerIncluded, range.lower should be < upper_magnitude
+            if (!lower_primitive.range.lower.lowerIncluded && lower_primitive.range.lower >= upper_magnitude)
+            {
+               throw new Exception('The template defines incompatible range constraint for lower and list constraint for upper on an interval')
+            }
+
+            // ensures the lower generated is lower than the upper picked from the list
+            def constrained_range = lower_primitive.range.clone()
+            constrained_range.upper = upper_magnitude
+            constrained_range.upperUnbounded = false
+
+            lower_magnitude = DataGenerator.int_in_range(constrained_range)
+         break
+         case 'range_range':
+            // the condition for valid range_range constraints is: (considering also unbounded)
+            //
+            // (upper.range.upperUnbounded ||
+            //  !lower.range.upperUnbounded && lower.range.upper <= upper.range.upper)
+            // && 
+            // (lower.range.lowerUnbounded ||
+            //  !upper,range.lowerUnbounded && lower.range.lower <= upper.range.lower
+            // )
+            //
+            //
+            // if those constraints are met, picking the lowest value from lower.range and the
+            // highest value from upper.range will generate valid data from the interval
+
+            // limits would be null in the case of unbounded
+            if (lower_primitive.range.lowerUnbounded)
+            {
+               lower_magnitude = 0
+            }
+            else
+            {
+               lower_magnitude = lower_primitive.range.lower
+               if (!lower_primitive.range.lowerIncluded) lower_magnitude += 1
+            }
+
+            if (upper_primitive.range.upperUnbounded)
+            {
+               upper_magnitude = lower_magnitude + 1
+            }
+            else
+            {
+               upper_magnitude = upper_primitive.range.upper
+               if (!upper_primitive.range.upperIncluded) upper_magnitude -= 1
+            }
+         break
+      }
+
       mobj.lower = [
          _type: 'DV_COUNT',
-         magnitude: Integer.random(10, 1) // TODO: consider constraints
+         magnitude: lower_magnitude
       ]
 
-      def upper = o.attributes.find { it.rmAttributeName == 'upper' }
       mobj.upper = [
          _type: 'DV_COUNT',
-         magnitude: Integer.random(100, 10) // TODO: consider constraints
+         magnitude: upper_magnitude
       ]
-
-      // lower_unbounded and upper_unbounded are required
-      // lower_unbounded: no constraint is defined for upper or lower.lower is not defined
-      // upper_unbounded: no constraint is defined for upper or upper.upper is not defined
-
-      def ccount
-      def attr_magnitude
-      def cprimitive
-      def cint
-      
-      if (!lower)
-      {
-         mobj.lower_unbounded = true
-         mobj.lower_included = false
-      }
-      else
-      {
-         ccount = lower.children[0]
-         if (!ccount)
-         {
-            mobj.lower_unbounded = true
-         }
-         else
-         {
-            attr_magnitude = ccount.attributes[0]
-            if (!attr_magnitude)
-            {
-               mobj.lower_unbounded = true
-            }
-            else
-            {
-               cprimitive = attr_magnitude.children[0]
-               cint = cprimitive.item
-
-               if (cint.range && !cint.range.lowerUnbounded)
-               {
-                  mobj.lower_unbounded = false
-               }
-               else
-               {
-                  mobj.lower_unbounded = true
-               }
-            }
-         }
-      }
-
-      if (!upper)
-      {
-         mobj.upper_unbounded = true
-         mobj.upper_included = false
-      }
-      else
-      {
-         ccount = upper.children[0]
-         if (!ccount)
-         {
-            mobj.upper_unbounded = true
-         }
-         else
-         {
-            attr_magnitude = ccount.attributes[0]
-            if (!attr_magnitude)
-            {
-               mobj.upper_unbounded = true
-            }
-            else
-            {
-               cprimitive = attr_magnitude.children[0]
-               cint = cprimitive.item
-
-               if (cint.range && !cint.range.upperUnbounded)
-               {
-                  mobj.upper_unbounded = false
-               }
-               else
-               {
-                  mobj.upper_unbounded = true
-               }
-            }
-         }
-      }
       
       return mobj
    }
