@@ -4,6 +4,7 @@ import com.cabolabs.openehr.opt.manager.*
 import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.rm_1_0_2.composition.*
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.*
+import com.cabolabs.openehr.rm_1_0_2.composition.content.navigation.Section
 import com.cabolabs.openehr.rm_1_0_2.data_structures.history.*
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.*
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.*
@@ -35,6 +36,14 @@ class RmValidator {
       def opt = this.opt_manager.getOpt(template_id, namespace)
 
       if (!opt) return opt_not_found(template_id)
+
+      // pathable path and dataPath are loaded only from parsing,
+      // not from creating RM instances programatically, but are used
+      // to report errors so we need to calculate them here
+      if (!c.path)
+      {
+         c.fillPathable(null, null)
+      }
 
       return validate(c, opt.definition)
    }
@@ -76,6 +85,30 @@ class RmValidator {
             if (!a_content.existence.has(0))
             {
                report.addError("/content", "attribute is not present but is required")
+            }
+         }
+      }
+
+      return report
+   }
+
+   private RmValidationReport validate(Section s, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      def a_content = o.getAttr('items')
+      if (a_content)
+      {
+         if (s.items != null)
+         {
+            report.append(validate(s.items, a_content)) // validate container
+         }
+         else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         {
+            if (!a_content.existence.has(0))
+            {
+               // TODO: fix path to add parents
+               report.addError(o.templateDataPath, "/items attribute is not present but is required")
             }
          }
       }
@@ -133,6 +166,13 @@ class RmValidator {
                   it.nodeId == item.archetype_node_id   
             }
 
+            /*
+            println "------"
+            println c_multiple_attribute.children
+            println obj
+            println item
+            println item.archetype_node_id
+            */
             //println obj.type
             
             if (obj)
@@ -502,6 +542,45 @@ class RmValidator {
       }
 
       // TODO: protocol
+
+      return report
+   }
+
+   private RmValidationReport validate(Activity act, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // occurrences
+      if (o.occurrences)
+      {
+         def occurrences = (act ? 1 : 0)
+         if (!o.occurrences.has(occurrences))
+         {
+            // occurrences error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError(o.templateDataPath, "Node doesn't match occurrences")
+         }
+      }
+
+      def a_description = o.getAttr('description') // item structure
+
+      if (a_description) // if the attribute node is null, all objects validate
+      {
+         if (act.description)
+         {
+            report.append(validate(act.description, a_description))
+         }
+         else
+         {
+            // TODO: should validate existence if the attribute node is not null
+            if (!a_description.existence.has(0))
+            {
+               report.addError(o.templateDataPath, "/description is not present but is required")
+            }
+         }
+      }
+
+      // TODO: timing, action_archetype_id
 
       return report
    }

@@ -82,6 +82,140 @@ class CDateTime extends CPrimitive {
                               "yyyyMMdd'T'HHX",
                               "yyyyMMdd'T'HH"
                              ],
+      'yyyy-mm-ddT??:??:??': ["yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                              "yyyy-MM-dd'T'HH:mm:ss.SSSX",
+                              "yyyy-MM-dd'T'HH:mm:ss.SSS",
+
+                              "yyyy-MM-dd'T'HH:mm:ss,SSS'Z'", // seconds fraction alternative with comma
+                              "yyyy-MM-dd'T'HH:mm:ss,SSSX",
+                              "yyyy-MM-dd'T'HH:mm:ss,SSS",
+
+                              "yyyy-MM-dd'T'HH:mm:ss'Z'",     // without seconds fraction
+                              "yyyy-MM-dd'T'HH:mm:ssX",
+                              "yyyy-MM-dd'T'HH:mm:ss",
+
+                              "yyyy-MM-dd'T'HH:mm'Z'",        // without seconds and fractions
+                              "yyyy-MM-dd'T'HH:mmX",
+                              "yyyy-MM-dd'T'HH:mm",
+
+                              "yyyy-MM-dd'T'HH'Z'",           // without minutes
+                              "yyyy-MM-dd'T'HHX",
+                              "yyyy-MM-dd'T'HH",
+
+                              "yyyyMMdd'T'HHmmss.SSS'Z'",         // basic formats ISO-8601
+                              "yyyyMMdd'T'HHmmss.SSSX",
+                              "yyyyMMdd'T'HHmmss.SSS",
+
+                              "yyyyMMdd'T'HHmmss,SSS'Z'",         // basic formats ISO-8601, seconds fraction alternatives with comma
+                              "yyyyMMdd'T'HHmmss,SSSX",
+                              "yyyyMMdd'T'HHmmss,SSS",
+
+                              "yyyyMMdd'T'HHmmss'Z'",
+                              "yyyyMMdd'T'HHmmssX",
+                              "yyyyMMdd'T'HHmmss",
+
+                              "yyyyMMdd'T'HHmm'Z'",
+                              "yyyyMMdd'T'HHmmX",
+                              "yyyyMMdd'T'HHmm",
+
+                              "yyyyMMdd'T'HH'Z'",
+                              "yyyyMMdd'T'HHX",
+                              "yyyyMMdd'T'HH",
+
+                              "yyyyMMdd",
+                              "yyyy-MM-dd"
+                             ],
+      'yyyy-mm-??T??:??:??': ["yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                              "yyyy-MM-dd'T'HH:mm:ss.SSSX",
+                              "yyyy-MM-dd'T'HH:mm:ss.SSS",
+
+                              "yyyy-MM-dd'T'HH:mm:ss,SSS'Z'", // seconds fraction alternative with comma
+                              "yyyy-MM-dd'T'HH:mm:ss,SSSX",
+                              "yyyy-MM-dd'T'HH:mm:ss,SSS",
+
+                              "yyyy-MM-dd'T'HH:mm:ss'Z'",     // without seconds fraction
+                              "yyyy-MM-dd'T'HH:mm:ssX",
+                              "yyyy-MM-dd'T'HH:mm:ss",
+
+                              "yyyy-MM-dd'T'HH:mm'Z'",        // without seconds and fractions
+                              "yyyy-MM-dd'T'HH:mmX",
+                              "yyyy-MM-dd'T'HH:mm",
+
+                              "yyyy-MM-dd'T'HH'Z'",           // without minutes
+                              "yyyy-MM-dd'T'HHX",
+                              "yyyy-MM-dd'T'HH",
+
+                              "yyyyMMdd'T'HHmmss.SSS'Z'",         // basic formats ISO-8601
+                              "yyyyMMdd'T'HHmmss.SSSX",
+                              "yyyyMMdd'T'HHmmss.SSS",
+
+                              "yyyyMMdd'T'HHmmss,SSS'Z'",         // basic formats ISO-8601, seconds fraction alternatives with comma
+                              "yyyyMMdd'T'HHmmss,SSSX",
+                              "yyyyMMdd'T'HHmmss,SSS",
+
+                              "yyyyMMdd'T'HHmmss'Z'",
+                              "yyyyMMdd'T'HHmmssX",
+                              "yyyyMMdd'T'HHmmss",
+
+                              "yyyyMMdd'T'HHmm'Z'",
+                              "yyyyMMdd'T'HHmmX",
+                              "yyyyMMdd'T'HHmm",
+
+                              "yyyyMMdd'T'HH'Z'",
+                              "yyyyMMdd'T'HHX",
+                              "yyyyMMdd'T'HH",
+
+                              "yyyyMMdd",
+                              "yyyy-MM-dd",
+                              "yyyyMM",
+                              "yyyy-MM"
+                             ],
+      'yyyy-??-??T??:??:??': ["yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                              "yyyy-MM-dd'T'HH:mm:ss.SSSX",
+                              "yyyy-MM-dd'T'HH:mm:ss.SSS",
+
+                              "yyyy-MM-dd'T'HH:mm:ss,SSS'Z'", // seconds fraction alternative with comma
+                              "yyyy-MM-dd'T'HH:mm:ss,SSSX",
+                              "yyyy-MM-dd'T'HH:mm:ss,SSS",
+
+                              "yyyy-MM-dd'T'HH:mm:ss'Z'",     // without seconds fraction
+                              "yyyy-MM-dd'T'HH:mm:ssX",
+                              "yyyy-MM-dd'T'HH:mm:ss",
+
+                              "yyyy-MM-dd'T'HH:mm'Z'",        // without seconds and fractions
+                              "yyyy-MM-dd'T'HH:mmX",
+                              "yyyy-MM-dd'T'HH:mm",
+
+                              "yyyy-MM-dd'T'HH'Z'",           // without minutes
+                              "yyyy-MM-dd'T'HHX",
+                              "yyyy-MM-dd'T'HH",
+
+                              "yyyyMMdd'T'HHmmss.SSS'Z'",         // basic formats ISO-8601
+                              "yyyyMMdd'T'HHmmss.SSSX",
+                              "yyyyMMdd'T'HHmmss.SSS",
+
+                              "yyyyMMdd'T'HHmmss,SSS'Z'",         // basic formats ISO-8601, seconds fraction alternatives with comma
+                              "yyyyMMdd'T'HHmmss,SSSX",
+                              "yyyyMMdd'T'HHmmss,SSS",
+
+                              "yyyyMMdd'T'HHmmss'Z'",
+                              "yyyyMMdd'T'HHmmssX",
+                              "yyyyMMdd'T'HHmmss",
+
+                              "yyyyMMdd'T'HHmm'Z'",
+                              "yyyyMMdd'T'HHmmX",
+                              "yyyyMMdd'T'HHmm",
+
+                              "yyyyMMdd'T'HH'Z'",
+                              "yyyyMMdd'T'HHX",
+                              "yyyyMMdd'T'HH",
+
+                              "yyyyMMdd",
+                              "yyyy-MM-dd",
+                              "yyyyMM",
+                              "yyyy-MM",
+                              "yyyy"
+                             ],
       // This is applied when the complex object of the DV_DATE_TIME has no constraints
       'any_allowed':         ["yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",         // same as previous case, since it includes all the possible valid datetime formats
                               "yyyy-MM-dd'T'HH:mm:ss.SSSX",
@@ -121,7 +255,13 @@ class CDateTime extends CPrimitive {
 
                               "yyyyMMdd'T'HH'Z'",
                               "yyyyMMdd'T'HHX",
-                              "yyyyMMdd'T'HH"
+                              "yyyyMMdd'T'HH",
+
+                              "yyyyMMdd",
+                              "yyyy-MM-dd",
+                              "yyyyMM",
+                              "yyyy-MM",
+                              "yyyy"
                              ]
    ]
 

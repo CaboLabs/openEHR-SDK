@@ -1,0 +1,166 @@
+{
+    "_type": "COMPOSITION",
+    "name": {
+        "_type": "DV_TEXT",
+        "value": "Minimal"
+    },
+    "archetype_details": {
+        "archetype_id": {
+            "value": "openEHR-EHR-COMPOSITION.minimal.v1"
+        },
+        "template_id": {
+            "value": "minimal_action_2"
+        },
+        "rm_version": "1.0.2"
+    },
+    "archetype_node_id": "openEHR-EHR-COMPOSITION.minimal.v1",
+    "language": {
+        "terminology_id": {
+            "value": "ISO_639-1"
+        },
+        "code_string": "en"
+    },
+    "territory": {
+        "terminology_id": {
+            "value": "ISO_3166-1"
+        },
+        "code_string": "UY"
+    },
+    "category": {
+        "value": "event",
+        "defining_code": {
+            "terminology_id": {
+                "value": "openehr"
+            },
+            "code_string": "433"
+        }
+    },
+    "composer": {
+        "_type": "PARTY_IDENTIFIED",
+        "external_ref": {
+            "id": {
+                "_type": "HIER_OBJECT_ID",
+                "value": "2d7f7d5f-3b43-4f1c-afb0-e96edc076037"
+            },
+            "namespace": "DEMOGRAPHIC",
+            "type": "PERSON"
+        },
+        "name": "Dr. Yamamoto"
+    },
+    "context": {
+        "start_time": {
+            "value": "2021-10-18T22:26:03.944-03:00"
+        },
+        "setting": {
+            "value": "home",
+            "defining_code": {
+                "terminology_id": {
+                    "value": "openehr"
+                },
+                "code_string": "225"
+            }
+        },
+        "participations": [
+            {
+                "function": {
+                    "value": "companion"
+                },
+                "performer": {
+                    "_type": "PARTY_RELATED",
+                    "name": "Daniel Duncan",
+                    "relationship": {
+                        "value": "bother",
+                        "defining_code": {
+                            "terminology_id": {
+                                "value": "openehr"
+                            },
+                            "code_string": "23"
+                        }
+                    }
+                },
+                "mode": {
+                    "value": "not specified",
+                    "defining_code": {
+                        "terminology_id": {
+                            "value": "openehr"
+                        },
+                        "code_string": "193"
+                    }
+                }
+            }
+        ]
+    },
+    "content": [
+        {
+            "_type": "ACTION",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Minimal 2"
+            },
+            "archetype_details": {
+                "archetype_id": {
+                    "value": "openEHR-EHR-ACTION.minimal_2.v1"
+                },
+                "template_id": {
+                    "value": "minimal_action_2"
+                },
+                "rm_version": "1.0.2"
+            },
+            "archetype_node_id": "openEHR-EHR-ACTION.minimal_2.v1",
+            "language": {
+                "terminology_id": {
+                    "value": "ISO_639-1"
+                },
+                "code_string": "en"
+            },
+            "encoding": {
+                "terminology_id": {
+                    "value": "IANA_character-sets"
+                },
+                "code_string": "UTF-8"
+            },
+            "subject": {
+                "_type": "PARTY_SELF"
+            },
+            "time": {
+                "_type": "DV_DATE_TIME",
+                "value": "2021-10-18T22:26:03.992-03:00"
+            },
+            "description": {
+                "_type": "ITEM_TREE",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Tree"
+                },
+                "archetype_node_id": "at0001",
+                "items": [
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Proportion"
+                        },
+                        "archetype_node_id": "at0002",
+                        "value": {
+                            "_type": "DV_PROPORTION",
+                            "numerator": 396.0,
+                            "denominator": 381.0,
+                            "type": 3
+                        }
+                    }
+                ]
+            },
+            "ism_transition": {
+                "current_state": {
+                    "value": "planned",
+                    "defining_code": {
+                        "terminology_id": {
+                            "value": "openehr"
+                        },
+                        "code_string": "526"
+                    }
+                }
+            }
+        }
+    ]
+}

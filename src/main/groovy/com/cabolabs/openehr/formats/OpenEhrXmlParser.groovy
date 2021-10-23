@@ -414,7 +414,8 @@ class OpenEhrXmlParser {
       }
       method = 'parse'+ type
       compo.composer = this."$method"(xml.composer)
-      
+
+      // NOTE: these paths are not using the node_id, are just attribute paths
       compo.context = parseEVENT_CONTEXT(xml.context, compo,
                                          (path != '/' ? path +'/context' : '/context'),
                                          (dataPath != '/' ? dataPath +'/context' : '/context')
@@ -1168,7 +1169,7 @@ class OpenEhrXmlParser {
          }
          method = 'parse'+ type
          c.items.add(
-            this."$method"(item, c
+            this."$method"(item, c,
                            (path != '/' ? path +'/items' : '/items'),
                            (dataPath != '/' ? dataPath +'/items['+ i +']' : '/items['+ i +']')
                           )

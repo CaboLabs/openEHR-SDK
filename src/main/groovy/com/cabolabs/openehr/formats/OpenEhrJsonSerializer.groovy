@@ -60,6 +60,7 @@ class OpenEhrJsonSerializer {
       return JsonOutput.toJson(out)
    }
 
+   // TODO: add support for pretty print, see ingen
    String serialize(Version o)
    {
       String method = this.method(o)
@@ -612,6 +613,7 @@ class OpenEhrJsonSerializer {
       this.fillLocatable(s, out)
       
       Map _item
+      def method
 
       out.items = []
       s.items.each { content_item ->

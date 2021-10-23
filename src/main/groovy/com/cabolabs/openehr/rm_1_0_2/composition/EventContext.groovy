@@ -20,4 +20,17 @@ class EventContext extends Pathable {
    ItemStructure other_context
    PartyIdentified health_care_facility
    List<Participation> participations = []
+
+   @Override
+   void fillPathable(Pathable parent, String parentAttribute)
+   {
+      this.path = ((parent.path != '/') ? '/' : '') + parentAttribute
+      this.dataPath = ((parent.dataPath != '/') ? '/' : '') + parentAttribute
+      this.parent = parent
+
+      if (this.other_context)
+      {
+         this.other_context.fillPathable(this, 'other_context')
+      }
+   }
 }

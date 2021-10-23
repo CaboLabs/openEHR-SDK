@@ -1,0 +1,176 @@
+{
+    "_type": "COMPOSITION",
+    "name": {
+        "_type": "DV_TEXT",
+        "value": "Alternative types"
+    },
+    "archetype_details": {
+        "archetype_id": {
+            "value": "openEHR-EHR-COMPOSITION.alternative_types.v1"
+        },
+        "template_id": {
+            "value": "alternative_types.en.v1"
+        },
+        "rm_version": "1.0.2"
+    },
+    "archetype_node_id": "openEHR-EHR-COMPOSITION.alternative_types.v1",
+    "language": {
+        "terminology_id": {
+            "value": "ISO_639-1"
+        },
+        "code_string": "en"
+    },
+    "territory": {
+        "terminology_id": {
+            "value": "ISO_3166-1"
+        },
+        "code_string": "UY"
+    },
+    "category": {
+        "value": "event",
+        "defining_code": {
+            "terminology_id": {
+                "value": "openehr"
+            },
+            "code_string": "433"
+        }
+    },
+    "composer": {
+        "_type": "PARTY_IDENTIFIED",
+        "external_ref": {
+            "id": {
+                "_type": "HIER_OBJECT_ID",
+                "value": "c6004850-a383-4ced-8ffc-86aae7f5dd00"
+            },
+            "namespace": "DEMOGRAPHIC",
+            "type": "PERSON"
+        },
+        "name": "Dr. Yamamoto"
+    },
+    "context": {
+        "start_time": {
+            "value": "2021-10-18T22:20:36.503-03:00"
+        },
+        "setting": {
+            "value": "home",
+            "defining_code": {
+                "terminology_id": {
+                    "value": "openehr"
+                },
+                "code_string": "225"
+            }
+        },
+        "participations": [
+            {
+                "function": {
+                    "value": "companion"
+                },
+                "performer": {
+                    "_type": "PARTY_RELATED",
+                    "name": "Betty Bix",
+                    "relationship": {
+                        "value": "sister",
+                        "defining_code": {
+                            "terminology_id": {
+                                "value": "openehr"
+                            },
+                            "code_string": "24"
+                        }
+                    }
+                },
+                "mode": {
+                    "value": "not specified",
+                    "defining_code": {
+                        "terminology_id": {
+                            "value": "openehr"
+                        },
+                        "code_string": "193"
+                    }
+                }
+            }
+        ]
+    },
+    "content": [
+        {
+            "_type": "OBSERVATION",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Alternative types"
+            },
+            "archetype_details": {
+                "archetype_id": {
+                    "value": "openEHR-EHR-OBSERVATION.alternative_types.v1"
+                },
+                "template_id": {
+                    "value": "alternative_types.en.v1"
+                },
+                "rm_version": "1.0.2"
+            },
+            "archetype_node_id": "openEHR-EHR-OBSERVATION.alternative_types.v1",
+            "language": {
+                "terminology_id": {
+                    "value": "ISO_639-1"
+                },
+                "code_string": "en"
+            },
+            "encoding": {
+                "terminology_id": {
+                    "value": "IANA_character-sets"
+                },
+                "code_string": "UTF-8"
+            },
+            "subject": {
+                "_type": "PARTY_SELF"
+            },
+            "data": {
+                "_type": "HISTORY",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Event Series"
+                },
+                "archetype_node_id": "at0001",
+                "origin": {
+                    "_type": "DV_DATE_TIME",
+                    "value": "2021-10-18T22:20:36.556-03:00"
+                },
+                "events": [
+                    {
+                        "_type": "POINT_EVENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Any event"
+                        },
+                        "archetype_node_id": "at0002",
+                        "time": {
+                            "_type": "DV_DATE_TIME",
+                            "value": "2021-10-18T22:20:36.560-03:00"
+                        },
+                        "data": {
+                            "_type": "ITEM_TREE",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "Tree"
+                            },
+                            "archetype_node_id": "at0003",
+                            "items": [
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Alternative types"
+                                    },
+                                    "archetype_node_id": "at0004",
+                                    "value": {
+                                        "_type": "DV_QUANTITY",
+                                        "magnitude": 696.9,
+                                        "units": "_no_constraint_defined_"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

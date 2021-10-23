@@ -105,6 +105,7 @@ class Main {
             def destination_path = args[2]
             verifyFolder(destination_path)
 
+            // TODO: separate xml/json from the composition/version in two params
             def generate = 'version'
             if (args.size() > 4)
             {

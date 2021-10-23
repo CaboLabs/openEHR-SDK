@@ -64,7 +64,9 @@ class OpenEhrXmlParserTest extends GroovyTestCase {
       String xml = file.text
       def parser = new OpenEhrXmlParser()
       Composition c = (Composition)parser.parseXml(xml)
-      
+
+      // TODO: check values at paths
+
       //def out = JsonOutput.toJson(c)
       //out = JsonOutput.prettyPrint(out)
       //println out

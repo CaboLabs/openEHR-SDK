@@ -296,8 +296,11 @@ class XmlInstanceGenerator {
       //println opt.getNodes('/category/defining_code')
 
       // path is to attr, codeList is in the node
-      def category_code = opt.getNodes('/category/defining_code')[0].codeList[0]
-
+      // FIXME: if the OPT includes the node_id for the category, this getNodes will return null
+      //def category_code = opt.getNodes('/category/defining_code')[0].codeList[0]
+      def attr_category = opt.definition.attributes.find{ it.rmAttributeName == 'category' }
+      // TODO: check all [0] are not null
+      def category_code = attr_category.children[0].attributes.find { it.rmAttributeName == 'defining_code' }.children[0].codeList[0]
       def _value = terminology.getRubric(opt.langCode, category_code)
 
       // fallback to 'en' if the code was not found for the language

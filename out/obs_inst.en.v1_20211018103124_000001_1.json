@@ -1,0 +1,247 @@
+{
+    "_type": "COMPOSITION",
+    "name": {
+        "_type": "DV_TEXT",
+        "value": "Minimal"
+    },
+    "archetype_details": {
+        "archetype_id": {
+            "value": "openEHR-EHR-COMPOSITION.minimal.v1"
+        },
+        "template_id": {
+            "value": "obs_inst.en.v1"
+        },
+        "rm_version": "1.0.2"
+    },
+    "archetype_node_id": "openEHR-EHR-COMPOSITION.minimal.v1",
+    "language": {
+        "terminology_id": {
+            "value": "ISO_639-1"
+        },
+        "code_string": "en"
+    },
+    "territory": {
+        "terminology_id": {
+            "value": "ISO_3166-1"
+        },
+        "code_string": "UY"
+    },
+    "category": {
+        "value": "event",
+        "defining_code": {
+            "terminology_id": {
+                "value": "openehr"
+            },
+            "code_string": "433"
+        }
+    },
+    "composer": {
+        "_type": "PARTY_IDENTIFIED",
+        "external_ref": {
+            "id": {
+                "_type": "HIER_OBJECT_ID",
+                "value": "70f949cb-2089-4aa9-9a3e-97d95dfe9e8c"
+            },
+            "namespace": "DEMOGRAPHIC",
+            "type": "PERSON"
+        },
+        "name": "Dr. House"
+    },
+    "context": {
+        "start_time": {
+            "value": "2021-10-18T22:31:23.873-03:00"
+        },
+        "setting": {
+            "value": "primary medical care",
+            "defining_code": {
+                "terminology_id": {
+                    "value": "openehr"
+                },
+                "code_string": "228"
+            }
+        },
+        "participations": [
+            {
+                "function": {
+                    "value": "legal guardian consent author"
+                },
+                "performer": {
+                    "_type": "PARTY_RELATED",
+                    "name": "Alexandra Alamo",
+                    "relationship": {
+                        "value": "mother",
+                        "defining_code": {
+                            "terminology_id": {
+                                "value": "openehr"
+                            },
+                            "code_string": "10"
+                        }
+                    }
+                },
+                "mode": {
+                    "value": "not specified",
+                    "defining_code": {
+                        "terminology_id": {
+                            "value": "openehr"
+                        },
+                        "code_string": "193"
+                    }
+                }
+            }
+        ]
+    },
+    "content": [
+        {
+            "_type": "OBSERVATION",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Minimal"
+            },
+            "archetype_details": {
+                "archetype_id": {
+                    "value": "openEHR-EHR-OBSERVATION.minimal.v1"
+                },
+                "template_id": {
+                    "value": "obs_inst.en.v1"
+                },
+                "rm_version": "1.0.2"
+            },
+            "archetype_node_id": "openEHR-EHR-OBSERVATION.minimal.v1",
+            "language": {
+                "terminology_id": {
+                    "value": "ISO_639-1"
+                },
+                "code_string": "en"
+            },
+            "encoding": {
+                "terminology_id": {
+                    "value": "IANA_character-sets"
+                },
+                "code_string": "UTF-8"
+            },
+            "subject": {
+                "_type": "PARTY_SELF"
+            },
+            "data": {
+                "_type": "HISTORY",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Event Series"
+                },
+                "archetype_node_id": "at0001",
+                "origin": {
+                    "_type": "DV_DATE_TIME",
+                    "value": "2021-10-18T22:31:23.928-03:00"
+                },
+                "events": [
+                    {
+                        "_type": "POINT_EVENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Cualquier evento"
+                        },
+                        "archetype_node_id": "at0002",
+                        "time": {
+                            "_type": "DV_DATE_TIME",
+                            "value": "2021-10-18T22:31:23.931-03:00"
+                        },
+                        "data": {
+                            "_type": "ITEM_TREE",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "Arbol"
+                            },
+                            "archetype_node_id": "at0003",
+                            "items": [
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "text"
+                                    },
+                                    "archetype_node_id": "at0004",
+                                    "value": {
+                                        "_type": "DV_TEXT",
+                                        "value": "jgxWBPJhKPNHEJBhwVExPkSpcCkGgLC.QmHQxRGSD  WSrtOYeLO x.FV M.QPmynMpP.dG.AtWsXSRNXzm.Ur,lQYBviFgLX.lfpGYqzKuLMTpkIGijNUqBBAiuhSwdGYLQnyTPXTAWSNQUa,wFdzmzCUhrvBMNpzdfiLIZg.siTszo Zjn,pV jv.cf.ikTVaGPXjChztWDwYfxpQkmnTNuBOKR,OehpqgMkM.MrsnoTZJVguKDBuF.JIvlFyxViASSO,UHfXtFVbNqSGyMggYDPQbGrOITvzzjhxfGPis"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "_type": "INSTRUCTION",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Minimal"
+            },
+            "archetype_details": {
+                "archetype_id": {
+                    "value": "openEHR-EHR-INSTRUCTION.minimal.v1"
+                },
+                "template_id": {
+                    "value": "obs_inst.en.v1"
+                },
+                "rm_version": "1.0.2"
+            },
+            "archetype_node_id": "openEHR-EHR-INSTRUCTION.minimal.v1",
+            "language": {
+                "terminology_id": {
+                    "value": "ISO_639-1"
+                },
+                "code_string": "en"
+            },
+            "encoding": {
+                "terminology_id": {
+                    "value": "IANA_character-sets"
+                },
+                "code_string": "UTF-8"
+            },
+            "subject": {
+                "_type": "PARTY_SELF"
+            },
+            "narrative": {
+                "value": "hmpQJaWhhRwqfCKhWFMJNOfAE pYXWNHqNxyfPkjGcGJ,EyzFoCSCqfQIAOqHqOZzIiNsAdDN.zpbo ,yFTFxWLdIERvQhjCuXJeeF.eqyITv.hVjFmhBvyXyRNSZaPQhNSNDClROLVO.KnxWKRWsQnsJGLaUWRhHtCGVEUJDxwIpqAaceOEsND Sk JkKrQiUUgyNhxPwLUsMDoUmlepaiqWCJQhTeXuxrLLPvHWdVtBEEffpZMVGrSUXiZhWC"
+            },
+            "activities": [
+                {
+                    "_type": "ACTIVITY",
+                    "name": {
+                        "_type": "DV_TEXT",
+                        "value": "Current Activity"
+                    },
+                    "archetype_node_id": "at0001",
+                    "description": {
+                        "_type": "ITEM_TREE",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Arbol"
+                        },
+                        "archetype_node_id": "at0002",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "duration"
+                                },
+                                "archetype_node_id": "at0003",
+                                "value": {
+                                    "_type": "DV_DURATION",
+                                    "value": "P18DT17H"
+                                }
+                            }
+                        ]
+                    },
+                    "timing": {
+                        "value": "P1D",
+                        "formalism": "ISO8601"
+                    },
+                    "action_archetype_id": "openEHR-EHR-ACTION\\.minimal\\.v1"
+                }
+            ]
+        }
+    ]
+}

@@ -8,4 +8,12 @@ class IsmTransition extends Pathable {
    DvCodedText current_state
    DvCodedText transition
    DvCodedText careflow_step
+
+   @Override
+   void fillPathable(Pathable parent, String parentAttribute)
+   {
+      this.path = ((parent.path != '/') ? '/' : '') + parentAttribute.replaceAll(/\[\d+\]/, '')
+      this.dataPath = ((parent.dataPath != '/') ? '/' : '') + parentAttribute
+      this.parent = parent
+   }
 }

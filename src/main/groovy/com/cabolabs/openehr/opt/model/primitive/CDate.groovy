@@ -18,8 +18,10 @@ class CDate extends CPrimitive {
 
    // OPT DateTime Pattern => Java SimpleFormat Patterns
    static Map validators = [
-      'yyyy-mm-dd':  ["yyyy-MM-dd"],
-      'any_allowed': ["yyyy-MM-dd", "yyyyMMdd"]
+      'yyyy-mm-dd':  ["yyyy-MM-dd", "yyyyMMdd"],
+      'yyyy-mm-??':  ["yyyy-MM-dd", "yyyyMMdd", "yyyy-MM", "yyyyMM"],
+      'yyyy-??-??':  ["yyyy-MM-dd", "yyyyMMdd", "yyyy-MM", "yyyyMM", "yyyy"],
+      'any_allowed': ["yyyy-MM-dd", "yyyyMMdd", "yyyy-MM", "yyyyMM", "yyyy"]
    ]
 
 

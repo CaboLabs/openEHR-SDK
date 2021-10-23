@@ -35,7 +35,7 @@
   <composer xsi:type="PARTY_IDENTIFIED">
     <external_ref>
       <id xsi:type="HIER_OBJECT_ID">
-        <value>7885049d-f05c-4096-9d1f-39614c13da77</value>
+        <value>6015e230-dac0-4d4b-8591-ac61b9438c78</value>
       </id>
       <namespace>DEMOGRAPHIC</namespace>
       <type>PERSON</type>
@@ -44,15 +44,15 @@
   </composer>
   <context>
     <start_time>
-      <value>2021-10-17T18:23:26.020-03:00</value>
+      <value>2021-10-19T01:47:36.686-03:00</value>
     </start_time>
     <setting>
-      <value>emergency care</value>
+      <value>primary medical care</value>
       <defining_code>
         <terminology_id>
           <value>openehr</value>
         </terminology_id>
-        <code_string>227</code_string>
+        <code_string>228</code_string>
       </defining_code>
     </setting>
     <other_context xsi:type="ITEM_TREE" archetype_node_id="at0001">
@@ -77,7 +77,7 @@
             <value>Period of care identifier</value>
           </name>
           <value xsi:type="DV_TEXT">
-            <value>lwHoaCovYslWwel,fasPWDK,CoIGHDUxfWrkhgbZg  niZCYreXBH,UwYooJkDTBwGurgOMWcqtZhCr,Qgw.ZbwGzF.PYwFis gDVgtIVjqhzyVxHZC.YfQpeELNamToisDlBggsfXuH.CFlFeC.JXROjMTBCFhzBO.F.ZPnlZYEvTbYTRehoTvHrpDtXwL .SFHJVZvEgegdYwtCiTccuOVLljSIcbRV tsFHpmL,vhWDLfspKLwqpEu,NyEtD</value>
+            <value>ofzkgcLZQW.PxRp.IP.hdQ,qttrqzRWbXD RWweqEiGoZ.UvISSHOBZpTRwfJdpMWRoVgakhchehivKhNxoXqTxNbnidizATFyktftaVPgbnpmuNdaKSTPOJfQxUnmMZTBjhunMsDiKtQrCYGYkRPfwmfIJhiE,lRgIy,FOfmhLf,,o,EVvldYuF EIKUiSaKHILqzQwFqEFtguPCDF,EwrraIyIXlmsFucQykUxWvWBrxG,iZ,emweiSKpGoCC</value>
           </value>
         </items>
         <items xsi:type="ELEMENT" archetype_node_id="at0008">
@@ -85,7 +85,7 @@
             <value>Tags</value>
           </name>
           <value xsi:type="DV_TEXT">
-            <value>YNJsWqMUbdSjnyzAvBxdrXnIaXE.pQIACUTIckAysHpM.lOkOencQTkIFaQWE.sauW.E,cBPh,yyNF,k LhlAYfTTBCBBTYmcodMoJ,zvFpuifwtAmBlJEOfYYDVDraQzfYvlFgPjvYcZTbfQQ,AqzuoCDKpGHULxwj EKCMAzKLInvmgYAXrrFIyb IXbiTfhrJAOPPm.xK JEhNZnxKGeBearImWDzbrMNSNiTjdhkGtJmkFLuUmOPYXnfiTO</value>
+            <value>iHGHVrHQgv.YSO,kqsPKcTzhuof,Ko,hULrwVHShWPIYoDJEsUeON.HjJVQwjPLUGeVLHUXiYfKfoGbpePitabwsumguOQixQZCXBBqjQGssTM,XO.djFPtnQc fjcqFvEQSzrnZO YmFe dfvQYuqXecOrYYeQhHosSBP,NXBmNBFRq BCScMQxQ.feBGglVQrHTPVQ FYXJL.JUmmbLvYbesNykbJZawqjKgmgRAMzLepaoLJCGLwRbl.bsgf</value>
           </value>
         </items>
         <items xsi:type="ELEMENT" archetype_node_id="at0009">
@@ -221,7 +221,7 @@
               <value>Device name</value>
             </name>
             <value xsi:type="DV_TEXT">
-              <value>bczO.SJyUlpEDA.LrqCOCDaCiQyuCigLg.rCsdSBxftJcUqwwwfGLOQeNJutLVh,HHwGTjIgrEbuwUcUPUzqqJMSRazsPVNtB DnLKlszgmyiVUzXDcFyBWytBzAQSxJseKdrzIXLsMkGxshhJPjdHJgRIiWnlGIRlnpCKAHVeacGiUpXkfOiuZLwKps,qNzWjdSLBPPDZMduKJm idfJZdR ..PiJrpqMxMcTOtaQyEygdodMV,kUG,oLJEMLe</value>
+              <value>HoWQEJZezHQOusRg kQULVQqXbEuNGHevtFiRqkCwLKFEklrPBYAhlhDoguWBbUGZYArhvik RlMwpQzXAWVXfpjlid,eyuqYUJZ WgTLpK.iSQCADLxKReiPhvGpImwJKSZfFc.bjnedlzyjsBMzWBP EaHmJXVpjuseMJcLNLTDU DaWAstwlVBhDSgX.XUIXeS nrRfMkGjk,xuKrdhrGIPLovLUxrXcSkqUUVGT,XvyBrddaKsqX,HcSAGz</value>
             </value>
           </items><!-- SLOT IN /items[at0009] NOT PROCESSED -->
           <items xsi:type="ELEMENT" archetype_node_id="at0021">
@@ -231,7 +231,7 @@
             <value xsi:type="DV_IDENTIFIER">
               <issuer>Hospital de Clinicas</issuer>
               <assigner>Hospital de Clinicas</assigner>
-              <id>41670152</id>
+              <id>29777170</id>
               <type>LOCALID</type>
             </value>
           </items>
@@ -240,7 +240,7 @@
               <value>Manufacturer</value>
             </name>
             <value xsi:type="DV_TEXT">
-              <value>yPLDKk.bWJsgrKpdvLsT OcfIbXtmNtMdTwyMEiurwavVZjJBWyefVaxbKwEYpsnob.BGPkFGJXPogCAAIDtJQqznLFeCpspGPhFlSHMW,UUGkgcDGvIGqHtfQRcbpwLeWiPpBoENKexnAGKxFBCTdBbyefCDuVoRmrabQhTBCMewjdVn CFuADRv XdJiqznvexupjgzgEGBOJGLzObq H.nBIlAXpLwEauyn..ibNFvqCXzoghfYznYchmNRF</value>
+              <value>vao ,oSAwdpDAB ikmQUliXsiZtWojAate,DdqyQvaCZOqDfrUyElGclgoExiYLEHgwqrCRrOdCNVGhV,hsNUufkoPoHbEwcJTme UGRbMGRlInKFCJhIWClPvzuHe,ggVmTDUrV GbttiUlRHF.kyeQO wHoKBSNZDtcOaHlffDCYh,,hAmuHMckTpWttidELoGCq.EuWKqHiyJXZov LYrpXrPwRUPRmMSZikmI.lEDhfEkLDPjRqhjDsBFjP</value>
             </value>
           </items>
           <items xsi:type="ELEMENT" archetype_node_id="at0005">
@@ -248,7 +248,7 @@
               <value>Date of manufacture</value>
             </name>
             <value xsi:type="DV_DATE_TIME">
-              <value>2021-10-17T18:23:26.414-03:00</value>
+              <value>2021-10-19T01:47:36.966-03:00</value>
             </value>
           </items>
           <items xsi:type="ELEMENT" archetype_node_id="at0024">
@@ -258,7 +258,7 @@
             <value xsi:type="DV_IDENTIFIER">
               <issuer>Hospital de Clinicas</issuer>
               <assigner>Hospital de Clinicas</assigner>
-              <id>80476505</id>
+              <id>91513439</id>
               <type>LOCALID</type>
             </value>
           </items><!-- SLOT IN /items[at0019] NOT PROCESSED --><!-- SLOT IN /items[at0018] NOT PROCESSED --><!-- SLOT IN /items[at0026] NOT PROCESSED --><!-- SLOT IN /items[at0027] NOT PROCESSED -->
@@ -267,7 +267,7 @@
               <value>Comment</value>
             </name>
             <value xsi:type="DV_TEXT">
-              <value>WBEuCXkRbjmRNihvaaCLZZhEvPINiNWmJGPV hNzsbBEbZXpyN dWRlcsOzpeqJhQasgkOcSX.vCsr.iNPaqvRvYoIudNEhVyQOzIVtTYFXJOxpaJOyTxlIVFBssj dRNQwmXKHT,PaWOOrgaoXFtRtMHwAQyAaujTeATclmV nCW.evCVihfqJzHcBHWdOlCvLDdZtiLLbVptNDHBQTWosPW.rvOTByc w.w..b,qRKfHudYWaYOfmRYDV,qCD</value>
+              <value>R.zYLEukU.b,ZfEuVcOoTBnubsnzeh.yjHPcJNVTwHayLadqzSmosplyQzcOriYJeEK.gFSsHyqpqHVmc siOKCpmDTmWyrRElpIByLw,.QZMNGy cFFCQAPV.q,w.QwmgzrePCYrXUmuHpuSfEULpyVsmCYdttuyjdxDsiHriyNmHWPCRMJHDMbkBZcJy ZKkSHDYeCLyMhBQqpppkEebkvQedXJOjYRfouQ IH. yg dxGbiHXuchOtjCCsSG</value>
             </value>
           </items>
         </items>
@@ -277,14 +277,14 @@
           <value>history</value>
         </name>
         <origin>
-          <value>2021-10-17T18:23:26.438-03:00</value>
+          <value>2021-10-19T01:47:36.979-03:00</value>
         </origin>
         <events xsi:type="POINT_EVENT" archetype_node_id="at0003">
           <name xsi:type="DV_TEXT">
             <value>First event</value>
           </name>
           <time>
-            <value>2021-10-17T18:23:26.449-03:00</value>
+            <value>2021-10-19T01:47:36.987-03:00</value>
           </time>
           <data xsi:type="ITEM_TREE" archetype_node_id="at0001">
             <name xsi:type="DV_TEXT">
@@ -301,7 +301,7 @@
                 </defining_code>
               </name>
               <value xsi:type="DV_QUANTITY">
-                <magnitude>439.8</magnitude>
+                <magnitude>679.2</magnitude>
                 <units>/min</units>
               </value>
             </items>
@@ -324,7 +324,7 @@
                 <value>Clinical Description</value>
               </name>
               <value xsi:type="DV_TEXT">
-                <value>LLQNJ.zGtLeD.CYvy,zvw.zAePIX.OwqBiSLZKwMCxzO,kJYVZ,FQZeloSGvUgoA,Pgc mHmCMzIjsOLkpQxVGeZWdDSImMLUEokH HrKmQKJ JuyaFWHZtif.uVL.nzDndRfKkoou nHBffR vGpjgMnwpCDPiIIRuQAahhHyLu kcAPLpkNEJKnZqTidBqzslymSUG.Gg,aMWWoDfbDSUZN,f,knFzkzmCiOjcmkbFyFBNUvfhWxwR YUWI.f</value>
+                <value>mCMisNVRJMjaHIGGZOuMGHe GFioaJcMvOKKQVKQHeJnZvYJabaCDYUl Edn.HUaTrPzTP zjZLcbcXZdEIevVMXwBlAUQPAAXLxUcIHbHdrVjFrrYohHMSRHLbhDqZXwWeAsSHKqFkiuLenGf RwhDYhwm PYbmUVTCPw rtpOSpatorrwxyNNe.cnKHKiNXzAGdzM.NeQjpofIAedNndMpGXLkwugJapwtTG,Su.BNNYUMeKUaskkjoPsNksc</value>
               </value>
             </items>
             <items xsi:type="ELEMENT" archetype_node_id="at1023">
@@ -332,7 +332,7 @@
                 <value>Clinical Interpretation</value>
               </name>
               <value xsi:type="DV_TEXT">
-                <value>nuN,IODL YyScp dTqhcScgH.ZyJO .EJtVVBEetnfHnaMCGtLEXZjvMXXKNYNCzJGGOIzPHCqLA ghAtE,iRMcaqmNlHltopYXcmGQCxgNwSRcAcHULuyKwRzROric ng EYhVdDKjaCQ.s QgThqjWcjFFKRzMLVvBCxSdVnsL.,koyLXWOicoWRgUBBNrblxmAgmoHVNyHDwlTkzZjuuBgixPgaYztbiVSgyCu.TlHXOghQZZwDCuuGKwHdt</value>
+                <value>zFPZbxjnjamykkRGiNLfNwhIhCdWXfQEXZMMnKihlKnLyABU KtqRXuK JNB.EbwbOlV..KaokqEjCIzZKKQwPXPztuAVZnGBuLG.WQGnVOMLZQHRrHsissXlKJQLSO.NrRbVCeALDNUXrE,FsULEEfjNmcpNrvaFJgAynkBVNjpaDRcgwYrxesUlkwWmhryvGPaNdYSYbVyMlXfryViECOBYj,AHeURIoLLFqplz,KhAqVWu DN uxEaRXQZLO</value>
               </value>
             </items>
           </data>
@@ -347,7 +347,7 @@
             <value>Second event</value>
           </name>
           <time>
-            <value>2021-10-17T18:23:26.506-03:00</value>
+            <value>2021-10-19T01:47:37.012-03:00</value>
           </time>
           <data xsi:type="ITEM_TREE" archetype_node_id="at0001">
             <name xsi:type="DV_TEXT">
@@ -378,7 +378,7 @@
                 </defining_code>
               </name>
               <value xsi:type="DV_QUANTITY">
-                <magnitude>576.0</magnitude>
+                <magnitude>733.1</magnitude>
                 <units>/min</units>
               </value>
             </items>
@@ -401,7 +401,7 @@
                 <value>Clinical Interpretation</value>
               </name>
               <value xsi:type="DV_TEXT">
-                <value>bSInyQ vxPGRpdPzYUUZJj,wQYlbS,GJdqiRPEGmLs.VqrgOnMuprVfyNlsVp,srCLOVBWmBHROdFsWgBoeTKcEiebsfQnZFCH.f.pmChTNKq. Ylq FLZnhqfTRFYTt.FGqgfqdgYmZdesIYLHrUYH.ZDpcbBPpdi,YnSpX.ugTSvFISJypxGAYUbFTWysLogLih.sJJJl.ZMAULrHBQuzmXyNfqoRTKSKwSDdVMeFguHZxaBjYcHUgOWtglUC</value>
+                <value>Zr,kW  bCLKKhdIUpCmWLaByNJY ScZDisPl BXLNhCMM.kRUhocvCW.YlOOOHmCNnJHeBKlnecdadtHegsjovYDUyXLBlHgisv jRejZcObSsxoCDBjeyewckpBNyVQZCK,TmiS,mm lERYreaUfdiasbumVMZmsGfrXJfctCCPJBYCDmcIfxjucGFOVqaU.LsalBQpoVQYZMgQyuPc,ewbIXK,mxNqceiZJNBmuUDnVhcjkYVCLy,QTH vRWY</value>
               </value>
             </items>
           </data>
@@ -416,7 +416,7 @@
             <value>Maximum</value>
           </name>
           <time>
-            <value>2021-10-17T18:23:26.536-03:00</value>
+            <value>2021-10-19T01:47:37.030-03:00</value>
           </time>
           <data xsi:type="ITEM_TREE" archetype_node_id="at0001">
             <name xsi:type="DV_TEXT">
@@ -433,7 +433,7 @@
                 </defining_code>
               </name>
               <value xsi:type="DV_QUANTITY">
-                <magnitude>793.4</magnitude>
+                <magnitude>218.1</magnitude>
                 <units>/min</units>
               </value>
             </items>
@@ -502,7 +502,7 @@
             <value>Date for review of CPR decision</value>
           </name>
           <value xsi:type="DV_DATE_TIME">
-            <value>2021-10-17T18:23:26.567-03:00</value>
+            <value>2021-10-19T01:47:37.054-03:00</value>
           </value>
         </items>
       </protocol>
@@ -529,7 +529,7 @@
             <value>Date of CPR decision</value>
           </name>
           <value xsi:type="DV_DATE_TIME">
-            <value>2021-10-17T18:23:26.579-03:00</value>
+            <value>2021-10-19T01:47:37.063-03:00</value>
           </value>
         </items>
         <items xsi:type="ELEMENT" archetype_node_id="at0021">
@@ -537,7 +537,7 @@
             <value>Comment</value>
           </name>
           <value xsi:type="DV_TEXT">
-            <value>Zw APKZFkQsr JjAwgoGSma,jidqUsuYReSixwzuGkWLHhOqiqyEXOHVwbbwOf LAyFzAMdkNODmZyjoryRosViVCCJghltiSjMTyr JeznUu Qo TGyEKUfHabGZdpBrDUhkISTmHHzZaXm.xXpdIhMmOn UMKmLtkoIbqyQOhlbcWrAk,,Js CHNrypXCaeLQ.vKwzYrBNCAEHEQKUK,edpqbYpFTsWlsmvTtbwjMpDfLZlslnLhJzOvIkhAG</value>
+            <value>eEURyjPDepKPyiDJsBxSKnzlstASqfEVGKEg mOYvoyIcOfSJEXRcJCQNOtkqnwoUYdlculJuHXWKsRbvefaiUj.twIjsDSiXrq,sjcjofSL,SxVdGQHEDEBFkxxlvOczPE dvxYJdxuwdbIRVzyRpLliXOFDDuiXJZUTZURiFdmCoypPcCuALpQnjewClsgR KF KqSuRbOGlxMFTdRpdVBvwMxiLTxIYkyygrWfYCHyJQTNzReZlZoxkEerqz</value>
           </value>
         </items>
       </data>
@@ -590,7 +590,7 @@
               <value>Group category</value>
             </name>
             <value xsi:type="DV_TEXT">
-              <value>NfREmHCtkafCFzV.hHpPD BvftQLPxgDcZHspDFGb,paTz tMQzOWAdkpxfTzYKqtp iraoDbjrVXQYheZkyhVXvFUnTojDPHDFGMpVhIRpOyGbtK kAT.rDSXWxFfYQlxsEthAhzWV zI HZtuJroNqmPVTG, KxENSDqZqeVHtTGWNYbMCAudpOsgnGoDAkaiBnsYgHbdoFnIGHSrkcwnEXKvYFVDUjkGM,SBkt,RuyUQwEvNaVfnIvMxaYMn</value>
+              <value>oolETGu,cXiPKbmyenS.slJy.AeIzRnWJhtzIGC.snijxTQlVaHjyiiEAYjSWtSHXMFibda,bFqTN,Ldce,cdmkXXv vNJyLCehOnTkKmxPQSnoFtttWqKxZgGWeDYojoDBzU.fT hgl vKQtqpPpwv.zMdCOILIvtdOkW UIqlNVCILSqaVHuCOeaB pSHwgjWdl,eo CqBHjfZkoPNknGmYocpdpYwZBgiI, PxERNChtcaaujAGEoDKAyw.G</value>
             </value>
           </items>
           <items xsi:type="ELEMENT" archetype_node_id="at0012">
@@ -606,13 +606,13 @@
               <value>Date sent</value>
             </name>
             <value xsi:type="DV_DATE_TIME">
-              <value>2021-10-17T18:23:26.608-03:00</value>
+              <value>2021-10-19T01:47:37.086-03:00</value>
             </value>
           </items>
         </items><!-- SLOT IN /protocol[at0008]/items[at0112] NOT PROCESSED -->
       </protocol>
       <narrative>
-        <value>urZwxqRqTwswOfUOrOG,MmJcBQbwC vDtIIB.mpQoyamCqBdMaIuyFV,z,CKqTwOMZIJF.ikfffS.YzZFNgn.ymu,iQCZ sWjKlsWLFVyWUVTfEO.S BcFRIfqUZSjo,AWaezdIIdz DmRwFE x lRZapq.vnrbtxKCs ECmBzKTtxoK.Lf MRWZKaAA.TiPcLCuioSwdyGxOLOBGIMfyOPgdKEAH .q,xGlpHzGyrmcZYAYihZKebFRIPjoymN</value>
+        <value>vNlVFUhKYmcTxbClbLJwPqyjCCHLftRKTnZZNnpAiUkEqldudgoUluTSdQPgtYCSpYoogBoWMNHqGRWgCBwXRCr,jBacKToXzmxgzS,DwUrARN.OefdYxxzyidfT XJNnrkYUcQpzKIoyduUSTQYlmSGRJKx.AEHvJVuHcNsPqtXtLkZTCiHhOUwXSooeKLxEGtSl.MyPOw.RtFA,PtVtIYDFm HBgcOJG YsoaiYDfUvY YaNIN.EQ,tgxY Sb</value>
       </narrative>
       <activities archetype_node_id="at0001">
         <name xsi:type="DV_TEXT">
@@ -627,7 +627,7 @@
               <value>Procedure requested</value>
             </name>
             <value xsi:type="DV_TEXT">
-              <value>iPJloTa,cALwHfagqKwNKkVXb,.dwRAEmWgjYySJEWAAkCRlQHNAsGTtL,HYxJjSSpeHZCYVNEYPiByfY.LnPKypRcwsOZbOH, RZHtfM .eORUjSk bxCgZvRKQ,LNwSQCWwialhPjSvRmsvVAVPlLtHtGKwUTIIX Qw,vAhHnff lpBLHecl,MNJmrRbxVChlSyyAMfRVJIvoi.KcSbGaOGPOyGwBOkaVutgieTI bHFtdLAmkcRqyOOfWzUq</value>
+              <value>DCYAlHxcHtXCnFdgmRIuchSTwVNeJD NHZc.MN,hWYoeuhoVxjgCofYNmevHKwIOXYpwqDawnN,OuipnkhdMUrP.IlKidgLnDAoKyXnD.ocfSCOPEpOLPBaXfT EdTvHIwQ ArKzQfJf.jWbKLzNNfpgRMxKhJSGctDPWtIeR.yZ J.WOwShSJrRI,wqVRWcGlRHYKZXFswkEpicMnovrsPn,OpKiP,tJfKXNHMtLzSfvBrXitDnXqfCghE.FOc</value>
             </value>
           </items><!-- SLOT IN /activities[at0001]/description[at0009]/items[at0132] NOT PROCESSED -->
           <items xsi:type="ELEMENT" archetype_node_id="at0144">
@@ -635,7 +635,7 @@
               <value>Latest date service required</value>
             </name>
             <value xsi:type="DV_DATE_TIME">
-              <value>2021-10-17T18:23:26.638-03:00</value>
+              <value>2021-10-19T01:47:37.103-03:00</value>
             </value>
           </items>
           <items xsi:type="ELEMENT" archetype_node_id="at0076">
@@ -666,7 +666,7 @@
               <value>Procedure requested</value>
             </name>
             <value xsi:type="DV_TEXT">
-              <value>taWfjYmPbdTLSfSTUoPFslg,RyoRSlSXsouvRgolVG rjxFA FYUZvGjaig pIHkedGXStDkpyRFPcJtnUIAdhXizvfE,DVavu gkCCLpDSOywwpKCWTNvIJHEvWRPCBQMMyJjoOpsJWHSXmvNiFsEWwtZjyuLKUfIWN,ALCmXeYYyZ,lnFVmfZRztUhdxRRP ltwUHpUwXmXxulJKbwRZVHFd,VtFbhQMWB oLzgaefZohrSNmZqUANRmQxtMY</value>
+              <value>YvnpRobQcpVLCqTdKEBrqFaebY,fHJwMGHYzFKlIwvHwNBBAkmHWhRHxjxv czrIZxHK.nNAwWKtDB kOpgqzMhbRZYbEmoLXiJGOlLvGEpeRizbXVnAHnHSeOV CrUt.I,gctPNHewKPGRDjPpStXhhl,P.uJdy,HdznMdXGSSU.rIcZN UeIJEmGzvabqVn,IsvDwncgwZHsMJtxxrasxmDJpdBfwOYhNUqIty.TfKnDcQfkfXkjjBWn VeRq</value>
             </value>
           </items><!-- SLOT IN /activities[at0001]/description[at0009]/items[at0132] NOT PROCESSED -->
           <items xsi:type="ELEMENT" archetype_node_id="at0144">
@@ -674,7 +674,7 @@
               <value>Latest date service required</value>
             </name>
             <value xsi:type="DV_DATE_TIME">
-              <value>2021-10-17T18:23:26.658-03:00</value>
+              <value>2021-10-19T01:47:37.119-03:00</value>
             </value>
           </items>
           <items xsi:type="ELEMENT" archetype_node_id="at0076">
@@ -728,7 +728,7 @@
             <value>Requestor order identifier</value>
           </name>
           <value xsi:type="DV_TEXT">
-            <value>ZVHfoXnbizxzQmrzoaHmWqjOyKeOYraJsWZzhRdDMNpi.crAgwORyMdMqawhHDMYBderbuKuHnMhGTlRVZj.heaOSqhjJ.LqaYbqPUVirBSoeZ.tenvfGYCnpikGDi ZQbmmn ghbrXnvQowzQAkQeOSOfzqhTKGfWNUWtYOmEeGhUYxHrzcNCCAclcOSavyiKcRptYZSGJtLjLMldGPMia q, LKpgIiMv,erREBbWopQksOSirAnPuCzzWMuo</value>
+            <value>. cbDRwWiueLhr,ogE,vqfjKEk Lm nOwZTMulSWT SNkdzGhmJZW JKBHbqaAHYEkBrwmzufNWMcwWtaEGblPQRVIeMWOewQtRZsCJVAYazURdWNbenrJNSoKl.lzJODjktiQAHnxWxH.zUQ,LdsSDUOvtwCldHshLLz ENlBNdXTBfxTJDjdNBbPZeUefkeAOLGp,dNVHhrvhZZJSnsYiNeFrxjZXHgiwCA W,cpVMZ..FqTXRIkQvyPuw,xm</value>
           </value>
         </items>
         <items xsi:type="CLUSTER" archetype_node_id="openEHR-EHR-CLUSTER.person_name.v1">
@@ -771,7 +771,7 @@
               <value>Unstructured name</value>
             </name>
             <value xsi:type="DV_TEXT">
-              <value>Bhwiuzx,dDGNtMFublbkqu YpocAYzrzMoKCemLJut ,TQyudEUuvgHpcNOt,grpItmuk,KMBBU,Yxrtqo.aAywBSdoiblziFdpOivH,rY,MyeBaHZxzgLBPuubGHFS.iddvjEthjVzvv ,GOIaGMhSEVwY.LyaZjxqa.FaXgpsRICgvTBorip.ojc TZJZC,JBhVcaOjZNzBaA,rp sdrztSKvCPvzkwisaeZgtuijqaFaPIsMRbVPmjPQkFYj</value>
+              <value> zrCcBaVvhGJRtIzLwZHreqoE..itGhGNWPpa iuIgA,GiwPAZTHaMoQNQGBfFWJFTPbTeuS,rlwNIRCJQmCuslBCiEw.CBteYTJcipuKedHbxIB.BAZrEEsR,REuUIABUfVFJ cZPMbKQeevqG,.ll vyHcEPJYMsPxXj QAzeHQeepjJsVfnrheSFjBmhdtayxCUXvOeVgIsKchblwCgYYUpruDpbAHh,o.XMYNtrzGWEQhgDmTtuELMfK.LI</value>
             </value>
           </items>
         </items>
@@ -782,13 +782,13 @@
           <value xsi:type="DV_IDENTIFIER">
             <issuer>Hospital de Clinicas</issuer>
             <assigner>Hospital de Clinicas</assigner>
-            <id>33729653</id>
+            <id>82308486</id>
             <type>LOCALID</type>
           </value>
         </items><!-- SLOT IN /protocol[at0053]/items[at0057] NOT PROCESSED --><!-- SLOT IN /protocol[at0053]/items[at0064] NOT PROCESSED -->
       </protocol>
       <time>
-        <value>2021-10-17T18:23:26.705-03:00</value>
+        <value>2021-10-19T01:47:37.158-03:00</value>
       </time>
       <description xsi:type="ITEM_TREE" archetype_node_id="at0001">
         <name xsi:type="DV_TEXT">
@@ -799,7 +799,7 @@
             <value>Procedure name</value>
           </name>
           <value xsi:type="DV_TEXT">
-            <value>m.imggcBSyXQroHhm ay..BkVAzXabwRzOmIJoJwkZCcRxAXPPizROhqlphyisLgGzRrWK PaSbEQdUIxNexLr,YOsFXoWpN.IppUZbbmRtieiMfCaYJNwiiBoqEJcVDYIAePb zkWzx YiWmpOediJzBqFOanGAVHtSjYTeFCZJtkYOXtinvJTwRcnXyQObasRHVfXaoEbbXA.ErXghzEcSWeILxYqvogDXdZQabDRMbrqKQgEyGSKHkuQp.HO</value>
+            <value>ELQiJRVGOCfNtre,AAaPn,DnpZloKgGtIURmFD.f. J lMSeXEtNyCy.KfcGeKXUaRmfyKBggEqmlQlXdhyadA dYZasSqI.OqmkFDltptmGzfYJEAwNXbahUGubAVWXaGw,IYktczMLlGLTBB MxdOPTDXze  hIeuttAvwexkHqazPOBn.RbuoqBmXomB,rpVBZzyZdNZMsqPFbugHmVpBJMbFBbZdgDoR,IRGwwQyVUe,nvLWOyKRRgHpeJU</value>
           </value>
         </items>
         <items xsi:type="ELEMENT" archetype_node_id="at0065">
@@ -807,7 +807,7 @@
             <value>Method</value>
           </name>
           <value xsi:type="DV_TEXT">
-            <value>cXEuoCdFQWzzCFMDBWkZbTofxhDNHQj.Urbi oOpYSaehBJWFA GOyDYPlSYLkoKAVdaEKzjKzgBVevopvGasPuyUctqorGNPpqIWXZkCFoBC chxwcCsxeYzMUK .xDMsJrxCToJWgxDBxZivoX SFIqUFuoCkkpKgKfsDfLIpkyFpkQ.jfptlYXLvCOHheZUYJafCPalmjqpbVTC.C ErrbkqHoAdGxhJmlTq.ZfnbcVg..zVZHOceZlhrI F</value>
+            <value>fYkfCGvqLdZYhqRUY.n hdHfUJeWaBYxhy,hMyFzSZnlzekuKegMbAOjwenRFSnR,ygMKOBGKIrroSd UJ kkMjhObWnTbLjEfHzLRbYfDBwpMvm zWveSVOkQ ,u,mDaQYlPYy,YUwoUOUmmshXGFxPUqOe,glsxxalnoMikyuMN ZiuxCWDcAYljcxDgSqKoMoxn,PQBF,dqiJMdxbYM hrrNhhq.ozKAnPxSQAFQklNtfEJGZWmpgzWL,zlL</value>
           </value>
         </items>
         <items xsi:type="ELEMENT" archetype_node_id="at0065">
@@ -815,7 +815,7 @@
             <value>Method #1</value>
           </name>
           <value xsi:type="DV_TEXT">
-            <value>CFiRVvuZzDdEYcqkWU.iPCGkxL UQuLrvRndKjSnreeDUAkdnRXYNdEMC.qTtvKxCjgyYXHHanGmtawvSObKGMIPYuTCCgNuRBrFCHjLt OpFozacQpiyXTvnSps iOxa.eFoNiJFTCbFDdz.B,eascf.tBmVmtj,jaitGufYwlLRsAEAinOHgR RPSXFMGGz.GpRQErUlTUXaGgfSvHpdGXtvYasrBTvOMmnAI.eXIYHTJEUiixFYyifubjyyn</value>
+            <value>fkBynuUg.walfZRlJiac.clBtBzEEguHSTTOMQTxN.s.ZlkXaMH tDbgBkphSRbEkMsFGP.FwwDizsiQiajJglYrQccXgmNpqTsTedbyEiWlbHVfMJQnc JdNCbCmJjCYfSYJN.fxqAGEcjDuNSqRNPJmvsYQaQspesvYPk,cTvtIxDdlFob dBOGwIJsIUcZFCAyLaVplcJeBUDsq.FqFyhVptGyQnJHcqisJCe phoClhlvOepwHm bYXQOvg</value>
           </value>
         </items><!-- SLOT IN /description[at0001]/items[at0003] NOT PROCESSED -->
         <items xsi:type="ELEMENT" archetype_node_id="at0066">
@@ -823,7 +823,7 @@
             <value>Scheduled date/time</value>
           </name>
           <value xsi:type="DV_DATE_TIME">
-            <value>2021-10-17T18:23:26.724-03:00</value>
+            <value>2021-10-19T01:47:37.175-03:00</value>
           </value>
         </items>
         <items xsi:type="ELEMENT" archetype_node_id="at0060">
@@ -831,7 +831,7 @@
             <value>Final end date/time</value>
           </name>
           <value xsi:type="DV_DATE_TIME">
-            <value>2021-10-17T18:23:26.727-03:00</value>
+            <value>2021-10-19T01:47:37.178-03:00</value>
           </value>
         </items><!-- SLOT IN /description[at0001]/items[at0062] NOT PROCESSED -->
       </description>
@@ -882,7 +882,7 @@
             <value>Date of admission</value>
           </name>
           <value xsi:type="DV_DATE_TIME">
-            <value>2021-10-17T18:23:26.768-03:00</value>
+            <value>2021-10-19T01:47:37.347-03:00</value>
           </value>
         </items>
         <items xsi:type="ELEMENT" archetype_node_id="at0003">
@@ -890,12 +890,12 @@
             <value>Admission method</value>
           </name>
           <value xsi:type="DV_CODED_TEXT">
-            <value>VksMbfqRbbFroZVEg.tm,KGXDSA yA</value>
+            <value>YxRikxxTkfEsfDcp.YBPvnZGEgsF,A</value>
             <defining_code>
               <terminology_id>
                 <value>terminology_not_specified_as_constraint_or_referenceSetUri_in_opt</value>
               </terminology_id>
-              <code_string>28822892</code_string>
+              <code_string>63620771</code_string>
             </defining_code>
           </value>
         </items><!-- SLOT IN /data[at0001]/items[at0008] NOT PROCESSED -->
@@ -904,7 +904,7 @@
             <value>Source of admission</value>
           </name>
           <value xsi:type="DV_TEXT">
-            <value>bUvgFmwfMPOTeAsqAbTA wwlsgdGezrqLEU,xgGgsAzyZNWcEQXufP,Td,AtZFA.RUDLgfCmTtjnGoeBEXYZZYGhhiFJVHtAq.ROsSmMuITJinSAkEvIZlyYgAVqCRmuvRYFpnoS,fUJxPYHwLMfzD,ZvgxXF,Kz fRSeoacgaEuHjkHdwQErIeIoSNYrbjHK,RdUlcwJtJCm,rZ.LTanltTAJQYczaYYjEAkw,H,yEtffDBuURaGHx.aeFNach</value>
+            <value>NQ.aZkXqDbHHNDF tvYmDHTU ,cDNQNymkXGYqtO,EXofrCnxCPWvsovpNfYlhgfc GMSPIwNKjjGAeamClcZPAXyZvYAXpzMPGVek,iLeaRIYssElMTZYKSdMedYKQAIZgNVgqCPBqvwEXLGP VUWefMMkRiPFtirlbODDOSEJFUAvChfSEQrTHRX..wJdZtMKcqJeZWr,gejtgYkmLBG.xvsoUuIdbaWinwAoQU,ocntUUfOMTHystp,hq,cc</value>
           </value>
         </items>
       </data>
@@ -959,14 +959,14 @@
           <value>Event Series</value>
         </name>
         <origin>
-          <value>2021-10-17T18:23:26.811-03:00</value>
+          <value>2021-10-19T01:47:37.391-03:00</value>
         </origin>
         <events xsi:type="POINT_EVENT" archetype_node_id="at0002">
           <name xsi:type="DV_TEXT">
             <value>Any event</value>
           </name>
           <time>
-            <value>2021-10-17T18:23:26.820-03:00</value>
+            <value>2021-10-19T01:47:37.397-03:00</value>
           </time>
           <data xsi:type="ITEM_TREE" archetype_node_id="at0003">
             <name xsi:type="DV_TEXT">
@@ -981,7 +981,7 @@
                   <value>Free text or coded</value>
                 </name>
                 <value xsi:type="DV_TEXT">
-                  <value>R IKVGcLhKGzLPukVLYWvfPGFbqBFrZQnlQFDQMGubXgFvjKgGwdq,qgeNfGyLYkglvDXuivYTv aYWh,bLxGdtApjGgcLjC.zkTj.KZt.QptInPbDsHdWRuyAcYsZnKAMmAoQjhUmfagKOXlhugCI.GUgujHQkVEqGHDGIdc.GKklfvauJNXXOfxBdXgmQyVtYzoaZ XWnZvkTrsubAiyJwSZuOTcPrvWDITwTcNwtnCJubtI.h.VyfOXXCPqL</value>
+                  <value>qvEEy QvLG,MYmmRTUtZQSJUNQjShkOyLpZaL GVnPIdYcIZGIrRMKeUMHRjC.HGsuBdC YSSdcik,UgDlP HHsfPviIlYehkkZAUDxybxkWNibyUBAAJCmmUDAxiVbidXRGKpJCgrhBVJmzUnmIWAIVwImjilzcjbzEDTfFGgqVlJeZ.QZExNyJuOPw.IBtnhll,kV,sHvFCMYhGllTIdZJNsUThLRovbkjqpTWZrhcdJxvTmqwZrlUfSCqrQX</value>
                 </value>
               </items>
               <items xsi:type="ELEMENT" archetype_node_id="at0006">
@@ -1003,12 +1003,12 @@
                   <value>Text that is sourced from an external terminology</value>
                 </name>
                 <value xsi:type="DV_CODED_TEXT">
-                  <value>.SyGoyopQlgWWjKjrDeABBmdzjlh .</value>
+                  <value>c CupKhQBsbiOBpLtHviQfKnzyWuZi</value>
                   <defining_code>
                     <terminology_id>
                       <value>terminology_not_specified_as_constraint_or_referenceSetUri_in_opt</value>
                     </terminology_id>
-                    <code_string>60493250</code_string>
+                    <code_string>56502916</code_string>
                   </defining_code>
                 </value>
               </items>
@@ -1017,7 +1017,7 @@
                   <value>Quantity</value>
                 </name>
                 <value xsi:type="DV_QUANTITY">
-                  <magnitude>4.5</magnitude>
+                  <magnitude>41.3</magnitude>
                   <units>cm</units>
                 </value>
               </items>
@@ -1027,11 +1027,11 @@
                 </name>
                 <value xsi:type="DV_INTERVAL">
                   <lower xsi:type="DV_QUANTITY">
-                    <magnitude>8.69127862447251</magnitude>
+                    <magnitude>4.87219576296237</magnitude>
                     <units>cm</units>
                   </lower>
                   <upper xsi:type="DV_QUANTITY">
-                    <magnitude>9.69127862447251</magnitude>
+                    <magnitude>5.87219576296237</magnitude>
                     <units>cm</units>
                   </upper>
                   <lower_included>true</lower_included>
@@ -1045,7 +1045,7 @@
                   <value>Count</value>
                 </name>
                 <value xsi:type="DV_COUNT">
-                  <magnitude>12</magnitude>
+                  <magnitude>0</magnitude>
                 </value>
               </items>
               <items xsi:type="ELEMENT" archetype_node_id="at0022">
@@ -1054,10 +1054,10 @@
                 </name>
                 <value xsi:type="DV_INTERVAL">
                   <lower xsi:type="DV_COUNT">
-                    <magnitude>4</magnitude>
+                    <magnitude>9</magnitude>
                   </lower>
                   <upper xsi:type="DV_COUNT">
-                    <magnitude>5</magnitude>
+                    <magnitude>10</magnitude>
                   </upper>
                   <lower_included>true</lower_included>
                   <upper_included>true</upper_included>
@@ -1070,8 +1070,8 @@
                   <value>Proportion</value>
                 </name>
                 <value xsi:type="DV_PROPORTION">
-                  <numerator>46.3</numerator>
-                  <denominator>644.9</denominator>
+                  <numerator>338.8</numerator>
+                  <denominator>515.1</denominator>
                   <type>0</type>
                 </value>
               </items>
@@ -1080,7 +1080,7 @@
                   <value>Date/Time</value>
                 </name>
                 <value xsi:type="DV_DATE_TIME">
-                  <value>2021-10-17T18:23:27.132-03:00</value>
+                  <value>2021-10-19T01:47:37.511-03:00</value>
                 </value>
               </items>
               <items xsi:type="ELEMENT" archetype_node_id="at0024">
@@ -1089,10 +1089,10 @@
                 </name>
                 <value xsi:type="DV_INTERVAL">
                   <lower xsi:type="DV_DATE_TIME">
-                    <value>2021-10-17T18:23:27.142-03:00</value>
+                    <value>2021-10-19T01:47:37.520-03:00</value>
                   </lower>
                   <upper xsi:type="DV_DATE_TIME">
-                    <value>2021-10-18T18:23:27.143-03:00</value>
+                    <value>2021-10-20T01:47:37.520-03:00</value>
                   </upper>
                   <lower_included>true</lower_included>
                   <upper_included>true</upper_included>
@@ -1152,7 +1152,7 @@
                   <value>Choice</value>
                 </name>
                 <value xsi:type="DV_QUANTITY">
-                  <magnitude>873.6</magnitude>
+                  <magnitude>586.7</magnitude>
                   <units>gm</units>
                 </value>
               </items>
@@ -1186,7 +1186,7 @@
                 <value xsi:type="DV_IDENTIFIER">
                   <issuer>Hospital de Clinicas</issuer>
                   <assigner>Hospital de Clinicas</assigner>
-                  <id>46411850</id>
+                  <id>73649022</id>
                   <type>LOCALID</type>
                 </value>
               </items>
@@ -1195,7 +1195,7 @@
               <name xsi:type="DV_TEXT">
                 <value>Heading 2</value>
               </name><!-- SLOT IN /data[at0001]/events[at0002]/data[at0003]/items[at0018]/items[at0019] NOT PROCESSED --><!-- SLOT IN /data[at0001]/events[at0002]/data[at0003]/items[at0018]/items[at0020] NOT PROCESSED -->
-              <items xsi:type="ELEMENT" archetype_node_id="at1823">
+              <items xsi:type="ELEMENT" archetype_node_id="at4695">
                 <name xsi:type="DV_TEXT">
                   <value>dummy name</value>
                 </name>

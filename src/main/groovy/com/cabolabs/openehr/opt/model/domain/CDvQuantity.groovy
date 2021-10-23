@@ -26,7 +26,7 @@ class CDvQuantity extends ObjectNode {
             return new ValidationResult(isValid: false, message: parent.dataPath +"/units '${units}' don't match "+ list.units)
          }
 
-         if (!item.magnitude.has(magnitude))
+         if (item.magnitude && !item.magnitude.has(magnitude))
          {
             return new ValidationResult(isValid: false, message: parent.dataPath +"/magnitude ${magnitude} is not in the interval "+ item.magnitude)
          }
