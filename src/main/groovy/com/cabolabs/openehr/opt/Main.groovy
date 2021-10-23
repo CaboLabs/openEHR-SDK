@@ -1,6 +1,9 @@
 package com.cabolabs.openehr.opt
 
 import com.cabolabs.openehr.opt.instance_validation.XmlValidation
+import com.cabolabs.openehr.opt.manager.OptManager
+import com.cabolabs.openehr.opt.manager.OptRepository
+import com.cabolabs.openehr.opt.manager.OptRepositoryFSImpl
 import com.cabolabs.openehr.opt.ui_generator.OptUiGenerator
 import com.cabolabs.openehr.opt.instance_generator.*
 import com.cabolabs.openehr.opt.parser.*
@@ -8,7 +11,10 @@ import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.opt.instance_validation.JsonInstanceValidation
 import com.cabolabs.openehr.opt.serializer.JsonSerializer
 import com.cabolabs.openehr.formats.*
+import com.cabolabs.openehr.rm_1_0_2.common.change_control.Version
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
+import com.cabolabs.openehr.validation.RmValidationReport
+import com.cabolabs.openehr.validation.RmValidator
 import groovy.json.JsonOutput
 
 class Main {
@@ -154,12 +160,14 @@ class Main {
 
             if (args.size() < 2)
             {
-               println 'usage: opt inval path_to_xml_or_json_instance'
-               println 'usage: opt inval path_to_folder_with_xml_or_json_instances'
+               println 'usage: opt inval path_to_xml_or_json_instance [semantic]'
+               println 'usage: opt inval path_to_folder_with_xml_or_json_instances [semantic]'
                System.exit(0)
             }
 
             def path = args[1]
+            def semantic = args.size() == 3 && args[2] == 'semantic'
+
             def f = new File(path)
             if (!f.exists())
             {
@@ -171,12 +179,20 @@ class Main {
             {
                f.eachFileMatch(~/.*.xml/) { xml ->
 
-                 validateXML(validator, xml)
+                  validateXML(validator, xml)
+                  if (semantic)
+                  {
+                     validateXMLWithOPT(xml)
+                  }
                }
 
                f.eachFileMatch(~/.*.json/) { json ->
 
-                 validateJSONInstance(jsonValidator, json)
+                  validateJSONInstance(jsonValidator, json)
+                  if (semantic)
+                  {
+                     validateJSONWithOPT(json)
+                  }
                }
             }
             else // Validate the XML or JSON instance referenced by the file
@@ -185,10 +201,18 @@ class Main {
                if (ext == 'json')
                {
                   validateJSONInstance(jsonValidator, f)
+                  if (semantic)
+                  {
+                     validateJSONWithOPT(f)
+                  }
                }
                else if (ext == 'xml')
                {
                   validateXML(validator, f)
+                  if (semantic)
+                  {
+                     validateXMLWithOPT(f)
+                  }
                }
                else
                {
@@ -366,7 +390,7 @@ class Main {
    static boolean validateXML(validator, file)
    {
       boolean isValid = true
-      if (!validator.validate( file.text ))
+      if (!validator.validate(file.text))
       {
          println file.name +' NOT VALID'
          println '====================================='
@@ -408,6 +432,35 @@ class Main {
 
       def parser = new OperationalTemplateParser()
       return parser.parse( text )
+   }
+
+   static validateXMLWithOPT(File xml)
+   {
+      def parser = new OpenEhrXmlParser()
+      def instance = parser.parseXml(xml.text) // should be a composition, if the file is a version it won't parse
+      validateCompositionWithOPT(instance)
+   }
+
+   static validateJSONWithOPT(File json)
+   {
+      def parser = new OpenEhrJsonParser()
+      def instance = parser.parseXml(json.text) // should be a composition, if the file is a version it won't parse
+      validateCompositionWithOPT(instance)
+   }
+
+   static validateCompositionWithOPT(Composition compo)
+   {
+      String opt_repo_path = "src"+ PS +"main"+ PS +"resources"+ PS +"opts"
+      OptRepository repo = new OptRepositoryFSImpl(opt_repo_path)
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator validator = new RmValidator(opt_manager)
+      RmValidationReport report = validator.dovalidate(compo, OptManager.DEFAULT_NAMESPACE)
+
+      report.errors.each { error ->
+         println error
+      }
    }
 
    static def generateInstances(List opts, String destination_path, boolean withParticipations, int count, String generate)

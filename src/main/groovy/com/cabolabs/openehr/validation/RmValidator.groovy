@@ -127,6 +127,9 @@ class RmValidator {
       */
       RmValidationReport report = new RmValidationReport()
 
+      //println c_multiple_attribute.cardinality.interval
+      //println c_multiple_attribute.dataPath +" size: "+ container.size()
+
       if (!c_multiple_attribute.cardinality.interval.has(container.size()))
       {
          // cardinality error
@@ -739,7 +742,7 @@ class RmValidator {
 
       if (context.other_context)
       {
-         report.append(context.other_context, o.getAttr('other_context'))
+         report.append(validate(context.other_context, o.getAttr('other_context')))
       }
       else
       {

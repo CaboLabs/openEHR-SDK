@@ -677,7 +677,10 @@ class OpenEhrXmlParser {
             throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".other_context")
          }
          method = 'parse'+ type
-         e.other_context = this."$method"(xml.other_context)
+         e.other_context = this."$method"(xml.other_context, e,
+            path + (path != '/' ? '/' : '') + 'other_context',
+            dataPath + (dataPath != '/' ? '/' : '') + 'other_context'
+         )
       }
       
       // TODO: health_care_facility

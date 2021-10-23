@@ -11,6 +11,7 @@ import java.util.jar.JarFile
  * Based on EMRApp xml.XmlSerializer
  * @author Pablo Pazos <pablo.pazos@cabolabs.com>
  * Design note: the xsi attributes should appear first in the attribute list of each element
+ * NOTE: This should be deprecated since there is no way of validating the cardinalities of the container attributes, so it could generated more items than the allowed by the constraint.
  */
 class XmlInstanceGenerator {
 

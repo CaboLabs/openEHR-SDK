@@ -146,40 +146,36 @@ class RmInstanceGeneratorTest extends GroovyTestCase {
       assert report.errors.size() == 0
    }
 
-
-
-
-   /*
-   void testXmlParserAndMarshallerVerasion()
+   void testRmIngenVersionAddiction()
    {
-      String path = PS +"canonical_xml"+ PS +"test_all_datatypes.version.en.xml"
+      String path = PS +"opts"+ PS +"com.cabolabs.openehr_opt.namespaces.default"+ PS +"addiction_alcohol_template.opt"
       File file = new File(getClass().getResource(path).toURI())
       String xml = file.text
-      def parser = new OpenEhrXmlParser()
-      Version v = (Version)parser.parseVersionXml(xml)
+      def parser = new OperationalTemplateParser()
+      def opt = parser.parse(xml)
 
-      OpenEhrXmlSerializer marshal = new OpenEhrXmlSerializer()
-      String xml2 = marshal.serialize(v)
+      def ingen = new RmInstanceGenerator()
+      def version = ingen.generateVersionFromOPT(opt, true)
 
-      //println xml.replaceAll(">\\s+<", "><").replaceAll("[\n\r]", "")
-      //println xml2
+      assert version != null
 
-      // original xml, when parsed and serialized again, are exactly the same as strings (without indentation and new lines)
-      assert xml.replaceAll(">\\s+<", "><").replaceAll("[\n\r]", "") == xml2
+      // TODO: check data at paths
 
+      // Serializing to check the contents, this could be removed from the test
+      def serial = new OpenEhrJsonSerializer()
+      println serial.serialize(version)
 
-      assert v.data.context.path == '/context'
-      assert v.data.context.dataPath == '/context'
+      // Validation of the composition against the OPT
+      String opt_repo_path = PS + "opts"
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(opt_repo_path).toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+      //opt_manager.loadAll()
 
-      assert v.data.content[0].path == '/content'
-      assert v.data.content[0].dataPath == '/content[0]'
+      RmValidator validator = new RmValidator(opt_manager)
+      RmValidationReport report = validator.dovalidate(version.data, OptManager.DEFAULT_NAMESPACE)
 
-      assert v.data.content[0].data.path == '/content/data'
-      assert v.data.content[0].data.dataPath == '/content[0]/data'
-
-      assert v.data.content[0].data.events[0].path == '/content/data/events'
-      assert v.data.content[0].data.events[0].dataPath == '/content[0]/data/events[0]'
+      assert report.errors.size() == 0
    }
-   */
 
 }

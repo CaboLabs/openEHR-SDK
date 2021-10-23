@@ -67,16 +67,21 @@ $ ./opt.sh ingen path_to_opt dest_folder [amount] [version|composition|version_c
 
 ### inval: Validate XML or JSON instances against the schemas
 
+NOTE: If the 'semantic' keyword is specified as an argument, this tool
+will try to load the referenced OPT and validate against it's constraints.
+The OPT will be loaded from src/main/resources/opts/com.cabolabs.openehr_opt.namespaces.default
+so if you want to validate a new instance, you need to put the OPT there first.
+
 Validate one instance:
 
 ```shell
-$ ./opt.sh inval path_to_xml_or_json_instance
+$ ./opt.sh inval path_to_xml_or_json_instance [semantic]
 ```
 
 Validate all instances in folder:
 
 ```shell
-$ ./opt.sh inval path_to_folder_with_xml_or_json_instances
+$ ./opt.sh inval path_to_folder_with_xml_or_json_instances [semantic]
 ```
 
 > Note: if the folder contains JSON and XML, it will validate both with the correct schema, but the files should have .json or .xml extensions for the mixed validation to work OK.

@@ -1171,13 +1171,26 @@ class RmInstanceGenerator {
       def oa = o.attributes.find { it.rmAttributeName == 'data' }
       if (oa)
       {
-         // the result is a list but should contain only one HISTORY, get the first item
+         // the result is a list but should contain only one STRUCT, get the first item
          def data = processAttributeChildren(oa, parent_arch_id)
-         //println "OBSERVATION data "+ data
          obs.data = data[0]
       }
 
-      // FIXME: missing state???
+      oa = o.attributes.find { it.rmAttributeName == 'state' }
+      if (oa)
+      {
+         // the result is a list but should contain only one STRUCT, get the first item
+         def state = processAttributeChildren(oa, parent_arch_id)
+         obs.state = state[0]
+      }
+
+      oa = o.attributes.find { it.rmAttributeName == 'protocol' }
+      if (oa)
+      {
+         // the result is a list but should contain only one STRUCT, get the first item
+         def protocol = processAttributeChildren(oa, parent_arch_id)
+         obs.protocol = protocol[0]
+      }
 
       return obs
    }
@@ -1199,6 +1212,14 @@ class RmInstanceGenerator {
          // this is a list, but data is a single structure, extract the first item
          def data = processAttributeChildren(oa, parent_arch_id)
          eval.data = data[0]
+      }
+
+      oa = o.attributes.find { it.rmAttributeName == 'protocol' }
+      if (oa)
+      {
+         // the result is a list but should contain only one STRUCT, get the first item
+         def protocol = processAttributeChildren(oa, parent_arch_id)
+         eval.protocol = protocol[0]
       }
       
       return eval
@@ -1248,6 +1269,14 @@ class RmInstanceGenerator {
          def activities = processAttributeChildren(oa, parent_arch_id)
          // TODO: check for cardinality constraints in activities attr to avoid generating more or less than the allowed
          inst.activities = activities
+      }
+
+      oa = o.attributes.find { it.rmAttributeName == 'protocol' }
+      if (oa)
+      {
+         // the result is a list but should contain only one STRUCT, get the first item
+         def protocol = processAttributeChildren(oa, parent_arch_id)
+         inst.protocol = protocol[0]
       }
 
       return inst
@@ -1313,6 +1342,14 @@ class RmInstanceGenerator {
       {
          def description = processAttributeChildren(oa, parent_arch_id)
          action.description = description[0]
+      }
+
+      oa = o.attributes.find { it.rmAttributeName == 'protocol' }
+      if (oa)
+      {
+         // the result is a list but should contain only one STRUCT, get the first item
+         def protocol = processAttributeChildren(oa, parent_arch_id)
+         action.protocol = protocol[0]
       }
 
       // add one of the ism_transition in the OPT
