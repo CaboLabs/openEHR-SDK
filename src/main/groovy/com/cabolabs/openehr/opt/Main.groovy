@@ -65,7 +65,7 @@ class Main {
 
             if (args.size() < 3)
             {
-               println 'usage: opt ingen [path_to_opt|path_to_opt_folder] dest_folder [amount] [version|composition|version_committer|tagged|json_version|json_composition|json_compo_with_errors] [withParticipations]'
+               println 'usage: opt ingen [path_to_opt|path_to_opt_folder] dest_folder [amount] [json|xml] [version|composition] [withParticipations]'
                System.exit(0)
             }
 
@@ -112,21 +112,34 @@ class Main {
             verifyFolder(destination_path)
 
             // TODO: separate xml/json from the composition/version in two params
+            def format = 'json'
             def generate = 'version'
+
             if (args.size() > 4)
             {
-               if (!['version', 'composition', 'version_committer', 'tagged', 'json_version', 'json_composition', 'json_compo_with_errors'].contains(args[4]))
+               if (!['xml', 'json'].contains(args[4]))
                {
-                  println "result type should be one of 'version', 'composition', 'version_committer', 'tagged', 'json_version', 'json_composition', 'json_compo_with_errors'"
+                  println "format should be one of 'json' or 'xml', '"+ args[4] +"' was specified"
                   System.exit(0)
                }
 
-               generate = args[4]
+               format = args[4]
+            }
+
+            if (args.size() > 5)
+            {
+               if (!['version', 'composition'].contains(args[5]))
+               {
+                  println "result type should be one of 'version' or 'composition', '"+ args[5] +"' was specified"
+                  System.exit(0)
+               }
+
+               generate = args[5]
             }
 
             def with_participations = args.contains('withParticipations')
 
-            generateInstances(opts, destination_path, with_participations, count, generate)
+            generateInstances(opts, destination_path, with_participations, count, format, generate)
             
          break
          case 'optval':
@@ -463,67 +476,53 @@ class Main {
       }
    }
 
-   static def generateInstances(List opts, String destination_path, boolean withParticipations, int count, String generate)
+   static def generateInstances(List opts, String destination_path, boolean withParticipations, int count, String format, String generate)
    {
-      def out, printer, igen, ins, ext = 'xml', file_number = 1
-      def dt
+      def out, printer, file_number = 1
+      def ext = (format == 'json') ? 'json' : 'xml'
+      def dt, path
+
+      def generator = new RmInstanceGenerator()
+      def instance
+
+      def serializer, contents
+
+      if (format == 'json')
+      {
+         serializer = new OpenEhrJsonSerializer()
+      }
+      else
+      {
+         serializer = new OpenEhrXmlSerializer()
+      }
 
       opts.each { opt ->
 
-         // FIXME: the for should be inside each if!
          for (i in 1..count)
          {
-            if (generate == 'composition')
+            if (generate == 'version')
             {
-               igen = new XmlInstanceGenerator()
-               ins = igen.generateXMLCompositionStringFromOPT(opt, withParticipations)
-            }
-            else if (generate == 'version')
-            {
-               igen = new XmlInstanceGenerator()
-               ins = igen.generateXMLVersionStringFromOPT(opt, withParticipations)
-            }
-            else if (generate == 'tagged')
-            {
-               igen = new XmlInstanceGeneratorTagged()
-               ins = igen.generateXMLVersionStringFromOPT(opt)
-            }
-            else if (generate == 'json_version')
-            {
-               igen = new JsonInstanceCanonicalGenerator2()
-               ins = igen.generateJSONVersionStringFromOPT(opt, withParticipations, true)
-               ext = 'json'
-            }
-            else if (generate == 'json_composition')
-            {
-               igen = new JsonInstanceCanonicalGenerator2()
-               ins = igen.generateJSONCompositionStringFromOPT(opt, withParticipations, true)
-               ext = 'json'
-            }
-            else if (generate == 'json_compo_with_errors')
-            {
-               igen = new JsonInstanceCanonicalGeneratorCardinalityErrors()
-               ins = igen.generateJSONCompositionStringFromOPT(opt, withParticipations, true)
-               ext = 'json'
+               instance = generator.generateVersionFromOPT(opt, withParticipations)
             }
             else
             {
-               igen = new XmlInstanceGeneratorForCommitter()
-               ins = igen.generateXMLVersionStringFromOPT(opt)
+               instance = generator.generateCompositionFromOPT(opt, withParticipations)
             }
 
-            dt = new java.text.SimpleDateFormat("yyyyMMddhhmmss").format(new Date())
+            // this is always pretty printed
+            contents = serializer.serialize(instance, true)
 
-            out = new File(destination_path + PS + (opt.templateId.replaceAll(' ', '_') +"_"+ dt +"_"+ file_number.toString().padLeft(6, '0') +'_'+ i +'.'+ ext))
+            dt = new java.text.SimpleDateFormat("yyyyMMddhhmmss").format(new Date())
+            path = destination_path + PS + (opt.templateId.replaceAll(' ', '_').toLowerCase() +"_"+ dt +"_"+ file_number.toString().padLeft(6, '0') +'_'+ i +'.'+ ext)
+            out = new File(path)
 
             // Generates UTF-8 XML output
             printer = new java.io.PrintWriter(out, 'UTF-8')
-            printer.write(ins)
+            printer.write(contents)
             printer.flush()
             printer.close()
 
             file_number++
-
 
             println "Instance generated: "+ out.absolutePath
          }

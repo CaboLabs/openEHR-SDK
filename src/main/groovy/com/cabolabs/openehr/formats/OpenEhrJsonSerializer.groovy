@@ -53,29 +53,44 @@ class OpenEhrJsonSerializer {
       return method
    }
 
-   String serialize(Locatable o)
+   String serialize(Locatable o, boolean pretty = false)
    {
       String method = this.method(o)
       def out = this."$method"(o)
-      return JsonOutput.toJson(out)
+      if (pretty)
+      {
+         JsonOutput.prettyPrint(JsonOutput.toJson(out))
+      }
+      else
+      {
+         JsonOutput.toJson(out)
+      }
    }
 
    // TODO: add support for pretty print, see ingen
-   String serialize(Version o)
+   String serialize(Version o, boolean pretty = false)
    {
       String method = this.method(o)
       def out = this."$method"(o) // e.g. serializeOriginalVersion
-      return JsonOutput.toJson(out)
+      if (pretty)
+      {
+         JsonOutput.prettyPrint(JsonOutput.toJson(out))
+      }
+      else
+      {
+         JsonOutput.toJson(out)
+      }
    }
 
    private void fillLocatable(Locatable o, Map out)
    {
       String method = this.method(o.name) // text or coded
-      out.name = this."$method"(o.name)
-      out.name._type = this.openEhrType(o.name)
 
       // adds the JSON type
       out._type = this.openEhrType(o)
+
+      // adds the type before the rest of the entries
+      out.name = [_type: this.openEhrType(o.name)] + this."$method"(o.name)
 
       if (o.uid)
       {
@@ -153,8 +168,8 @@ class OpenEhrJsonSerializer {
 
       String method = this.method(o.composer)
 
-      out.composer = this."$method"(o.composer)
-      out.composer._type = this.openEhrType(o.composer)
+      // adds the type before the rest of the entries
+      out.composer = [_type: this.openEhrType(o.composer)] + this."$method"(o.composer)
 
       if (o.context)
       {
@@ -219,12 +234,10 @@ class OpenEhrJsonSerializer {
       Map out = [:]
 
       String method = this.method(o.function) // text or coded text
-      out.function = this."$method"(o.function)
-      out.function._type = this.openEhrType(o.function)
+      out.function = [_type: this.openEhrType(o.function)] + this."$method"(o.function)
       
       method = this.method(o.performer)
-      out.performer = this."$method"(o.performer)
-      out.performer._type = this.openEhrType(o.performer)
+      out.performer = [_type: this.openEhrType(o.performer)] + this."$method"(o.performer)
 
       if (o.time)
       {
@@ -244,8 +257,7 @@ class OpenEhrJsonSerializer {
       
       String method
       method = this.method(a.committer)
-      out.committer = this."$method"(a.committer)
-      out.committer._type = this.openEhrType(a.committer)
+      out.committer = [_type: this.openEhrType(a.committer)] + this."$method"(a.committer)
       
       out.time_committed = this.serializeDvDateTime(a.time_committed)
       
@@ -254,8 +266,7 @@ class OpenEhrJsonSerializer {
       if (a.description)
       {
          method = this.method(a.description)
-         out.description = this."$method"(a.description)
-         out.description._type = this.openEhrType(a.description)
+         out.description = [_type: this.openEhrType(a.description)] + this."$method"(a.description)
       }
 
       return out
@@ -270,8 +281,7 @@ class OpenEhrJsonSerializer {
       
       def method
       method = this.method(a.committer)
-      out.committer = this."$method"(a.committer)
-      out.committer._type = this.openEhrType(a.committer)
+      out.committer = [_type: this.openEhrType(a.committer)] + this."$method"(a.committer)
       
       out.time_committed = this.serializeDvDateTime(a.time_committed)
       
@@ -280,8 +290,7 @@ class OpenEhrJsonSerializer {
       if (a.description)
       {
          method = this.method(a.description)
-         out.description = this."$method"(a.description)
-         out.description._type = this.openEhrType(a.description)
+         out.description = [_type: this.openEhrType(a.description)] + this."$method"(a.description)
       }
       
       // Attestation fields
@@ -360,8 +369,7 @@ class OpenEhrJsonSerializer {
 
       def method = this.method(o.id)
 
-      out.id = this."$method"(o.id)
-      out.id._type = this.openEhrType(o.id)
+      out.id = [_type: this.openEhrType(o.id)] + this."$method"(o.id)
       
       out.namespace = o.namespace
 
@@ -414,7 +422,7 @@ class OpenEhrJsonSerializer {
 
    private Map serializeArchetypeId(ArchetypeId o)
    {
-      Map out = [_type: 'ARCHETYPE_ID']
+      Map out = [_type: 'ARCHETYPE_ID'] // NOTE: all uses of ARCHETYPE_ID are known, type is optional
 
       this.fillObjectId(o, out)
 
@@ -441,7 +449,7 @@ class OpenEhrJsonSerializer {
 
    private Map serializeTemplateId(TemplateId o)
    {
-      Map out = [_type: 'TEMPLATE_ID']
+      Map out = [_type: 'TEMPLATE_ID'] // NOTE: all uses of TEMPLATE_ID are known, type is optional
 
       this.fillObjectId(o, out)
 
@@ -456,14 +464,12 @@ class OpenEhrJsonSerializer {
       out.encoding = this.serializeCodePhrase(o.encoding)
 
       String method = this.method(o.subject)
-      out.subject = this."$method"(o.subject)
-      out.subject._type = this.openEhrType(o.subject)
-      
+      out.subject = [_type: this.openEhrType(o.subject)] + this."$method"(o.subject)
+
       if (o.provider)
       {
          method = this.method(o.provider)
-         out.provider = this."$method"(o.provider)
-         out.provider._type = this.openEhrType(o.provider)
+         out.provider = [_type: this.openEhrType(o.provider)] + this."$method"(o.provider)
       }
       
       if (o.other_participations)
@@ -478,8 +484,7 @@ class OpenEhrJsonSerializer {
       if (o.workflow_id)
       {
          method = this.method(o.workflow_id)
-         out.workflow_id = this."$method"(o.workflow_id)
-         out.workflow_id._type = this.openEhrType(o.workflow_id)
+         out.workflow_id = [_type: this.openEhrType(o.workflow_id)] + this."$method"(o.workflow_id)
       }
    }
    
@@ -490,8 +495,7 @@ class OpenEhrJsonSerializer {
       if (o.protocol)
       {
          String method = this.method(o.protocol)
-         out.protocol = this."$method"(o.protocol)
-         out.protocol._type = this.openEhrType(o.protocol)
+         out.protocol = [_type: this.openEhrType(o.protocol)] + this."$method"(o.protocol)
 
          // TODO: check if this is needed
          //archetype_node_id: o.protocol.archetype_node_id)
@@ -500,8 +504,7 @@ class OpenEhrJsonSerializer {
       if (o.guideline_id)
       {
          method = this.method(o.guideline_id)
-         out.guideline_id = this."$method"(o.guideline_id)
-         out.guideline_id._type = this.openEhrType(o.guideline_id)
+         out.guideline_id = [_type: this.openEhrType(o.guideline_id)] + this."$method"(o.guideline_id)
       }
    }
    
@@ -512,8 +515,7 @@ class OpenEhrJsonSerializer {
       out.time = this.serializeDvDateTime(o.time)
       
       String method = this.method(o.data)
-      out.data = this."$method"(o.data)
-      out.data._type = this.openEhrType(o.data)
+      out.data = [_type: this.openEhrType(o.data)] + this."$method"(o.data)
 
       // TODO: check if this is needed
       //archetype_node_id: o.data.archetype_node_id)
@@ -521,8 +523,7 @@ class OpenEhrJsonSerializer {
       if (o.state)
       {
          method = this.method(o.state)
-         out.state = this."$method"(o.state)
-         out.state._type = this.openEhrType(o.state)
+         out.state = [_type: this.openEhrType(o.state)] + this."$method"(o.state)
          
          // TODO: check if this is needed
          //archetype_node_id: o.state.archetype_node_id)
@@ -554,8 +555,7 @@ class OpenEhrJsonSerializer {
       out.items = []
       o.items.each { item ->
          method = this.method(item)
-         _item = this."$method"(item)
-         _item._type = this.openEhrType(item)
+         _item = [_type: this.openEhrType(item)] + this."$method"(item)
          out.items << _item
       }
 
@@ -572,8 +572,7 @@ class OpenEhrJsonSerializer {
 
       out.items = []
       o.items.each { item ->
-         _item = this.serializeElement(item)
-         _item._type = 'ELEMENT'
+         _item = [_type: 'ELEMENT'] + this.serializeElement(item)
          out.items << _item
       }
 
@@ -619,8 +618,7 @@ class OpenEhrJsonSerializer {
       s.items.each { content_item ->
          
          method = this.method(content_item)
-         _item = this."$method"(content_item)
-         _item._type = this.openEhrType(content_item)
+         _item = [_type: this.openEhrType(content_item)] + this."$method"(content_item)
          out.items << _item
       }
 
@@ -667,8 +665,7 @@ class OpenEhrJsonSerializer {
       if (o.summary)
       {
          method = this.method(o.summary)
-         out.summary = this."$method"(o.summary)
-         out.summary._type = this.openEhrType(o.summary)
+         out.summary = [_type: this.openEhrType(o.summary)] + this."$method"(o.summary)
       }
 
       Map _event
@@ -677,8 +674,7 @@ class OpenEhrJsonSerializer {
       o.events.each { event ->
 
          method = this.method(event)
-         _event = this."$method"(event)
-         _event._type = this.openEhrType(event)
+         _event = [_type: this.openEhrType(event)] + this."$method"(event)
          out.events << _event
       }
 
@@ -720,8 +716,7 @@ class OpenEhrJsonSerializer {
       this.fillCareEntry(o, out)
       
       String method = this.method(o.data)
-      out.data = this."$method"(o.data)
-      out.data._type = this.openEhrType(o.data)
+      out.data = [_type: this.openEhrType(o.data)] + this."$method"(o.data)
 
       return out
    }
@@ -734,8 +729,7 @@ class OpenEhrJsonSerializer {
       this.fillCareEntry(o, out)
       
       String method = this.method(o.narrative)
-      out.narrative = this."$method"(o.narrative)
-      out.narrative._type = this.openEhrType(o.narrative)
+      out.narrative = [_type: this.openEhrType(o.narrative)] + this."$method"(o.narrative)
       
       if (o.expiry_time)
       {
@@ -768,8 +762,7 @@ class OpenEhrJsonSerializer {
       this.fillLocatable(o, out)
       
       String method = this.method(o.description)
-      out.description = this."$method"(o.description)
-      out.description._type = this.openEhrType(o.description)
+      out.description = [_type: this.openEhrType(o.description)] + this."$method"(o.description)
       
       out.timing = this.serializeDvParsable(o.timing)
       
@@ -788,8 +781,7 @@ class OpenEhrJsonSerializer {
       out.time = this.serializeDvDateTime(o.time)
       
       String method = this.method(o.description)
-      out.description = this."$method"(o.description)
-      out.description._type = this.openEhrType(o.description)
+      out.description = [_type: this.openEhrType(o.description)] + this."$method"(o.description)
       
       // TODO: check if needed
       //archetype_node_id: o.description.archetype_node_id) {
@@ -834,8 +826,7 @@ class OpenEhrJsonSerializer {
       if (o.wf_details)
       {
          String method = this.method(o.wf_details)
-         out.wf_details = this."$method"(o.wf_details)
-         out.wf_details._type = this.openEhrType(o.wf_details)
+         out.wf_details = [_type: this.openEhrType(o.wf_details)] + this."$method"(o.wf_details)
       }
 
       return out
@@ -849,8 +840,7 @@ class OpenEhrJsonSerializer {
       this.fillEntry(o, out)
       
       String method = this.method(o.data)
-      out.data = this."$method"(o.data)
-      out.data._type = this.openEhrType(o.data)
+      out.data = [_type: this.openEhrType(o.data)] + this."$method"(o.data)
 
       // TODO: check if needed
       //archetype_node_id: o.data.archetype_node_id)
@@ -872,8 +862,7 @@ class OpenEhrJsonSerializer {
       out.items = []
       o.items.each { item ->
          method = this.method(item)
-         _item = this."$method"(item)
-         _item._type = this.openEhrType(item)
+         _item = [_type: this.openEhrType(item)] + this."$method"(item)
          out.items << _item
       }
 
@@ -889,8 +878,7 @@ class OpenEhrJsonSerializer {
       if (o.value)
       {
          String method = this.method(o.value)
-         out.value = this."$method"(o.value)
-         out.value._type = this.openEhrType(o.value)
+         out.value = [_type: this.openEhrType(o.value)] + this."$method"(o.value)
       }
       
       if (o.null_flavour)
@@ -1157,15 +1145,13 @@ class OpenEhrJsonSerializer {
       if (o.lower)
       {
          method = this.method(o.lower)
-         out.lower = this."$method"(o.lower)
-         out.lower._type = this.openEhrType(o.lower)
+         out.lower = [_type: this.openEhrType(o.lower)] + this."$method"(o.lower)
       }
 
       if (o.upper)
       {
          method = this.method(o.upper)
-         out.upper = this."$method"(o.upper)
-         out.upper._type = this.openEhrType(o.upper)
+         out.upper = [_type: this.openEhrType(o.upper)] + this."$method"(o.upper)
       }
 
       out.lower_included  = o.lower_included

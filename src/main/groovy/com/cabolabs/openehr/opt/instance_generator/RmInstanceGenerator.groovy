@@ -260,7 +260,7 @@ class RmInstanceGenerator {
       return generateComposition(addParticipations)
    }
 
-   Composition generateComposition(boolean addParticipations = false)
+   private Composition generateComposition(boolean addParticipations = false)
    {
       def compo = new Composition(
          language: new CodePhrase(
@@ -354,7 +354,7 @@ class RmInstanceGenerator {
    /**
     * Continues the opt recursive traverse.
     */
-   List processAttributeChildren(AttributeNode a, String parent_arch_id)
+   private List processAttributeChildren(AttributeNode a, String parent_arch_id)
    {
       //println "processAttributeChildren"
 

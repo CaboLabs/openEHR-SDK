@@ -15,6 +15,13 @@ $ cd openEHR-OPT
 $ gradle build
 ```
 
+Build without running the tests (faster)
+
+```shell
+$ cd openEHR-OPT
+$ gradle build -x test
+```
+
 ### Requires Java 8+ and Groovy 2.5.5+
 
 > - - - - -
@@ -52,17 +59,23 @@ $ ./opt.sh uigen path_to_opt dest_folder
 ### ingen: Generate XML instances from OPTs with random data
 
 ```shell
-$ ./opt.sh ingen path_to_opt dest_folder [amount] [version|composition|version_committer|tagged|json_version|json_composition|json_compo_with_errors] [withParticipations]
+$ ./opt.sh ingen path_to_opt dest_folder [amount] [json|xml] [version|composition] [withParticipations]
 ```
 
-1. amount: defines how many XML instances will be generated
-2. version: generates an instance of a VERSION object
-3. composition: generates an instance of a COMPOSITION object
+1. amount: defines how many XML instances will be generated, default is 1
+2. format: 'json' or 'xml', default is 'json'
+3. object: type of openEHR object to generate, 'version' or 'composition', default is 'version'
+4. withParticipations: if included in the parameters, it will add participations to the composition
+
+<!--
+4. version: generates an instance of a VERSION object
+5. composition: generates an instance of a COMPOSITION object
 4. version_committer: generates an instance with the format required by the [EHRCommitter] to generate the UI and load data to test the [EHRServer].
 5. tagged: generates a version instance with tags instead of data, useful to inject data from your app to commit to the [EHRServer]
 6. json_version: openEHR canonical JSON VERSION object
 7. json_composition: openEHR canonical JSON COMPOSITION object
 8. json_compo_with_errors: canonical JSON COMPOSITION object with violating data elements for cardinality constraints (purpose: data validation testing)
+-->
 
 
 ### inval: Validate XML or JSON instances against the schemas
