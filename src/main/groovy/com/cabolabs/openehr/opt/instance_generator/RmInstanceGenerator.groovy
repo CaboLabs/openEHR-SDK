@@ -332,7 +332,8 @@ class RmInstanceGenerator {
       // category and context where already processed on generateCompositionHeader
       def oa = opt.definition.attributes.find{ it.rmAttributeName == 'content' }
 
-      // TODO: if there are no constraints for content, do not generate it...
+      if (!oa && !attr_context) throw new Exception("The OPT doesn't have a structure for COMPOSITION.content or COMPOSITION.context, at least it should have one of those")
+      
       if (oa)
       {
          def content = processAttributeChildren(oa, opt.definition.archetypeId)

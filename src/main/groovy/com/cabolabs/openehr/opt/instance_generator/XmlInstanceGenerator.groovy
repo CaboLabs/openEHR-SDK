@@ -333,6 +333,7 @@ class XmlInstanceGenerator {
       // context is declared on the OPT only if it contains constraints for other_context
       def context = opt.definition.attributes.find{ it.rmAttributeName == 'context' }
 
+      // TODO: relax this rule
       if (category_code == '431' && context)
       {
          throw new Exception("Error: COMPOSITION is persistent but contains context.")
@@ -483,13 +484,18 @@ class XmlInstanceGenerator {
    {
       // opt.definition.attributes has attributes category, context and content of the COMPOSITION
       // category and context where already processed on generateCompositionHeader
-      def a = opt.definition.attributes.find{ it.rmAttributeName == 'content' }
+      def content = opt.definition.attributes.find{ it.rmAttributeName == 'content' }
 
-      if (!a) throw new Exception("The OPT doesn't have a structure for COMPOSITION.content")
+      def context = opt.definition.attributes.find{ it.rmAttributeName == 'context' }
 
-      assert a.rmAttributeName == 'content'
+      if (!content && !context) throw new Exception("The OPT doesn't have a structure for COMPOSITION.content or COMPOSITION.context, at least it should have one of those")
 
-      return processAttributeChildren(a, parent_arch_id)
+      //assert content.rmAttributeName == 'content'
+
+      if (content)
+         return processAttributeChildren(content, parent_arch_id)
+      else
+         return 0
    }
 
    /**

@@ -280,6 +280,7 @@ class JsonInstanceCanonicalGenerator2 {
       // context is declared on the OPT only if it contains constraints for other_context
       def attr_context = opt.definition.attributes.find{ it.rmAttributeName == 'context' }
 
+      // TODO: we might need to relax this
       if (category_code == '431' && attr_context)
       {
          throw new Exception("Error: COMPOSITION is persistent but contains context.")
@@ -362,18 +363,21 @@ class JsonInstanceCanonicalGenerator2 {
       // category and context where already processed on generateCompositionHeader
       def oa = opt.definition.attributes.find{ it.rmAttributeName == 'content' }
 
-      if (!oa) throw new Exception("The OPT doesn't have a structure for COMPOSITION.content")
+      if (!oa && !attr_context) throw new Exception("The OPT doesn't have a structure for COMPOSITION.content or COMPOSITION.context, at least it should have one of those")
 
-      def content = processAttributeChildren(oa, opt.definition.archetypeId) 
-
-      // it is possible the cardinality upper is lower than the items generated because there are more alternatives
-      // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
-      if (oa.cardinality && oa.cardinality.interval.upper)
+      if (oa)
       {
-         content = content.take(oa.cardinality.interval.upper)
+         def content = processAttributeChildren(oa, opt.definition.archetypeId) 
+
+         // it is possible the cardinality upper is lower than the items generated because there are more alternatives
+         // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
+         if (oa.cardinality && oa.cardinality.interval.upper)
+         {
+            content = content.take(oa.cardinality.interval.upper)
+         }
+      
+         compo.content = content
       }
-   
-      compo.content = content
 
       return compo
    }
