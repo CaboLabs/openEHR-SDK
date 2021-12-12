@@ -41,14 +41,11 @@ class OpenEhrJsonParser {
 
       def ehr = new Ehr()
 
-      ehr.system_id = map.system_id // NOTE: this is HIER_OBJECT_ID in newer specs, we might need to check the type, though in RM 1.0.2 this is a string
+      ehr.system_id = this.parseHIER_OBJECT_ID(map.system_id)
 
       ehr.ehr_id = this.parseHIER_OBJECT_ID(map.ehr_id)
 
       ehr.time_created = this.parseDV_DATE_TIME(map.time_created)
-
-      // TODO
-      //ehr.ehr_status = this.parseEhrStatus(map.ehr_status)
 
       ehr.ehr_status = this.parseOBJECT_REF(map.ehr_status)
 

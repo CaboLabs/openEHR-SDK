@@ -13,7 +13,7 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.ObjectRef
  */
 class Ehr {
 
-   String system_id
+   HierObjectId system_id
    HierObjectId ehr_id
    DvDateTime time_created
    ObjectRef ehr_status

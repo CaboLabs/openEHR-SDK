@@ -41,7 +41,9 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       // NOTE: in RM 1.0.2 system_id is a string, in newer specs it is a HIER_OBJECT_ID
       def json_ehr = $/
          {
-           "system_id": "d60e2348-b083-48ce-93b9-916cef1d3a5a",
+           "system_id": {
+             "value": "d60e2348-b083-48ce-93b9-916cef1d3a5a"
+           },
            "ehr_id": {
              "value": "7d44b88c-4199-4bad-97dc-d78268e01398"
            },
@@ -62,7 +64,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       def parser = new OpenEhrJsonParser()
       Ehr ehr = parser.parseEhr(json_ehr)
 
-      assert ehr.system_id == "d60e2348-b083-48ce-93b9-916cef1d3a5a"
+      assert ehr.system_id.value == "d60e2348-b083-48ce-93b9-916cef1d3a5a"
 
       assert ehr.ehr_status.id.value == "8849182c-82ad-4088-a07f-48ead4180515::openEHRSys.example.com::1"
       assert ehr.ehr_status.type == "EHR_STATUS"
