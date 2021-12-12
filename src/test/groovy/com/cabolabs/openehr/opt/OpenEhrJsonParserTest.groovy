@@ -14,6 +14,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.CodePhrase
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvCodedText
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
+import com.cabolabs.openehr.rm_1_0_2.ehr.Ehr
 import com.cabolabs.openehr.rm_1_0_2.support.identification.ArchetypeId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.HierObjectId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.TemplateId
@@ -34,6 +35,38 @@ import com.cedarsoftware.util.io.JsonWriter
 class OpenEhrJsonParserTest extends GroovyTestCase {
 
    private static String PS = System.getProperty("file.separator")
+
+   void testJsonParserEhr()
+   {
+      // NOTE: in RM 1.0.2 system_id is a string, in newer specs it is a HIER_OBJECT_ID
+      def json_ehr = $/
+         {
+           "system_id": "d60e2348-b083-48ce-93b9-916cef1d3a5a",
+           "ehr_id": {
+             "value": "7d44b88c-4199-4bad-97dc-d78268e01398"
+           },
+           "ehr_status": {
+             "id": {
+               "_type": "OBJECT_VERSION_ID",
+               "value": "8849182c-82ad-4088-a07f-48ead4180515::openEHRSys.example.com::1"
+             },
+             "namespace": "local",
+             "type": "EHR_STATUS"
+           },
+           "time_created": {
+             "value": "2015-01-20T19:30:22.765+01:00"
+           }
+         }
+      /$
+
+      def parser = new OpenEhrJsonParser()
+      Ehr ehr = parser.parseEhr(json_ehr)
+
+      assert ehr.system_id == "d60e2348-b083-48ce-93b9-916cef1d3a5a"
+
+      assert ehr.ehr_status.id.value == "8849182c-82ad-4088-a07f-48ead4180515::openEHRSys.example.com::1"
+      assert ehr.ehr_status.type == "EHR_STATUS"
+   }
    
    void testJsonParserInstruction()
    {

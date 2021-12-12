@@ -25,6 +25,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.*
+import com.cabolabs.openehr.rm_1_0_2.ehr.Ehr
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 
 import groovy.json.JsonSlurper
@@ -32,6 +33,29 @@ import groovy.json.JsonSlurper
 class OpenEhrJsonParser {
 
    // ========= ENTRY POINTS =========
+
+   Ehr parseEhr(String json)
+   {
+      def slurper = new JsonSlurper()
+      def map = slurper.parseText(json)
+
+      def ehr = new Ehr()
+
+      ehr.system_id = map.system_id // NOTE: this is HIER_OBJECT_ID in newer specs, we might need to check the type, though in RM 1.0.2 this is a string
+
+      ehr.ehr_id = this.parseHIER_OBJECT_ID(map.ehr_id)
+
+      ehr.time_created = this.parseDV_DATE_TIME(map.time_created)
+
+      // TODO
+      //ehr.ehr_status = this.parseEhrStatus(map.ehr_status)
+
+      ehr.ehr_status = this.parseOBJECT_REF(map.ehr_status)
+
+      // the references to versioned objects are not parsed, for instance, this is the right parsing for a rest EHR response
+
+      return ehr
+   }
 
    // used to parse compositions and other descendant from Locatable
    Locatable parseJson(String json)
