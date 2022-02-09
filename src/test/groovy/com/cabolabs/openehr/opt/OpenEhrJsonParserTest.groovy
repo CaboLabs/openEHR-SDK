@@ -38,7 +38,6 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 
    void testJsonParserEhr()
    {
-      // NOTE: in RM 1.0.2 system_id is a string, in newer specs it is a HIER_OBJECT_ID
       def json_ehr = $/
          {
            "system_id": {

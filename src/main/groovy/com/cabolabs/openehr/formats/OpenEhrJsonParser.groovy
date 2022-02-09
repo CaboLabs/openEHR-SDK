@@ -27,10 +27,13 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.text.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.*
 import com.cabolabs.openehr.rm_1_0_2.ehr.Ehr
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
+import org.apache.log4j.Logger
 
 import groovy.json.JsonSlurper
 
 class OpenEhrJsonParser {
+
+   private Logger log = Logger.getLogger(getClass())
 
    // ========= ENTRY POINTS =========
 
@@ -47,7 +50,19 @@ class OpenEhrJsonParser {
 
       ehr.time_created = this.parseDV_DATE_TIME(map.time_created)
 
-      ehr.ehr_status = this.parseOBJECT_REF(map.ehr_status)
+      println map
+
+      // FIXME: if the JSON is RM, the ehr_status will be an OBJECT_REF, if the JSON is API, the ehr_status will be EHR_STATUS
+      // this is a pretty dirty solution: lookahead based on attributes...
+      if (map.ehr_status.namespace) // namespace is mandatory in OBJECT_REF
+      {
+         ehr.ehr_status = this.parseOBJECT_REF(map.ehr_status)
+      }
+      else
+      {
+         // TODO: implement parseEhrStatus
+         log.warn("Not parsed EHR_STATUS: this parser is based on the RM and the model is based on the REST API model. The status should be parsed separatelly")
+      }
 
       // the references to versioned objects are not parsed, for instance, this is the right parsing for a rest EHR response
 

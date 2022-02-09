@@ -2,6 +2,7 @@ package com.cabolabs.openehr.opt.manager
 
 import net.pempek.unicode.UnicodeBOMInputStream
 import org.apache.log4j.Logger
+import java.io.FileNotFoundException
 
 class OptRepositoryFSImpl implements OptRepository {
 
@@ -16,7 +17,9 @@ class OptRepositoryFSImpl implements OptRepository {
       def root = new File(repoLocation)
 
       if (!root.exists() || !root.canRead())
-         throw new Exception(root.canonicalPath + " doesn't exist or can't be read")
+      {
+         throw new FileNotFoundException(root.canonicalPath + " doesn't exist or can't be read")
+      }
 
       this.repoLocation = repoLocation
    }
@@ -26,7 +29,9 @@ class OptRepositoryFSImpl implements OptRepository {
       def root = new File(repoLocation)
 
       if (!root.exists() || !root.canRead())
-         throw new Exception(root.canonicalPath + " doesn't exist or can't be read")
+      {
+         throw new FileNotFoundException(root.canonicalPath + " doesn't exist or can't be read")
+      }
 
       this.repoLocation = repoLocation.path
    }
@@ -60,7 +65,9 @@ class OptRepositoryFSImpl implements OptRepository {
       def optFile = new File(location)
 
       if (!optFile.exists() || !optFile.canRead())
-         throw new Exception(optFile.canonicalPath + " doesn't exist or can't be read")
+      {
+         throw new FileNotFoundException(optFile.canonicalPath + " doesn't exist or can't be read")
+      }
 
       return this.removeBOM(optFile.bytes)
    }
@@ -96,6 +103,11 @@ class OptRepositoryFSImpl implements OptRepository {
       def result = []
       def root = new File(addTrailingSeparator(this.repoLocation) + namespace)
 
+      if (!root.exists() || !root.canRead())
+      {
+         throw new FileNotFoundException(root.canonicalPath + " doesn't exist or can't be read")
+      }
+
       root.eachFileMatch groovy.io.FileType.FILES, ~/.*\.opt/, { optFile ->
 
          result << this.removeBOM(optFile.bytes)
@@ -111,6 +123,11 @@ class OptRepositoryFSImpl implements OptRepository {
    {
       def result = [:]
       def root = new File(addTrailingSeparator(this.repoLocation) + namespace)
+
+      if (!root.exists() || !root.canRead())
+      {
+         throw new FileNotFoundException(root.canonicalPath + " doesn't exist or can't be read")
+      }
 
       root.eachFileMatch groovy.io.FileType.FILES, ~/.*\.opt/, { optFile ->
 
