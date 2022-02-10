@@ -28,6 +28,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.uri.*
 import com.cabolabs.openehr.rm_1_0_2.ehr.Ehr
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 import org.apache.log4j.Logger
+import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
 
 import groovy.json.JsonSlurper
 
@@ -50,7 +51,7 @@ class OpenEhrJsonParser {
 
       ehr.time_created = this.parseDV_DATE_TIME(map.time_created)
 
-      println map
+      //println map
 
       // FIXME: if the JSON is RM, the ehr_status will be an OBJECT_REF, if the JSON is API, the ehr_status will be EHR_STATUS
       // this is a pretty dirty solution: lookahead based on attributes...
@@ -67,6 +68,30 @@ class OpenEhrJsonParser {
       // the references to versioned objects are not parsed, for instance, this is the right parsing for a rest EHR response
 
       return ehr
+   }
+
+   // This is to parse the API POST /ehr payload
+   EhrStatus parseEhrStatus(String json)
+   {
+      def slurper = new JsonSlurper()
+      def map = slurper.parseText(json)
+
+      def status = new EhrStatus()
+
+      this.fillLOCATABLE(status, map, null, '/', '/')
+
+      status.subject = this.parsePARTY_SELF(map.subject)
+
+      status.is_modifiable = map.is_modifiable
+      status.is_queryable = map.is_queryable
+
+      if (map.other_details)
+      {
+         String method = 'parse'+ map.other_details._type
+         status.other_details = this."$method"(map.other_details, status, '/other_details', '/other_details')
+      }
+
+      return status
    }
 
    // used to parse compositions and other descendant from Locatable

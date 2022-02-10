@@ -33,6 +33,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvEhrUri
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvUri
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
+import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
 
 class OpenEhrJsonSerializer {
 
@@ -150,6 +151,28 @@ class OpenEhrJsonSerializer {
       out.lifecycle_state = this.serializeDvCodedText(o.lifecycle_state)
 
       return out
+   }
+
+   public String serializeEhrStatus(EhrStatus status)
+   {
+      def out = [:]
+
+      out._type = 'EHR_STATUS'
+
+      this.fillLocatable(status, out)
+
+      out.subject = this.serializePartySelf(status.subject)
+
+      out.is_modifiable = status.is_modifiable
+      out.is_queryable = status.is_queryable
+
+      if (status.other_details)
+      {
+         def method = this.method(status.other_details)
+         out.other_details = this."$method"(status.other_details)
+      }
+
+      JsonOutput.toJson(out)
    }
 
    private Map serializeComposition(Composition o)

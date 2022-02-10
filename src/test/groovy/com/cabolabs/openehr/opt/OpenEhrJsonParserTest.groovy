@@ -1,4 +1,4 @@
-package  com.cabolabs.openehr.opt
+package com.cabolabs.openehr.opt
 
 import com.cabolabs.openehr.formats.OpenEhrJsonParser
 import com.cabolabs.openehr.formats.OpenEhrXmlSerializer
@@ -29,7 +29,9 @@ import com.networknt.schema.*
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.cabolabs.openehr.opt.instance_validation.JsonInstanceValidation
+import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
 
+import groovy.json.JsonSlurper
 import com.cedarsoftware.util.io.JsonWriter
 
 class OpenEhrJsonParserTest extends GroovyTestCase {
@@ -67,6 +69,57 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 
       assert ehr.ehr_status.id.value == "8849182c-82ad-4088-a07f-48ead4180515::openEHRSys.example.com::1"
       assert ehr.ehr_status.type == "EHR_STATUS"
+   }
+
+   void testJsonParserEhrStatus()
+   {
+       def json_ehr_status = $/
+         {
+            "_type": "EHR_STATUS",
+            "archetype_node_id": "openEHR-EHR-EHR_STATUS.generic.v1",
+            "name": {
+               "_type": "DV_TEXT",
+               "value": "EHR Status"
+            },
+            "subject": {
+               "external_ref": {
+                  "id": {
+                     "_type": "GENERIC_ID",
+                     "value": "ins01",
+                     "scheme": "id_scheme"
+                  },
+                  "namespace": "DEMOGRAPHIC",
+                  "type": "PERSON"
+               }
+            },
+            "is_modifiable": true,
+            "is_queryable": true
+         }
+      /$
+
+      def parser = new OpenEhrJsonParser()
+      EhrStatus status = parser.parseEhrStatus(json_ehr_status)
+
+      assert status.archetype_node_id == "openEHR-EHR-EHR_STATUS.generic.v1"
+      assert status.name.value == "EHR Status"
+      assert status.subject != null
+      assert status.subject.external_ref.id.value == "ins01"
+      assert status.subject.external_ref.namespace == "DEMOGRAPHIC"
+      assert status.other_details == null
+      assert status.is_modifiable == true
+      assert status.is_queryable == true
+
+      // serialize status object
+      def serializer = new OpenEhrJsonSerializer()
+      String json2 = serializer.serializeEhrStatus(status)
+      
+      
+
+
+      def map1 = new JsonSlurper().parseText(json_ehr_status)
+      def map2 = new JsonSlurper().parseText(json2)
+
+      assert map1 == map2
    }
    
    void testJsonParserInstruction()
