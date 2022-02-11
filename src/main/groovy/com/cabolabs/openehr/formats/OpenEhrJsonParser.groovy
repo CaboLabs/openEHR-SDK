@@ -63,7 +63,12 @@ class OpenEhrJsonParser {
       {
          // TODO: implement parseEhrStatus
          //log.warn("Not parsed EHR_STATUS: this parser is based on the RM and the model is based on the REST API model. The status should be parsed separatelly")
-         ehr.ehr_status = this.parseEhrStatus(map.ehr_status)
+         def ehr_status = this.parseEhrStatus(map.ehr_status)
+         ehr.ehr_status = new ObjectRef(
+            namespace: 'EHR',
+            type: 'EHR_STATUS',
+            id: ehr_status.uid
+         )
       }
 
       // the references to versioned objects are not parsed, for instance, this is the right parsing for a rest EHR response
