@@ -91,7 +91,10 @@ class OpenEhrJsonParser {
 
       this.fillLOCATABLE(status, map, null, '/', '/')
 
-      status.subject = this.parsePARTY_SELF(map.subject)
+      if (map.subject)
+      {
+         status.subject = this.parsePARTY_SELF(map.subject)
+      }
 
       status.is_modifiable = map.is_modifiable
       status.is_queryable = map.is_queryable
