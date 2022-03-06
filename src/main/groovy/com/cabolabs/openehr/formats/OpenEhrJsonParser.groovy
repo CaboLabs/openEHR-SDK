@@ -238,7 +238,7 @@ class OpenEhrJsonParser {
             throw new JsonCompositionParseException("Can't parse JSON if root node doesn't have a value for _type")
          }
          
-         method = 'parse'+ type // ORIGINAL_VERSION, IMPORTED_VERSION
+         method = 'parse'+ type
          contribution.versions << this."$method"(version_map)
       }
 

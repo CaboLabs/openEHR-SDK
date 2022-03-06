@@ -24,6 +24,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.*
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
+import com.cabolabs.openehr.dto_1_0_2.common.change_control.ContributionDto
 
 // Old Groovy
 import groovy.util.XmlSlurper
@@ -115,23 +116,24 @@ class OpenEhrXmlParser {
       return versions
    }
 
-   Contribution parseContribution(String xml)
+   ContributionDto parseContributionDto(String xml)
    {
       def slurper = new XmlSlurper(false, false)
       def gpath   = slurper.parseText(xml)
       String type, method
       Version version
 
-      def contribution = new Contribution(versions: new HashSet())
+      def contribution = new ContributionDto(versions: [])
 
-
-      // NOTE: POST /contribution doesn't have uid, so this will fail to parse that, might need to relax the schema
-      contribution.uid = this.parseHIER_OBJECT_ID(gpath.uid)
-
+      // in the DTO the uid is optional
+      if (!gpath.uid.isEmpty())
+      {
+         contribution.uid = this.parseHIER_OBJECT_ID(gpath.uid)
+      }
       
       gpath.versions.each { version_gpath ->
 
-         type = version_gpath.'@xsi:type'.text()
+         type = version_gpath.'@xsi:type'.text() // ORIGINAL_VERSION, IMPORTED_VERSION
 
          if (!type)
          {
@@ -139,8 +141,28 @@ class OpenEhrXmlParser {
          }
          
          method = 'parse'+ type
-         version = this."$method"(version_gpath)
-         contribution.versions << this.parseVersionToObjectRef(version) // contribiution has objectrefs
+         contribution.versions << this."$method"(version_gpath)
+      }
+
+      contribution.audit = this.parseAUDIT_DETAILS(gpath.audit)
+
+      return contribution
+   }
+
+   Contribution parseContribution(String xml)
+   {
+      def slurper = new XmlSlurper(false, false)
+      def gpath   = slurper.parseText(xml)
+      String type, method
+
+      def contribution = new Contribution(versions: new HashSet())
+
+      // note for the RM the uid is mandatory, in the DTO the uid is optional
+      contribution.uid = this.parseHIER_OBJECT_ID(gpath.uid)
+      
+      gpath.versions.each { version_gpath ->
+
+         contribution.versions << this.parseOBJECT_REF(version_gpath) // contribiution has objectrefs
       }
 
       contribution.audit = this.parseAUDIT_DETAILS(gpath.audit)

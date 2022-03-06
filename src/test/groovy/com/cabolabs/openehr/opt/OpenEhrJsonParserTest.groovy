@@ -31,6 +31,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.cabolabs.openehr.opt.instance_validation.JsonInstanceValidation
 import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
 
+import com.cabolabs.openehr.dto_1_0_2.common.change_control.ContributionDto
+
 import groovy.json.JsonSlurper
 import com.cedarsoftware.util.io.JsonWriter
 
@@ -299,7 +301,8 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       //println out
    }
 
-   void testJsonParserApiContribution()
+   // this is the contribution from the RM
+   void testJsonParserContribution()
    {
       String path = PS +"canonical_json"+ PS +"contribution_test_all_datatypes_en.json"
       File file = new File(getClass().getResource(path).toURI())
@@ -311,6 +314,21 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 
       assert contribution.versions.size() == 1
       assert contribution.versions[0].id.value == 'fb458d9c-1323-42bc-b7f8-787f3660a0b5::CABOLABS::1'
+   }
+
+   // this is the contribution used in the API
+   void testJsonParserContributionDto()
+   {
+      String path = PS +"canonical_json"+ PS +"contribution_dto_test_all_datatypes_en.json"
+      File file = new File(getClass().getResource(path).toURI())
+      String json = file.text
+      def parser = new OpenEhrJsonParser()
+      ContributionDto contribution = parser.parseContributionDto(json)
+
+      // TODO: check internals
+
+      assert contribution.versions.size() == 1
+      assert contribution.versions[0].uid.value == '93bbff8b-cdd5-43a3-8d71-194a735cc704::CABOLABS::1'
    }
    
    // TODO: move to the XML test suite

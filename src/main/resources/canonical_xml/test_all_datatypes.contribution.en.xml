@@ -1,0 +1,37 @@
+<contribution xmlns="http://schemas.openehr.org/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <uid xsi:type="HIER_OBJECT_ID">
+    <value>44afee41-197b-aaaa-cccc-90bdcf29bc35</value>
+  </uid>
+  <versions xsi:type="OBJECT_REF">
+    <id xsi:type="HIER_OBJECT_ID">
+      <value>12345678-197b-4d3b-b567-90bdcf29bc35</value>
+    </id>
+    <namespace>EHR</namespace>
+    <type>VERSION</type>
+  </versions>
+  <audit>
+    <system_id>CABOLABS_EHR</system_id>
+    <committer xsi:type="PARTY_IDENTIFIED">
+      <external_ref>
+        <id xsi:type="HIER_OBJECT_ID">
+          <value>44afee41-197b-4d3b-b567-90bdcf29bc35</value>
+        </id>
+        <namespace>DEMOGRAPHIC</namespace>
+        <type>PERSON</type>
+      </external_ref>
+      <name>Dr. House</name>
+    </committer>
+    <time_committed>
+      <value>20210718T171614,212-0300</value>
+    </time_committed>
+    <change_type>
+      <value>creation</value>
+      <defining_code>
+        <terminology_id>
+          <value>openehr</value>
+        </terminology_id>
+        <code_string>249</code_string>
+      </defining_code>
+    </change_type>
+  </audit>
+</contribution>
