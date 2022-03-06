@@ -1608,7 +1608,7 @@ class RmValidator {
       // existence
       if (a.existence)
       {
-         def existence = (d ? 1 : 0)
+         def existence = (d != null ? 1 : 0) // != null is used to avpod the falsy 0
          if (!a.existence.has(existence))
          {
             // existence error
@@ -2095,7 +2095,7 @@ class RmValidator {
       // existence
       if (a.existence)
       {
-         def existence = (d ? 1 : 0)
+         def existence = (d != null ? 1 : 0) // != null is used to differentiate from the valid false value
          if (!a.existence.has(existence))
          {
             // existence error
