@@ -310,7 +310,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       // TODO: check internals
 
       assert contribution.versions.size() == 1
-      assert contribution.versions[0].id.value == '93bbff8b-cdd5-43a3-8d71-194a735cc704::CABOLABS::1'
+      assert contribution.versions[0].id.value == 'fb458d9c-1323-42bc-b7f8-787f3660a0b5::CABOLABS::1'
    }
    
    // TODO: move to the XML test suite

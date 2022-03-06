@@ -29,6 +29,7 @@ import com.cabolabs.openehr.rm_1_0_2.ehr.Ehr
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 import org.apache.log4j.Logger
 import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
+import com.cabolabs.openehr.dto_1_0_2.common.change_control.ContributionDto
 
 import groovy.json.JsonSlurper
 
@@ -197,7 +198,7 @@ class OpenEhrJsonParser {
       return versions
    }
 
-   Contribution parseContribution(String json)
+   ContributionDto parseContributionDto(String json)
    {
       /*
       {
@@ -220,12 +221,13 @@ class OpenEhrJsonParser {
       String type, method
       Version version
 
-      def contribution = new Contribution(versions: new HashSet())
+      def contribution = new ContributionDto(versions: [])
 
-
-      // NOTE: POST /contribution doesn't have uid, so this will fail to parse that, might need to relax the schema
-      contribution.uid = this.parseHIER_OBJECT_ID(map.uid)
-
+      // in the DTO the uid is optional
+      if (map.uid)
+      {
+         contribution.uid = this.parseHIER_OBJECT_ID(map.uid)
+      }
 
       map.versions.each { version_map ->
 
@@ -236,9 +238,45 @@ class OpenEhrJsonParser {
             throw new JsonCompositionParseException("Can't parse JSON if root node doesn't have a value for _type")
          }
          
-         method = 'parse'+ type
-         version = this."$method"(version_map)
-         contribution.versions << this.parseVersionToObjectRef(version) // contribiution has objectrefs
+         method = 'parse'+ type // ORIGINAL_VERSION, IMPORTED_VERSION
+         contribution.versions << this."$method"(version_map)
+      }
+
+      contribution.audit = this.parseAUDIT_DETAILS(map.audit)
+
+      return contribution
+   }
+
+   Contribution parseContribution(String json)
+   {
+      /*
+      {
+         "versions": [
+            {
+               ... an object ref
+            },
+            {
+               ... an object ref
+            },
+            ....
+         ],
+         "audit": {
+
+         }
+      }
+      */
+      def slurper = new JsonSlurper()
+      def map = slurper.parseText(json)
+      String type, method
+
+      def contribution = new Contribution(versions: new HashSet())
+
+      // note for the RM the uid is mandatory, in the DTO the uid is optional
+      contribution.uid = this.parseHIER_OBJECT_ID(map.uid)
+
+      map.versions.each { version_map ->
+
+         contribution.versions << this.parseOBJECT_REF(version_map) // contribiution has objectrefs
       }
 
       contribution.audit = this.parseAUDIT_DETAILS(map.audit)
@@ -679,6 +717,8 @@ class OpenEhrJsonParser {
    
    private ObjectRef parseOBJECT_REF(Map json)
    {
+      println json
+
       ObjectRef o   = new ObjectRef()
       
       o.namespace   = json.namespace
