@@ -85,7 +85,7 @@ class OptManager {
       def opts = this.repo.getAllOptKeysAndContents(namespace)
       opts.each { location, text ->
 
-         opt = parser.parse( text )
+         opt = parser.parse(text)
 
          if (opt)
          {
@@ -145,8 +145,6 @@ class OptManager {
    {
       if (!repo) throw new Exception("Please initialize the OPT repository by calling init()")
 
-      // FIXME: it needs the language or use a normalized template id to get
-      // TODO: the language shouldnt be part of the OPT normalized ID since the concept name should be in that language anyway and it's enough to differentiate IDs
       def text = this.repo.getOptContentsByTemplateId(templateId, namespace)
       if (!text)
       {
@@ -154,7 +152,7 @@ class OptManager {
       }
 
       def parser = new OperationalTemplateParser()
-      def opt = parser.parse( text )
+      def opt = parser.parse(text)
 
       if (opt)
       {
@@ -169,7 +167,32 @@ class OptManager {
          this.cache[namespace][templateId] = opt
          this.timestamps[namespace][templateId] = new Date()
 
-         // FIXME: is not setting referencedArchetypes!
+         // set referencedArchetypes
+         def refarchs = opt.getReferencedArchetypes()
+         refarchs.each { _objectNode ->
+            // If the archertype is referenced twice by different opts, it is overwritten,
+            // the objectnodes can have different structures since one OPT might have all
+            // the nodes and another that uses the SAME archetype might have a couple.
+            // To avoid that issue, we save here all the references to the same archetype.
+            // A better solution to reduce the memory use, is to merge all the internal
+            // structures into one complete structure. (TODO)
+            // TODO: do not add the reference twice for the same OPT (check if this case can happen)
+            if (!this.referencedArchetypes[namespace])
+            {
+               this.referencedArchetypes[namespace] = [:]
+            }
+
+            if (!this.referencedArchetypes[namespace][_objectNode.archetypeId])
+            {
+               this.referencedArchetypes[namespace][_objectNode.archetypeId] = []
+            }
+
+            // avoids to load object nodes from the same template twice
+            if (!this.referencedArchetypes[namespace][_objectNode.archetypeId].any { it.templatePath == _objectNode.templatePath })
+            {
+               this.referencedArchetypes[namespace][_objectNode.archetypeId] << _objectNode
+            }
+         }
       }
       else
       {

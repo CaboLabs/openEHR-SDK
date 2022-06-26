@@ -1,0 +1,935 @@
+<composition xmlns="http://schemas.openehr.org/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="COMPOSITION" archetype_node_id="openEHR-EHR-COMPOSITION.encounter.v1">
+  <name xsi:type="DV_TEXT">
+    <value>PrecripSiliconV1</value>
+  </name>
+  <archetype_details>
+    <archetype_id>
+      <value>openEHR-EHR-COMPOSITION.encounter.v1</value>
+    </archetype_id>
+    <template_id>
+      <value>PrecripSiliconV1</value>
+    </template_id>
+    <rm_version>1.0.2</rm_version>
+  </archetype_details>
+  <language>
+    <terminology_id>
+      <value>ISO_639-1</value>
+    </terminology_id>
+    <code_string>en</code_string>
+  </language>
+  <territory>
+    <terminology_id>
+      <value>ISO_3166-1</value>
+    </terminology_id>
+    <code_string>UY</code_string>
+  </territory>
+  <category>
+    <value>event</value>
+    <defining_code>
+      <terminology_id>
+        <value>openehr</value>
+      </terminology_id>
+      <code_string>433</code_string>
+    </defining_code>
+  </category>
+  <composer xsi:type="PARTY_IDENTIFIED">
+    <external_ref>
+      <id xsi:type="HIER_OBJECT_ID">
+        <value>293897d0-06f7-443b-ac35-3a833fbe3714</value>
+      </id>
+      <namespace>DEMOGRAPHIC</namespace>
+      <type>PERSON</type>
+    </external_ref>
+    <name>Dr. House</name>
+  </composer>
+  <context>
+    <start_time>
+      <value>2021-12-10T01:54:55.601-03:00</value>
+    </start_time>
+    <setting>
+      <value>emergency care</value>
+      <defining_code>
+        <terminology_id>
+          <value>openehr</value>
+        </terminology_id>
+        <code_string>227</code_string>
+      </defining_code>
+    </setting>
+  </context>
+  <content xsi:type="SECTION" archetype_node_id="openEHR-EHR-SECTION.adhoc.v1">
+    <name xsi:type="DV_TEXT">
+      <value>Medication Orders</value>
+    </name>
+    <archetype_details>
+      <archetype_id>
+        <value>openEHR-EHR-SECTION.adhoc.v1</value>
+      </archetype_id>
+      <template_id>
+        <value>PrecripSiliconV1</value>
+      </template_id>
+      <rm_version>1.0.2</rm_version>
+    </archetype_details>
+    <items xsi:type="INSTRUCTION" archetype_node_id="openEHR-EHR-INSTRUCTION.medication_order.v2">
+      <name xsi:type="DV_TEXT">
+        <value>Medication order</value>
+      </name>
+      <archetype_details>
+        <archetype_id>
+          <value>openEHR-EHR-INSTRUCTION.medication_order.v2</value>
+        </archetype_id>
+        <template_id>
+          <value>PrecripSiliconV1</value>
+        </template_id>
+        <rm_version>1.0.2</rm_version>
+      </archetype_details>
+      <language>
+        <terminology_id>
+          <value>ISO_639-1</value>
+        </terminology_id>
+        <code_string>en</code_string>
+      </language>
+      <encoding>
+        <terminology_id>
+          <value>IANA_character-sets</value>
+        </terminology_id>
+        <code_string>UTF-8</code_string>
+      </encoding>
+      <subject xsi:type="PARTY_SELF" />
+      <protocol xsi:type="ITEM_TREE" archetype_node_id="at0005">
+        <name xsi:type="DV_TEXT">
+          <value>Dose amount description</value>
+        </name>
+        <items xsi:type="ELEMENT" archetype_node_id="at0004">
+          <name xsi:type="DV_TEXT">
+            <value>Order identifier</value>
+          </name>
+          <value xsi:type="DV_IDENTIFIER">
+            <issuer>Hospital de Clinicas</issuer>
+            <assigner>Hospital de Clinicas</assigner>
+            <id>59584088</id>
+            <type>LOCALID</type>
+          </value>
+        </items>
+      </protocol>
+      <narrative xsi:type="DV_TEXT">
+        <value>fDVmxCLQDCGhRcfhMOFJalrzTxgXfq KVa mHKsRlwnEwdonMnvqIqGOReqdbtEDUUMRxrpaqOcxfrLdEkhrkQjgHhjRRyqGzfl.LjTAWqHYlNFbOjfOmDczIqLagvfrMgPKXIPAfYOMQ Ikg,gFWryIMvIej LSnJviZDhjWHhXIXfhhFnAPJXqgofHeojaalIXTAsKheSytGTMaoMTJKabTXXFK.kZx Bx.dWfEdMwkGXYLqemirDqlwpfuCz</value>
+      </narrative>
+      <activities archetype_node_id="at0001">
+        <name xsi:type="DV_TEXT">
+          <value>Order</value>
+        </name>
+        <description xsi:type="ITEM_TREE" archetype_node_id="at0002">
+          <name xsi:type="DV_TEXT">
+            <value>Tree</value>
+          </name>
+          <items xsi:type="ELEMENT" archetype_node_id="at0070">
+            <name xsi:type="DV_TEXT">
+              <value>Medication item</value>
+            </name>
+            <value xsi:type="DV_TEXT">
+              <value>erhSrXVLRSznTsvjHQjcVWPvnEifmONvboLCniDkwMciweuzvuwtshN HJRMafPv.pfVXtYjxumBce GcjJGPdgAWQPpKwJvWsOzaFjXYvQWJyXRBwDLvjuWvRmSjAm,hnDOTjrmrtpTGuegLccxDLGGqKzSChJVjDcJrjr rKhcsaBDEnAuSNq PsEM,SOTJDAPhSoqeEBTZhjGHW,hIucWAgCFc,ycJmxd.yYh.JYqrONizatNyT QbyUDnXUZvOOOxWOSK,vQxLXivEjkcPwkjJxZybaoNBbHZ.wzLzsQ</value>
+            </value>
+          </items>
+          <items xsi:type="CLUSTER" archetype_node_id="openEHR-EHR-CLUSTER.medication.v1">
+            <name xsi:type="DV_TEXT">
+              <value>Medication</value>
+            </name>
+            <archetype_details>
+              <archetype_id>
+                <value>openEHR-EHR-CLUSTER.medication.v1</value>
+              </archetype_id>
+              <template_id>
+                <value>PrecripSiliconV1</value>
+              </template_id>
+              <rm_version>1.0.2</rm_version>
+            </archetype_details>
+            <items xsi:type="ELEMENT" archetype_node_id="at0132">
+              <name xsi:type="DV_TEXT">
+                <value>Name</value>
+              </name>
+              <value xsi:type="DV_TEXT">
+                <value>smdchwrjPVArnTqLOIzXIVIlQ HHPyvWmNDwgkicFVfDqLsZKHsqvgfWnxbxwTFaIROuTdRSIhPPIhnIRmADOmLRKzEsyQQSxbBtSDhRhT.WLgCsnMcCgurFebzfPrH cRFccXFzpjkkykixAbe iDVghgdWRmBfgjiFJsgc.SrsoatDABovQrhPlWRBrbcXzaXWLRdtanbtsQK,rCyveoMYksvwNVevNZkTzMpjyuDshREOErRGe,bITxAfP,,nbYxPVOQKYeZzVuCbNjl,AzlOydyUiAZzlYoJFOzBTIZG</value>
+              </value>
+            </items>
+            <items xsi:type="ELEMENT" archetype_node_id="at0071">
+              <name xsi:type="DV_TEXT">
+                <value>Form</value>
+              </name>
+              <value xsi:type="DV_TEXT">
+                <value>,BofpfDoqbNcLhaTDgjzGimzNVRvwYAlWMoABurwowTvutUwLZ U.rSUaVSPIGsPZNGqNVfg,vmCCSYmEPceVgNUk.,irGVvuqWyQcCNtzOQweHXMFoieypbRkPyEPbCv OqbxqE,,dpDE foGqycGnhrhfagYFKSJSJGSo.faPoRxLELfTUzdvfLlPaHDSzOaDO cOmmrkKanUbokzXYvMEZH.lrZAZwAiGOGVJruXFgy, IggmdbvIEQIsBDQHAjDHVeSJHpISwDAiBj KvzjocHiKxybt.qfQXzavfvyF</value>
+              </value>
+            </items>
+            <items xsi:type="ELEMENT" archetype_node_id="at0142">
+              <name xsi:type="DV_TEXT">
+                <value>Category</value>
+              </name>
+              <value xsi:type="DV_CODED_TEXT">
+                <value>Ad-hoc mixture</value>
+                <defining_code>
+                  <terminology_id>
+                    <value>local</value>
+                  </terminology_id>
+                  <code_string>at0143</code_string>
+                </defining_code>
+              </value>
+            </items>
+            <items xsi:type="CLUSTER" archetype_node_id="at0152">
+              <name xsi:type="DV_TEXT">
+                <value>Strength (presentation)</value>
+              </name>
+              <items xsi:type="ELEMENT" archetype_node_id="at0153">
+                <name xsi:type="DV_TEXT">
+                  <value>Strength numerator</value>
+                </name>
+                <value xsi:type="DV_QUANTITY">
+                  <magnitude>221.5</magnitude>
+                  <units>1</units>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0004">
+                <name xsi:type="DV_TEXT">
+                  <value>Strength numerator unit</value>
+                </name>
+                <value xsi:type="DV_TEXT">
+                  <value>IOjhNXQMT tgZDL gr.gUiAVhyJnvbFQWEbbTjr,tFZWHjHuPdTzadQSqWANOQETvuscQhZEgKx xuHWl.jYilhhMSJAppqsHrD.mImuhzXXwgNFHjozCRJo.vh. .TfMwXDOrSWYVWzfUzjS efa BHDX rseujOABZNXISCq rrMnSKZmaiKjfEtSfgpbjHwRjVJMSCcRDjVEVQrJWhQvILbdBVfMNLtCKkqVYXxuojkmtaqDSQhzMNCGrFgkBSZsZcAGjYKQIxyLlpilca,PBdeAbhWpLrkBvEvqokCTf</value>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0157">
+                <name xsi:type="DV_TEXT">
+                  <value>Strength denominator</value>
+                </name>
+                <value xsi:type="DV_QUANTITY">
+                  <magnitude>841.5</magnitude>
+                  <units>1</units>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0005">
+                <name xsi:type="DV_TEXT">
+                  <value>Strength denominator unit</value>
+                </name>
+                <value xsi:type="DV_TEXT">
+                  <value>wglzvzyhq..H.wIZNWyLJyBpZaWcHfeflRo,hWSSQ eOSpKj XloUrAwXDF.eXEpoKK iHlEBiZFUyhFXyRVcNxLHPyfAKionBlWYUtIQW,LCmMUvH.SsXvicl.HgFHHxrHTljDhIGVo,HojIVTlLGSeBIKCKx,Pv.RymUgkFoRCqM.ZidQEZOcbupPBtaRyumekUhdYLFWzhedJbExcdagLFgODeNoVFGWKAfuieTFOGsugTzJVsoB Ju.mTnAuHEVmCOjVXo,TMRGQQyUOxkkJeullrwcEp qFjbCYbbOT</value>
+                </value>
+              </items>
+            </items>
+            <items xsi:type="ELEMENT" archetype_node_id="at0158">
+              <name xsi:type="DV_TEXT">
+                <value>Unit of presentation</value>
+              </name>
+              <value xsi:type="DV_TEXT">
+                <value>iQNpedYZFNyJlBHmAxeQgmIgQEOweB XkmNYXpfMn,UCTZkncOSIvMCRHpdpxwZpGvAokpQiVElWwIKlK Tb UORrIBDCjWyZWnEvvEQqDCnhrTopxIDhqshlYehfrEkunqUJjTqTUaaaJgsZtRnQiuNcCjV .XsCCkox TV.DbTzKpiZYcsCsMvWC ZSWocyOW.VkAKOyeHl,YUoWbz iAXfeWBRviwimJjRkjIsBnI ZZwRKBfhARrJUxmRojDvbBmXURmCVVwuDPaCGsbSmYkKGjPwBIJJHlBeALdCtsa</value>
+              </value>
+            </items>
+            <items xsi:type="ELEMENT" archetype_node_id="at0115">
+              <name xsi:type="DV_TEXT">
+                <value>Strength (concentration)</value>
+              </name>
+              <value xsi:type="DV_QUANTITY">
+                <magnitude>253.2</magnitude>
+                <units>_no_constraint_defined_</units>
+              </value>
+            </items>
+            <items xsi:type="ELEMENT" archetype_node_id="at0151">
+              <name xsi:type="DV_TEXT">
+                <value>Manufacturer</value>
+              </name>
+              <value xsi:type="DV_TEXT">
+                <value>bvUvNTRVJjkbRWCamBdKktHmevXzridOtYbN.rTKELgxh,EKJCYvKcpGJaiblUSaqaKUgcMxhBGVSNJxVhUxRcsiUXtvmVxR.CpY.QIoBtqlFJmufrDzucCgvFRALiLGEKCxyOv dzgehZtrHD.VBLZOX qmbcVtHprL CUrmgA,OBvFAmAuGlANiyFTBbqtFTenkp.aVryORFhbkVEQdvkipAUzW YGRTDVwqfuys Lj,ygqxrP,ZzFQsSjMvfCUEYwrihgVpSmkKRWGs,GsRRnAjVEZI.BjwjeUUJiUyLD</value>
+              </value>
+            </items>
+            <items xsi:type="ELEMENT" archetype_node_id="at0150">
+              <name xsi:type="DV_TEXT">
+                <value>Batch ID</value>
+              </name>
+              <value xsi:type="DV_TEXT">
+                <value>,RWgbNWdPteRtYbJRCAXhE,PaXJE,vtISqhWYhUDGYvttlZqVBfopuqwZnjwYtplQReu.  MhYfJO,CfcNZRXDqvbnVYpelQypYNGLJfPjlVTlINfgkCiSqBDWPxt.uNDwtTVFJnENCJhIWgovUSIxInagrrBIMf J.eivqwZID nA,RYOy..veBAAjlJ.kEQvxRORdqGoyAGsnScfwD gFAnUyaaEdTnSj,zkcOyEutYKXTRqsNkecBlNeVaW, kCvZzxTgGCgZaQNJckG rUOxKHK EvqYNTv ,ftvRATY</value>
+              </value>
+            </items>
+            <items xsi:type="ELEMENT" archetype_node_id="at0003">
+              <name xsi:type="DV_TEXT">
+                <value>Expiry</value>
+              </name>
+              <value xsi:type="DV_DATE_TIME">
+                <value>2021-12-10T01:54:55.782-03:00</value>
+              </value>
+            </items>
+            <items xsi:type="CLUSTER" archetype_node_id="openEHR-EHR-CLUSTER.medication.v1">
+              <name xsi:type="DV_TEXT">
+                <value>Medication</value>
+              </name>
+              <archetype_details>
+                <archetype_id>
+                  <value>openEHR-EHR-CLUSTER.medication.v1</value>
+                </archetype_id>
+                <template_id>
+                  <value>PrecripSiliconV1</value>
+                </template_id>
+                <rm_version>1.0.2</rm_version>
+              </archetype_details>
+              <items xsi:type="ELEMENT" archetype_node_id="at0132">
+                <name xsi:type="DV_TEXT">
+                  <value>Name</value>
+                </name>
+                <value xsi:type="DV_TEXT">
+                  <value>hJw.BOrOyP .iUZNGUswat,MNzoZ,fjPyUDRhlmYsAmVdHdIlDfHGdUaOpZc,,parHMdcjjypqgpomwv.FTQSaBmaiXmeydGbGGXxafyvKmYxUpphPuwtcIJJV, ByzjmPw,q,e.biy,m QhhvKpFoPnuNlKtMTMP,WNZS.WEs,jwtRmruzvsXTelLoHuTFHMuY .pzFtWNrcZBklzUFvmPbLUjevvEriGZiLkPezviaHbKaJ.mrAYpYhIZtsu.SOBRNjWdHWRJMfveaae.nXQuBiX BERIreLegwUxqKWl.</value>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0071">
+                <name xsi:type="DV_TEXT">
+                  <value>Form</value>
+                </name>
+                <value xsi:type="DV_TEXT">
+                  <value>BaRkDbtSoHOvWgjxFdBEibUqxaTkQsagYBoNK.u WJJfimZcnRyDZBIeLCWKvJhOkwBP rpmVeOfwK..tHgsJDqoVm.zZKoQSsXScTqqGlY WnzMlNlFnKeUdh,Vl.lqxJ wijaBeIYnD.TfIsOayrNSMamcvq.xufYUfsNtg,gGQXGZoNCHc,nJaBReGQdv lJEUwZoBs PlOJEIdhdmMcf.tVdyFfODY,CmeVBYuGCPXstACgyiDbYpTUynrMpCPITbhgwlhiEfjkF .eWkKafeWxThFDvVBmqKfAQnRir</value>
+                </value>
+              </items>
+              <items xsi:type="CLUSTER" archetype_node_id="at0152">
+                <name xsi:type="DV_TEXT">
+                  <value>Strength (presentation)</value>
+                </name>
+                <items xsi:type="ELEMENT" archetype_node_id="at0153">
+                  <name xsi:type="DV_TEXT">
+                    <value>Strength numerator</value>
+                  </name>
+                  <value xsi:type="DV_QUANTITY">
+                    <magnitude>199.8</magnitude>
+                    <units>1</units>
+                  </value>
+                </items>
+                <items xsi:type="ELEMENT" archetype_node_id="at0004">
+                  <name xsi:type="DV_TEXT">
+                    <value>Strength numerator unit</value>
+                  </name>
+                  <value xsi:type="DV_TEXT">
+                    <value>NPeQhijdeNdffGRbkexjobzRbtFMtRoKLilTiRXBJnDczB.YrakwoDuEAJx,KrZ,NnVMdIbVITtIAmpuoBWGfAJbuYrcMAKvKqPGJBoeooSWJbYtFyWJC,CbKhKuRxiZJWtWxQctSTgXsdpUJRpJfXSEtUEszhfSCUNAGZLDNyqCEphcJ,eBZHJpbas.Isl iiBjhTVmVDYTDICQS NR,OGOqvw,FBNEIvgdtBTxolxBwCFzojvfBQT.DfsQs GmLqBdpCuymztOMxyEfpokznIKiiRlkCFbOAPD.TDpNg.M</value>
+                  </value>
+                </items>
+                <items xsi:type="ELEMENT" archetype_node_id="at0157">
+                  <name xsi:type="DV_TEXT">
+                    <value>Strength denominator</value>
+                  </name>
+                  <value xsi:type="DV_QUANTITY">
+                    <magnitude>530.4</magnitude>
+                    <units>1</units>
+                  </value>
+                </items>
+                <items xsi:type="ELEMENT" archetype_node_id="at0005">
+                  <name xsi:type="DV_TEXT">
+                    <value>Strength denominator unit</value>
+                  </name>
+                  <value xsi:type="DV_TEXT">
+                    <value>ILRjbQIvUtRvHCsCpqANVSxdUDc,N.MIOtBxNcLKUhSQGxQmSqrZTsFHzadZy,HtrqgWKEBSUich.,IP.yOjDNcGvqGrkcKJ.VUZtXQlxrriRhiWOI,vYspwji,MJu ixosyGbhbNwkdFxBUb,Sb DISxjbL KjPxhHAsPaFdfFHqIxKsDjTZPbgNrWyJWtac.ElpcxNGSgQGeqGHBPljprafEQBUhB,dy,RDzTbt.LlRreMFTBD EhzNZaABkGbKXBnSGZHMVeFbPC,SwQytQ fvSmxZvjPhUDpnPrnraEC</value>
+                  </value>
+                </items>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0158">
+                <name xsi:type="DV_TEXT">
+                  <value>Unit of presentation</value>
+                </name>
+                <value xsi:type="DV_TEXT">
+                  <value>LRGiOmBwakU MF, G.x.fhzQgsRK.iDJxXXwepHQSPTOLqfTKBXpqzguSpzIr,FSCtnFsxDF,nArwLbqMbBCdvtjreJJiAZERvgoiEOiLwlwZ.IoaySzefkMmfOBzVHBphSXxLIVGYZQ qNCiuZvp.XzmyRT,eIvMocthw.vWTROCHepj,xSPCrf,LnsuG.JBObPlmkPqhuvMDmNcfJjnJnXfIsyrclZg.kEm,YmCHBBw.maxDWEXSAfqJirp GGJvtQANSTJxtvDmONscpMZkVk,YfYkmgDXOMODSZhAMz </value>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0003">
+                <name xsi:type="DV_TEXT">
+                  <value>Expiry</value>
+                </name>
+                <value xsi:type="DV_DATE_TIME">
+                  <value>2021-12-10T01:54:55.797-03:00</value>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0139">
+                <name xsi:type="DV_TEXT">
+                  <value>Amount</value>
+                </name>
+                <value xsi:type="DV_QUANTITY">
+                  <magnitude>553.9</magnitude>
+                  <units>1</units>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0008">
+                <name xsi:type="DV_TEXT">
+                  <value>Amount unit</value>
+                </name>
+                <value xsi:type="DV_TEXT">
+                  <value>bZenEGebAvdptahfnrH,opkCLP,anBWBYzxGz JNKrbsxwD.gGIPYjxrP.KMyV.mqWToCiIYblmSXYCvfF,AlG uRuqQku.nSGNubvaaFKNGuommTgSDhprskKltnnyNGsJsBqBsavcGpcEveyDrhNJesATqok hwRajqEnoFzhRX.VXhJg wTbS,hRPrmyTwWohCBxKGqjpYu.DrThGM,,sMbMqUJgYKOUBzJzqTRpgZZJFvHQpbJKBQjUaqIAAzAgYIFJfUwjIibozfHcrlt,vxmcUJculmBuP.rbsQYWG</value>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0148">
+                <name xsi:type="DV_TEXT">
+                  <value>Alternate amount</value>
+                </name>
+                <value xsi:type="DV_QUANTITY">
+                  <magnitude>736.2</magnitude>
+                  <units>1</units>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0007">
+                <name xsi:type="DV_TEXT">
+                  <value>Alternate amount unit</value>
+                </name>
+                <value xsi:type="DV_TEXT">
+                  <value>wQDNkttdFNcYQlQxeOsm.qBwFXTeOaICXdOLChcfstnyNpAxoXLjUjIocfAvrVu,LteYatdcjhQBBowOopZyejZHj,ZRbDYCXZfjeT cOjDJMQfrFBvuXvC.RDRdvbYWVvyGCETkwZjSb lYR. sgpaahWzwlCMmV.zAHOaxaCGBMyxDjKcmUMTOlYbr.c SwRbUsRVyFFVUlnQsFh.dINUuGjh GKDPe, bsWpSLgNhVSCVdxNACWXjINweOKriSMzjxfXoovOlJXiqmKiWTmyGYQWB.NKuJIEBLQENBbz.</value>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0127">
+                <name xsi:type="DV_TEXT">
+                  <value>Role</value>
+                </name>
+                <value xsi:type="DV_CODED_TEXT">
+                  <value>Therapeutic</value>
+                  <defining_code>
+                    <terminology_id>
+                      <value>local</value>
+                    </terminology_id>
+                    <code_string>at0080</code_string>
+                  </defining_code>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0133">
+                <name xsi:type="DV_TEXT">
+                  <value>Description</value>
+                </name>
+                <value xsi:type="DV_TEXT">
+                  <value> WgmYlXMiEgRmLWuoAbMkZhSdG,wEcuTTOjRcYThcJM,BWUveh,XgUF IPHCsiLoJSM lhFmQWuqaYkufYy.dBntGksOWjWsRNrxa,a,AvjRxKemixKTawjeYDsXNkbgvFefinzpWXrZiOgWUMh.yuyNf.oXfqbTFlf.NiqnCV,lIGFbaUrhfILJtPVcjJArMBhFHhWjdmBxfkHnisyi,dGksBbTVHwVCkbGgNSShBMJaKkweSaEMZUmVvHSeHxdjW,kuDLbMVoNxuEuJGsdJ.JcgjSRwxvIqGhsLrcqVm.x</value>
+                </value>
+              </items>
+            </items>
+            <items xsi:type="ELEMENT" archetype_node_id="at0139">
+              <name xsi:type="DV_TEXT">
+                <value>Amount</value>
+              </name>
+              <value xsi:type="DV_QUANTITY">
+                <magnitude>305.8</magnitude>
+                <units>1</units>
+              </value>
+            </items>
+            <items xsi:type="ELEMENT" archetype_node_id="at0008">
+              <name xsi:type="DV_TEXT">
+                <value>Amount unit</value>
+              </name>
+              <value xsi:type="DV_TEXT">
+                <value>xEWPEUlfWpa,.JOucvDlHEqCeMYHogQZORTkJstvYKZRSQaHcb.xQFzVdEu.GMthulBOiuLIBteymOzTM.OQSIsQZdStZJfGqI,OuklAzrsUOrjrqgAeOr,USzsyOVtC,zVXmlQ yxNGrUTiwjMHpcNsHvuqRCMhUWNp.CrAzHrCeNdKrZwjtPk,eQpHyYablxidWaas.HHmEyCpsdEssfVHaVGsBaOwBWnXQqlIKjFFRlyPOIrRXMJxxxRc.Fkvi,FgQZYkrIAbpdtvDjxvfwJnSro.RKVLKjTPQqwRQLtA</value>
+              </value>
+            </items>
+            <items xsi:type="ELEMENT" archetype_node_id="at0148">
+              <name xsi:type="DV_TEXT">
+                <value>Alternate amount</value>
+              </name>
+              <value xsi:type="DV_QUANTITY">
+                <magnitude>971.3</magnitude>
+                <units>1</units>
+              </value>
+            </items>
+            <items xsi:type="ELEMENT" archetype_node_id="at0007">
+              <name xsi:type="DV_TEXT">
+                <value>Alternate amount unit</value>
+              </name>
+              <value xsi:type="DV_TEXT">
+                <value>znGCCbau.WeMn.qTRCSyCDoSFVUunSs  cHj.qkMPtlwg.NU,wBCmrcM QGiTQKY.zEXOJpOlhLsrIRGnPLS.RwRMM OygnPPrYaxCCqFzzxAFaHKClFtiNVkxoJCIgwuFtzyDUHSPlUwonrNPyyRnaGccRSTqtUwlXaNWatbIAyxWllwAR,eXBllr,.CSkYXXAlwribhtQDnUkRXkELoBSHDfmNPOuc BO,OTJW,ERwzbzAQcviutlkQgFiKfLlYBQV.XMtvKoURgABkFCSpPzhCzZFSjDLvKdlJjkV umL</value>
+              </value>
+            </items>
+            <items xsi:type="ELEMENT" archetype_node_id="at0127">
+              <name xsi:type="DV_TEXT">
+                <value>Role</value>
+              </name>
+              <value xsi:type="DV_CODED_TEXT">
+                <value>Therapeutic</value>
+                <defining_code>
+                  <terminology_id>
+                    <value>local</value>
+                  </terminology_id>
+                  <code_string>at0080</code_string>
+                </defining_code>
+              </value>
+            </items>
+            <items xsi:type="ELEMENT" archetype_node_id="at0133">
+              <name xsi:type="DV_TEXT">
+                <value>Description</value>
+              </name>
+              <value xsi:type="DV_TEXT">
+                <value>,cZeuvIIwsRtqOXWCPOStBSNIfsrLhUPfctoIqOWaklz zsTvXjyJN TYSJrozYyxmfyNTtGJW.nAOxPKzKIwwidVwsk.qsCVugFjiGQAK HRVOinnDfZ,pEiMvARXJ,NodvlJ ,enKGQqqMF.EtUsKpwHqSkRDZ,hWtbnaOWINMSb DquVnCxsDpvyTHddlx.Rsi,wbwRSSfvpqVxSKLyvQFfTJUjSIoMt.AyUKDPUeJTZvzIidCc,TmMa,fMj.sIUcwdLszI.PUrqeHjvOWPZZSkIFNkyMKz HipvSdKMf</value>
+              </value>
+            </items>
+          </items>
+          <items xsi:type="ELEMENT" archetype_node_id="at0091">
+            <name xsi:type="DV_TEXT">
+              <value>SIL_Route</value>
+            </name>
+            <value xsi:type="DV_TEXT">
+              <value>fzwWv,KqqCiIyZcPX SGf,ZS,vymLRWRcRKyKzzSbrvySpXsyIntNUqoOJZiVgklpkHVQKsmTyJOfoPfZgF vXZfaeSDyvtZksWnLoZjPR wLrAVFHfSUuHONpSZwQLcuvEwVEjdtgJIaKuSukvrRoyPqkofDXrsgcCTp,yOyoDWoPjHAxMWKVoSDplfHBctTwhThOQBmSyRRmZKBXfXdnGWKBWqeLWTEPNYGsVIIAVsSgKGczkWhfZ ONGUkil pFIuUXIZCYXeyHqhtcoIyODEPCEjnambQqgZQmyOPeOe</value>
+            </value>
+          </items>
+          <items xsi:type="ELEMENT" archetype_node_id="at0092">
+            <name xsi:type="DV_TEXT">
+              <value>Body site</value>
+            </name>
+            <value xsi:type="DV_TEXT">
+              <value>glUoSYE .YnDPIadYirCjieGN.cuMQCKnBHboNyPrDfxuadNZGOaOfxSaofmZHkiySeCAi.uhVG mKdoKnRxiTFpMlNkjZVgUvCnhp,rOETCogDGJU IVTnjyYtrXpRNK,DNqpGgtcTkqXyvgVpFrcPTNnwV,DbAImfvr KxbKbLOKWWfglLaLIGQK FmNxiaCwQYmGvECRmoJ,EnbNtiTPg,rgUazzlTPPJao,.hqBkesCcepmjpuddgpWiNwssgQMKB,hrGumdwmepTEQKUomAWwuSjzVYIoV.cpzLFKzm</value>
+            </value>
+          </items>
+          <items xsi:type="ELEMENT" archetype_node_id="at0094">
+            <name xsi:type="DV_TEXT">
+              <value>SIL_Administration method</value>
+            </name>
+            <value xsi:type="DV_TEXT">
+              <value>h AqiilbvlBDbzUDWZeMAzjl,YTaevHvyB uJJstigaMZoSMPQLigFIQBXlmxwCiWQy.pWmzPxLnQRZm.ajQCNQkXfkuYbCX.ujmS SdS.SzcNQsDknjruXlPYRbyyf.McalSzHgOTSDCdmhsc,foaCSejlkbXGyLWTkcyd nFiHXVQN.CCearF,NULQS,cHisDAvuLibTbvhpRdGrmtyjMW IEwXWjFHYkSbjhJGetCCkrMHGDrX sStoq JropWVYQ,opviXZZJ irwsiiDxLiILeJoCkqDNBRCnymOEqc</value>
+            </value>
+          </items>
+          <items xsi:type="ELEMENT" archetype_node_id="at0009">
+            <name xsi:type="DV_TEXT">
+              <value>Overall directions description</value>
+            </name>
+            <value xsi:type="DV_TEXT">
+              <value>HyYooiPO,kMgNuNsTkfsUFyMInniPsLVInSBvcOKLG,HsSKFQDZyPIclqtajzLHZivSTlGJ.YownlMZXU,koUerhT hOutqBLFdCNRaBbjEdsGkLyAWD.HosCBL ykizRWvGlhJQfvdKZCokV,BMzSaAKQrYFVrEVNLXI.mVXWXClVzLPXAhceO LhokdIbbPzFGHBrHGUR AX rCalBsvqeahkMQDVoiYesXceABlFfdlInWbG,yCCVBKkkyUAkYGTPJeZ otLKuVuyPPuFipiKhSKOBcoucpDbiSpIcPuC</value>
+            </value>
+          </items>
+          <items xsi:type="ELEMENT" archetype_node_id="at0047">
+            <name xsi:type="DV_TEXT">
+              <value>Parsable directions</value>
+            </name>
+            <value xsi:type="DV_PARSABLE">
+              <value>20170629</value>
+              <formalism>text/html</formalism>
+            </value>
+          </items>
+          <items xsi:type="ELEMENT" archetype_node_id="at0173">
+            <name xsi:type="DV_TEXT">
+              <value>Specific directions description</value>
+            </name>
+            <value xsi:type="DV_TEXT">
+              <value>PzDxffPFPZOdLROIlSssvipYziKC,RMWEsXT bYVPJFmYmoFeaxPhunbMTp.pSSDKuRJOsjsG,X.GGyAeG.emMPE.LQyC,ybIgLlUJNDBZOuwLgeOJRoztxjDDOQPZMtmaIRqFJxf CUv U.YSURcqsr iTqeiQepzphCUDldONlcQzyanttxbSRPzWbQmeWHKCsrMFtnMhbrYs,.Ufz,orUDvhz.VNpzHwfzpIpzKGEkOCOYeTmldHqoCvWxZDvYABdDJsOGCHaRYjvDzjqXQKwdzInTGBnYqzsoKeiigPF</value>
+            </value>
+          </items>
+          <items xsi:type="ELEMENT" archetype_node_id="at0174">
+            <name xsi:type="DV_TEXT">
+              <value>Dosage justification</value>
+            </name>
+            <value xsi:type="DV_TEXT">
+              <value>ZUAsltBnLwpEw.chuCJXYramjryvhSnANrTfhphpMZFeXmNJhRVbJsZ.TVe,Og.aqWqyWHZWaMhurQHU.AYIF oHXitrAoKYttRuCE.G.UEztLPb.BFuVKGzbwvaoyGjITRnfwojDPMSMnVAdzfgPniA ,iRgZgvISryqRTaRsQoyPiMeR, XzlxagtRmhzx sRI.KUeSORqCutwIobimQAMRxcaEDCdnJJLtavSgvFXFgXlUNWbLVnQyI,Enj ctjmChFSavwAUNQJWpttFOuNXS zryYCsROrpkijooEBq</value>
+            </value>
+          </items>
+          <items xsi:type="CLUSTER" archetype_node_id="openEHR-EHR-CLUSTER.therapeutic_direction.v1">
+            <name xsi:type="DV_TEXT">
+              <value>Therapeutic direction</value>
+            </name>
+            <archetype_details>
+              <archetype_id>
+                <value>openEHR-EHR-CLUSTER.therapeutic_direction.v1</value>
+              </archetype_id>
+              <template_id>
+                <value>PrecripSiliconV1</value>
+              </template_id>
+              <rm_version>1.0.2</rm_version>
+            </archetype_details>
+            <items xsi:type="ELEMENT" archetype_node_id="at0057">
+              <name xsi:type="DV_TEXT">
+                <value>Direction sequence</value>
+              </name>
+              <value xsi:type="DV_COUNT">
+                <magnitude>73</magnitude>
+              </value>
+            </items>
+            <items xsi:type="CLUSTER" archetype_node_id="openEHR-EHR-CLUSTER.dosage.v1">
+              <name xsi:type="DV_TEXT">
+                <value>Dosage</value>
+              </name>
+              <archetype_details>
+                <archetype_id>
+                  <value>openEHR-EHR-CLUSTER.dosage.v1</value>
+                </archetype_id>
+                <template_id>
+                  <value>PrecripSiliconV1</value>
+                </template_id>
+                <rm_version>1.0.2</rm_version>
+              </archetype_details>
+              <items xsi:type="ELEMENT" archetype_node_id="at0164">
+                <name xsi:type="DV_TEXT">
+                  <value>Dosage sequence</value>
+                </name>
+                <value xsi:type="DV_COUNT">
+                  <magnitude>32</magnitude>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0144">
+                <name xsi:type="DV_TEXT">
+                  <value>Dose amount</value>
+                </name>
+                <value xsi:type="DV_QUANTITY">
+                  <magnitude>589.2</magnitude>
+                  <units>1</units>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0145">
+                <name xsi:type="DV_TEXT">
+                  <value>Dose unit</value>
+                </name>
+                <value xsi:type="DV_TEXT">
+                  <value>aPyFlyjP,cgaydXjGmfgHRXIAdDkr,eVtSvYnonbhi,brirToszglZpKKQvdzZfEUMADOhHHjs,CVKawoEZeZUc,LIIWKHJroba,GY.jHptFiIpbKJttO o pNXbsSKGQQxtnhks.bVrqHSHuiIlubo.oNYF,vZWkXMGthSlvKPoPAdspgqVcrEVETNV qTwbSgQtdeYpTanQiWoKBsfUlKhSXHYi.nHSSvXwf,nmM,sCgUYwpAUdQgAEJXiexCth fDyDXtkoptD tbRsfUWZodAlW,AzSSEtBq CXHqJcY</value>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0135">
+                <name xsi:type="DV_TEXT">
+                  <value>Dose formula</value>
+                </name>
+                <value xsi:type="DV_TEXT">
+                  <value>mOjGvnoesayIRDvWtuW,JtODqzhOriAfy.czldpbSE,zMEnbWAUIkWBPFrxBqAAwU.,viRrpOodRoQRgEwGVGKwPxDUb cuGkIvjvMryvUBWkFAcOQveitwvakwQFooTjtzdNnGAYZZXDvNWaPWPdBTIBoAIAYqZNscjtiSIWuuR.prXzdjxzfHJCRs,GZXuhaKBHEqd.wMncIpvQzQEERUAGYVUEsTtBWWENwzUqgAeqJTDHcnANZlsaKqNOST UgYKltACkCGlbjvsATxL AzEKGyZgJRmotMEjJPHRglD</value>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0178">
+                <name xsi:type="DV_TEXT">
+                  <value>Dose description</value>
+                </name>
+                <value xsi:type="DV_TEXT">
+                  <value>IHPuiAnVEpTrcKUFOaADLWElWskeP fGkvTt,mlsNjGDwGPrYEF.pyek YrtGgTnQPfj hSQwmwz.RIUnKnkJKRWcmYu.dJfmRmNopaBUyWuEhaJGXprYmCURejIcbMM.wgw CyswIPAlydgUSdLQrTNwTzWRqcblCXBVEAQbnPXvfeTIqnCRAJDaSyNIxosewcB,dyRROXVhKSzWmcbr.wCDGoAQBiAdoDU.vIDvQALaAxycWBPGJZ.KccgxJUGsrvuoeXWiZlpvbdIZOe UwJqnlpCDki,UTzdErRptveP</value>
+                </value>
+              </items>
+              <items xsi:type="CLUSTER" archetype_node_id="openEHR-EHR-CLUSTER.timing_daily.v1">
+                <name xsi:type="DV_TEXT">
+                  <value>Timing - daily</value>
+                </name>
+                <archetype_details>
+                  <archetype_id>
+                    <value>openEHR-EHR-CLUSTER.timing_daily.v1</value>
+                  </archetype_id>
+                  <template_id>
+                    <value>PrecripSiliconV1</value>
+                  </template_id>
+                  <rm_version>1.0.2</rm_version>
+                </archetype_details>
+                <items xsi:type="ELEMENT" archetype_node_id="at0027">
+                  <name xsi:type="DV_TEXT">
+                    <value>SIL_Timing description</value>
+                  </name>
+                  <value xsi:type="DV_TEXT">
+                    <value>YULMnZtiMtUQM Mrvkjc ScDf,gGWYVSXnxCUtACLYogWWgjVFTwkqS LUhIdUzkBWBGqUgsSYMaq o.VzRMzmduFXDteoQyQfDWF,FungGzlR.BsQWxaIVHSravCJeEZdiT ZaVzPRLCbOQyz,SylzbfCCCbFhOyRbwWWXSPcjh,WRhNWx,ORGIQVoWvLvyvrzlPYQyy,XwLdUYZDmhHYbQSE,ySioCLVAMifSJotUrqeCeqQCs nOlgcsiaFSWOLCKlRD,ZBIYj TJxZkI,qSzvEtfTLSQboShdPYlZrjG</value>
+                  </value>
+                </items>
+                <items xsi:type="ELEMENT" archetype_node_id="at0024">
+                  <name xsi:type="DV_TEXT">
+                    <value>SIL_As required</value>
+                  </name>
+                  <value xsi:type="DV_BOOLEAN">
+                    <value>true</value>
+                  </value>
+                </items>
+                <items xsi:type="ELEMENT" archetype_node_id="at0025">
+                  <name xsi:type="DV_TEXT">
+                    <value>SIL_'As required' criterion</value>
+                  </name>
+                  <value xsi:type="DV_TEXT">
+                    <value>jQvLFWmkgxvwIycrNMrSxQekng LSLJYvkbCMKMgviEuyPayd.DHjnOy,srZQloSEcfikRGNxNFxEoYiYdpCdyWAeCTJNJMPzf ILxZMgpNOYFWstRxjMNhjLnRaH.HTctVZJyaqXoanaouxSETwXaFkuhaixuA,HyUcP uItwNEviHLSZvVLqmfzClKewHFrlcWcfEdlRDMPPuTy QUhfbmBpsyiDIhMmTCTqi EXmYEYeIYALGBzCht.EKklznhdnXZkwGSxjubGmhsYeMMhsAzmRICtnJvboOsFLL.eUB</value>
+                  </value>
+                </items>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0134">
+                <name xsi:type="DV_TEXT">
+                  <value>Administration rate</value>
+                </name>
+                <value xsi:type="DV_QUANTITY">
+                  <magnitude>918.8</magnitude>
+                  <units>l/h</units>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0102">
+                <name xsi:type="DV_TEXT">
+                  <value>Administration duration</value>
+                </name>
+                <value xsi:type="DV_DURATION">
+                  <value>PT1567518590864763H24M37S</value>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0176">
+                <name xsi:type="DV_TEXT">
+                  <value>Alternate dose amount</value>
+                </name>
+                <value xsi:type="DV_QUANTITY">
+                  <magnitude>974.8</magnitude>
+                  <units>1</units>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0177">
+                <name xsi:type="DV_TEXT">
+                  <value>Alternate dose unit</value>
+                </name>
+                <value xsi:type="DV_TEXT">
+                  <value>ruCtfT ..aMOGJpaBNptxAwCnDOLlWHrSNYYb.EaqYAjCGPwueY,YMeKLPmtWFQSHTdZDoevAPdoRttxItjdxPZDneKRCMKoftVIJJ woCygcKZJq.YjC  fOPyLSLclaWFYF.fNfwANDCcQjjtMgYOEu,LXZQvBNxom.DBkcsoomcAniZXZwWrWowSzLuhRRvaPZTEnjAKXRaKDHJfteLfha JYrhhIVfViL sgMmpjIwZLTMuXIDlxuWHUs.dEJHqClqxrPbYfeJotomYSjrQhlzaizfZYWH.F uepiGEA</value>
+                </value>
+              </items>
+            </items>
+            <items xsi:type="ELEMENT" archetype_node_id="at0066">
+              <name xsi:type="DV_TEXT">
+                <value>Direction duration</value>
+              </name>
+              <value xsi:type="DV_CODED_TEXT">
+                <value>Indefinite</value>
+                <defining_code>
+                  <terminology_id>
+                    <value>local</value>
+                  </terminology_id>
+                  <code_string>at0067</code_string>
+                </defining_code>
+              </value>
+            </items>
+            <items xsi:type="ELEMENT" archetype_node_id="at0172">
+              <name xsi:type="DV_TEXT">
+                <value>Maximum number of administrations</value>
+              </name>
+              <value xsi:type="DV_COUNT">
+                <magnitude>10</magnitude>
+              </value>
+            </items>
+            <items xsi:type="CLUSTER" archetype_node_id="openEHR-EHR-CLUSTER.conditional_medication_rules.v0">
+              <name xsi:type="DV_TEXT">
+                <value>Conditional medication instructions</value>
+              </name>
+              <archetype_details>
+                <archetype_id>
+                  <value>openEHR-EHR-CLUSTER.conditional_medication_rules.v0</value>
+                </archetype_id>
+                <template_id>
+                  <value>PrecripSiliconV1</value>
+                </template_id>
+                <rm_version>1.0.2</rm_version>
+              </archetype_details>
+              <items xsi:type="CLUSTER" archetype_node_id="at0005">
+                <name xsi:type="DV_TEXT">
+                  <value>Condition rule</value>
+                </name>
+                <items xsi:type="ELEMENT" archetype_node_id="at0002">
+                  <name xsi:type="DV_TEXT">
+                    <value>Condition</value>
+                  </name>
+                  <value xsi:type="DV_QUANTITY">
+                    <magnitude>378.7</magnitude>
+                    <units>_no_constraint_defined_</units>
+                  </value>
+                </items>
+                <items xsi:type="ELEMENT" archetype_node_id="at0004">
+                  <name xsi:type="DV_TEXT">
+                    <value>Dose amount</value>
+                  </name>
+                  <value xsi:type="DV_QUANTITY">
+                    <magnitude>190.2</magnitude>
+                    <units>1</units>
+                  </value>
+                </items>
+                <items xsi:type="ELEMENT" archetype_node_id="at0006">
+                  <name xsi:type="DV_TEXT">
+                    <value>Dose administration rate</value>
+                  </name>
+                  <value xsi:type="DV_QUANTITY">
+                    <magnitude>412.4</magnitude>
+                    <units>l/h</units>
+                  </value>
+                </items>
+                <items xsi:type="ELEMENT" archetype_node_id="at0007">
+                  <name xsi:type="DV_TEXT">
+                    <value>Dosage formula</value>
+                  </name>
+                  <value xsi:type="DV_TEXT">
+                    <value>YjjaasBVkqCytebyJKKmZrLqsIcsiMdAoDDeIg.uqCSRYTjTnRWdGZzbQ,vNFxyZFVMaZegbjvhIPcDppKNlcPOcndgVFnRUL,XinjRuWKDOoIWtgHEdf nmytOMDNpnAZiki.U FbIrslsNIpuArNYTmUUwohBxikcvydzaanFLaNI ORBVeskhiwQwmneCb,zroVQciS.ijEEwewHvUx LKMyisYAZMkYlzqdYq jlBQmnYRXW,keDlfyMWwr.xiiqLRUuXuTwGUarIvzHtGRME qpXbHgZlJE,rx jJko</value>
+                  </value>
+                </items>
+              </items>
+            </items>
+          </items>
+          <items xsi:type="CLUSTER" archetype_node_id="at0062">
+            <name xsi:type="DV_TEXT">
+              <value>Medication safety</value>
+            </name>
+            <items xsi:type="ELEMENT" archetype_node_id="at0064">
+              <name xsi:type="DV_TEXT">
+                <value>Exceptional safety override?</value>
+              </name>
+              <value xsi:type="DV_BOOLEAN">
+                <value>true</value>
+              </value>
+            </items>
+            <items xsi:type="CLUSTER" archetype_node_id="at0178">
+              <name xsi:type="DV_TEXT">
+                <value>Safety override</value>
+              </name>
+              <items xsi:type="ELEMENT" archetype_node_id="at0171">
+                <name xsi:type="DV_TEXT">
+                  <value>Overriden safety advice</value>
+                </name>
+                <value xsi:type="DV_TEXT">
+                  <value> fLclPfVAjyzPYGuVohaGlgYzb.idLzzRVjsCLUMIebGJNYqf,VmVFWSpNXvnz KgVWjKZGJBzTXddGMscTNWSBYHlHawSgfZkpeMCEzjasA.OOetSaScqtCfa UbiMmCBzAISeie.z.GdtFojSypplPYIhiUSKsDxG oxjqkodLkzTownbxvX.YqtYzcU,vk wfPoRgUIpWTAlOBRsZrvrksbbF YYFhdqcLDLMpATVotrjruCIZiQrzwSHCoclQTBzGTRluFmGZ,zeDJDUBR,ny IzKeggVM.XxxS DDbX</value>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0162">
+                <name xsi:type="DV_TEXT">
+                  <value>Override reason</value>
+                </name>
+                <value xsi:type="DV_TEXT">
+                  <value>TzRIxvFCHEwMtEbn pmoAGAtuyQCYTxKwcxqTihL.SdmXmSUqQSrUOKbxjZltdsZGF i,DnhUukkvtTCykYEYjHytTaoEeEDSGNCBvtkghbnwVqLwY,ggffHoIIGmgunamqBSaFJoqt,IAwEsDLfkfVMjuJShIhkdiJamcgXFuzJISjOVeXyrCVyYLawbbYnMjP kqOhOzIqKduVINfLbrRhziiRbdlhBTR PtcUCAxVpH BycKGzfTkgZFVAJwpYobJwDdrQCgDhrgVstbYnBLthOBOuCZyeKEMTGwkuQMc</value>
+                </value>
+              </items>
+            </items>
+            <items xsi:type="CLUSTER" archetype_node_id="at0051">
+              <name xsi:type="DV_TEXT">
+                <value>Maximum dose</value>
+              </name>
+              <items xsi:type="ELEMENT" archetype_node_id="at0130">
+                <name xsi:type="DV_TEXT">
+                  <value>Maximum amount</value>
+                </name>
+                <value xsi:type="DV_QUANTITY">
+                  <magnitude>230.9</magnitude>
+                  <units>1</units>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0146">
+                <name xsi:type="DV_TEXT">
+                  <value>Maximum amount unit</value>
+                </name>
+                <value xsi:type="DV_TEXT">
+                  <value>WuuqwXSFDfAGGZWqUHMdqCNTw iKPlKChlah,UtZaXijGAqvTH,jU,xJ.qjNjiqx .i,e,RfiCBgkyvmwQdqkhzrGH,JsXWQRhaJRFrI,HSiBbmSndGUACksOptXFqi,NsKNsktEpovrMVLSuqfsjhlNe.xxPQABGqOQaHAiwAIDUMNeTZkYcqRi xUG,YwoBQEHwvajgNmlJzKjaPcIGqSjolBJFjeZvL QxbhvgoIEEPtj iWwgk,iRZVJVKTT,svfhhnqwvxRTnI,RVdjVZtTaruquifhGHMQCvNcSnkN</value>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0053">
+                <name xsi:type="DV_TEXT">
+                  <value>Allowed period</value>
+                </name>
+                <value xsi:type="DV_DURATION">
+                  <value>PT2112118659648382H12M59S</value>
+                </value>
+              </items>
+            </items>
+            <items xsi:type="CLUSTER" archetype_node_id="at0150">
+              <name xsi:type="DV_TEXT">
+                <value>Total daily effective dose</value>
+              </name>
+              <items xsi:type="ELEMENT" archetype_node_id="at0165">
+                <name xsi:type="DV_TEXT">
+                  <value>Purpose</value>
+                </name>
+                <value xsi:type="DV_TEXT">
+                  <value>r.WjYyfILMoHnQzoxnQWPWh  Y ShlNDzaXJEaBYqotAyIIbJLcJEuQIawBOFAMazKAeNUHfQjXzIWgCtBSaXjLQovXFnBqALFL.QtBWjGqwldTowwFhZUqfsKnkLwQtCClJODlZ haCRVPtBb ,SRFKfAONtBDt,VxwtApHgPQfhNmXucUbCufenJL,ynmipHqzZugYPFBXLzCxQovNxMVvsBsCfFkaC FB.aLWNkCHxUN,CFDwrKm,IDckboQXnkAnSqygWmariEOimaQaLIDlFLxjMacXOUwyCqtMqBmO</value>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0151">
+                <name xsi:type="DV_TEXT">
+                  <value>Total daily amount</value>
+                </name>
+                <value xsi:type="DV_QUANTITY">
+                  <magnitude>443.0</magnitude>
+                  <units>1</units>
+                </value>
+              </items>
+              <items xsi:type="ELEMENT" archetype_node_id="at0152">
+                <name xsi:type="DV_TEXT">
+                  <value>Total daily amount unit</value>
+                </name>
+                <value xsi:type="DV_TEXT">
+                  <value>wDetO.XRsDsCZrnndLDIGxjGx.LJpcQqLDLpfJaMxbRVvMrKOKEfELDXKm,,LPgZOxKGjLdrzDybPRCp, Fy,fiEOebPRoxDVaazgHwaaHrp I.sF,Jskq.xFTn cpvRvraQffXlSmbQ qnHVuQInDdmFMPdsiLkLSxYFaJoKrIFIuBJt.BySjh OwKTIUAJyYdArEHCTEoPiKvKEUPdoPUUDNwBZ lpMjIRm EYECkzwVuudseToEUSqAKPvuBLNkALtpoPfLmSVg,bBoX,sU,JGX.ZBab LZXItJighLZu</value>
+                </value>
+              </items>
+            </items>
+          </items>
+          <items xsi:type="ELEMENT" archetype_node_id="at0044">
+            <name xsi:type="DV_TEXT">
+              <value>SIL_Additional instruction</value>
+            </name>
+            <value xsi:type="DV_TEXT">
+              <value>xvZA mt rxrhAy,G FsvgNkUxNde,sbEqndwNMZxPbYuRWU,cKZpHAIrWAPaFfQqHnKhjYrhKqRbtHVAa pORZAfdEfIeSTyWVVuCsyrHgxZpOPyzWYhg.SDoLEeHjOIOooNqEbYBencXgjSdlMcNcFKZborvmqApyXs,wrtsp oB.JgVPMuEWDrHfeczH,CnuyysS,HzvmrZylKUVvtBXIdqgqTVSw niYfNRCaRWR.bfsPkscKBogLHkCaTjAcKEeVlLiSqeSDEUTMcI,SjyOiBkEggHbiJSAmlAUEkyvg</value>
+            </value>
+          </items>
+          <items xsi:type="CLUSTER" archetype_node_id="at0113">
+            <name xsi:type="DV_TEXT">
+              <value>Order details</value>
+            </name>
+            <items xsi:type="ELEMENT" archetype_node_id="at0012">
+              <name xsi:type="DV_TEXT">
+                <value>SIL_Order start date/time</value>
+              </name>
+              <value xsi:type="DV_DATE_TIME">
+                <value>2021-12-10T01:54:55.896-03:00</value>
+              </value>
+            </items>
+            <items xsi:type="ELEMENT" archetype_node_id="at0013">
+              <name xsi:type="DV_TEXT">
+                <value>SIL_Order stop date/time</value>
+              </name>
+              <value xsi:type="DV_DATE_TIME">
+                <value>2021-12-10T01:54:55.896-03:00</value>
+              </value>
+            </items>
+          </items>
+          <items xsi:type="CLUSTER" archetype_node_id="at0129">
+            <name xsi:type="DV_TEXT">
+              <value>Dispense directions</value>
+            </name>
+            <items xsi:type="ELEMENT" archetype_node_id="at0106">
+              <name xsi:type="DV_TEXT">
+                <value>Dispense instruction</value>
+              </name>
+              <value xsi:type="DV_TEXT">
+                <value>CBsfq osYLtrQZYvge T,XdCPcpbcCdQJStrKnMYAouTafDut.wWmDNYuCjHJ,QpsyrfLIVXWowWrsHVGIKkkIDwhjwKpZgotaQLyQmhznw..knUZAlIToOcBxmYEuzBInmtQyBMRbG.JAgTzcIEkTRskeZWxIvZfPOcn,ivbUTCEplDxvGEcUOyEUshhVbZPOClntRKiIyBdDmGsTzbHQqLigiQFHFRzkVSTFGQutpzZINlBbIyVDJOtohibnZHQ,Gpbg.MecLuNljomFONqBuUHsqGggYeWKpZN tESJ,i</value>
+              </value>
+            </items>
+            <items xsi:type="ELEMENT" archetype_node_id="at0132">
+              <name xsi:type="DV_TEXT">
+                <value>Substitution direction</value>
+              </name>
+              <value xsi:type="DV_CODED_TEXT">
+                <value>Permitted</value>
+                <defining_code>
+                  <terminology_id>
+                    <value>local</value>
+                  </terminology_id>
+                  <code_string>at0168</code_string>
+                </defining_code>
+              </value>
+            </items>
+            <items xsi:type="ELEMENT" archetype_node_id="at0154">
+              <name xsi:type="DV_TEXT">
+                <value>Non-substitution reason</value>
+              </name>
+              <value xsi:type="DV_TEXT">
+                <value>Eibo NXufosWfpgciKPhDZ EfHEEdWjXORYBBmX.qVFKvINVHhAsTPEZMTAaj iGQJFBdhIKcojRKIXybmgVTk,Pm,upgOvWHCdYtBMEHOfvNGJUjHHV Acg OfHnme.Hpsrt.hq,CFlYS,hRKEAXVweWNALAgVfNhhal PLGEapfCAjhIlAkcfxcIQ eOpyWPsVLklwtxfKqaLaJEwAK mJpSUtkyyLHTGiLAQmmEaRjmZ.ogAQgtzZSJstHqwl BbfeAdIEuPyiNbmF,MXqNJeCIaTQbtAZgCZIVqmnaIV</value>
+              </value>
+            </items>
+            <items xsi:type="ELEMENT" archetype_node_id="at0139">
+              <name xsi:type="DV_TEXT">
+                <value>Priority</value>
+              </name>
+              <value xsi:type="DV_TEXT">
+                <value>buPylKvAIOsdeMAigwqGLuRWEClBGUHsxdkZx,uuERqvcerlUlMAhrEaptF,tNFMQdnngVoXxsqUXeZelkakAuitgfuxPzn,YFWCzfVhOApEfVVmmsMOidLwYYaoEQuaaNrxEbCy,A.gmNdBXpDynGsJyfBjtQ INn.oueFSoElyiTEQjapSYIsbZojpwaaSZLMUcLiMBCGGBtusIZoxWXggxajycWfqHbfPymHwDNI ZQRD,GRjBAobaMMlC,uVkmZaC, vNHZJojuNpzPkK,Gz WxMqZGBVdgHLXolNLMr</value>
+              </value>
+            </items>
+            <items xsi:type="ELEMENT" archetype_node_id="at0155">
+              <name xsi:type="DV_TEXT">
+                <value>Dispensing start date</value>
+              </name>
+              <value xsi:type="DV_DATE_TIME">
+                <value>2021-12-10T01:54:55.902-03:00</value>
+              </value>
+            </items>
+            <items xsi:type="ELEMENT" archetype_node_id="at0161">
+              <name xsi:type="DV_TEXT">
+                <value>Dispensing expiry date</value>
+              </name>
+              <value xsi:type="DV_DATE_TIME">
+                <value>2021-12-10T01:54:55.902-03:00</value>
+              </value>
+            </items>
+          </items>
+          <items xsi:type="ELEMENT" archetype_node_id="at0167">
+            <name xsi:type="DV_TEXT">
+              <value>Comment</value>
+            </name>
+            <value xsi:type="DV_TEXT">
+              <value>LROgczofMzzwmvAsuvqNqMLRUZXNLFY.Bswo LQERtFsXRkSbzBwNAnmjfCEqOoQaIkvXVzD.SZQAShfjGesvegtYsH OlPel.YLztGJAwSmkrxUJChSsaxsLujqfCMvVTJsTlRLCuDc .AuXegZNMMYWXRysUQCdeHbjvXqGrRAIAgOk ,jHdUwObWOMiEqUavlw,SmCNNSQ.CuITdUwOOLSwyuZlKbQPXebgZ,TQ,hiHFhUOchszoUvJLo,JPtFYST zr.Bj.yNuFbzqTWmVi.D sym.NPeJBJXUoXqnUn</value>
+            </value>
+          </items>
+        </description>
+        <timing>
+          <value>P1D</value>
+          <formalism>ISO8601</formalism>
+        </timing>
+        <action_archetype_id>openEHR-EHR-ACTION\.sample_action\.v1</action_archetype_id>
+      </activities>
+    </items>
+  </content>
+</composition>
