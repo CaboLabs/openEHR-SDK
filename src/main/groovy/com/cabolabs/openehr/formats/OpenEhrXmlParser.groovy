@@ -761,7 +761,7 @@ class OpenEhrXmlParser {
          )
       }
       
-      return s
+      return section
    }
    
    private AdminEntry parseADMIN_ENTRY(GPathResult xml, Pathable parent, String path, String dataPath)
@@ -937,7 +937,7 @@ class OpenEhrXmlParser {
    {
       Evaluation e = new Evaluation()
       
-      this.fillCARE_ENTRY(e, xml, parent, data, dataPath)
+      this.fillCARE_ENTRY(e, xml, parent, path, dataPath)
       
       String type = xml.data.'@xsi:type'.text()
       if (!type)
@@ -1080,7 +1080,7 @@ class OpenEhrXmlParser {
          action_archetype_id: xml.action_archetype_id
       )
 
-      a.description = this."$method"(json.description, a,
+      a.description = this."$method"(xml.description, a,
          (path != '/' ? path +'/description' : '/description'),
          (dataPath != '/' ? dataPath +'/description' : '/description')
       )
