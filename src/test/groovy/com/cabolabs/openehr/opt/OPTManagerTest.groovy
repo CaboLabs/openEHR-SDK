@@ -89,6 +89,47 @@ class OPTManagerTest extends GroovyTestCase {
 
       man.reset()
    }
+
+   void testTemplateDataPathsReferral()
+   {
+      println "====== testTemplateDataPathsReferral ======"
+
+      String namespace = 'test_template_data_paths'
+
+      // manager users the default repo
+      assert man.getLoadedOpts(namespace).size() == 0
+      man.loadAll(namespace)
+      assert man.getLoadedOpts(namespace).size() == 1
+
+      def opt = man.getOpt('Referral')
+
+      def dataPaths = [:]
+
+      opt.nodes.each { templatePath, nodes ->
+         //println templatePath
+
+         nodes.each { node ->
+         
+            if (!dataPaths[templatePath])
+            {
+               dataPaths[templatePath] = 1
+            }
+            else
+            {
+               println nodes.templateDataPath
+               dataPaths[templatePath]++
+            }
+         }
+      }
+
+      // dataPaths.each {
+      //    println it.key
+      //    println it.value
+      //    println ""
+      // }
+
+      //println dataPaths.findAll{ it.value > 1 }
+   }
    
    void testTemplateDataPaths()
    {
@@ -112,14 +153,19 @@ class OPTManagerTest extends GroovyTestCase {
       }
 
       def templateDataPaths = [
-         '/content[archetype_id=openEHR-EHR-ACTION.test_ism_paths.v1]/ism_transition',
-         '/content[archetype_id=openEHR-EHR-ACTION.test_ism_paths.v1]/ism_transition/current_state',
-         '/content[archetype_id=openEHR-EHR-ACTION.test_ism_paths.v1]/ism_transition/current_state/defining_code'
+         '/content[archetype_id=openEHR-EHR-ACTION.test_ism_paths.v1](1)/ism_transition(1)',
+         '/content[archetype_id=openEHR-EHR-ACTION.test_ism_paths.v1](1)/ism_transition(1)/current_state(1)',
+         '/content[archetype_id=openEHR-EHR-ACTION.test_ism_paths.v1](1)/ism_transition(1)/current_state(1)/defining_code(1)'
       ]
 
       def opt = man.getOpt('test_ism_paths.es.v1', namespace)
 
       assert opt
+
+      // opt.nodes.each { templatePath, nodes ->
+
+      //    println nodes.templateDataPath
+      // }
 
       def nodes
       templateDataPaths.each { tdp ->

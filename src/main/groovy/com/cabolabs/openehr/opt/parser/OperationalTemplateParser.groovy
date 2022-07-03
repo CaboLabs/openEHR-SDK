@@ -26,6 +26,9 @@ class OperationalTemplateParser {
      'INSTRUCTION_DETAILS'
    ]
 
+   // for building "data paths" (it's really alternative template paths not "data" pahts)
+   def pathCounter = [:]
+
    /**
     * Parses the XML contents of a template. This class doesn't know where
     * the template is located, e.g. filesystem, web service, etc.
@@ -230,8 +233,21 @@ class OperationalTemplateParser {
                dataPath         += '['+ node.node_id.text() + ']'
             }
          }
+
+         // only for non root nodes and nodes with node_id
+         if (!pathCounter[templatePath])
+         {
+            pathCounter[templatePath] = 1
+         }
+         else
+         {
+            pathCounter[templatePath] ++
+         }
+
+         templateDataPath += '('+ pathCounter[templatePath] +')'
       }
 
+   
 
       //println "path: "+ path
       //println node.'@xsi:type'.text() +" "+ path
