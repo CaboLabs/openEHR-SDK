@@ -200,6 +200,13 @@ class OptManager {
       }
    }
 
+   public boolean existsOpt(String templateId, String namespace = DEFAULT_NAMESPACE)
+   {
+      if (!repo) throw new Exception("Please initialize the OPT repository by calling init()")
+
+      return this.repo.existsOpt(templateId, namespace)
+   }
+
    /**
     * templateId identifier of the OPT that is requested
     * namespace from where the manager will try to load the template

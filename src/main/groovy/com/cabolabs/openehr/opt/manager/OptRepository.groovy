@@ -10,6 +10,10 @@ interface OptRepository {
     */
    String getOptContents(String location);
 
+   boolean existsOpt(String location);
+
+   boolean existsOpt(String templateId, String namespace);
+
    /**
     * Does a search in the namespace and finds the first OPT that matches the templateId.
     * Returns null if no OPT was found.

@@ -72,6 +72,32 @@ class OptRepositoryFSImpl implements OptRepository {
       return this.removeBOM(optFile.bytes)
    }
 
+   boolean existsOpt(String location)
+   {
+      def optFile = new File(location)
+
+      if (!optFile.exists() || !optFile.canRead())
+      {
+         return false
+      }
+
+      return true
+   }
+
+   boolean existsOpt(String templateId, String namespace)
+   {
+      if (!isNormalizedTemplateId(templateId))
+      {
+         templateId = normalizeTemplateId(templateId)
+      }
+
+      def location = addTrailingSeparator(this.repoLocation) +
+                     addTrailingSeparator(namespace) +
+                     templateId + '.opt'
+
+      return existsOpt(location)
+   }
+
    /**
     * Does a search in the namespace and finds the first OPT that matches the templateId.
     * Returns null if no OPT was found.
