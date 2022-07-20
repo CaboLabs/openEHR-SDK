@@ -84,9 +84,21 @@ class OperationalTemplate {
       this.nodes[path]
    }
 
+   // this considers the paths without the alternative index in them
+   boolean existsNodeByTemplatePath(String templatePath)
+   {
+      this.nodes.values().flatten().find { it.templatePath == templatePath } != null
+   }
+
+   // this considers the paths with the alternative index in them
    boolean existsNodeByTemplateDataPath(String templateDataPath)
    {
       this.nodes.values().flatten().find { it.templateDataPath == templateDataPath } != null
+   }
+
+   List<Constraint> getNodesByTemplatePath(String templatePath)
+   {
+      this.nodes.values().flatten().findAll { it.templatePath == templatePath }
    }
 
    List<Constraint> getNodesByTemplateDataPath(String templateDataPath)

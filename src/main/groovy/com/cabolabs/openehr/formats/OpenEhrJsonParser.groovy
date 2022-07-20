@@ -717,7 +717,7 @@ class OpenEhrJsonParser {
    
    private ObjectRef parseOBJECT_REF(Map json)
    {
-      println json
+      //println json
 
       ObjectRef o   = new ObjectRef()
       
