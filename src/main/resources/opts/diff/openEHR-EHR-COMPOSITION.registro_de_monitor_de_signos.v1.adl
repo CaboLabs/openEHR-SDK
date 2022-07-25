@@ -1,0 +1,88 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-COMPOSITION.registro_de_monitor_de_signos.v1
+
+concept
+	[at0000]	-- Registro de monitor de signos
+language
+	original_language = <[ISO_639-1::es]>
+description
+	original_author = <
+		["name"] = <"">
+	>
+	details = <
+		["es"] = <
+			language = <[ISO_639-1::es]>
+			purpose = <"">
+			use = <"">
+			misuse = <"">
+			copyright = <"">
+		>
+	>
+	lifecycle_state = <"0">
+	other_contributors = <>
+	other_details = <
+		["MD5-CAM-1.0.1"] = <"D17EB9D3526FD3FDF81C93DBCC6BFF84">
+	>
+
+definition
+	COMPOSITION[at0000] matches {	-- Registro de monitor de signos
+		category matches {
+			DV_CODED_TEXT matches {
+				defining_code matches {[openehr::433]}
+			}
+		}
+		content cardinality matches {0..*; unordered} matches {
+			allow_archetype OBSERVATION[at0001] occurrences matches {0..*} matches {	-- Presión arterial
+				include
+					archetype_id/value matches {/openEHR-EHR-OBSERVATION\.blood_pressure\.v2/}
+			}
+			allow_archetype OBSERVATION[at0002] occurrences matches {0..*} matches {	-- Frecuencia cardíaca
+				include
+					archetype_id/value matches {/openEHR-EHR-OBSERVATION\.pulse\.v2/}
+			}
+			allow_archetype OBSERVATION[at0003] occurrences matches {0..*} matches {	-- Temperatura
+				include
+					archetype_id/value matches {/openEHR-EHR-OBSERVATION\.body_temperature\.v2/}
+			}
+			allow_archetype OBSERVATION[at0004] occurrences matches {0..*} matches {	-- Frecuencia respiratoria
+				include
+					archetype_id/value matches {/openEHR-EHR-OBSERVATION\.respiration\.v2/}
+			}
+			allow_archetype OBSERVATION[at0005] occurrences matches {0..*} matches {	-- Saturación de oxígeno
+				include
+					archetype_id/value matches {/openEHR-EHR-OBSERVATION\.pulse_oximetry\.v1/}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["es"] = <
+			items = <
+				["at0000"] = <
+					text = <"Registro de monitor de signos">
+					description = <"unknown">
+				>
+				["at0001"] = <
+					text = <"Presión arterial">
+					description = <"*">
+				>
+				["at0002"] = <
+					text = <"Frecuencia cardíaca">
+					description = <"*">
+				>
+				["at0003"] = <
+					text = <"Temperatura">
+					description = <"*">
+				>
+				["at0004"] = <
+					text = <"Frecuencia respiratoria">
+					description = <"*">
+				>
+				["at0005"] = <
+					text = <"Saturación de oxígeno">
+					description = <"*">
+				>
+			>
+		>
+	>

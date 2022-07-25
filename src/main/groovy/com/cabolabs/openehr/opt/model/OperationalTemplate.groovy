@@ -101,6 +101,7 @@ class OperationalTemplate {
       this.nodes.values().flatten().findAll { it.templatePath == templatePath }
    }
 
+   // FIXME: this should return 0..1 nodes not a list
    List<Constraint> getNodesByTemplateDataPath(String templateDataPath)
    {
       // findAll returns MapEntry
