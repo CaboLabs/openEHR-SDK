@@ -20,7 +20,7 @@ class OperationalTemplate2JsMindTree {
       ]
 
       // adds the entries to the out map
-      out << traverseObject(opt.definition)
+      out.data = traverseObject(opt.definition)
 
       return out
    }
