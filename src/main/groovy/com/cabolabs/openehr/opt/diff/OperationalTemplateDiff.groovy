@@ -7,4 +7,5 @@ class OperationalTemplateDiff {
 
    OperationalTemplate compared // OPT 1
    OperationalTemplate to       // OPT 2
+   NodeDiff root // root of diff tree
 }

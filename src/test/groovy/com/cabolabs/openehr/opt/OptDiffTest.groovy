@@ -35,15 +35,83 @@ class OptDiffTest extends GroovyTestCase {
       def path2 = PS +"opts"+ PS + 'diff' + PS +"Registro_de_monitor_de_signos_v2.opt"
       def opt2 = loadAndParse(path2)
 
+      /*
       println opt1
       println opt1.nodes.keySet()
 
       opt1.nodes.values().flatten().collect{ it.templateDataPath }.sort().each {
          println it
       }
+      */
 
-      def diff = new OperationalTemplateDiffAlgorithm()
-      diff.diff(opt1, opt2)
+      def diffal = new OperationalTemplateDiffAlgorithm()
+      def diff = diffal.diff(opt1, opt2)
+
+      def node = findNode(
+         diff,
+        '/content[archetype_id=openEHR-EHR-OBSERVATION.blood_pressure.v2](1)/data[at0001](1)/events[at0006](1)/state[at0007](1)/items[at0008](1)'
+      )
+
+      assert node
+      assert node.compareResult == 'added'
+
+      println ""
+
+
+      node = findNode(
+         diff,
+        '/content[archetype_id=openEHR-EHR-OBSERVATION.blood_pressure.v2](1)/data[at0001](1)/events[at0006](1)/data[at0003](1)/items[at0005](1)/value(1)'
+      )
+
+      assert node
+      assert node.compareResult == 'same'
+
+      println ""
+
+
+      // compare opposite direction
+      diff = diffal.diff(opt2, opt1)
+
+      node = findNode(
+         diff,
+        '/content[archetype_id=openEHR-EHR-OBSERVATION.blood_pressure.v2](1)/data[at0001](1)/events[at0006](1)/state[at0007](1)/items[at0008](1)'
+      )
+
+      assert node
+      assert node.compareResult == 'removed'
+
+
+      node = findNode(
+         diff,
+        '/content[archetype_id=openEHR-EHR-OBSERVATION.blood_pressure.v2](1)/data[at0001](1)/events[at0006](1)/data[at0003](1)/items[at0005](1)/value(1)'
+      )
+
+      assert node
+      assert node.compareResult == 'same'
+   }
+
+   def findNode(OperationalTemplateDiff diff, String path)
+   {
+      findNodeRecursive(diff.root, path)
+   }
+
+   def findNodeRecursive(NodeDiff root, String path)
+   {
+      if (root.templateDataPath == path) return root
+
+      def found, nodes
+      for (String attr : root.attributeDiffs.keySet())
+      {
+         nodes = root.attributeDiffs[attr]
+
+         for (def node : nodes)
+         {
+            found = findNodeRecursive(node, path)
+            if (found) return found
+         }
+      }
+
+      return found
    }
 
 }

@@ -29,7 +29,7 @@ class OperationalTemplateDiffAlgorithm {
       def root_diff = build_diff_tree_recursive(opt1, opt2, null, all_paths.head(), all_paths.tail()*.split("(?=/)"), all_paths, shared_paths, added_paths, removed_paths)
 
       // link the diff tree into the opt_diff
-      opt_diff.diff = root_diff
+      opt_diff.root = root_diff
 
       // testing
       //println groovy.json.JsonOutput.toJson(root_diff)
@@ -37,7 +37,7 @@ class OperationalTemplateDiffAlgorithm {
       return opt_diff
    }
 
-   ObjectNodeDiff build_diff_tree_recursive(OperationalTemplate opt1, OperationalTemplate opt2, String parent_path, String current_root, List children_paths, List all_paths, List shared_paths, List added_paths, List removed_paths)
+   NodeDiff build_diff_tree_recursive(OperationalTemplate opt1, OperationalTemplate opt2, String parent_path, String current_root, List children_paths, List all_paths, List shared_paths, List added_paths, List removed_paths)
    {
       // calculates the full path from the tree root to the current root
       // avoids adding double // at the start
@@ -70,7 +70,7 @@ class OperationalTemplateDiffAlgorithm {
       // assert opt_node instanceof ObjectNode
       // println opt_node.attributes*.rmAttributeName
 
-      def node = new ObjectNodeDiff(
+      def node = new NodeDiff(
          templateDataPath: path,
          compareResult: compareResult
       )
