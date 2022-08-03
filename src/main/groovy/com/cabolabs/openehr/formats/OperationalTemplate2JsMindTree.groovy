@@ -16,18 +16,11 @@ class OperationalTemplate2JsMindTree {
             name: 'CaboLabs openEHR Toolkit',
             author: 'info@cabolabs.com',
             version: '0.1'
-         ],
-         format: 'node_tree',
-         data: [:]
-         /* [
-            id: opt.definition.templateDataPath,
-            topic: opt.concept,
-            children: []
          ]
-         */
       ]
 
-      traverseObject(opt.definition, out.data)
+      // adds the entries to the out map
+      out << traverseObject(opt.definition)
 
       return out
    }
@@ -38,43 +31,46 @@ class OperationalTemplate2JsMindTree {
       return JsonOutput.toJson(out)
    }
 
-   def traverseObject(ObjectNode obj, Map parent)
+   def traverseObject(ObjectNode cobject)
    {
-      def node = [
-         // the '_object' avoids to have the same id as the attr when the obj doesn't have node_id
-         id:       'object_'+ obj.templateDataPath,
-         topic:    obj.text,
-         children: []
+      // def node = [
+      //    // the '_object' avoids to have the same id as the attr when the obj doesn't have node_id
+      //    id:       'object_'+ obj.templateDataPath,
+      //    topic:    obj.text,
+      //    children: []
+      // ]
+
+      def res = [
+         id: cobject.templateDataPath,
+         topic: '<div align="center">'+ cobject.text +'<br/><span style="font-size: 0.8em">&lt;'+ cobject.rmTypeName +'&gt;</span></div>',
+         children: [],
+         'background-color': '#4e73df',
+         'foreground-color': '#fff'
       ]
 
-      // I'm the root obj?
-      if (parent.size() == 0)
-      {
-         parent << node // adds the map entries to the out map
-      }
-      // Parent is an attribute
-      else
-      {
-         parent.children << node // adds the node in the children list
+      cobject.attributes.each { cattr ->
+
+         res.children.addAll(traverseAttribute(cattr))
       }
 
-      obj.attributes.each { attr ->
-         traverseAttribute(attr, node)
-      }
+      return res
    }
 
-   def traverseAttribute(AttributeNode attr, Map parent)
+   def traverseAttribute(AttributeNode cattr)
    {
-      def node = [
-         id:       attr.templateDataPath,
-         topic:    attr.rmAttributeName,
-         children: []
+      def res = [
+         id:    'attr_'+ cattr.templateDataPath,
+         topic: '<div align="center">'+ cattr.rmAttributeName +'</div>',
+         children: [],
+         'background-color': 'rgb(133, 135, 150)',
+         'foreground-color': '#fff'
       ]
 
-      parent.children << node
-      
-      attr.children.each { obj ->
-         traverseObject(obj, node)
+      cattr.children.each { cobj ->
+
+         res.children << traverseObject(cobj)
       }
+
+      return res
    }
 }
