@@ -11,7 +11,7 @@ class OperationalTemplateDiffAlgorithm {
       def paths1 = opt1.nodes.values().flatten().collect{ it.templateDataPath }
       def paths2 = opt2.nodes.values().flatten().collect{ it.templateDataPath }
 
-      def shared_paths = paths1.intersect(paths2, { p1, p2 -> p1 <=> p2 })
+      def shared_paths = paths1.intersect(paths2) //, { p1, p2 -> p1 <=> p2 }) // closure was added in groovy 2.5.0
       def added_paths = paths2.minus(shared_paths)
       def removed_paths = paths1.minus(paths2)
       def all_paths = paths1.plus(paths2).unique().sort()

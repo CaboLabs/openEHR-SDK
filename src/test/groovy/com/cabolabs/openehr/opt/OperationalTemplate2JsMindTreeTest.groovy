@@ -2,6 +2,7 @@ package com.cabolabs.openehr.opt
 
 import com.cabolabs.openehr.opt.parser.OperationalTemplateParser
 import com.cabolabs.openehr.opt.model.*
+import com.cabolabs.openehr.opt.diff.*
 import com.cabolabs.openehr.formats.OperationalTemplate2JsMindTree
 import com.cabolabs.openehr.opt.manager.OptManager
 import groovy.util.GroovyTestCase
@@ -52,4 +53,5 @@ class OperationalTemplate2JsMindTreeTest extends GroovyTestCase {
 
       assert true
    }
+
 }

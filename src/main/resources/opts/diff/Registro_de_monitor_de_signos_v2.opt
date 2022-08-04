@@ -36,7 +36,7 @@
     <value>0bdbabbf-7752-4a9e-86ce-6a44c672a9d9</value>
   </uid>
   <template_id>
-    <value>Registro de monitor de signos v2</value>
+    <value>Registro de monitor de signos</value>
   </template_id>
   <concept>Registro de monitor de signos</concept>
   <definition>
@@ -4294,7 +4294,7 @@ Conducting a full respiratory examination, then some of these findings might be 
       <value>openEHR-EHR-COMPOSITION.registro_de_monitor_de_signos.v1</value>
     </archetype_id>
     <template_id>
-      <value>Registro de monitor de signos v2</value>
+      <value>Registro de monitor de signos</value>
     </template_id>
     <term_definitions code="at0000">
       <items id="description">unknown</items>

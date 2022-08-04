@@ -7,8 +7,6 @@ import groovy.json.*
 // https://github.com/hizzgdev/jsmind/blob/master/docs/en/1.usage.md#12-data-format
 class OperationalTemplate2JsMindTree {
 
-   def opt
-
    Map getJsMindTree(OperationalTemplate opt)
    {
       def out = [
