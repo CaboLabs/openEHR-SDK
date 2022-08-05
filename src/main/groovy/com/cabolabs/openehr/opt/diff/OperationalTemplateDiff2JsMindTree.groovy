@@ -34,7 +34,7 @@ class OperationalTemplateDiff2JsMindTree {
       def res = [
          id: node.templateDataPath,
          //topic: '<div align="center">'+ cobject.text +'<br/><span style="font-size: 0.8em">&lt;'+ cobject.rmTypeName +'&gt;</span></div>',
-         topic: node.templateDataPath, // TODO: get info from corresponding node
+         topic: node.optNode.text, // TODO: get info from corresponding node
          children: [],
          'background-color': '#4e73df',
          'foreground-color': '#fff'

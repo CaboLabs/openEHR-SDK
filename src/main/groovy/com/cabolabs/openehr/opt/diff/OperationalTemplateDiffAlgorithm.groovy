@@ -72,7 +72,8 @@ class OperationalTemplateDiffAlgorithm {
 
       def node = new NodeDiff(
          templateDataPath: path,
-         compareResult: compareResult
+         compareResult: compareResult,
+         optNode: opt_node
       )
 
       def grouped = children_paths.groupBy{ it[0] }
