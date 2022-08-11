@@ -886,6 +886,9 @@ class RmInstanceGenerator {
       if (c_value && c_value.children[0].item && c_value.children[0].item instanceof com.cabolabs.openehr.opt.model.primitive.CDuration)
       {
          def c_duration = c_value.children[0].item
+
+         // TODO: verify the pattern and the limits are valid, this could be done in the template parser
+
          if (c_duration.pattern)
          {
             //println c_duration.pattern // PDTMS

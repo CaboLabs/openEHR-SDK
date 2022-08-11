@@ -6,6 +6,7 @@ import com.cabolabs.openehr.validation.*
 import com.cabolabs.openehr.opt.manager.*
 import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.opt.diff.*
+import groovy.json.*
 
 class OptDiffTest extends GroovyTestCase {
 
@@ -88,6 +89,42 @@ class OptDiffTest extends GroovyTestCase {
 
       assert node
       assert node.compareResult == 'same'
+   }
+
+   void testOperationalTemplateDiff2()
+   {
+      def path1 = PS +"opts"+ PS + 'diff' + PS +"diff_test.opt"
+      def opt1 = loadAndParse(path1)
+
+      def path2 = PS +"opts"+ PS + 'diff' + PS +"diff_test_v2.opt"
+      def opt2 = loadAndParse(path2)
+
+      /*
+      println opt1
+      println opt1.nodes.keySet()
+
+      opt1.nodes.values().flatten().collect{ it.templateDataPath }.sort().each {
+         println it
+      }
+      */
+
+      def diffal = new OperationalTemplateDiffAlgorithm()
+      def diff = diffal.diff(opt1, opt2)
+
+      // def node = findNode(
+      //    diff,
+      //   '/content[archetype_id=openEHR-EHR-OBSERVATION.blood_pressure.v2](1)/data[at0001](1)/events[at0006](1)/state[at0007](1)/items[at0008](1)'
+      // )
+
+      // assert node
+      // assert node.compareResult == 'added'
+
+      def jsmindSerializer = new OperationalTemplateDiff2JsMindTree()
+      Map tree = jsmindSerializer.getJsMindTree(diff)
+
+      //println tree
+
+      println JsonOutput.toJson(tree)
    }
 
    def findNode(OperationalTemplateDiff diff, String path)

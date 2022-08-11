@@ -1,6 +1,8 @@
 package com.cabolabs.openehr.opt.instance_generator
 
 import com.cabolabs.openehr.opt.model.*
+import java.time.LocalDate
+import java.time.temporal.WeekFields
 
 class DataGenerator {
    
@@ -31,6 +33,11 @@ class DataGenerator {
                else
                   gen += (util_date.getMonth()+1) + 'M'
             break
+            case 'W':
+               LocalDate date = LocalDate.now();
+               WeekFields weekFields = WeekFields.of(Locale.getDefault())
+               gen += date.get(weekFields.weekOfWeekBasedYear()) + 'W'
+            break
             case 'D':
                gen += util_date.getDate() + 'D'
             break
@@ -50,7 +57,7 @@ class DataGenerator {
    static String duration_in_interval(IntervalDuration ivd)
    {
       Long l_limit_seconds = 0 // avoid negative durations
-      Long u_limit_seconds  = Long.MAX_VALUE
+      Long u_limit_seconds = Long.MAX_VALUE
 
       if (!ivd.lowerUnbounded)
       {

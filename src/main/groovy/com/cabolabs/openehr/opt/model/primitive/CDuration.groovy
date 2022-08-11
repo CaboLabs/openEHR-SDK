@@ -8,11 +8,18 @@ import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 @groovy.util.logging.Log4j
 class CDuration extends CPrimitive {
 
-   // TODO: list constraint (this is not commonly used)
-   // http://www.openehr.org/releases/1.0.2/architecture/am/aom.pdf page 38
    String pattern
 
    IntervalDuration range
+
+   def setPattern(String pattern)
+   {
+      if (!CDuration.validPattern(pattern))
+      {
+         throw new Exception("C_DURATION.pattern value '${pattern}' is not valid")
+      }
+      this.pattern = pattern
+   }
 
    ValidationResult isValid(Pathable parent, String value)
    {
@@ -25,5 +32,14 @@ class CDuration extends CPrimitive {
       }
 
       return new ValidationResult(isValid: true)
+   }
+
+   // verifies if an ADL duration pattern is valid or not
+   // a pattern could be PYMWDTHMS with all being optional but at least one should be there
+   static boolean validPattern(String pattern)
+   {
+      def matcher = ~/^P(([YMWD]+)|([YMWD]*T[HMS]+))$/
+   
+      return pattern.matches(matcher)
    }
 }

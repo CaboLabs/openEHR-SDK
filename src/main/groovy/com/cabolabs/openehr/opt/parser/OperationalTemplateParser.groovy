@@ -186,11 +186,26 @@ class OperationalTemplateParser {
 
       if (!itv.lowerUnbounded)
       {
-         itv.lower = new Duration(value: node.lower.text())
+         try
+         {
+            itv.lower = new Duration(value: node.lower.text()) // throws exception if value is invalid
+         }
+         catch (Exception e)
+         {
+            // TODO: a better error reporting would be to have a custom exceptioon that we can set the path to the error node, value with the error, etc.
+            throw new Exception("There was a problem parsing the INTERVAL<DURATION>: "+ e.message, e)
+         }
       }
       if (!itv.upperUnbounded)
       {
-         itv.upper = new Duration(value: node.upper.text())
+         try
+         {
+            itv.upper = new Duration(value: node.upper.text()) // throws exception if value is invalid
+         }
+         catch (Exception e)
+         {
+            throw new Exception("There was a problem parsing the INTERVAL<DURATION>: "+ e.message, e)
+         }
       }
 
       return itv
@@ -434,7 +449,16 @@ class OperationalTemplateParser {
             if (!primitive.range.isEmpty())
                obn.item.range = parseIntervalDuration(primitive.range)
             else
-               obn.item.pattern = primitive.pattern.text()
+            {
+               try
+               {
+                  obn.item.pattern = primitive.pattern.text() // throws exception if value is invalid
+               }
+               catch (Exception e)
+               {
+                  throw new Exception("There was a problem parsing the C_DURATION.pattern: "+ e.message, e)
+               }
+            }
          }
          else if (primitive.'@xsi:type'.text() == 'C_REAL')
          {
