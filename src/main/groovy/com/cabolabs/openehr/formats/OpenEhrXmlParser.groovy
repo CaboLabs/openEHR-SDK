@@ -23,6 +23,8 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.*
+import com.cabolabs.openehr.rm_1_0_2.ehr.Ehr
+import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 import com.cabolabs.openehr.dto_1_0_2.common.change_control.ContributionDto
 
@@ -37,6 +39,24 @@ import groovy.util.slurpersupport.GPathResult
 class OpenEhrXmlParser {
    
    // ========= ENTRY POINTS =========
+
+   // TODO: parse folder
+
+   // TODO:
+   Ehr parseEhr(String xml)
+   {
+
+   }
+
+   EhrStatus parseEhrStatus(String xml)
+   {
+
+   }
+
+   EhrStatus parseEhrStatus(GPathResult xml)
+   {
+
+   }
 
    // used to parse compositions and other descendant from Locatable
    Locatable parseXml(String xml)

@@ -276,7 +276,7 @@
                                                                     "terminology_id": {
                                                                         "value": "Snomed"
                                                                     },
-                                                                    "code_string": 1006007
+                                                                    "code_string": "1006007"
                                                                 }
                                                             }
                                                         }
@@ -428,7 +428,7 @@
                                                             "terminology_id": {
                                                                 "value": "terminology_not_specified_as_constraint_or_referenceSetUri_in_opt"
                                                             },
-                                                            "code_string": 1007243
+                                                            "code_string": "1007243"
                                                         }
                                                     }
                                                 },
@@ -446,7 +446,7 @@
                                                             "terminology_id": {
                                                                 "value": "terminology_not_specified_as_constraint_or_referenceSetUri_in_opt"
                                                             },
-                                                            "code_string": 1005467
+                                                            "code_string": "1005467"
                                                         }
                                                     }
                                                 }
@@ -671,7 +671,7 @@
                                                 "terminology_id": {
                                                     "value": "terminology_not_specified_as_constraint_or_referenceSetUri_in_opt"
                                                 },
-                                                "code_string": 1003034
+                                                "code_string": "1003034"
                                             }
                                         }
                                     },

@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.cabolabs.openehr.opt.instance_validation.JsonInstanceValidation
 import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
+import com.cabolabs.openehr.rm_1_0_2.common.directory.Folder
 
 import com.cabolabs.openehr.dto_1_0_2.common.change_control.ContributionDto
 
@@ -39,6 +40,27 @@ import com.cedarsoftware.util.io.JsonWriter
 class OpenEhrJsonParserTest extends GroovyTestCase {
 
    private static String PS = System.getProperty("file.separator")
+
+   void testJsonParserFolder()
+   {
+      String path = PS +"canonical_json"+ PS +"subfolders_in_directory_with_details_items.json"
+      File file = new File(getClass().getResource(path).toURI())
+      String json = file.text
+      def parser = new OpenEhrJsonParser(true) // true validates against JSON Schema
+      Folder f = (Folder)parser.parseJson(json)
+      
+      assert f
+
+      assert f.items.size() == 1
+      assert f.folders.size() == 2
+
+      assert f.name.value == 'root'
+      assert f.folders[0].name.value == 'subfolder 1'
+      assert f.folders[1].name.value == 'subfolder 2'
+
+      //def out = JsonWriter.objectToJson(f, [(JsonWriter.PRETTY_PRINT): true])
+      //println out
+   }
 
    void testJsonParserEhr()
    {
@@ -728,7 +750,9 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
          'canonical_json/prozedur.json',
          'canonical_json/referral.json',
          'canonical_json/test_all_datatypes_en.json',
-         'canonical_json/vital_signs_pathfinder_demo.en.v1_instance_3602591.json'
+         'canonical_json/vital_signs_pathfinder_demo.en.v1_instance_3602591.json',
+         'canonical_json/ehr_status.json',
+         'canonical_json/subfolders_in_directory_with_details_items.json'
       ]
 
       InputStream ins
@@ -749,12 +773,14 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
          json = mapper.readTree(ins)
          errors = jsonValidator.validate(json)
 
-         // TODO: use asserts
+         assert !errors
+
+         // TODO: asserts on introduced errors (another test)
          def out = JsonOutput.toJson(errors)
          out = JsonOutput.prettyPrint(out)
+         println testCaseFile
          println out
       }
-
    }
 
    void testCompositionJsonParseValidationSerializationValidation()
