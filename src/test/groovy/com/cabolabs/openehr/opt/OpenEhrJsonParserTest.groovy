@@ -66,19 +66,59 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    {
       def json_ehr = $/
          {
+           "_type": "EHR",
            "system_id": {
              "value": "d60e2348-b083-48ce-93b9-916cef1d3a5a"
            },
            "ehr_id": {
              "value": "7d44b88c-4199-4bad-97dc-d78268e01398"
            },
+           "ehr_access": {
+             "id": {
+               "_type": "OBJECT_VERSION_ID",
+               "value": "8849182c-82ad-4088-a07f-48ead4180999::openEHRSys.example.com::1"
+             },
+             "namespace": "local",
+             "type": "EHR_ACCESS"
+           },
            "ehr_status": {
+             "_type": "LOCATABLE_REF",
              "id": {
                "_type": "OBJECT_VERSION_ID",
                "value": "8849182c-82ad-4088-a07f-48ead4180515::openEHRSys.example.com::1"
              },
              "namespace": "local",
-             "type": "EHR_STATUS"
+             "type": "EHR_STATUS",
+             "path": "/ehr_status"
+           },
+           "time_created": {
+             "value": "2015-01-20T19:30:22.765+01:00"
+           },
+           "contributions": []
+         }
+      /$
+
+      def parser = new OpenEhrJsonParser(true)
+      Ehr ehr = parser.parseEhr(json_ehr)
+
+      assert ehr
+
+      assert ehr.system_id.value == "d60e2348-b083-48ce-93b9-916cef1d3a5a"
+
+      assert ehr.ehr_status.id.value == "8849182c-82ad-4088-a07f-48ead4180515::openEHRSys.example.com::1"
+      assert ehr.ehr_status.type == "EHR_STATUS"
+   }
+
+   void testJsonParserEhrWithSchemaError()
+   {
+      def json_ehr = $/
+         {
+           "_type": "EHR",
+           "system_id": {
+             "value": "d60e2348-b083-48ce-93b9-916cef1d3a5a"
+           },
+           "ehr_id": {
+             "value": "7d44b88c-4199-4bad-97dc-d78268e01398"
            },
            "time_created": {
              "value": "2015-01-20T19:30:22.765+01:00"
@@ -86,13 +126,31 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
          }
       /$
 
-      def parser = new OpenEhrJsonParser()
+      def parser = new OpenEhrJsonParser(true)
       Ehr ehr = parser.parseEhr(json_ehr)
 
-      assert ehr.system_id.value == "d60e2348-b083-48ce-93b9-916cef1d3a5a"
+      assert !ehr
+      
+      // Set<ValitaionMessage>
+      // https://javadoc.io/doc/com.networknt/json-schema-validator/1.0.51/com/networknt/schema/ValidationMessage.html
+      def errors = parser.getJsonValidationErrors()
 
-      assert ehr.ehr_status.id.value == "8849182c-82ad-4088-a07f-48ead4180515::openEHRSys.example.com::1"
-      assert ehr.ehr_status.type == "EHR_STATUS"
+      def err_ehr_access = errors.find{ it.message == "\$.ehr_access: is missing but it is required" }
+
+      assert err_ehr_access
+      assert err_ehr_access.type == "required"
+
+
+      def err_ehr_status = errors.find{ it.message == "\$.ehr_status: is missing but it is required" }
+
+      assert err_ehr_status
+      assert err_ehr_status.type == "required"
+
+
+      def err_contributions = errors.find{ it.message == "\$.contributions: is missing but it is required" }
+
+      assert err_contributions
+      assert err_contributions.type == "required"
    }
 
    void testJsonParserEhrStatus()
@@ -146,6 +204,53 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       assert map1 == map2
    }
    
+   void testJsonParserEhrStatusWithSchemaError()
+   {
+       def json_ehr_status = $/
+         {
+            "_type": "EHR_STATUS",
+            "archetype_node_id": "openEHR-EHR-EHR_STATUS.generic.v1",
+            "archetype_details": {
+               "archetype_id": {
+                  "value": "openEHR-EHR-EHR_STATUS.generic.v1"
+               },
+               "template_id": {
+                  "value": "ehr_status.en.v1"
+               },
+               "rm_version": "1.0.2"
+            },
+            "subject": {
+               "external_ref": {
+                  "id": {
+                     "_type": "GENERIC_ID",
+                     "value": "ins01",
+                     "scheme": "id_scheme"
+                  },
+                  "namespace": "DEMOGRAPHIC",
+                  "type": "PERSON"
+               }
+            }
+         }
+      /$
+
+      def parser = new OpenEhrJsonParser(true)
+      EhrStatus status = parser.parseEhrStatus(json_ehr_status)
+
+      assert !status
+      
+      // Set<ValitaionMessage>
+      // https://javadoc.io/doc/com.networknt/json-schema-validator/1.0.51/com/networknt/schema/ValidationMessage.html
+      def errors = parser.getJsonValidationErrors()
+
+      def err_name = errors.find{ it.message == "\$.name: is missing but it is required" }
+
+      assert err_name
+      assert err_name.type == "required"
+
+      // TODO
+      //[$.name: is missing but it is required, $.is_queryable: is missing but it is required, $.is_modifiable: is missing but it is required]
+   }
+
    void testJsonParserInstruction()
    {
       String path = PS +"canonical_json"+ PS +"lab_order.json"

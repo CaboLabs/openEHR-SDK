@@ -11,6 +11,32 @@
                 "properties": {
                     "_type": {
                         "type": "string",
+                        "pattern": "^EHR(<.*>)?$"
+                    }
+                }
+            },
+            "then": {
+                "$ref": "#/definitions/EHR"
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "_type": {
+                        "type": "string",
+                        "pattern": "^EHR_STATUS(<.*>)?$"
+                    }
+                }
+            },
+            "then": {
+                "$ref": "#/definitions/EHR_STATUS"
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "_type": {
+                        "type": "string",
                         "pattern": "^COMPOSITION(<.*>)?$"
                     }
                 }

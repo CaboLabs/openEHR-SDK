@@ -40,6 +40,9 @@ class OpenEhrJsonParser {
    private Logger log = Logger.getLogger(getClass())
    
    def jsonValidator
+
+   // https://javadoc.io/doc/com.networknt/json-schema-validator/1.0.51/com/networknt/schema/ValidationMessage.html
+   // Set<ValidationMessage>
    def jsonValidationErrors
 
    // if @schemaValidate is true, runs the schema validator before trying to parse
@@ -150,18 +153,9 @@ class OpenEhrJsonParser {
    }
 
    // FIXME: this logic shoould be in a private method and the entry point be parseLocatable
+   // This is called from parseJson which does the String->Map parsing and already validates
    EhrStatus parseEhrStatus(Map map)
    {
-      if (this.jsonValidator)
-      {
-         def errors = jsonValidator.validate(json)
-         if (errors)
-         {
-            this.jsonValidationErrors = errors
-            return
-         }
-      }
-
       def status = new EhrStatus()
 
       this.fillLOCATABLE(status, map, null, '/', '/')

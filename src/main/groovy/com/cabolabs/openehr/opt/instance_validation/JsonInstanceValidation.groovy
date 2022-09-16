@@ -25,6 +25,7 @@ class JsonInstanceValidation {
    }
 
    // validate parsed json
+   // https://javadoc.io/doc/com.networknt/json-schema-validator/1.0.51/com/networknt/schema/ValidationMessage.html
    Set<ValidationMessage> validate(JsonNode json)
    {
       this.schema.validate(json)
