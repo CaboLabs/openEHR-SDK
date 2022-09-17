@@ -1,15 +1,6 @@
 {
    "_type": "EHR_STATUS",
 	"archetype_node_id": "openEHR-EHR-EHR_STATUS.generic.v1",
-	"archetype_details": {
-		"archetype_id": {
-			"value": "openEHR-EHR-EHR_STATUS.generic.v1"
-		},
-		"template_id": {
-			"value": "generic.en.v1"
-		},
-		"rm_version": "1.0.2"
-   },
 	"is_queryable": true,
 	"is_modifiable": true,
 	"uid": {

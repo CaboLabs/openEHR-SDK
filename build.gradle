@@ -38,7 +38,7 @@ dependencies {
 
 
     // https://github.com/networknt/json-schema-validator
-    implementation(group: "com.networknt", name: "json-schema-validator", version: "1.0.52");
+    implementation(group: "com.networknt", name: "json-schema-validator", version: "1.0.72");
 
     //implementation fileTree(dir: 'lib', include: ['*.jar'])
 
