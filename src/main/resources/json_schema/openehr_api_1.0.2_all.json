@@ -8877,8 +8877,7 @@
             "type": "object",
             "required": [
                 "language",
-                "purpose",
-                "other_details"
+                "purpose"
             ],
             "properties": {
                 "language": {
@@ -16254,6 +16253,7 @@
                 "archetype_node_id",
                 "name",
                 "description",
+                "action_archetype_id",
                 "timing"
             ],
             "properties": {

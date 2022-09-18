@@ -821,8 +821,6 @@
                                         "type": "string",
                                         "enum": [
                                             "LOCATABLE_REF",
-                                            "PARTY_REF",
-                                            "ACCESS_GROUP_REF",
                                             "OBJECT_REF"
                                         ]
                                     }
@@ -841,36 +839,6 @@
                                 },
                                 "then": {
                                     "$ref": "#/definitions/LOCATABLE_REF"
-                                }
-                            },
-                            {
-                                "if": {
-                                    "properties": {
-                                        "_type": {
-                                            "const": "PARTY_REF"
-                                        }
-                                    },
-                                    "required": [
-                                        "_type"
-                                    ]
-                                },
-                                "then": {
-                                    "$ref": "#/definitions/PARTY_REF"
-                                }
-                            },
-                            {
-                                "if": {
-                                    "properties": {
-                                        "_type": {
-                                            "const": "ACCESS_GROUP_REF"
-                                        }
-                                    },
-                                    "required": [
-                                        "_type"
-                                    ]
-                                },
-                                "then": {
-                                    "$ref": "#/definitions/ACCESS_GROUP_REF"
                                 }
                             },
                             {
@@ -913,8 +881,6 @@
                                         "type": "string",
                                         "enum": [
                                             "LOCATABLE_REF",
-                                            "PARTY_REF",
-                                            "ACCESS_GROUP_REF",
                                             "OBJECT_REF"
                                         ]
                                     }
@@ -933,36 +899,6 @@
                                 },
                                 "then": {
                                     "$ref": "#/definitions/LOCATABLE_REF"
-                                }
-                            },
-                            {
-                                "if": {
-                                    "properties": {
-                                        "_type": {
-                                            "const": "PARTY_REF"
-                                        }
-                                    },
-                                    "required": [
-                                        "_type"
-                                    ]
-                                },
-                                "then": {
-                                    "$ref": "#/definitions/PARTY_REF"
-                                }
-                            },
-                            {
-                                "if": {
-                                    "properties": {
-                                        "_type": {
-                                            "const": "ACCESS_GROUP_REF"
-                                        }
-                                    },
-                                    "required": [
-                                        "_type"
-                                    ]
-                                },
-                                "then": {
-                                    "$ref": "#/definitions/ACCESS_GROUP_REF"
                                 }
                             },
                             {
@@ -3172,26 +3108,6 @@
             },
             "additionalProperties": false
         },
-        "GENERIC_ID": {
-            "type": "object",
-            "required": [
-                "value",
-                "scheme"
-            ],
-            "properties": {
-                "value": {
-                    "type": "string"
-                },
-                "scheme": {
-                    "type": "string"
-                },
-                "_type": {
-                    "type": "string",
-                    "const": "GENERIC_ID"
-                }
-            },
-            "additionalProperties": false
-        },
         "RESOURCE_DESCRIPTION": {
             "type": "object",
             "required": [
@@ -3232,6 +3148,26 @@
                 "_type": {
                     "type": "string",
                     "const": "RESOURCE_DESCRIPTION"
+                }
+            },
+            "additionalProperties": false
+        },
+        "GENERIC_ID": {
+            "type": "object",
+            "required": [
+                "value",
+                "scheme"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                },
+                "scheme": {
+                    "type": "string"
+                },
+                "_type": {
+                    "type": "string",
+                    "const": "GENERIC_ID"
                 }
             },
             "additionalProperties": false
@@ -6179,6 +6115,22 @@
             },
             "additionalProperties": false
         },
+        "INTERNET_ID": {
+            "type": "object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                },
+                "_type": {
+                    "type": "string",
+                    "const": "INTERNET_ID"
+                }
+            },
+            "additionalProperties": false
+        },
         "TERMINOLOGY_CODE": {
             "type": "object",
             "required": [
@@ -6738,22 +6690,6 @@
                 "_type": {
                     "type": "string",
                     "const": "AGENT"
-                }
-            },
-            "additionalProperties": false
-        },
-        "INTERNET_ID": {
-            "type": "object",
-            "required": [
-                "value"
-            ],
-            "properties": {
-                "value": {
-                    "type": "string"
-                },
-                "_type": {
-                    "type": "string",
-                    "const": "INTERNET_ID"
                 }
             },
             "additionalProperties": false
@@ -9444,6 +9380,50 @@
             },
             "additionalProperties": false
         },
+        "RESOURCE_DESCRIPTION_ITEM": {
+            "type": "object",
+            "required": [
+                "language",
+                "purpose"
+            ],
+            "properties": {
+                "language": {
+                    "$ref": "#/definitions/CODE_PHRASE"
+                },
+                "purpose": {
+                    "type": "string"
+                },
+                "keywords": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "use": {
+                    "type": "string"
+                },
+                "misuse": {
+                    "type": "string"
+                },
+                "copyright": {
+                    "type": "string"
+                },
+                "original_resource_uri": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "other_details": {
+                    "type": "object"
+                },
+                "_type": {
+                    "type": "string",
+                    "const": "RESOURCE_DESCRIPTION_ITEM"
+                }
+            },
+            "additionalProperties": false
+        },
         "CONTACT": {
             "type": "object",
             "required": [
@@ -9579,51 +9559,6 @@
                 "_type": {
                     "type": "string",
                     "const": "CONTACT"
-                }
-            },
-            "additionalProperties": false
-        },
-        "RESOURCE_DESCRIPTION_ITEM": {
-            "type": "object",
-            "required": [
-                "language",
-                "purpose",
-                "other_details"
-            ],
-            "properties": {
-                "language": {
-                    "$ref": "#/definitions/TERMINOLOGY_CODE"
-                },
-                "purpose": {
-                    "type": "string"
-                },
-                "keywords": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "use": {
-                    "type": "string"
-                },
-                "misuse": {
-                    "type": "string"
-                },
-                "copyright": {
-                    "type": "string"
-                },
-                "original_resource_uri": {
-                    "type": "array",
-                    "items": {
-                        "type": "object"
-                    }
-                },
-                "other_details": {
-                    "type": "object"
-                },
-                "_type": {
-                    "type": "string",
-                    "const": "RESOURCE_DESCRIPTION_ITEM"
                 }
             },
             "additionalProperties": false
@@ -12358,10 +12293,7 @@
                     "type": "string"
                 },
                 "other_details": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                    "type": "object"
                 },
                 "_type": {
                     "type": "string",
@@ -13348,6 +13280,72 @@
             },
             "additionalProperties": false
         },
+        "LOCATABLE_REF": {
+            "type": "object",
+            "required": [
+                "id",
+                "namespace",
+                "type"
+            ],
+            "properties": {
+                "id": {
+                    "allOf": [
+                        {
+                            "required": [
+                                "_type"
+                            ],
+                            "properties": {
+                                "_type": {
+                                    "type": "string",
+                                    "enum": [
+                                        "OBJECT_VERSION_ID",
+                                        "HIER_OBJECT_ID"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "OBJECT_VERSION_ID"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "$ref": "#/definitions/OBJECT_VERSION_ID"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "HIER_OBJECT_ID"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "$ref": "#/definitions/HIER_OBJECT_ID"
+                            }
+                        }
+                    ]
+                },
+                "namespace": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "_type": {
+                    "type": "string",
+                    "const": "LOCATABLE_REF"
+                }
+            },
+            "additionalProperties": false
+        },
         "DATE_TIME": {
             "type": "object",
             "required": [
@@ -13568,72 +13566,6 @@
                 "_type": {
                     "type": "string",
                     "const": "PARTY_RELATIONSHIP"
-                }
-            },
-            "additionalProperties": false
-        },
-        "LOCATABLE_REF": {
-            "type": "object",
-            "required": [
-                "id",
-                "namespace",
-                "type"
-            ],
-            "properties": {
-                "id": {
-                    "allOf": [
-                        {
-                            "required": [
-                                "_type"
-                            ],
-                            "properties": {
-                                "_type": {
-                                    "type": "string",
-                                    "enum": [
-                                        "OBJECT_VERSION_ID",
-                                        "HIER_OBJECT_ID"
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            "if": {
-                                "properties": {
-                                    "_type": {
-                                        "const": "OBJECT_VERSION_ID"
-                                    }
-                                }
-                            },
-                            "then": {
-                                "$ref": "#/definitions/OBJECT_VERSION_ID"
-                            }
-                        },
-                        {
-                            "if": {
-                                "properties": {
-                                    "_type": {
-                                        "const": "HIER_OBJECT_ID"
-                                    }
-                                }
-                            },
-                            "then": {
-                                "$ref": "#/definitions/HIER_OBJECT_ID"
-                            }
-                        }
-                    ]
-                },
-                "namespace": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
-                },
-                "path": {
-                    "type": "string"
-                },
-                "_type": {
-                    "type": "string",
-                    "const": "LOCATABLE_REF"
                 }
             },
             "additionalProperties": false
@@ -15341,7 +15273,7 @@
             ],
             "properties": {
                 "language": {
-                    "$ref": "#/definitions/TERMINOLOGY_CODE"
+                    "$ref": "#/definitions/CODE_PHRASE"
                 },
                 "author": {
                     "type": "object"
@@ -17058,7 +16990,8 @@
             "required": [
                 "archetype_node_id",
                 "name",
-                "description"
+                "description",
+                "action_archetype_id"
             ],
             "properties": {
                 "uid": {
