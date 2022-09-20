@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://specifications.openehr.org/releases/ITS-JSON/latest/components/openehr_rm_1.0.3_all.json",
+    "$id": "https://specifications.openehr.org/releases/ITS-JSON/latest/components/openehr_api_1.0.4_all.json",
     "allOf": [
         {
             "required": [
@@ -333,6 +333,17 @@
         }
     ],
     "definitions": {
+        "VERSION_STATUS": {
+            "type": "object",
+            "required": [
+            ],
+            "properties": {
+                "_type": {
+                    "type": "string",
+                    "const": "VERSION_STATUS"
+                }
+            }
+        },
         "SYNC_EXTRACT_SPEC": {
             "type": "object",
             "required": [
@@ -534,182 +545,10 @@
                     "$ref": "#/definitions/DV_DATE_TIME"
                 },
                 "ehr_access": {
-                    "allOf": [
-                        {
-                            "properties": {
-                                "_type": {
-                                    "type": "string",
-                                    "enum": [
-                                        "LOCATABLE_REF",
-                                        "PARTY_REF",
-                                        "ACCESS_GROUP_REF",
-                                        "OBJECT_REF"
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            "if": {
-                                "properties": {
-                                    "_type": {
-                                        "const": "LOCATABLE_REF"
-                                    }
-                                },
-                                "required": [
-                                    "_type"
-                                ]
-                            },
-                            "then": {
-                                "$ref": "#/definitions/LOCATABLE_REF"
-                            }
-                        },
-                        {
-                            "if": {
-                                "properties": {
-                                    "_type": {
-                                        "const": "PARTY_REF"
-                                    }
-                                },
-                                "required": [
-                                    "_type"
-                                ]
-                            },
-                            "then": {
-                                "$ref": "#/definitions/PARTY_REF"
-                            }
-                        },
-                        {
-                            "if": {
-                                "properties": {
-                                    "_type": {
-                                        "const": "ACCESS_GROUP_REF"
-                                    }
-                                },
-                                "required": [
-                                    "_type"
-                                ]
-                            },
-                            "then": {
-                                "$ref": "#/definitions/ACCESS_GROUP_REF"
-                            }
-                        },
-                        {
-                            "if": {
-                                "properties": {
-                                    "_type": {
-                                        "const": "OBJECT_REF"
-                                    }
-                                },
-                                "required": [
-                                    "_type"
-                                ]
-                            },
-                            "then": {
-                                "$ref": "#/definitions/OBJECT_REF"
-                            }
-                        },
-                        {
-                            "if": {
-                                "not": {
-                                    "required": [
-                                        "_type"
-                                    ]
-                                }
-                            },
-                            "then": {
-                                "$ref": "#/definitions/OBJECT_REF"
-                            }
-                        }
-                    ]
+                    "$ref": "#/definitions/EHR_ACCESS"
                 },
                 "ehr_status": {
-                    "allOf": [
-                        {
-                            "properties": {
-                                "_type": {
-                                    "type": "string",
-                                    "enum": [
-                                        "LOCATABLE_REF",
-                                        "PARTY_REF",
-                                        "ACCESS_GROUP_REF",
-                                        "OBJECT_REF"
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            "if": {
-                                "properties": {
-                                    "_type": {
-                                        "const": "LOCATABLE_REF"
-                                    }
-                                },
-                                "required": [
-                                    "_type"
-                                ]
-                            },
-                            "then": {
-                                "$ref": "#/definitions/LOCATABLE_REF"
-                            }
-                        },
-                        {
-                            "if": {
-                                "properties": {
-                                    "_type": {
-                                        "const": "PARTY_REF"
-                                    }
-                                },
-                                "required": [
-                                    "_type"
-                                ]
-                            },
-                            "then": {
-                                "$ref": "#/definitions/PARTY_REF"
-                            }
-                        },
-                        {
-                            "if": {
-                                "properties": {
-                                    "_type": {
-                                        "const": "ACCESS_GROUP_REF"
-                                    }
-                                },
-                                "required": [
-                                    "_type"
-                                ]
-                            },
-                            "then": {
-                                "$ref": "#/definitions/ACCESS_GROUP_REF"
-                            }
-                        },
-                        {
-                            "if": {
-                                "properties": {
-                                    "_type": {
-                                        "const": "OBJECT_REF"
-                                    }
-                                },
-                                "required": [
-                                    "_type"
-                                ]
-                            },
-                            "then": {
-                                "$ref": "#/definitions/OBJECT_REF"
-                            }
-                        },
-                        {
-                            "if": {
-                                "not": {
-                                    "required": [
-                                        "_type"
-                                    ]
-                                }
-                            },
-                            "then": {
-                                "$ref": "#/definitions/OBJECT_REF"
-                            }
-                        }
-                    ]
+                    "$ref": "#/definitions/EHR_STATUS"
                 },
                 "directory": {
                     "allOf": [
@@ -2704,9 +2543,7 @@
                 "uid",
                 "archetype_node_id",
                 "name",
-                "identities",
-                "roles",
-                "languages"
+                "identities"
             ],
             "properties": {
                 "uid": {
@@ -3902,23 +3739,31 @@
                     "items": {
                         "allOf": [
                             {
+                                "required": [
+                                    "_type"
+                                ],
                                 "properties": {
                                     "_type": {
                                         "type": "string",
                                         "enum": [
-                                            "LOCATABLE_REF",
-                                            "PARTY_REF",
-                                            "ACCESS_GROUP_REF",
-                                            "OBJECT_REF"
+                                            "COMPOSITION",
+                                            "FOLDER",
+                                            "EHR_STATUS",
+                                            "ROLE",
+                                            "AGENT",
+                                            "GROUP",
+                                            "ORGANISATION",
+                                            "PERSON"
                                         ]
                                     }
                                 }
                             },
+                            
                             {
                                 "if": {
                                     "properties": {
                                         "_type": {
-                                            "const": "LOCATABLE_REF"
+                                            "const": "COMPOSITION"
                                         }
                                     },
                                     "required": [
@@ -3926,14 +3771,14 @@
                                     ]
                                 },
                                 "then": {
-                                    "$ref": "#/definitions/LOCATABLE_REF"
+                                    "$ref": "#/definitions/COMPOSITION"
                                 }
                             },
                             {
                                 "if": {
                                     "properties": {
                                         "_type": {
-                                            "const": "PARTY_REF"
+                                            "const": "FOLDER"
                                         }
                                     },
                                     "required": [
@@ -3941,14 +3786,14 @@
                                     ]
                                 },
                                 "then": {
-                                    "$ref": "#/definitions/PARTY_REF"
+                                    "$ref": "#/definitions/FOLDER"
                                 }
                             },
                             {
                                 "if": {
                                     "properties": {
                                         "_type": {
-                                            "const": "ACCESS_GROUP_REF"
+                                            "const": "EHR_STATUS"
                                         }
                                     },
                                     "required": [
@@ -3956,14 +3801,14 @@
                                     ]
                                 },
                                 "then": {
-                                    "$ref": "#/definitions/ACCESS_GROUP_REF"
+                                    "$ref": "#/definitions/EHR_STATUS"
                                 }
                             },
                             {
                                 "if": {
                                     "properties": {
                                         "_type": {
-                                            "const": "OBJECT_REF"
+                                            "const": "ROLE"
                                         }
                                     },
                                     "required": [
@@ -3971,19 +3816,67 @@
                                     ]
                                 },
                                 "then": {
-                                    "$ref": "#/definitions/OBJECT_REF"
+                                    "$ref": "#/definitions/ROLE"
                                 }
                             },
                             {
                                 "if": {
-                                    "not": {
-                                        "required": [
-                                            "_type"
-                                        ]
-                                    }
+                                    "properties": {
+                                        "_type": {
+                                            "const": "AGENT"
+                                        }
+                                    },
+                                    "required": [
+                                        "_type"
+                                    ]
                                 },
                                 "then": {
-                                    "$ref": "#/definitions/OBJECT_REF"
+                                    "$ref": "#/definitions/AGENT"
+                                }
+                            },
+                            {
+                                "if": {
+                                    "properties": {
+                                        "_type": {
+                                            "const": "GROUP"
+                                        }
+                                    },
+                                    "required": [
+                                        "_type"
+                                    ]
+                                },
+                                "then": {
+                                    "$ref": "#/definitions/GROUP"
+                                }
+                            },
+                            {
+                                "if": {
+                                    "properties": {
+                                        "_type": {
+                                            "const": "ORGANISATION"
+                                        }
+                                    },
+                                    "required": [
+                                        "_type"
+                                    ]
+                                },
+                                "then": {
+                                    "$ref": "#/definitions/ORGANISATION"
+                                }
+                            },
+                            {
+                                "if": {
+                                    "properties": {
+                                        "_type": {
+                                            "const": "PERSON"
+                                        }
+                                    },
+                                    "required": [
+                                        "_type"
+                                    ]
+                                },
+                                "then": {
+                                    "$ref": "#/definitions/PERSON"
                                 }
                             }
                         ]
@@ -5852,6 +5745,17 @@
             },
             "additionalProperties": false
         },
+        "URI": {
+            "type": "object",
+            "required": [
+            ],
+            "properties": {
+                "_type": {
+                    "type": "string",
+                    "const": "URI"
+                }
+            }
+        },
         "SYNC_EXTRACT": {
             "type": "object",
             "required": [
@@ -6003,6 +5907,33 @@
                 "_type": {
                     "type": "string",
                     "const": "INTERNET_ID"
+                }
+            },
+            "additionalProperties": false
+        },
+        "TERMINOLOGY_CODE": {
+            "type": "object",
+            "required": [
+                "terminology_id",
+                "code_string",
+                "uri"
+            ],
+            "properties": {
+                "terminology_id": {
+                    "type": "string"
+                },
+                "terminology_version": {
+                    "type": "string"
+                },
+                "code_string": {
+                    "type": "string"
+                },
+                "uri": {
+                    "$ref": "#/definitions/URI"
+                },
+                "_type": {
+                    "type": "string",
+                    "const": "TERMINOLOGY_CODE"
                 }
             },
             "additionalProperties": false
@@ -6254,9 +6185,7 @@
                 "uid",
                 "archetype_node_id",
                 "name",
-                "identities",
-                "roles",
-                "languages"
+                "identities"
             ],
             "properties": {
                 "uid": {
@@ -6723,9 +6652,7 @@
                 "uid",
                 "archetype_node_id",
                 "name",
-                "identities",
-                "roles",
-                "languages"
+                "identities"
             ],
             "properties": {
                 "uid": {
@@ -8753,6 +8680,22 @@
                     "const": "ITEM_LIST"
                 }
             },
+            "additionalProperties": false
+        },
+        "DURATION": {
+            "type": "object",
+            "required": [
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                },
+                "_type": {
+                    "type": "string",
+                    "const": "DURATION"
+                }
+            },
+            "description": "Duration type based on IS8601 representation.",
             "additionalProperties": false
         },
         "HISTORY": {
@@ -10861,6 +10804,17 @@
             },
             "additionalProperties": false
         },
+        "VALIDITY_KIND": {
+            "type": "object",
+            "required": [
+            ],
+            "properties": {
+                "_type": {
+                    "type": "string",
+                    "const": "VALIDITY_KIND"
+                }
+            }
+        },
         "OBJECT_VERSION_ID": {
             "type": "object",
             "required": [
@@ -10917,9 +10871,7 @@
                 "uid",
                 "archetype_node_id",
                 "name",
-                "identities",
-                "roles",
-                "languages"
+                "identities"
             ],
             "properties": {
                 "uid": {
@@ -11993,6 +11945,22 @@
             },
             "additionalProperties": false
         },
+        "DATE": {
+            "type": "object",
+            "required": [
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                },
+                "_type": {
+                    "type": "string",
+                    "const": "DATE"
+                }
+            },
+            "description": "Date type based on IS8601 representation.",
+            "additionalProperties": false
+        },
         "ITEM_TABLE": {
             "type": "object",
             "required": [
@@ -13021,6 +12989,22 @@
             },
             "additionalProperties": false
         },
+        "DATE_TIME": {
+            "type": "object",
+            "required": [
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                },
+                "_type": {
+                    "type": "string",
+                    "const": "DATE_TIME"
+                }
+            },
+            "description": "Date Time type based on IS8601 representation.",
+            "additionalProperties": false
+        },
         "PARTY_RELATIONSHIP": {
             "type": "object",
             "required": [
@@ -13375,7 +13359,6 @@
         "DV_EHR_URI": {
             "type": "object",
             "required": [
-                "value"
             ],
             "properties": {
                 "value": {
@@ -13385,6 +13368,26 @@
                 "_type": {
                     "type": "string",
                     "const": "DV_EHR_URI"
+                }
+            },
+            "additionalProperties": false
+        },
+        "TERMINOLOGY_TERM": {
+            "type": "object",
+            "required": [
+                "text",
+                "concept"
+            ],
+            "properties": {
+                "text": {
+                    "type": "string"
+                },
+                "concept": {
+                    "$ref": "#/definitions/TERMINOLOGY_CODE"
+                },
+                "_type": {
+                    "type": "string",
+                    "const": "TERMINOLOGY_TERM"
                 }
             },
             "additionalProperties": false
@@ -15261,6 +15264,22 @@
             },
             "additionalProperties": false
         },
+        "TIME": {
+            "type": "object",
+            "required": [
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                },
+                "_type": {
+                    "type": "string",
+                    "const": "TIME"
+                }
+            },
+            "description": "Time type based on IS8601 representation.",
+            "additionalProperties": false
+        },
         "IMPORTED_VERSION": {
             "type": "object",
             "required": [
@@ -15399,7 +15418,6 @@
         "DV_URI": {
             "type": "object",
             "required": [
-                "value"
             ],
             "properties": {
                 "value": {
@@ -16535,8 +16553,7 @@
                 "archetype_node_id",
                 "name",
                 "description",
-                "action_archetype_id",
-                "timing"
+                "action_archetype_id"
             ],
             "properties": {
                 "uid": {
