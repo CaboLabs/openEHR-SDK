@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://specifications.openehr.org/releases/ITS-JSON/latest/components/openehr_api_1.0.2_all.json",
+    "$id": "https://specifications.openehr.org/releases/ITS-JSON/latest/components/openehr_api_1.0.3_all.json",
     "allOf": [
         {
             "required": [
@@ -547,6 +547,8 @@
                                     "type": "string",
                                     "enum": [
                                         "LOCATABLE_REF",
+                                        "PARTY_REF",
+                                        "ACCESS_GROUP_REF",
                                         "OBJECT_REF"
                                     ]
                                 }
@@ -565,6 +567,36 @@
                             },
                             "then": {
                                 "$ref": "#/definitions/LOCATABLE_REF"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "PARTY_REF"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/PARTY_REF"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "ACCESS_GROUP_REF"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/ACCESS_GROUP_REF"
                             }
                         },
                         {
@@ -666,6 +698,8 @@
                                         "type": "string",
                                         "enum": [
                                             "LOCATABLE_REF",
+                                            "PARTY_REF",
+                                            "ACCESS_GROUP_REF",
                                             "OBJECT_REF"
                                         ]
                                     }
@@ -684,6 +718,36 @@
                                 },
                                 "then": {
                                     "$ref": "#/definitions/LOCATABLE_REF"
+                                }
+                            },
+                            {
+                                "if": {
+                                    "properties": {
+                                        "_type": {
+                                            "const": "PARTY_REF"
+                                        }
+                                    },
+                                    "required": [
+                                        "_type"
+                                    ]
+                                },
+                                "then": {
+                                    "$ref": "#/definitions/PARTY_REF"
+                                }
+                            },
+                            {
+                                "if": {
+                                    "properties": {
+                                        "_type": {
+                                            "const": "ACCESS_GROUP_REF"
+                                        }
+                                    },
+                                    "required": [
+                                        "_type"
+                                    ]
+                                },
+                                "then": {
+                                    "$ref": "#/definitions/ACCESS_GROUP_REF"
                                 }
                             },
                             {
@@ -2467,7 +2531,6 @@
             "required": [
                 "uid",
                 "archetype_node_id",
-                "archetype_details",
                 "name",
                 "identities",
                 "roles",
@@ -5805,7 +5868,6 @@
             "required": [
                 "uid",
                 "archetype_node_id",
-                "archetype_details",
                 "name",
                 "identities",
                 "performer"
@@ -6047,7 +6109,6 @@
             "required": [
                 "uid",
                 "archetype_node_id",
-                "archetype_details",
                 "name",
                 "identities",
                 "roles",
@@ -6517,7 +6578,6 @@
             "required": [
                 "uid",
                 "archetype_node_id",
-                "archetype_details",
                 "name",
                 "identities",
                 "roles",
@@ -9890,6 +9950,66 @@
                 "careflow_step": {
                     "$ref": "#/definitions/DV_CODED_TEXT"
                 },
+                "reason": {
+                    "type": "array",
+                    "items": {
+                        "allOf": [
+                            {
+                                "properties": {
+                                    "_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "DV_CODED_TEXT",
+                                            "DV_TEXT"
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                "if": {
+                                    "properties": {
+                                        "_type": {
+                                            "const": "DV_CODED_TEXT"
+                                        }
+                                    },
+                                    "required": [
+                                        "_type"
+                                    ]
+                                },
+                                "then": {
+                                    "$ref": "#/definitions/DV_CODED_TEXT"
+                                }
+                            },
+                            {
+                                "if": {
+                                    "properties": {
+                                        "_type": {
+                                            "const": "DV_TEXT"
+                                        }
+                                    },
+                                    "required": [
+                                        "_type"
+                                    ]
+                                },
+                                "then": {
+                                    "$ref": "#/definitions/DV_TEXT"
+                                }
+                            },
+                            {
+                                "if": {
+                                    "not": {
+                                        "required": [
+                                            "_type"
+                                        ]
+                                    }
+                                },
+                                "then": {
+                                    "$ref": "#/definitions/DV_TEXT"
+                                }
+                            }
+                        ]
+                    }
+                },
                 "_type": {
                     "type": "string",
                     "const": "ISM_TRANSITION"
@@ -10028,8 +10148,7 @@
             "type": "object",
             "required": [
                 "function",
-                "performer",
-                "mode"
+                "performer"
             ],
             "properties": {
                 "function": {
@@ -10161,7 +10280,6 @@
             "type": "object",
             "required": [
                 "archetype_node_id",
-                "archetype_details",
                 "name"
             ],
             "properties": {
@@ -10654,7 +10772,6 @@
             "required": [
                 "uid",
                 "archetype_node_id",
-                "archetype_details",
                 "name",
                 "identities",
                 "roles",
@@ -13963,7 +14080,6 @@
             "type": "object",
             "required": [
                 "archetype_node_id",
-                "archetype_details",
                 "name",
                 "language",
                 "territory",
@@ -14275,7 +14391,6 @@
             "type": "object",
             "required": [
                 "archetype_node_id",
-                "archetype_details",
                 "name",
                 "subject",
                 "is_queryable",
