@@ -3942,22 +3942,6 @@
             },
             "additionalProperties": false
         },
-        "ISO8601_TYPE": {
-            "type": "object",
-            "required": [
-            ],
-            "properties": {
-                "value": {
-                    "type": "string"
-                },
-                "_type": {
-                    "type": "string",
-                    "const": "ISO8601_TYPE"
-                }
-            },
-            "description": "Parent of ISO8601 types.",
-            "additionalProperties": false
-        },
         "CONTRIBUTION": {
             "type": "object",
             "required": [

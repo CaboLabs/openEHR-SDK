@@ -1102,50 +1102,6 @@
             },
             "additionalProperties": false
         },
-        "ARCHETYPE_HRID": {
-            "type": "object",
-            "required": [
-                "namespace",
-                "rm_publisher",
-                "rm_package",
-                "rm_class",
-                "concept_id",
-                "release_version",
-                "version_status",
-                "build_count"
-            ],
-            "properties": {
-                "namespace": {
-                    "type": "string"
-                },
-                "rm_publisher": {
-                    "type": "string"
-                },
-                "rm_package": {
-                    "type": "string"
-                },
-                "rm_class": {
-                    "type": "string"
-                },
-                "concept_id": {
-                    "type": "string"
-                },
-                "release_version": {
-                    "type": "string"
-                },
-                "version_status": {
-                    "$ref": "#/definitions/VERSION_STATUS"
-                },
-                "build_count": {
-                    "type": "string"
-                },
-                "_type": {
-                    "type": "string",
-                    "const": "ARCHETYPE_HRID"
-                }
-            },
-            "additionalProperties": false
-        },
         "PARTY_IDENTITY": {
             "type": "object",
             "required": [
@@ -3880,22 +3836,6 @@
                     "const": "CAPABILITY"
                 }
             },
-            "additionalProperties": false
-        },
-        "ISO8601_TYPE": {
-            "type": "object",
-            "required": [
-            ],
-            "properties": {
-                "value": {
-                    "type": "string"
-                },
-                "_type": {
-                    "type": "string",
-                    "const": "ISO8601_TYPE"
-                }
-            },
-            "description": "Parent of ISO8601 types.",
             "additionalProperties": false
         },
         "CONTRIBUTION": {

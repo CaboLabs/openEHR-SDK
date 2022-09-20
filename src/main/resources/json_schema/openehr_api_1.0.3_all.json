@@ -3657,17 +3657,6 @@
             },
             "additionalProperties": false
         },
-        "ISO8601_TYPE": {
-            "type": "object",
-            "required": [
-            ],
-            "properties": {
-                "_type": {
-                    "type": "string",
-                    "const": "ISO8601_TYPE"
-                }
-            }
-        },
         "CONTRIBUTION": {
             "type": "object",
             "required": [
