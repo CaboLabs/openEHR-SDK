@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://specifications.openehr.org/releases/ITS-JSON/latest/components/openehr_api_1.0.4_all.json",
+    "$id": "https://specifications.openehr.org/releases/ITS-JSON/latest/components/openehr_api_1.1.0_all.json",
     "allOf": [
         {
             "required": [
@@ -138,7 +138,7 @@
             "then": {
                 "$ref": "#/definitions/ELEMENT"
             }
-        },
+        }
         {
             "if": {
                 "properties": {
@@ -607,6 +607,66 @@
                         }
                     ]
                 },
+                "folders": {
+                    "type": "array",
+                    "items": {
+                        "allOf": [
+                            {
+                                "properties": {
+                                    "_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "LOCATABLE_REF",
+                                            "OBJECT_REF"
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                "if": {
+                                    "properties": {
+                                        "_type": {
+                                            "const": "LOCATABLE_REF"
+                                        }
+                                    },
+                                    "required": [
+                                        "_type"
+                                    ]
+                                },
+                                "then": {
+                                    "$ref": "#/definitions/LOCATABLE_REF"
+                                }
+                            },
+                            {
+                                "if": {
+                                    "properties": {
+                                        "_type": {
+                                            "const": "OBJECT_REF"
+                                        }
+                                    },
+                                    "required": [
+                                        "_type"
+                                    ]
+                                },
+                                "then": {
+                                    "$ref": "#/definitions/OBJECT_REF"
+                                }
+                            },
+                            {
+                                "if": {
+                                    "not": {
+                                        "required": [
+                                            "_type"
+                                        ]
+                                    }
+                                },
+                                "then": {
+                                    "$ref": "#/definitions/OBJECT_REF"
+                                }
+                            }
+                        ]
+                    }
+                },
                 "compositions": {
                     "type": "array",
                     "items": {
@@ -894,6 +954,50 @@
                 "_type": {
                     "type": "string",
                     "const": "REVISION_HISTORY_ITEM"
+                }
+            },
+            "additionalProperties": false
+        },
+        "ARCHETYPE_HRID": {
+            "type": "object",
+            "required": [
+                "namespace",
+                "rm_publisher",
+                "rm_package",
+                "rm_class",
+                "concept_id",
+                "release_version",
+                "version_status",
+                "build_count"
+            ],
+            "properties": {
+                "namespace": {
+                    "type": "string"
+                },
+                "rm_publisher": {
+                    "type": "string"
+                },
+                "rm_package": {
+                    "type": "string"
+                },
+                "rm_class": {
+                    "type": "string"
+                },
+                "concept_id": {
+                    "type": "string"
+                },
+                "release_version": {
+                    "type": "string"
+                },
+                "version_status": {
+                    "$ref": "#/definitions/VERSION_STATUS"
+                },
+                "build_count": {
+                    "type": "string"
+                },
+                "_type": {
+                    "type": "string",
+                    "const": "ARCHETYPE_HRID"
                 }
             },
             "additionalProperties": false
@@ -3726,7 +3830,6 @@
                                     }
                                 }
                             },
-                            
                             {
                                 "if": {
                                     "properties": {
@@ -4063,6 +4166,74 @@
                 },
                 "version_id": {
                     "type": "string"
+                },
+                "other_details": {
+                    "allOf": [
+                        {
+                            "required": [
+                                "_type"
+                            ],
+                            "properties": {
+                                "_type": {
+                                    "type": "string",
+                                    "enum": [
+                                        "ITEM_SINGLE",
+                                        "ITEM_TREE",
+                                        "ITEM_LIST",
+                                        "ITEM_TABLE"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "ITEM_SINGLE"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "$ref": "#/definitions/ITEM_SINGLE"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "ITEM_TREE"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "$ref": "#/definitions/ITEM_TREE"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "ITEM_LIST"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "$ref": "#/definitions/ITEM_LIST"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "ITEM_TABLE"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "$ref": "#/definitions/ITEM_TABLE"
+                            }
+                        }
+                    ]
                 },
                 "_type": {
                     "type": "string",
@@ -4636,6 +4807,9 @@
                     "$ref": "#/definitions/TERMINOLOGY_ID"
                 },
                 "code_string": {
+                    "type": "string"
+                },
+                "preferred_term": {
                     "type": "string"
                 },
                 "_type": {
@@ -5414,6 +5588,12 @@
                     "type": "number"
                 },
                 "units": {
+                    "type": "string"
+                },
+                "units_system": {
+                    "type": "string"
+                },
+                "units_display_name": {
                     "type": "string"
                 },
                 "precision": {
@@ -8114,6 +8294,18 @@
                             "if": {
                                 "properties": {
                                     "_type": {
+                                        "const": "DV_SCALE"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "$ref": "#/definitions/DV_SCALE"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
                                         "const": "DV_COUNT"
                                     }
                                 }
@@ -8324,6 +8516,63 @@
                             },
                             "then": {
                                 "$ref": "#/definitions/DV_CODED_TEXT"
+                            }
+                        }
+                    ]
+                },
+                "null_reason": {
+                    "allOf": [
+                        {
+                            "properties": {
+                                "_type": {
+                                    "type": "string",
+                                    "enum": [
+                                        "DV_CODED_TEXT",
+                                        "DV_TEXT"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "DV_CODED_TEXT"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/DV_CODED_TEXT"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "DV_TEXT"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/DV_TEXT"
+                            }
+                        },
+                        {
+                            "if": {
+                                "not": {
+                                    "required": [
+                                        "_type"
+                                    ]
+                                }
+                            },
+                            "then": {
+                                "$ref": "#/definitions/DV_TEXT"
                             }
                         }
                     ]
@@ -10551,6 +10800,74 @@
                             }
                         ]
                     }
+                },
+                "details": {
+                    "allOf": [
+                        {
+                            "required": [
+                                "_type"
+                            ],
+                            "properties": {
+                                "_type": {
+                                    "type": "string",
+                                    "enum": [
+                                        "ITEM_SINGLE",
+                                        "ITEM_TREE",
+                                        "ITEM_LIST",
+                                        "ITEM_TABLE"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "ITEM_SINGLE"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "$ref": "#/definitions/ITEM_SINGLE"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "ITEM_TREE"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "$ref": "#/definitions/ITEM_TREE"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "ITEM_LIST"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "$ref": "#/definitions/ITEM_LIST"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "ITEM_TABLE"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "$ref": "#/definitions/ITEM_TABLE"
+                            }
+                        }
+                    ]
                 },
                 "_type": {
                     "type": "string",
@@ -13360,6 +13677,39 @@
             },
             "additionalProperties": false
         },
+        "DV_SCALE": {
+            "type": "object",
+            "required": [
+                "value",
+                "symbol"
+            ],
+            "properties": {
+                "normal_status": {
+                    "$ref": "#/definitions/CODE_PHRASE"
+                },
+                "normal_range": {
+                    "$ref": "#/definitions/DV_INTERVAL"
+                },
+                "other_reference_ranges": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/REFERENCE_RANGE"
+                    },
+                    "minItems": 1
+                },
+                "value": {
+                    "type": "number"
+                },
+                "symbol": {
+                    "$ref": "#/definitions/DV_CODED_TEXT"
+                },
+                "_type": {
+                    "type": "string",
+                    "const": "DV_SCALE"
+                }
+            },
+            "additionalProperties": false
+        },
         "ARCHETYPE_ID": {
             "type": "object",
             "required": [
@@ -15263,9 +15613,57 @@
                                 "_type": {
                                     "type": "string",
                                     "enum": [
+                                        "LOCATABLE_REF",
+                                        "PARTY_REF",
+                                        "ACCESS_GROUP_REF",
                                         "OBJECT_REF"
                                     ]
                                 }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "LOCATABLE_REF"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/LOCATABLE_REF"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "PARTY_REF"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/PARTY_REF"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "ACCESS_GROUP_REF"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/ACCESS_GROUP_REF"
                             }
                         },
                         {

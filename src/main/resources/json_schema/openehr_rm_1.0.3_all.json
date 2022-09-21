@@ -719,8 +719,6 @@
                                     "type": "string",
                                     "enum": [
                                         "LOCATABLE_REF",
-                                        "PARTY_REF",
-                                        "ACCESS_GROUP_REF",
                                         "OBJECT_REF"
                                     ]
                                 }
@@ -739,36 +737,6 @@
                             },
                             "then": {
                                 "$ref": "#/definitions/LOCATABLE_REF"
-                            }
-                        },
-                        {
-                            "if": {
-                                "properties": {
-                                    "_type": {
-                                        "const": "PARTY_REF"
-                                    }
-                                },
-                                "required": [
-                                    "_type"
-                                ]
-                            },
-                            "then": {
-                                "$ref": "#/definitions/PARTY_REF"
-                            }
-                        },
-                        {
-                            "if": {
-                                "properties": {
-                                    "_type": {
-                                        "const": "ACCESS_GROUP_REF"
-                                    }
-                                },
-                                "required": [
-                                    "_type"
-                                ]
-                            },
-                            "then": {
-                                "$ref": "#/definitions/ACCESS_GROUP_REF"
                             }
                         },
                         {
