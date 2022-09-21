@@ -12,7 +12,7 @@ class OpenEhrJsonSchemaValidationTest extends GroovyTestCase {
    {
       //def uri = 'https://gist.githubusercontent.com/pieterbos/81651d2d7a5041a130ecb21b0a852e39/raw/2f31b9c7067bccf192256358da868ee8fbc7239a/OpenEHR%2520RM%2520json%2520schema,%2520with%2520default%2520instances%2520of%2520objects%2520addedcorrectly.json'
       //def jsonValidator = new JsonInstanceValidation(uri)
-      def jsonValidator = new JsonInstanceValidation()
+      def jsonValidator = new JsonInstanceValidation('rm', '1.0.2') // TODO: obtain from file?
 
       // these files are loaded from the resources included from the JAR in the classpath
       def files = [
@@ -48,7 +48,7 @@ class OpenEhrJsonSchemaValidationTest extends GroovyTestCase {
       // https://github.com/networknt/json-schema-validator/blob/master/src/test/java/com/networknt/schema/V7JsonSchemaTest.java
       files.each { testCaseFile ->
 
-         //println testCaseFile
+         println testCaseFile
 
          //final URI testCaseFileUri = URI.create("classpath:" + testCaseFile)
          ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(testCaseFile)

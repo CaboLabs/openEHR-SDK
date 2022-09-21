@@ -41,6 +41,8 @@ class OpenEhrJsonParser {
    
    def jsonValidator
 
+   def schemaValidate
+
    // https://javadoc.io/doc/com.networknt/json-schema-validator/1.0.51/com/networknt/schema/ValidationMessage.html
    // Set<ValidationMessage>
    def jsonValidationErrors
@@ -48,10 +50,7 @@ class OpenEhrJsonParser {
    // if @schemaValidate is true, runs the schema validator before trying to parse
    def OpenEhrJsonParser(boolean schemaValidate = false)
    {
-      if (schemaValidate)
-      {
-         this.jsonValidator = new JsonInstanceValidation()
-      }
+      this.schemaValidate = schemaValidate
    }
 
    def getJsonValidationErrors()
@@ -68,8 +67,18 @@ class OpenEhrJsonParser {
 
    Folder parseFolder(String json)
    {
-      if (this.jsonValidator)
+      def slurper = new JsonSlurper()
+      def map = slurper.parseText(json)
+
+      if (this.schemaValidate)
       {
+         if (!map.archetype_details || !map.archetype_details.rm_version) // rm version aware
+         {
+            throw new Exception("archetype_details.rm_version is required for the root of any archetypable class")
+         }
+
+         this.jsonValidator = new JsonInstanceValidation('rm', map.archetype_details.rm_version)
+         
          def errors = jsonValidator.validate(json)
          if (errors)
          {
@@ -77,17 +86,26 @@ class OpenEhrJsonParser {
             return
          }
       }
-
-      def slurper = new JsonSlurper()
-      def map = slurper.parseText(json)
 
       return this.parseFOLDER(map, null, '/', '/')
    }
 
    Ehr parseEhr(String json)
    {
-      if (this.jsonValidator)
+      def slurper = new JsonSlurper()
+      def map = slurper.parseText(json)
+
+      /* FIXME: EHR is not LOCATABLE and doesn't have info about the rm_version!
+        For the API EHR we could access the EHR_STATUS.archetype_details.rm_version, but for RM EHRs, ehr_status is an OBJECT_REF that should be resolved.
+      if (this.schemaValidate)
       {
+         if (!map.archetype_details || !map.archetype_details.rm_version) // rm version aware
+         {
+            throw new Exception("archetype_details.rm_version is required for the root of any archetypable class")
+         }
+
+         this.jsonValidator = new JsonInstanceValidation('rm', map.archetype_details.rm_version)
+         
          def errors = jsonValidator.validate(json)
          if (errors)
          {
@@ -95,9 +113,7 @@ class OpenEhrJsonParser {
             return
          }
       }
-
-      def slurper = new JsonSlurper()
-      def map = slurper.parseText(json)
+      */
 
       def ehr = new Ehr()
 
@@ -136,8 +152,18 @@ class OpenEhrJsonParser {
    // FIXME: shouldn't this be done in parseLocatable?
    EhrStatus parseEhrStatus(String json)
    {
-      if (this.jsonValidator)
+      def slurper = new JsonSlurper()
+      def map = slurper.parseText(json)
+
+      if (this.schemaValidate)
       {
+         if (!map.archetype_details || !map.archetype_details.rm_version) // rm version aware
+         {
+            throw new Exception("archetype_details.rm_version is required for the root of any archetypable class")
+         }
+
+         this.jsonValidator = new JsonInstanceValidation('rm', map.archetype_details.rm_version)
+         
          def errors = jsonValidator.validate(json)
          if (errors)
          {
@@ -146,43 +172,25 @@ class OpenEhrJsonParser {
          }
       }
 
-      def slurper = new JsonSlurper()
-      def map = slurper.parseText(json)
-
-      return parseEhrStatus(map)
-   }
-
-   // FIXME: this logic shoould be in a private method and the entry point be parseLocatable
-   // This is called from parseJson which does the String->Map parsing and already validates
-   EhrStatus parseEhrStatus(Map map)
-   {
-      def status = new EhrStatus()
-
-      this.fillLOCATABLE(status, map, null, '/', '/')
-
-      if (map.subject)
-      {
-         status.subject = this.parsePARTY_SELF(map.subject)
-      }
-
-      status.is_modifiable = map.is_modifiable
-      status.is_queryable = map.is_queryable
-
-      if (map.other_details)
-      {
-         String method = 'parse'+ map.other_details._type
-         status.other_details = this."$method"(map.other_details, status, '/other_details', '/other_details')
-      }
-
-      return status
+      return parseEHR_STATUS(map)
    }
 
    // used to parse compositions and other descendant from Locatable
    // TODO: FOLDER and EHR_STATUS are above, we might need to use this one instead
    Locatable parseJson(String json)
    {
-      if (this.jsonValidator)
+      def slurper = new JsonSlurper()
+      def map = slurper.parseText(json)
+
+      if (this.schemaValidate)
       {
+         if (!map.archetype_details || !map.archetype_details.rm_version) // rm version aware
+         {
+            throw new Exception("archetype_details.rm_version is required for the root of any archetypable class")
+         }
+
+         this.jsonValidator = new JsonInstanceValidation('rm', map.archetype_details.rm_version)
+         
          def errors = jsonValidator.validate(json)
          if (errors)
          {
@@ -191,8 +199,6 @@ class OpenEhrJsonParser {
          }
       }
 
-      def slurper = new JsonSlurper()
-      def map = slurper.parseText(json)
       String type = map._type
       
       if (!type)
@@ -216,8 +222,18 @@ class OpenEhrJsonParser {
    // used to parse versions because is not Locatable
    Version parseVersionJson(String json)
    {
-      if (this.jsonValidator)
+      def slurper = new JsonSlurper()
+      def map = slurper.parseText(json)
+
+      if (this.schemaValidate)
       {
+         if (!map.archetype_details || !map.archetype_details.rm_version) // rm version aware
+         {
+            throw new Exception("archetype_details.rm_version is required for the root of any archetypable class")
+         }
+
+         this.jsonValidator = new JsonInstanceValidation('rm', map.archetype_details.rm_version)
+         
          def errors = jsonValidator.validate(json)
          if (errors)
          {
@@ -226,9 +242,7 @@ class OpenEhrJsonParser {
          }
       }
 
-      def slurper = new JsonSlurper()
-      def version_map = slurper.parseText(json)
-      String type = version_map._type // This is required to know if this is an ORIGINAL_VERSION or IMPORTED_VERSION
+      String type = map._type // This is required to know if this is an ORIGINAL_VERSION or IMPORTED_VERSION
       
       if (!type)
       {
@@ -239,7 +253,7 @@ class OpenEhrJsonParser {
       Version out
       try
       {
-         out = this."$method"(version_map)
+         out = this."$method"(map)
       }
       catch (Exception e)
       {
@@ -289,6 +303,7 @@ class OpenEhrJsonParser {
       return versions
    }
 
+   // TODO: this should be validated in 'api' flavor
    ContributionDto parseContributionDto(String json)
    {
       // TODO: schema validation
@@ -339,6 +354,7 @@ class OpenEhrJsonParser {
       return contribution
    }
 
+   // TODO: json validation
    Contribution parseContribution(String json)
    {
       // TODO: schema validation
@@ -500,6 +516,29 @@ class OpenEhrJsonParser {
    
 
    // ========= PARSE METHODS =========
+
+   private EhrStatus parseEHR_STATUS(Map json)
+   {
+      def status = new EhrStatus()
+
+      this.fillLOCATABLE(status, map, null, '/', '/')
+
+      if (map.subject)
+      {
+         status.subject = this.parsePARTY_SELF(map.subject)
+      }
+
+      status.is_modifiable = map.is_modifiable
+      status.is_queryable = map.is_queryable
+
+      if (map.other_details)
+      {
+         String method = 'parse'+ map.other_details._type
+         status.other_details = this."$method"(map.other_details, status, '/other_details', '/other_details')
+      }
+
+      return status
+   }
 
    private Folder parseFOLDER(Map json, Pathable parent, String path, String dataPath)
    {
