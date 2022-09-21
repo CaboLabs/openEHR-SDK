@@ -551,7 +551,7 @@
                                             "numerator": 32.0,
                                             "denominator": 457.5,
                                             "type": 2,
-                                            "precision": "0"
+                                            "precision": 0
                                         }
                                     },
                                     {
@@ -609,7 +609,7 @@
                                                     "numerator": 0.5,
                                                     "denominator": 802.7,
                                                     "type": 1,
-                                                    "precision": "0"
+                                                    "precision": 0
                                                 }
                                             },
                                             {
@@ -624,7 +624,7 @@
                                                     "numerator": 36.5,
                                                     "denominator": 968.7,
                                                     "type": 2,
-                                                    "precision": "0"
+                                                    "precision": 0
                                                 }
                                             },
                                             {
@@ -772,7 +772,10 @@
                                 "items": [
                                     {
                                         "_type": "ELEMENT",
-                                        "name": null,
+                                        "name":  {
+                                            "_type": "DV_TEXT",
+                                            "value": "Name"
+                                        },
                                         "archetype_node_id": "at0004",
                                         "value": {
                                             "_type": "DV_QUANTITY",

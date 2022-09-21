@@ -90,21 +90,23 @@ class OpenEhrJsonParser {
       return this.parseFOLDER(map, null, '/', '/')
    }
 
+   // EHR RM parse, ehr_status is OBJECT_REF
    Ehr parseEhr(String json)
    {
       def slurper = new JsonSlurper()
       def map = slurper.parseText(json)
 
-      /* FIXME: EHR is not LOCATABLE and doesn't have info about the rm_version!
-        For the API EHR we could access the EHR_STATUS.archetype_details.rm_version, but for RM EHRs, ehr_status is an OBJECT_REF that should be resolved.
+      // FIXME: EHR is not LOCATABLE and doesn't have info about the rm_version!
+      // For the API EHR we could access the EHR_STATUS.archetype_details.rm_version, but for RM EHRs, ehr_status is an OBJECT_REF that should be resolved.
       if (this.schemaValidate)
       {
-         if (!map.archetype_details || !map.archetype_details.rm_version) // rm version aware
-         {
-            throw new Exception("archetype_details.rm_version is required for the root of any archetypable class")
-         }
+         // if (!map.archetype_details || !map.archetype_details.rm_version) // rm version aware
+         // {
+         //    throw new Exception("archetype_details.rm_version is required for the root of any archetypable class")
+         // }
 
-         this.jsonValidator = new JsonInstanceValidation('rm', map.archetype_details.rm_version)
+         //this.jsonValidator = new JsonInstanceValidation('rm', map.archetype_details.rm_version)
+         this.jsonValidator = new JsonInstanceValidation() // NOTE: this uses the default rm and 1.0.2 version schema!
          
          def errors = jsonValidator.validate(json)
          if (errors)
@@ -113,7 +115,6 @@ class OpenEhrJsonParser {
             return
          }
       }
-      */
 
       def ehr = new Ehr()
 
@@ -124,6 +125,8 @@ class OpenEhrJsonParser {
       ehr.time_created = this.parseDV_DATE_TIME(map.time_created)
 
       //println map
+
+      // FIXME: these cases should be divided between two different functions
 
       // FIXME: if the JSON is RM, the ehr_status will be an OBJECT_REF, if the JSON is API, the ehr_status will be EHR_STATUS
       // this is a pretty dirty solution: lookahead based on attributes...
@@ -517,7 +520,7 @@ class OpenEhrJsonParser {
 
    // ========= PARSE METHODS =========
 
-   private EhrStatus parseEHR_STATUS(Map json)
+   private EhrStatus parseEHR_STATUS(Map map)
    {
       def status = new EhrStatus()
 

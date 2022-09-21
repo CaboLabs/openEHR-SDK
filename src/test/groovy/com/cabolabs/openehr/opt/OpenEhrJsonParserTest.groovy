@@ -128,8 +128,6 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 
       def parser = new OpenEhrJsonParser(true)
 
-      println parser.jsonValidator.supportedSchemaVersions()
-
       Ehr ehr = parser.parseEhr(json_ehr)
 
       assert !ehr
