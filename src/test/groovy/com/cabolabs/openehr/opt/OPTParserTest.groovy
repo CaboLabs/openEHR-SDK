@@ -49,6 +49,36 @@ class OPTParserTest extends GroovyTestCase {
    }
 */
 
+   void testEHR_STATUS_anyOPT()
+   {
+      println "========= testEHR_STATUS_anyOPT ==========="
+      def path = PS +"opts"+ PS + 'com.cabolabs.openehr_opt.namespaces.default' + PS +"ehr_status_any_en_v1.opt"
+      def opt = loadAndParse(path)
+
+      // incomplete
+      def toJson = new JsonSerializer()
+      toJson.serialize(opt)
+      def incomplete = toJson.get(true)
+      //new File('incomplete.json') << toJson.get(true)
+
+      // complete
+      toJson = new JsonSerializer()
+      opt.complete()
+      toJson.serialize(opt)
+      def complete = toJson.get(true)
+      //new File('complete.json') << toJson.get(true)
+
+      def subject = opt.getNodes('/subject')[0]
+      assert subject instanceof ObjectNode
+      assert subject.rmTypeName == 'PARTY_SELF'
+      assert subject.type == 'C_COMPLEX_OBJECT'
+
+      def other_details = opt.getNodes('/other_details')
+      assert !other_details
+
+      assert incomplete.size() < complete.size()
+   }
+
 
    void testCompleteOPT()
    {

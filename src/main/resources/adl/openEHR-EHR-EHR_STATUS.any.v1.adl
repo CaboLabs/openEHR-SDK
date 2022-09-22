@@ -1,0 +1,42 @@
+archetype (adl_version=1.4; uid=1cf51db3-05f6-43c4-85c2-44287716af9f)
+	openEHR-EHR-EHR_STATUS.any.v1
+
+concept
+	[at0000]
+
+language
+	original_language = <[ISO_639-1::en]>
+
+description
+	original_author = <
+		["date"] = <"2022-09-21">
+	>
+	lifecycle_state = <"unmanaged">
+	details = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+		>
+	>
+	other_details = <
+		["licence"] = <"Apache 2">
+		["custodian_organisation"] = <"CaboLabs">
+		["original_namespace"] = <"com.cabolabs">
+		["original_publisher"] = <"CaboLabs">
+		["custodian_namespace"] = <"com.cabolabs">
+		["build_uid"] = <"18f944ca-f2cd-3e60-b8aa-e3ba8c2f3a48">
+	>
+
+definition
+	EHR_STATUS[at0000] matches {*}    -- status
+
+ontology
+	term_definitions = <
+		["en"] = <
+			items = <
+				["at0000"] = <
+					text = <"status">
+					description = <"status">
+				>
+			>
+		>
+	>

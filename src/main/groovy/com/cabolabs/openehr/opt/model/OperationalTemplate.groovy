@@ -28,52 +28,58 @@ class OperationalTemplate {
    // Map<String, List<ObjectNode>>
    Map nodes = [:] // TemplatePath -> lista de nodos alternativos con la misma path
 
+   // TODO: this should be RM Version dependent! maybe as external metadata files
    // RM attributes that are not in the OPT but also need to be indexed for querying.
    // This is like a schema, but is not including the attrs that are on OPTs.
    def rm_attributes_not_in_opt = [
-     'COMPOSITION': [
-       'context': 'EVENT_CONTEXT' // if no other_context is specified the event context is not on the OPT, we need to check if it is or not to avoid double indexing.
-     ],
-     'EVENT_CONTEXT': [
-       'setting': 'DV_CODED_TEXT',
-       'location': 'String',
-       'start_time': 'DV_DATE_TIME',
-       'end_time': 'DV_DATE_TIME'
-     ],
-     'ACTION': [
-       'time': 'DV_DATE_TIME',
-       'instruction_details': 'INSTRUCTION_DETAILS'
-     ],
-     'INSTRUCTION_DETAILS': [
-       'instruction_id': 'LOCATABLE_REF',
-       'activity_id': 'String'
-     ],
-     'INSTRUCTION': [
-       'narrative': 'DV_TEXT',
-       'expiry_time': 'DV_DATE_TIME'
-     ],
-     'ACTIVITY': [
-       'timing': 'DV_PARSABLE',
-       'action_archetype_id': 'String'
-     ],
-     'HISTORY': [
-       'origin': 'DV_DATE_TIME',
-       'period': 'DV_DURATION',
-       'duration': 'DV_DURATION'
-     ],
-     'EVENT': [ // to avoid issues with clients using abstract types, considered point event
-       'time': 'DV_DATE_TIME'
-     ],
-     'POINT_EVENT': [
-       'time': 'DV_DATE_TIME'
-     ],
-     'INTERVAL_EVENT': [
-       'time': 'DV_DATE_TIME',
-       'width': 'DV_DURATION'
-     ],
-     'ELEMENT': [
-       'null_flavour': 'DV_CODED_TEXT' // this could be in the opt constraining the possible codes
-     ]
+      'EHR_STATUS': [
+         'subject': 'PARTY_SELF',
+         'is_queryable': 'Boolean',
+         'is_modifiable': 'Boolean'
+      ],
+      'COMPOSITION': [
+         'context': 'EVENT_CONTEXT' // if no other_context is specified the event context is not on the OPT, we need to check if it is or not to avoid double indexing.
+      ],
+      'EVENT_CONTEXT': [
+         'setting': 'DV_CODED_TEXT',
+         'location': 'String',
+         'start_time': 'DV_DATE_TIME',
+         'end_time': 'DV_DATE_TIME'
+      ],
+      'ACTION': [
+         'time': 'DV_DATE_TIME',
+         'instruction_details': 'INSTRUCTION_DETAILS'
+      ],
+      'INSTRUCTION_DETAILS': [
+         'instruction_id': 'LOCATABLE_REF',
+         'activity_id': 'String'
+      ],
+      'INSTRUCTION': [
+         'narrative': 'DV_TEXT',
+         'expiry_time': 'DV_DATE_TIME'
+      ],
+      'ACTIVITY': [
+         'timing': 'DV_PARSABLE',
+         'action_archetype_id': 'String'
+      ],
+      'HISTORY': [
+         'origin': 'DV_DATE_TIME',
+         'period': 'DV_DURATION',
+         'duration': 'DV_DURATION'
+      ],
+      'EVENT': [ // to avoid issues with clients using abstract types, considered point event
+         'time': 'DV_DATE_TIME'
+      ],
+      'POINT_EVENT': [
+         'time': 'DV_DATE_TIME'
+      ],
+      'INTERVAL_EVENT': [
+         'time': 'DV_DATE_TIME',
+         'width': 'DV_DURATION'
+      ],
+      'ELEMENT': [
+         'null_flavour': 'DV_CODED_TEXT' // this could be in the opt constraining the possible codes
+      ]
    ]
 
    /*
@@ -82,6 +88,12 @@ class OperationalTemplate {
    List<Constraint> getNodes(String path)
    {
       this.nodes[path]
+   }
+
+   // This is to deprecate getNodesByTemplateDataPath()
+   Constraint getNodeByDataPath(String dataPath)
+   {
+      this.nodes.values().flatten().find { it.templateDataPath == templateDataPath }
    }
 
    // this considers the paths without the alternative index in them
