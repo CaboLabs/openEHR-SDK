@@ -69,12 +69,87 @@ class OPTParserTest extends GroovyTestCase {
       //new File('complete.json') << toJson.get(true)
 
       def subject = opt.getNodes('/subject')[0]
+      assert subject
       assert subject instanceof ObjectNode
       assert subject.rmTypeName == 'PARTY_SELF'
       assert subject.type == 'C_COMPLEX_OBJECT'
 
       def other_details = opt.getNodes('/other_details')
       assert !other_details
+
+      assert incomplete.size() < complete.size()
+   }
+
+   void testEHR_STATUS_treeOPT()
+   {
+      println "========= testEHR_STATUS_treeOPT ==========="
+      def path = PS +"opts"+ PS + 'com.cabolabs.openehr_opt.namespaces.default' + PS +"ehr_status_tree_en_v1.opt"
+      def opt = loadAndParse(path)
+
+      // incomplete
+      def toJson = new JsonSerializer()
+      toJson.serialize(opt)
+      def incomplete = toJson.get(true)
+      //new File('incomplete.json') << toJson.get(true)
+
+      // complete
+      toJson = new JsonSerializer()
+      opt.complete()
+      toJson.serialize(opt)
+      def complete = toJson.get(true)
+      //new File('complete.json') << toJson.get(true)
+
+      def subject = opt.getNodes('/subject')[0]
+      assert subject
+      assert subject instanceof ObjectNode
+      assert subject.rmTypeName == 'PARTY_SELF'
+      assert subject.type == 'C_COMPLEX_OBJECT'
+
+      def other_details = opt.getNodes('/other_details[at0001]')[0]
+      assert other_details
+      assert other_details instanceof ObjectNode
+      assert other_details.rmTypeName == 'ITEM_TREE'
+      assert other_details.type == 'C_COMPLEX_OBJECT'
+
+      assert incomplete.size() < complete.size()
+   }
+
+   void testEHR_STATUS_codedOPT()
+   {
+      println "========= testEHR_STATUS_codedOPT ==========="
+      def path = PS +"opts"+ PS + 'com.cabolabs.openehr_opt.namespaces.default' + PS +"ehr_status_coded_en_v1.opt"
+      def opt = loadAndParse(path)
+
+      // incomplete
+      def toJson = new JsonSerializer()
+      toJson.serialize(opt)
+      def incomplete = toJson.get(true)
+      //new File('incomplete.json') << toJson.get(true)
+
+      // complete
+      toJson = new JsonSerializer()
+      opt.complete()
+      toJson.serialize(opt)
+      def complete = toJson.get(true)
+      //new File('complete.json') << toJson.get(true)
+
+      def subject = opt.getNodes('/subject')[0]
+      assert subject
+      assert subject instanceof ObjectNode
+      assert subject.rmTypeName == 'PARTY_SELF'
+      assert subject.type == 'C_COMPLEX_OBJECT'
+
+      def other_details = opt.getNodes('/other_details[at0001]')[0]
+      assert other_details
+      assert other_details instanceof ObjectNode
+      assert other_details.rmTypeName == 'ITEM_TREE'
+      assert other_details.type == 'C_COMPLEX_OBJECT'
+
+      def coded = opt.getNodes('/other_details[at0001]/items[at0002]/value')[0]
+      assert coded
+      assert coded instanceof ObjectNode
+      assert coded.rmTypeName == 'DV_CODED_TEXT'
+      assert coded.type == 'C_COMPLEX_OBJECT'
 
       assert incomplete.size() < complete.size()
    }

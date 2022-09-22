@@ -11,7 +11,7 @@ description
 	original_author = <
 		["date"] = <"2022-09-21">
 	>
-	lifecycle_state = <"unmanaged">
+	lifecycle_state = <"Draft">
 	details = <
 		["en"] = <
 			language = <[ISO_639-1::en]>

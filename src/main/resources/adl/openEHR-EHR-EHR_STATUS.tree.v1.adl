@@ -11,7 +11,7 @@ description
 	original_author = <
 		["date"] = <"2022-09-21">
 	>
-	lifecycle_state = <"unmanaged">
+	lifecycle_state = <"Draft">
 	details = <
 		["en"] = <
 			language = <[ISO_639-1::en]>
@@ -28,7 +28,7 @@ description
 
 definition
 	EHR_STATUS[at0000] matches {    -- status
-	   other_details matches {
+	   other_details existence matches {0..1} matches {
 			ITEM_TREE[at0001] occurrences matches {0..1} matches {*}    -- tree
 		}
 	}
