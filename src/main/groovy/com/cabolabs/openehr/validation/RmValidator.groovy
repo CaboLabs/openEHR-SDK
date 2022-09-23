@@ -2,6 +2,7 @@ package com.cabolabs.openehr.validation
 
 import com.cabolabs.openehr.opt.manager.*
 import com.cabolabs.openehr.opt.model.*
+import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
 import com.cabolabs.openehr.rm_1_0_2.composition.*
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.*
 import com.cabolabs.openehr.rm_1_0_2.composition.content.navigation.Section
@@ -26,6 +27,69 @@ class RmValidator {
    RmValidator(OptManager opt_manager)
    {
       this.opt_manager = opt_manager
+   }
+
+   String classToRm(String className)
+   {
+      // camel case to snake and uppercase
+      className.replaceAll( /([A-Z])/, /_$1/ ).toUpperCase().replaceAll( /^_/, '' )
+   }
+
+   // TODO: Folder and Party subclasses
+
+   RmValidationReport dovalidate(EhrStatus e, String namespace)
+   {
+      String template_id = e.archetype_details.template_id.value
+
+      def opt = this.opt_manager.getOpt(template_id, namespace)
+
+      if (!opt) return opt_not_found(template_id)
+
+      // pathable path and dataPath are loaded only from parsing,
+      // not from creating RM instances programatically, but are used
+      // to report errors so we need to calculate them here
+      if (!e.path)
+      {
+         e.fillPathable(null, null)
+      }
+
+      return validate(e, opt.definition)
+   }
+
+   private RmValidationReport validate(EhrStatus e, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // the attributes that are optional in the opt should be checked by the parent to avoid calling
+      // with null because polymorphism can't find the right method. Also if the constraint is null,
+      // anything matches.
+      def a_other_details = o.getAttr('other_details')
+      if (a_other_details)
+      {
+         if (e.other_details)
+         {
+            // Validate the type in the instance is allowed by the template
+            // FIXME: the type validation should be implemented on the rest of the validators!
+            def allowed_types = a_other_details.children*.rmTypeName
+            if (!allowed_types.contains(classToRm(e.other_details.getClass().getSimpleName())))
+            {
+               report.addError('/other_details', "type '${classToRm(e.other_details.getClass().getSimpleName())}' is not allowed here, it should be in ${allowed_types}")
+            }
+            else
+            {
+               report.append(validate(e.other_details, a_other_details))
+            }
+         }
+         else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         {
+            if (!a_other_details.existence.has(0))
+            {
+               report.addError("/other_details", "attribute is not present but is required")
+            }
+         }
+      }
+
+      return report
    }
 
    // the namespace is where the OPT is stored/cached, allows to implement multi-tenancy
