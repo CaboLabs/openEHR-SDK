@@ -82,6 +82,24 @@ class RmValidator {
       return false
    }
 
+   private boolean checkAllowedType(AttributeNode cattr, DataValue rm_object, RmValidationReport report)
+   {
+      def allowed_types = cattr.children*.rmTypeName // [ITEM_TREE, ITEM_LIST]
+
+      if (!allowed_types) return true
+
+      def rm_type = classToRm(rm_object.getClass().getSimpleName()) // ItemTree -> ITEM_TREE
+
+      // allowed: [DV_INTERVAL<DV_COUNT>] => [DV_INTERVAL]
+      // the RM object type doesn't have the generic type specified
+      allowed_types = allowed_types.collect { (it.startsWith('DV_INTERVAL')) ? 'DV_INTERVAL' : it }
+
+      if (allowed_types.contains(rm_type)) return true
+
+      report.addError(cattr.templateDataPath, "type '${rm_type}' is not allowed here, it should be in ${allowed_types}")
+      return false
+   }
+
    private RmValidationReport validate(EhrStatus e, ObjectNode o)
    {
       RmValidationReport report = new RmValidationReport()
