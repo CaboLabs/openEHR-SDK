@@ -13,6 +13,7 @@ import com.cabolabs.openehr.rm_1_0_2.common.change_control.Version
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.validation.RmValidationReport
 import com.cabolabs.openehr.validation.RmValidator
+import groovy.util.GroovyTestCase
 
 class RmInstanceGeneratorTest extends GroovyTestCase {
 

@@ -2,6 +2,9 @@ package com.cabolabs.openehr.validation
 
 import com.cabolabs.openehr.opt.manager.*
 import com.cabolabs.openehr.opt.model.*
+import com.cabolabs.openehr.opt.model.domain.*
+import com.cabolabs.openehr.opt.model.primitive.*
+import com.cabolabs.openehr.opt.model.validation.*
 import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
 import com.cabolabs.openehr.rm_1_0_2.composition.*
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.*
@@ -15,10 +18,8 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.basic.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.*
-import com.cabolabs.openehr.opt.model.primitive.*
-import com.cabolabs.openehr.opt.model.validation.*
-import com.cabolabs.openehr.opt.model.domain.*
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
+import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 
 class RmValidator {
 
@@ -56,6 +57,31 @@ class RmValidator {
       return validate(e, opt.definition)
    }
 
+   // Checks if the children of the cattr allow the type of the rmObject,
+   // if the type is not allowed, it reports the error.
+   // If the constraint is open (no children), it allows any type
+   private boolean checkAllowedType(AttributeNode cattr, Locatable rm_object, RmValidationReport report)
+   {
+      def allowed_types = cattr.children*.rmTypeName // [ITEM_TREE, ITEM_LIST]
+
+      if (!allowed_types) return true
+
+      def rm_type = classToRm(rm_object.getClass().getSimpleName()) // ItemTree -> ITEM_TREE
+
+      // Considering abstract types
+      if (allowed_types.contains('EVENT'))
+      {
+         allowed_types.remove('EVENT')
+         allowed_types.add('POINT_EVENT')
+         allowed_types.add('INTERVAL_EVENT')
+      }
+
+      if (allowed_types.contains(rm_type)) return true
+
+      report.addError(cattr.templateDataPath, "type '${rm_type}' is not allowed here, it should be in ${allowed_types}")
+      return false
+   }
+
    private RmValidationReport validate(EhrStatus e, ObjectNode o)
    {
       RmValidationReport report = new RmValidationReport()
@@ -70,12 +96,9 @@ class RmValidator {
          {
             // Validate the type in the instance is allowed by the template
             // FIXME: the type validation should be implemented on the rest of the validators!
-            def allowed_types = a_other_details.children*.rmTypeName
-            if (!allowed_types.contains(classToRm(e.other_details.getClass().getSimpleName())))
-            {
-               report.addError('/other_details', "type '${classToRm(e.other_details.getClass().getSimpleName())}' is not allowed here, it should be in ${allowed_types}")
-            }
-            else
+            //def allowed_types = a_other_details.children*.rmTypeName
+            //if (!allowed_types.contains(classToRm(e.other_details.getClass().getSimpleName())))
+            if (checkAllowedType(a_other_details, e.other_details, report)) // only continue if the type is allowed
             {
                report.append(validate(e.other_details, a_other_details))
             }
@@ -142,6 +165,9 @@ class RmValidator {
       {
          if (c.content != null)
          {
+            //println "composition content "+ c.content
+            //println a_content
+            //println a_content.children*.rmTypeName
             report.append(validate(c.content, a_content)) // validate container
          }
          else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
@@ -183,12 +209,11 @@ class RmValidator {
    // all container attributes will get here
    private RmValidationReport validate(List container, AttributeNode c_multiple_attribute)
    {
-      /*
-      println "validate container attribute "
-      println c_multiple_attribute.templatePath
-      println c_multiple_attribute.templateDataPath
-      println c_multiple_attribute.dataPath
-      */
+      // println "validate container attribute "
+      // println c_multiple_attribute.templatePath
+      // println c_multiple_attribute.templateDataPath
+      // println c_multiple_attribute.dataPath
+      
       RmValidationReport report = new RmValidationReport()
 
       //println c_multiple_attribute.cardinality.interval
@@ -222,15 +247,18 @@ class RmValidator {
          //println container*.archetype_node_id
          container.each { item ->
 
-            //println "item "+ item.archetype_node_id
-            //println c_multiple_attribute.children*.nodeId
+            // println "item "+ item.archetype_node_id
+            // println c_multiple_attribute.children*.archetypeId
+            // println c_multiple_attribute.children*.nodeId
 
+            // FIXME: this is unreliable, there could be many child objects for the CATTR that are
+            //        C_ARCHETYPE_ROOT with the same archetypeId. The name is added to differentiate.
             // each item in the collection should validate against the child object with the same node_id
             def obj = c_multiple_attribute.children.find{ 
                if (it.type == 'C_ARCHETYPE_ROOT')
-                  it.archetypeId == item.archetype_node_id
+                  it.archetypeId == item.archetype_node_id && it.text == item.name.value
                else
-                  it.nodeId == item.archetype_node_id   
+                  it.nodeId == item.archetype_node_id && it.text == item.name.value
             }
 
             /*
@@ -241,14 +269,27 @@ class RmValidator {
             println item.archetype_node_id
             */
             //println obj.type
-            
-            if (obj)
+            // println "RM TYPE: "+ item.getClass().getSimpleName()
+            // println "RM PATH: "+ item.dataPath
+            // println "RM NAME: "+ item.name.value
+
+            // println "CATTR RM ATTR NAME: "+ c_multiple_attribute.rmAttributeName
+            // println "CATTR PATH: "+ c_multiple_attribute.dataPath
+            // println "CATTR TPATH: "+ c_multiple_attribute.templateDataPath
+            // println "CATTR CHILDREN TEXT:"+ c_multiple_attribute.children*.text
+            // println "CATTR CHILDREN RM TYPE: "+ c_multiple_attribute.children*.rmTypeName
+            // println ""
+
+            if (checkAllowedType(c_multiple_attribute, item, report)) // only continue if the type is allowed
             {
-               report.append(validate(item, obj))
-            }
-            else
-            {
-              println "No object node with node_id ${item.archetype_node_id}"
+               if (obj)
+               {
+                  report.append(validate(item, obj))
+               }
+               else
+               {
+                  println "No object node with node_id ${item.archetype_node_id}"
+               }
             }
          }
       }
@@ -434,7 +475,10 @@ class RmValidator {
       {
          if (e.data) // this is mandatory by the RM
          {
-            report.append(validate(e.data, a_data))
+            if (checkAllowedType(a_data, e.data, report)) // only continue if the type is allowed
+            {
+               report.append(validate(e.data, a_data))
+            }
          }
          else
          {
@@ -444,6 +488,8 @@ class RmValidator {
             }
          }
       }
+
+      // TODO: state
 
       return report
    }
@@ -487,7 +533,10 @@ class RmValidator {
       {
          if (e.data) // this is mandatory by the RM
          {
-            report.append(validate(e.data, a_data))
+            if (checkAllowedType(a_data, e.data, report)) // only continue if the type is allowed
+            {
+               report.append(validate(e.data, a_data))
+            }
          }
          else
          {
@@ -497,6 +546,8 @@ class RmValidator {
             }
          }
       }
+
+      // TODO: state
 
       return report
    }
@@ -541,7 +592,10 @@ class RmValidator {
       {
          if (ev.data)
          {
-            report.append(validate(ev.data, a_data))
+            if (checkAllowedType(a_data, ev.data, report)) // only continue if the type is allowed
+            {
+               report.append(validate(ev.data, a_data))
+            }
          }
          else
          {
@@ -635,7 +689,10 @@ class RmValidator {
       {
          if (act.description)
          {
-            report.append(validate(act.description, a_description))
+            if (checkAllowedType(a_description, act.description, report)) // only continue if the type is allowed
+            {
+               report.append(validate(act.description, a_description))
+            }
          }
          else
          {
@@ -691,7 +748,10 @@ class RmValidator {
       {
          if (ac.description)
          {
-            report.append(validate(ac.description, a_description))
+            if (checkAllowedType(a_description, ac.description, report)) // only continue if the type is allowed
+            {
+               report.append(validate(ac.description, a_description))
+            }
          }
          else
          {
@@ -747,7 +807,10 @@ class RmValidator {
       {
          if (ae.data)
          {
-            report.append(validate(ae.data, a_data))
+            if (checkAllowedType(a_data, ae.data, report)) // only continue if the type is allowed
+            {
+               report.append(validate(ae.data, a_data))
+            }
          }
          else
          {
@@ -1221,7 +1284,10 @@ class RmValidator {
       {
          if (e.value)
          {
-            report.append(validate(e, e.value, a_value, "/value"))
+            if (checkAllowedType(a_value, e.value, report)) // only continue if the type is allowed
+            {
+               report.append(validate(e, e.value, a_value, "/value"))
+            }
          }
          else
          {
