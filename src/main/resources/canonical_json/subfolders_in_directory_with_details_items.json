@@ -10,7 +10,7 @@
 			"value": "openEHR-EHR-FOLDER.generic.v1"
 		},
 		"template_id": {
-			"value": "generic.en.v1"
+			"value": "generic_folder"
 		},
 		"rm_version": "1.0.2"
   },

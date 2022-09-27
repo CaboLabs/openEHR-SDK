@@ -20,6 +20,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.*
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
+import com.cabolabs.openehr.rm_1_0_2.common.directory.Folder
 
 class RmValidator {
 
@@ -37,6 +38,26 @@ class RmValidator {
    }
 
    // TODO: Folder and Party subclasses
+
+   // FIXME: this is the same as the EhrStatus one, it's the same for all Locatables!
+   RmValidationReport dovalidate(Folder f, String namespace)
+   {
+      String template_id = f.archetype_details.template_id.value
+
+      def opt = this.opt_manager.getOpt(template_id, namespace)
+
+      if (!opt) return opt_not_found(template_id)
+
+      // pathable path and dataPath are loaded only from parsing,
+      // not from creating RM instances programatically, but are used
+      // to report errors so we need to calculate them here
+      if (!f.path)
+      {
+         f.fillPathable(null, null)
+      }
+
+      return validate(f, opt.definition)
+   }
 
    RmValidationReport dovalidate(EhrStatus e, String namespace)
    {
@@ -193,6 +214,51 @@ class RmValidator {
             if (!a_content.existence.has(0))
             {
                report.addError("/content", "attribute is not present but is required")
+            }
+         }
+      }
+
+      return report
+   }
+
+   private RmValidationReport validate(Folder f, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      def a_items = o.getAttr('items')
+      if (a_items)
+      {
+         if (f.items)
+         {
+            if (checkAllowedType(a_items, f.items, report)) // only continue if the type is allowed
+            {
+               report.append(validate(f.items, a_items))
+            }
+         }
+         else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         {
+            if (!a_items.existence.has(0))
+            {
+               report.addError("/items", "attribute is not present but is required")
+            }
+         }
+      }
+
+      def a_folders = o.getAttr('folders')
+      if (a_folders)
+      {
+         if (f.folders)
+         {
+            if (checkAllowedType(a_folders, f.folders, report)) // only continue if the type is allowed
+            {
+               report.append(validate(f.folders, a_folders))
+            }
+         }
+         else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         {
+            if (!a_folders.existence.has(0))
+            {
+               report.addError("/folders", "attribute is not present but is required")
             }
          }
       }

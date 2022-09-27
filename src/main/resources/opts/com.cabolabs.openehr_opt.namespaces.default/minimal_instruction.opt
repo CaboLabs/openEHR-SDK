@@ -8,7 +8,7 @@
     <code_string>en</code_string>
   </language>
   <description>
-    <original_author id="Original Author">Not Specified</original_author>
+    <original_author id="Original Author">Pablo Pazos (pablo.pazos@cabolabs.com)</original_author>
     <lifecycle_state>Initial</lifecycle_state>
     <other_details id="MetaDataSet:Sample Set ">Template metadata sample set </other_details>
     <other_details id="Acknowledgements"></other_details>
@@ -18,7 +18,7 @@
     <other_details id="Clinical Record Element"></other_details>
     <other_details id="Copyright"></other_details>
     <other_details id="Issues"></other_details>
-    <other_details id="Owner"></other_details>
+    <other_details id="Owner">CaboLabs.com</other_details>
     <other_details id="Sign off"></other_details>
     <other_details id="Speciality"></other_details>
     <other_details id="User roles"></other_details>
@@ -29,7 +29,7 @@
         </terminology_id>
         <code_string>en</code_string>
       </language>
-      <purpose>Not Specified</purpose>
+      <purpose>Conformance Verification</purpose>
     </details>
   </description>
   <uid>

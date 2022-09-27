@@ -7,6 +7,7 @@ import com.cabolabs.openehr.formats.OpenEhrJsonParser
 import com.cabolabs.openehr.validation.*
 import com.cabolabs.openehr.opt.manager.*
 import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
+import com.cabolabs.openehr.rm_1_0_2.common.directory.Folder
 
 class ValidationFlowTest extends GroovyTestCase {
 
@@ -202,5 +203,48 @@ class ValidationFlowTest extends GroovyTestCase {
 
       assert report.errors
       assert report.errors[0].error == "type 'ITEM_LIST' is not allowed here, it should be in [ITEM_TREE]"
+   }
+
+
+   void test_folder_any_valid()
+   {
+      // PARSE JSON WITH RM SCHEMA VALIDATION
+      def json_folder = $/
+         {
+            "_type": "FOLDER",
+            "name": {
+               "_type": "DV_TEXT",
+               "value": "root"
+            },
+            "archetype_node_id": "openEHR-EHR-FOLDER.generic.v1",
+            "archetype_details": {
+               "archetype_id": {
+                  "value": "openEHR-EHR-FOLDER.generic.v1"
+               },
+               "template_id": {
+                  "value": "generic_folder"
+               },
+               "rm_version": "1.0.2"
+            }
+         }
+      /$
+
+      def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
+      Folder folder = parser.parseFolder(json_folder)
+
+      assert folder
+
+
+      // SETUP OPT REPO\
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+
+      // SETUP RM VALIDATOR
+      RmValidator validator = new RmValidator(opt_manager)
+      RmValidationReport report = validator.dovalidate(folder, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert !report.errors
    }
 }

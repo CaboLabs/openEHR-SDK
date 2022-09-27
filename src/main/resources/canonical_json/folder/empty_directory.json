@@ -1,0 +1,17 @@
+{
+   "_type": "FOLDER",
+   "name": {
+      "_type": "DV_TEXT",
+      "value": "root"
+   },
+   "archetype_node_id": "openEHR-EHR-FOLDER.generic.v1",
+   "archetype_details": {
+      "archetype_id": {
+         "value": "openEHR-EHR-FOLDER.generic.v1"
+      },
+      "template_id": {
+         "value": "generic_folder"
+      },
+      "rm_version": "1.0.2"
+   }
+}
