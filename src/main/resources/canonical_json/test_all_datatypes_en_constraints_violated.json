@@ -287,11 +287,11 @@
                                         "upper_included": true,
                                         "lower": {
                                             "_type": "DV_COUNT",
-                                            "magnitude": 10
+                                            "magnitude": 5
                                         },
                                         "upper": {
                                             "_type": "DV_COUNT",
-                                            "magnitude": 103
+                                            "magnitude": 10
                                         },
                                         "lower_unbounded": false,
                                         "upper_unbounded": false
@@ -411,10 +411,10 @@
                                     "archetype_node_id": "at0025",
                                     "value": {
                                         "_type": "DV_IDENTIFIER",
-                                        "issuer": "issuerA",
+                                        "issuer": "Hospital de Clinicas",
                                         "assigner": "Hospital de Clinicas",
                                         "id": "96086754",
-                                        "type": "typeB"
+                                        "type": "LOCALID"
                                     }
                                 },
                                 {

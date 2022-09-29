@@ -823,8 +823,8 @@
                                         <upper_included>true</upper_included>
                                         <lower_unbounded>false</lower_unbounded>
                                         <upper_unbounded>false</upper_unbounded>
-                                        <lower>0</lower>
-                                        <upper>100</upper>
+                                        <lower>50</lower>
+                                        <upper>200</upper>
                                       </range>
                                     </item>
                                   </children>
@@ -879,8 +879,8 @@
                                         <upper_included>true</upper_included>
                                         <lower_unbounded>false</lower_unbounded>
                                         <upper_unbounded>false</upper_unbounded>
-                                        <lower>100</lower>
-                                        <upper>1000</upper>
+                                        <lower>10</lower>
+                                        <upper>100</upper>
                                       </range>
                                     </item>
                                   </children>

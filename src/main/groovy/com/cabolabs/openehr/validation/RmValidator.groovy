@@ -37,45 +37,34 @@ class RmValidator {
       className.replaceAll( /([A-Z])/, /_$1/ ).toUpperCase().replaceAll( /^_/, '' )
    }
 
-   // TODO: Folder and Party subclasses
+   // TODO: Party subclasses validation
 
-   // FIXME: this is the same as the EhrStatus one, it's the same for all Locatables!
-   RmValidationReport dovalidate(Folder f, String namespace)
+   // the namespace is where the OPT is stored/cached, allows to implement multi-tenancy
+   RmValidationReport dovalidate(Locatable rm_object, String namespace)
    {
-      String template_id = f.archetype_details.template_id.value
+      if (!rm_object.archetype_details)
+      {
+         return locatable_missing_archetype_details(rm_object)
+      }
+
+      String template_id = rm_object.archetype_details.template_id.value
 
       def opt = this.opt_manager.getOpt(template_id, namespace)
 
-      if (!opt) return opt_not_found(template_id)
+      if (!opt)
+      {
+         return opt_not_found(template_id)
+      }
 
       // pathable path and dataPath are loaded only from parsing,
       // not from creating RM instances programatically, but are used
       // to report errors so we need to calculate them here
-      if (!f.path)
+      if (!rm_object.path)
       {
-         f.fillPathable(null, null)
+         rm_object.fillPathable(null, null)
       }
 
-      return validate(f, opt.definition)
-   }
-
-   RmValidationReport dovalidate(EhrStatus e, String namespace)
-   {
-      String template_id = e.archetype_details.template_id.value
-
-      def opt = this.opt_manager.getOpt(template_id, namespace)
-
-      if (!opt) return opt_not_found(template_id)
-
-      // pathable path and dataPath are loaded only from parsing,
-      // not from creating RM instances programatically, but are used
-      // to report errors so we need to calculate them here
-      if (!e.path)
-      {
-         e.fillPathable(null, null)
-      }
-
-      return validate(e, opt.definition)
+      return validate(rm_object, opt.definition)
    }
 
    // Checks if the children of the cattr allow the type of the rmObject,
@@ -152,26 +141,6 @@ class RmValidator {
       }
 
       return report
-   }
-
-   // the namespace is where the OPT is stored/cached, allows to implement multi-tenancy
-   RmValidationReport dovalidate(Composition c, String namespace)
-   {
-      String template_id = c.archetype_details.template_id.value
-
-      def opt = this.opt_manager.getOpt(template_id, namespace)
-
-      if (!opt) return opt_not_found(template_id)
-
-      // pathable path and dataPath are loaded only from parsing,
-      // not from creating RM instances programatically, but are used
-      // to report errors so we need to calculate them here
-      if (!c.path)
-      {
-         c.fillPathable(null, null)
-      }
-
-      return validate(c, opt.definition)
    }
 
    private RmValidationReport validate(Composition c, ObjectNode o)
@@ -2919,11 +2888,19 @@ class RmValidator {
       return report
    }
 
+   // General errors
 
    RmValidationReport opt_not_found(String template_id)
    {
       def report = new RmValidationReport()
       report.addError("Template '${template_id}' was not found")
+      return report
+   }
+
+   RmValidationReport locatable_missing_archetype_details(Locatable rm_object)
+   {
+      def report = new RmValidationReport()
+      report.addError("/archetype_details", "${rm_object.getClass().getSimpleName()} doesn't have 'archetype_details' which is required for validating RM instances")
       return report
    }
 }
