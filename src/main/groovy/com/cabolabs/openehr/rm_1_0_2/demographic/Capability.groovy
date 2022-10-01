@@ -4,18 +4,15 @@ import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemStructur
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvInterval
-import com.cabolabs.openehr.rm_1_0_2.support.identification.PartyRef
 
 /**
  * @author pablo.pazos@cabolabs.com
  *
  */
-class PartyRelationship extends Locatable {
+class Capability extends Locatable {
    
-   ItemStructure details
+   ItemStructure credentials
    DvInterval time_validity // DvDate
-   PartyRef source
-   PartyRef target
 
    @Override
    void fillPathable(Pathable parent, String parentAttribute)
@@ -24,6 +21,6 @@ class PartyRelationship extends Locatable {
       this.dataPath = ((parent.dataPath != '/') ? '/' : '') + parentAttribute
       this.parent = parent
 
-      this.details.fillPathable(this, "details")
+      this.credentials.fillPathable(this, "credentials")
    }
 }

@@ -10,12 +10,11 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.PartyRef
  * @author pablo.pazos@cabolabs.com
  *
  */
-class PartyRelationship extends Locatable {
+class Role extends Party {
    
-   ItemStructure details
    DvInterval time_validity // DvDate
-   PartyRef source
-   PartyRef target
+   PartyRef performer
+   List capabilities // Capability
 
    @Override
    void fillPathable(Pathable parent, String parentAttribute)
@@ -24,6 +23,6 @@ class PartyRelationship extends Locatable {
       this.dataPath = ((parent.dataPath != '/') ? '/' : '') + parentAttribute
       this.parent = parent
 
-      this.details.fillPathable(this, "details")
+      this.capabilities.fillPathable(this, "capabilities")
    }
 }

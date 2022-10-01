@@ -4,18 +4,14 @@ import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemStructur
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvInterval
-import com.cabolabs.openehr.rm_1_0_2.support.identification.PartyRef
 
 /**
  * @author pablo.pazos@cabolabs.com
  *
  */
-class PartyRelationship extends Locatable {
+class PartyIdentity extends Locatable {
    
    ItemStructure details
-   DvInterval time_validity // DvDate
-   PartyRef source
-   PartyRef target
 
    @Override
    void fillPathable(Pathable parent, String parentAttribute)
