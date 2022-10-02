@@ -383,6 +383,124 @@ class JsonInstanceCanonicalGenerator2 {
    }
 
 
+   Map generatePerson()
+   {
+      def person = add_LOCATABLE_elements(opt.definition, opt.definition.archetypeId, true)
+
+      def oa = opt.definition.attributes.find{ it.rmAttributeName == 'contacts' }
+
+      if (oa)
+      {
+         def content = processAttributeChildren(oa, opt.definition.archetypeId) 
+
+         // it is possible the cardinality upper is lower than the items generated because there are more alternatives
+         // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
+         if (oa.cardinality && oa.cardinality.interval.upper)
+         {
+            content = content.take(oa.cardinality.interval.upper)
+         }
+      
+         person.content = content
+      }
+
+      return person
+   }
+
+   Map generateContact()
+   {
+      def contact = add_LOCATABLE_elements(opt.definition, opt.definition.archetypeId, true)
+
+      def oa = opt.definition.attributes.find{ it.rmAttributeName == 'contacts' }
+
+      if (oa)
+      {
+         def contacts = processAttributeChildren(oa, opt.definition.archetypeId) 
+
+         // it is possible the cardinality upper is lower than the items generated because there are more alternatives
+         // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
+         if (oa.cardinality && oa.cardinality.interval.upper)
+         {
+            contacts = contacts.take(oa.cardinality.interval.upper)
+         }
+      
+         person.contacts = contacts
+      }
+
+      oa = opt.definition.attributes.find{ it.rmAttributeName == 'identities' }
+
+      if (oa)
+      {
+         def identities = processAttributeChildren(oa, opt.definition.archetypeId) 
+
+         // it is possible the cardinality upper is lower than the items generated because there are more alternatives
+         // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
+         if (oa.cardinality && oa.cardinality.interval.upper)
+         {
+            identities = identities.take(oa.cardinality.interval.upper)
+         }
+      
+         person.identities = identities
+      }
+
+      return person
+   }
+
+   private generate_CONTACT(ObjectNode o, String parent_arch_id)
+   {
+      // parent from now can be different than the parent if if the object has archetypeId
+      parent_arch_id = o.archetypeId ?: parent_arch_id
+
+      //AttributeNode a = o.parent
+
+      def mobj = add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
+      
+      def mattr
+      o.attributes.each { oa -> // this should be addresses only
+
+         mattr = processAttributeChildren(oa, parent_arch_id) // this is a list!
+
+         mobj[oa.rmAttributeName] = mattr
+      }
+
+      return mobj
+   }
+
+   private generate_ADDRESS(ObjectNode o, String parent_arch_id)
+   {
+
+   }
+
+   private generate_PARTY_IDENTITY(ObjectNode o, String parent_arch_id)
+   {
+
+   }
+
+   Map generateOrganization()
+   {
+
+   }
+
+   Map generateGroup()
+   {
+
+   }
+
+   Map generateDevice()
+   {
+
+   }
+
+   Map generateRole()
+   {
+
+   }
+
+   Map generateCapability()
+   {
+
+   }
+
+
    /**
     * Continues the opt recursive traverse.
     */

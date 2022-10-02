@@ -579,4 +579,34 @@ class ValidationFlowTest extends GroovyTestCase {
 
       assert err.error == "/content[0]/data/events[0]/data/items[16]/value 'LOCALID' doesn't match pattern 'typeB'"
    }
+
+
+   // ===================================================
+   // DEMOGRAPHIC
+
+   void test_person_valid()
+   {
+      // PARSE JSON WITH RM SCHEMA VALIDATION
+      String path = PS +"canonical_json"+ PS +"generic_person.json"
+	   File file = new File(getClass().getResource(path).toURI())
+      def json_person = file.text
+
+      def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
+      Person person = parser.parseJson(json_person)
+
+      assert person
+
+
+      // SETUP OPT REPO
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+
+      // SETUP RM VALIDATOR
+      RmValidator validator = new RmValidator(opt_manager)
+      RmValidationReport report = validator.dovalidate(person, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert !report.errors
+   }
 }
