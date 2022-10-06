@@ -585,7 +585,7 @@ class ValidationFlowTest extends GroovyTestCase {
    // ===================================================
    // DEMOGRAPHIC
 
-/*
+
    void test_person_valid()
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
@@ -596,7 +596,12 @@ class ValidationFlowTest extends GroovyTestCase {
       def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
       Person person = parser.parseJson(json_person)
 
+      println person
+
+      println parser.getJsonValidationErrors()
+      
       assert person
+
 
 
       // SETUP OPT REPO
@@ -609,7 +614,8 @@ class ValidationFlowTest extends GroovyTestCase {
       RmValidator validator = new RmValidator(opt_manager)
       RmValidationReport report = validator.dovalidate(person, 'com.cabolabs.openehr_opt.namespaces.default')
 
+      println report.errors
+
       assert !report.errors
    }
-   */
 }

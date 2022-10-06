@@ -32,6 +32,7 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 import org.apache.log4j.Logger
 import com.cabolabs.openehr.dto_1_0_2.common.change_control.ContributionDto
 import com.cabolabs.openehr.opt.instance_validation.JsonInstanceValidation
+import com.cabolabs.openehr.rm_1_0_2.demographic.*
 
 import groovy.json.JsonSlurper
 
@@ -192,6 +193,7 @@ class OpenEhrJsonParser {
             throw new Exception("archetype_details.rm_version is required for the root of any archetypable class")
          }
 
+         // TODO: the schema flavor should be a parameter: rm | api
          this.jsonValidator = new JsonInstanceValidation('rm', map.archetype_details.rm_version)
          
          def errors = jsonValidator.validate(json)
@@ -517,8 +519,108 @@ class OpenEhrJsonParser {
       this.fillENTRY(c, json, parent, path, dataPath)
    }
    
+   private void fillPARTY(Party p, Map json, Pathable parent, String path, String dataPath)
+   {
+      this.fillLOCATABLE(p, json, parent, path, dataPath)
+
+      if (json.details)
+      {
+         def type = json.details._type
+
+         if (!type)
+         {
+            throw new JsonCompositionParseException("_type required for "+ dataPath +".details")
+         }
+
+         def method = 'parse'+ type
+
+         this."$method"(json.details, p,
+                        (path != '/' ? path +'/details' : '/details'),
+                        (dataPath != '/' ? dataPath +'/details' : '/details')
+                       )
+      }
+
+      if (json.contacts)
+      {
+         json.contacts.eachWithIndex { contact, i ->
+
+            p.contacts << this.parseCONTACT(contact, p,
+                        (path != '/' ? path +'/contacts' : '/contacts'),
+                        (dataPath != '/' ? dataPath +'/contacts['+ i +']' : '/contacts['+ i +']'))
+         }
+      }
+
+      json.identities.eachWithIndex { party_identity, i ->
+
+         p.identities << this.parsePARTY_IDENTITY(party_identity, p,
+                        (path != '/' ? path +'/identities' : '/identities'),
+                        (dataPath != '/' ? dataPath +'/identities['+ i +']' : '/identities['+ i +']'))
+      }
+   }
+
+   private void fillACTOR(Actor a, Map json, Pathable parent, String path, String dataPath)
+   {
+      this.fillPARTY(a, json, parent, path, dataPath)
+
+      def type, method
+
+      if (json.languages)
+      {
+         json.languages.each { dvtext ->
+
+            type = dvtext._type
+            if (!type) type = 'DV_TEXT'
+            method = 'parse'+ type
+            
+            a.languages << this."$method"(json.name)
+         }
+      }
+
+      if (json.roles)
+      {
+         json.roles.each { party_ref -> // FIXME: !!!
+         
+            a.roles << this.parsePARTY_REF(party_ref)
+         }
+      }
+   }
 
    // ========= PARSE METHODS =========
+
+   private Person parsePERSON(Map map, Pathable parent, String path, String dataPath)
+   {
+      def person = new Person()
+
+      this.fillACTOR(person, map, parent, path, dataPath)
+
+      return person
+   }
+
+   private PartyIdentity parsePARTY_IDENTITY(Map map, Pathable parent, String path, String dataPath)
+   {
+      def pi = new PartyIdentity()
+
+      this.fillLOCATABLE(pi, map, parent, path, dataPath)
+
+      if (map.details)
+      {
+         def type = map.details._type
+
+         if (!type)
+         {
+            throw new JsonCompositionParseException("_type required for "+ dataPath +".details")
+         }
+
+         def method = 'parse'+ type
+
+         this."$method"(map.details, pi,
+                        (path != '/' ? path +'/details' : '/details'),
+                        (dataPath != '/' ? dataPath +'/details' : '/details')
+                       )
+      }
+
+      return pi
+   }
 
    private EhrStatus parseEHR_STATUS(Map map)
    {

@@ -12,10 +12,10 @@ import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
  */
 abstract class Party extends Locatable {
    
-   Set reverse_relationhips // LocatableRef
+   Set reverse_relationships // LocatableRef
    ItemStructure details
-   List contacts // Contact
-   List identities // PartyIdentity
+   List contacts = [] // Contact
+   List identities = [] // PartyIdentity
 
    @Override
    void fillPathable(Pathable parent, String parentAttribute)

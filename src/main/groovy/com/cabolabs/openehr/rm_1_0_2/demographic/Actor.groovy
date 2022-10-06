@@ -12,8 +12,8 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.PartyRef
  */
 abstract class Actor extends Party {
    
-   Set roles // PartyRef
-   List languages // DvText
+   Set roles = [] // PartyRef
+   List languages = [] // DvText
 
    @Override
    void fillPathable(Pathable parent, String parentAttribute)

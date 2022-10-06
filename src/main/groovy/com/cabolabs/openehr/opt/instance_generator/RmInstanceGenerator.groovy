@@ -1109,7 +1109,7 @@ class RmInstanceGenerator {
 
    private add_PARTY_elements(ObjectNode o, Party p, String parent_arch_id)
    {
-      add_LOCATABLE_elements(o, p, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
+      add_LOCATABLE_elements(o, p, parent_arch_id, true)
 
       def oa = o.attributes.find{ it.rmAttributeName == 'contacts' }
 

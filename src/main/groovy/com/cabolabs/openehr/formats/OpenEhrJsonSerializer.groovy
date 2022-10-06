@@ -117,39 +117,66 @@ class OpenEhrJsonSerializer {
    {
       this.fillParty(a, out)
 
-      out.languages = []
-      a.languages.each { dvtext ->
-      
-         method = this.method(dvtext)
-         out.langauges << this."$method"(dvtext)
+      // optional
+      if (a.languages)
+      {
+         out.languages = []
+         a.languages.each { dvtext ->
+         
+            method = this.method(dvtext)
+            out.langauges << this."$method"(dvtext)
+         }
       }
 
-      // TODO: roles
+      // optional
+      if (a.roles)
+      {
+         out.roles = []
+
+         a.roles.each { party_ref ->
+
+            out.roles << this.serializePartyRef(party_ref)
+         }
+      }
    }
 
    private void fillParty(Party p, Map out)
    {
       this.fillLocatable(p, out)
 
+      // optional
       if (p.details)
       {
          def method = this.method(p.details)
          out.details = this."$method"(p.details)
       }
 
-      out.contacts = []
-      p.contacts.each { contact ->
+      // optional
+      if (p.contacts)
+      {
+         out.contacts = []
+         p.contacts.each { contact ->
 
-         out.contacts << this.serializeContact(contact)
+            out.contacts << this.serializeContact(contact)
+         }
       }
 
+      // mandatory, at least 1 object
       out.identities = []
       p.identities.each { identity ->
 
          out.identities << this.serializePartyIdentity(identity)
       }
 
-      // TODO: reverse_relationships
+      // optional
+      if (p.reverse_relationships)
+      {
+         out.reverse_relationships = []
+         p.reverse_relationships.each { locatable_ref ->
+         
+            out.reverse_relationships << this.serializeLocatableRef(locatable_ref)
+         }
+      }
    }
 
    private Map serializeOriginalVersion(OriginalVersion o)
@@ -260,9 +287,49 @@ class OpenEhrJsonSerializer {
       return out
    }
 
+   // TODO: Role
+   // TODO: Organization
+   // TODO: Group
+   // TODO: Agent
+   // TODO: capability
+
+   private Map serializeContact(Contact c)
+   {
+      def out = [:]
+
+      this.fillLocatable(c, out)
+
+      if (c.time_validity)
+      {
+         out.time_validity = this.serializeDvInterval(c.time_validity)
+      }
+
+      out.addresses = []
+      c.addresses.each { address ->
+
+         out.addresses << this.serializeAddress(address)      
+      }
+
+      return out
+   }
+
+   private Map serializeAddress(Address ad)
+   {
+      def out = [:]
+
+      this.fillLocatable(ad, out)
+
+      def method = this.method(ad.details)
+      out.details = this."$method"(ad.details)
+
+      return out
+   }
+
    private Map serializePartyIdentity(PartyIdentity pi)
    {
       def out = [:]
+
+      this.fillLocatable(pi, out)
 
       def method = this.method(pi.details)
       out.details = this."$method"(pi.details)
