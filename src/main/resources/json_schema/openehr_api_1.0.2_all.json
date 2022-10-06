@@ -2465,13 +2465,10 @@
         "PERSON": {
             "type": "object",
             "required": [
-                "uid",
                 "archetype_node_id",
                 "archetype_details",
                 "name",
-                "identities",
-                "roles",
-                "languages"
+                "identities"
             ],
             "properties": {
                 "uid": {
@@ -5830,7 +5827,6 @@
         "ROLE": {
             "type": "object",
             "required": [
-                "uid",
                 "archetype_node_id",
                 "archetype_details",
                 "name",
@@ -6072,13 +6068,10 @@
         "AGENT": {
             "type": "object",
             "required": [
-                "uid",
                 "archetype_node_id",
                 "archetype_details",
                 "name",
-                "identities",
-                "roles",
-                "languages"
+                "identities"
             ],
             "properties": {
                 "uid": {
@@ -6542,13 +6535,10 @@
         "GROUP": {
             "type": "object",
             "required": [
-                "uid",
                 "archetype_node_id",
                 "archetype_details",
                 "name",
-                "identities",
-                "roles",
-                "languages"
+                "identities"
             ],
             "properties": {
                 "uid": {
@@ -10679,13 +10669,10 @@
         "ORGANISATION": {
             "type": "object",
             "required": [
-                "uid",
                 "archetype_node_id",
                 "archetype_details",
                 "name",
-                "identities",
-                "roles",
-                "languages"
+                "identities"
             ],
             "properties": {
                 "uid": {
