@@ -498,6 +498,8 @@ class Main {
 
       opts.each { opt ->
 
+         //println opt.definition.rmTypeName
+
          for (i in 1..count)
          {
             if (generate == 'version')
@@ -506,7 +508,17 @@ class Main {
             }
             else
             {
-               instance = generator.generateCompositionFromOPT(opt, withParticipations)
+               switch (opt.definition.rmTypeName) // all possible archetype roots
+               {
+                  case 'COMPOSITION':
+                     instance = generator.generateCompositionFromOPT(opt, withParticipations)
+                  break
+                  case 'PERSON':
+                     instance = generator.generatePersonFromOPT(opt)
+                     println instance
+                  break
+                  // TODO: EHR_STATUS, FOLDER, ORGANIZATION, AGENT, GROUP, ROLE
+               }
             }
 
             // this is always pretty printed

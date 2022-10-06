@@ -34,6 +34,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvEhrUri
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvUri
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
+import com.cabolabs.openehr.rm_1_0_2.demographic.*
 
 class OpenEhrJsonSerializer {
 
@@ -110,6 +111,45 @@ class OpenEhrJsonSerializer {
       }
 
       // TODO: feeder audit
+   }
+
+   private void fillActor(Actor a, Map out)
+   {
+      this.fillParty(a, out)
+
+      out.languages = []
+      a.languages.each { dvtext ->
+      
+         method = this.method(dvtext)
+         out.langauges << this."$method"(dvtext)
+      }
+
+      // TODO: roles
+   }
+
+   private void fillParty(Party p, Map out)
+   {
+      this.fillLocatable(p, out)
+
+      if (p.details)
+      {
+         def method = this.method(p.details)
+         out.details = this."$method"(p.details)
+      }
+
+      out.contacts = []
+      p.contacts.each { contact ->
+
+         out.contacts << this.serializeContact(contact)
+      }
+
+      out.identities = []
+      p.identities.each { identity ->
+
+         out.identities << this.serializePartyIdentity(identity)
+      }
+
+      // TODO: reverse_relationships
    }
 
    private Map serializeOriginalVersion(OriginalVersion o)
@@ -209,6 +249,26 @@ class OpenEhrJsonSerializer {
       return out
    }
 
+   private Map serializePerson(Person p)
+   {
+      def out = [:]
+
+      out._type = 'PERSON'
+
+      this.fillActor(p, out)
+
+      return out
+   }
+
+   private Map serializePartyIdentity(PartyIdentity pi)
+   {
+      def out = [:]
+
+      def method = this.method(pi.details)
+      out.details = this."$method"(pi.details)
+
+      return out
+   }
 
    private Map serializeEventContext(EventContext o)
    {

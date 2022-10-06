@@ -62,6 +62,9 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.TerminologyId
 import com.cabolabs.openehr.terminology.TerminologyParser
 import groovy.time.TimeCategory
 
+
+import com.cabolabs.openehr.rm_1_0_2.demographic.*
+
 import java.text.SimpleDateFormat
 
 /**
@@ -258,6 +261,13 @@ class RmInstanceGenerator {
       this.opt = opt
 
       return generateComposition(addParticipations)
+   }
+
+   Person generatePersonFromOPT(OperationalTemplate opt)
+   {
+      this.opt = opt
+
+      return generatePerson()
    }
 
    private Composition generateComposition(boolean addParticipations = false)
@@ -1097,6 +1107,59 @@ class RmInstanceGenerator {
       loc.archetype_node_id = (o.archetypeId ?: o.nodeId)
    }
 
+   private add_PARTY_elements(ObjectNode o, Party p, String parent_arch_id)
+   {
+      add_LOCATABLE_elements(o, p, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
+
+      def oa = o.attributes.find{ it.rmAttributeName == 'contacts' }
+
+      if (oa)
+      {
+         def contacts = processAttributeChildren(oa, opt.definition.archetypeId)
+
+         // it is possible the cardinality upper is lower than the items generated because there are more alternatives
+         // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
+         if (oa.cardinality && oa.cardinality.interval.upper)
+         {
+            contacts = contacts.take(oa.cardinality.interval.upper)
+         }
+      
+         p.contacts = contacts
+      }
+
+      oa = o.attributes.find{ it.rmAttributeName == 'identities' }
+
+      if (oa)
+      {
+         def identities = processAttributeChildren(oa, opt.definition.archetypeId) 
+
+         // it is possible the cardinality upper is lower than the items generated because there are more alternatives
+         // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
+         if (oa.cardinality && oa.cardinality.interval.upper)
+         {
+            identities = identities.take(oa.cardinality.interval.upper)
+         }
+      
+         p.identities = identities
+      }
+
+      oa = o.attributes.find{ it.rmAttributeName == 'details' }
+
+      if (oa)
+      {
+         // returns a list, take the first obj
+         def details = processAttributeChildren(oa, opt.definition.archetypeId)
+         p.details = details[0]
+      }
+   }
+
+   private add_ACTOR_elements(ObjectNode o, Actor a, String parent_arch_id)
+   {
+      add_PARTY_elements(o, a, parent_arch_id)
+
+      // TODO: if there are constraints for languages, consider those
+   }
+
    /**
     * helper to add language, encoding and subject to ENTRY nodes.
     */
@@ -1130,6 +1193,93 @@ class RmInstanceGenerator {
          e.protocol = protocol[0]
       }
    }
+
+
+   // DEMOGRAPHICS
+   private Person generatePerson()
+   {
+      def person = new Person()
+
+      add_ACTOR_elements(opt.definition, person, opt.definition.archetypeId)
+
+      return person
+   }
+
+   private Organization generateOrganization()
+   {
+      def organization = new Organization()
+
+      add_ACTOR_elements(opt.definition, organization, opt.definition.archetypeId)
+
+      return organization
+   }
+
+   private Group generateGroup()
+   {
+      def group = new Group()
+
+      add_ACTOR_elements(opt.definition, group, opt.definition.archetypeId)
+
+      return group
+   }
+
+   private Agent generateAgent()
+   {
+      def agent = new Agent()
+
+      add_ACTOR_elements(opt.definition, agent, opt.definition.archetypeId)
+
+      return agent
+   }
+
+   private Role generateRole()
+   {
+      def role = new Role()
+      
+      add_PARTY_elements(opt.definition, role, opt.definition.archetypeId)
+
+      def oa = o.attributes.find{ it.rmAttributeName == 'capabilities' }
+
+      if (oa)
+      {
+         def capabilities = processAttributeChildren(oa, parent_arch_id)
+
+         // it is possible the cardinality upper is lower than the items generated because there are more alternatives
+         // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
+         if (oa.cardinality && oa.cardinality.interval.upper)
+         {
+            capabilities = capabilities.take(oa.cardinality.interval.upper)
+         }
+      
+         role.capabilities = capabilities
+      }
+
+      // TODO: if there are constraints for time_validity, consider those
+
+      return role
+   }
+
+   private PartyIdentity generate_PARTY_IDENTITY(ObjectNode o, String parent_arch_id)
+   {
+      def pi = new PartyIdentity()
+
+      add_LOCATABLE_elements(o, pi, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
+
+      def oa = o.attributes.find{ it.rmAttributeName == 'details' }
+
+      if (oa)
+      {
+         // returns a list, take the first obj
+         def details = processAttributeChildren(oa, parent_arch_id)
+         pi.details = details[0]
+      }
+
+      return pi
+   }
+
+   // TODO: Contact
+   // TODO: Address
+
 
 
    private Section generate_SECTION(ObjectNode o, String parent_arch_id)

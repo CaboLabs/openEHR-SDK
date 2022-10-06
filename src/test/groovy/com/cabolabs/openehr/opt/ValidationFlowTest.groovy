@@ -8,8 +8,9 @@ import com.cabolabs.openehr.validation.*
 import com.cabolabs.openehr.opt.manager.*
 import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
 import com.cabolabs.openehr.rm_1_0_2.common.directory.Folder
-import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
+import com.cabolabs.openehr.rm_1_0_2.demographic.Person
+import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
 
 // TODO: this test case is JSON only, we need to do the same with XML payloads!
 
@@ -584,6 +585,7 @@ class ValidationFlowTest extends GroovyTestCase {
    // ===================================================
    // DEMOGRAPHIC
 
+/*
    void test_person_valid()
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
@@ -609,4 +611,5 @@ class ValidationFlowTest extends GroovyTestCase {
 
       assert !report.errors
    }
+   */
 }

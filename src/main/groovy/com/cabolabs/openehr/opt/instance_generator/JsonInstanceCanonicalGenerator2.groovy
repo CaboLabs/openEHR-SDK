@@ -383,32 +383,72 @@ class JsonInstanceCanonicalGenerator2 {
    }
 
 
+   // DEMOGRAPHICS
    Map generatePerson()
    {
-      def person = add_LOCATABLE_elements(opt.definition, opt.definition.archetypeId, true)
+      def mobj = add_ACTOR_elements(opt.definition, opt.definition.archetypeId)
 
-      def oa = opt.definition.attributes.find{ it.rmAttributeName == 'contacts' }
+      return mobj
+   }
+
+   Map generateOrganization()
+   {
+      def mobj = add_ACTOR_elements(opt.definition, opt.definition.archetypeId)
+
+      return mobj
+   }
+
+   Map generateGroup()
+   {
+      def mobj = add_ACTOR_elements(opt.definition, opt.definition.archetypeId)
+
+      return mobj
+   }
+
+   Map generateAgent()
+   {
+      def mobj = add_ACTOR_elements(opt.definition, opt.definition.archetypeId)
+
+      return mobj
+   }
+
+   Map generateRole()
+   {
+      def mobj = add_PARTY_elements(opt.definition, opt.definition.archetypeId)
+
+      def oa = o.attributes.find{ it.rmAttributeName == 'capabilities' }
 
       if (oa)
       {
-         def content = processAttributeChildren(oa, opt.definition.archetypeId) 
+         def capabilities = processAttributeChildren(oa, parent_arch_id)
 
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
          // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
          if (oa.cardinality && oa.cardinality.interval.upper)
          {
-            content = content.take(oa.cardinality.interval.upper)
+            capabilities = capabilities.take(oa.cardinality.interval.upper)
          }
       
-         person.content = content
+         mobj.capabilities = capabilities
       }
 
-      return person
+      // TODO: if there are constraints for time_validity, consider those
+
+      return mobj
    }
 
-   Map generateContact()
+   private add_ACTOR_elements(ObjectNode o, String parent_arch_id)
    {
-      def contact = add_LOCATABLE_elements(opt.definition, opt.definition.archetypeId, true)
+      def mobj = add_PARTY_elements(o, parent_arch_id)
+
+      // TODO: if there are constraints for languages, consider those
+
+      return mobj
+   }
+
+   private add_PARTY_elements(ObjectNode o, String parent_arch_id)
+   {
+      def mobj = add_LOCATABLE_elements(opt.definition, opt.definition.archetypeId, o.type == 'C_ARCHETYPE_ROOT')
 
       def oa = opt.definition.attributes.find{ it.rmAttributeName == 'contacts' }
 
@@ -423,7 +463,7 @@ class JsonInstanceCanonicalGenerator2 {
             contacts = contacts.take(oa.cardinality.interval.upper)
          }
       
-         person.contacts = contacts
+         mobj.contacts = contacts
       }
 
       oa = opt.definition.attributes.find{ it.rmAttributeName == 'identities' }
@@ -439,10 +479,19 @@ class JsonInstanceCanonicalGenerator2 {
             identities = identities.take(oa.cardinality.interval.upper)
          }
       
-         person.identities = identities
+         mobj.identities = identities
       }
 
-      return person
+      oa = o.attributes.find{ it.rmAttributeName == 'details' }
+
+      if (oa)
+      {
+         def details = processAttributeChildren(oa, parent_arch_id)
+
+         mobj.details = details
+      }
+
+      return mobj
    }
 
    private generate_CONTACT(ObjectNode o, String parent_arch_id)
@@ -450,54 +499,90 @@ class JsonInstanceCanonicalGenerator2 {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
-      //AttributeNode a = o.parent
-
       def mobj = add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
       
-      def mattr
-      o.attributes.each { oa -> // this should be addresses only
+      def oa = o.attributes.find{ it.rmAttributeName == 'addresses' }
 
-         mattr = processAttributeChildren(oa, parent_arch_id) // this is a list!
+      if (oa)
+      {
+         def addresses = processAttributeChildren(oa, parent_arch_id)
 
-         mobj[oa.rmAttributeName] = mattr
+         // it is possible the cardinality upper is lower than the items generated because there are more alternatives
+         // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
+         if (oa.cardinality && oa.cardinality.interval.upper)
+         {
+            addresses = addresses.take(oa.cardinality.interval.upper)
+         }
+      
+         mobj.addresses = addresses
       }
+      // TODO: if there is no constraint, there should be a list with one item generated since it's [1..*] in the RM
+
+      // TODO: consider any constraint over CONTACT.time_validity
 
       return mobj
    }
 
    private generate_ADDRESS(ObjectNode o, String parent_arch_id)
    {
+      // parent from now can be different than the parent if if the object has archetypeId
+      parent_arch_id = o.archetypeId ?: parent_arch_id
 
+      def mobj = add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
+
+      def oa = o.attributes.find{ it.rmAttributeName == 'details' }
+
+      if (oa)
+      {
+         def details = processAttributeChildren(oa, parent_arch_id)
+
+         mobj.details = details
+      }
+      // TODO: if there is no constraint, there should be an ITEM_STRUCTURE generated since it's [1] in the RM
+
+      return mobj
    }
 
    private generate_PARTY_IDENTITY(ObjectNode o, String parent_arch_id)
    {
+      // parent from now can be different than the parent if if the object has archetypeId
+      parent_arch_id = o.archetypeId ?: parent_arch_id
 
+      def mobj = add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
+
+      def oa = o.attributes.find{ it.rmAttributeName == 'details' }
+
+      if (oa)
+      {
+         def details = processAttributeChildren(oa, parent_arch_id)
+
+         mobj.details = details
+      }
+      // TODO: if there is no constraint, there should be an ITEM_STRUCTURE generated since it's [1] in the RM
+
+      return mobj
    }
 
-   Map generateOrganization()
+   private generate_CAPABILITY(ObjectNode o, String parent_arch_id)
    {
+      // parent from now can be different than the parent if if the object has archetypeId
+      parent_arch_id = o.archetypeId ?: parent_arch_id
 
-   }
+      def mobj = add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
-   Map generateGroup()
-   {
+      def oa = o.attributes.find{ it.rmAttributeName == 'credentials' }
 
-   }
+      if (oa)
+      {
+         def credentials = processAttributeChildren(oa, parent_arch_id)
 
-   Map generateDevice()
-   {
+         mobj.credentials = credentials
+      }
+      // TODO: if there is no constraint, there should be an ITEM_STRUCTURE generated since it's [1] in the RM
 
-   }
+      // TODO: consider if there is a constraint for time_validity
 
-   Map generateRole()
-   {
-
-   }
-
-   Map generateCapability()
-   {
-
+      return mobj
    }
 
 
@@ -1268,7 +1353,7 @@ class JsonInstanceCanonicalGenerator2 {
             template_id: [
                value: opt.templateId
             ],
-            rm_version: '1.0.2'
+            rm_version: '1.0.2' // TODO: make the RM version configurable
          ]
       }
 
@@ -1691,8 +1776,6 @@ class JsonInstanceCanonicalGenerator2 {
    {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
-
-      //AttributeNode a = o.parent
 
       def mobj = add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
       
