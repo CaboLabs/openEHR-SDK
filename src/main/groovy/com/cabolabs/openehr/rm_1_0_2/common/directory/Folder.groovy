@@ -4,6 +4,10 @@ import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 import com.cabolabs.openehr.rm_1_0_2.support.identification.ObjectRef
 
+/**
+ * @author pablo.pazos@cabolabs.com
+ *
+ */
 class Folder extends Locatable {
 
    List<ObjectRef> items

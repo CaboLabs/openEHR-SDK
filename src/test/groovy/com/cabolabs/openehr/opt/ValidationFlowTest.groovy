@@ -6,6 +6,7 @@ import static com.cabolabs.testing.TestUtils.PS as PS
 import com.cabolabs.openehr.formats.OpenEhrJsonParser
 import com.cabolabs.openehr.validation.*
 import com.cabolabs.openehr.opt.manager.*
+import com.cabolabs.openehr.rm_1_0_2.ehr.Ehr
 import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
 import com.cabolabs.openehr.rm_1_0_2.common.directory.Folder
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
@@ -15,10 +16,158 @@ import com.cabolabs.openehr.rm_1_0_2.demographic.Role
 import com.cabolabs.openehr.rm_1_0_2.demographic.Group
 import com.cabolabs.openehr.rm_1_0_2.demographic.Agent
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
+import com.cabolabs.openehr.dto_1_0_2.ehr.*
 
 // TODO: this test case is JSON only, we need to do the same with XML payloads!
 
 class ValidationFlowTest extends GroovyTestCase {
+
+   // ====================================================
+   // EHR
+
+   void test_ehr_rm_valid()
+   {
+      // NOTE: RM requires EHR.compositions [1..1] and EHR.contributions [1..1]
+      //       in the 1.0.2 schema those are not mandatory.
+      def json_ehr = $/
+         {
+            "_type": "EHR",
+            "system_id": {
+               "_type": "HIER_OBJECT_ID",
+               "value": "f885dfca-4ac0-45b3-808f-6045d613bd86"
+            },
+            "ehr_id": {
+               "_type": "HIER_OBJECT_ID",
+               "value": "70038ea5-464e-4d08-9b55-3975aa796177"
+            },
+            "ehr_status": {
+               "_type": "LOCATABLE_REF",
+               "namespace": "EHR",
+               "type": "VERSIONED_EHR_STATUS",
+               "path": "/ehr_status",
+               "id": {
+                  "_type": "OBJECT_VERSION_ID",
+                  "value": "11627915-e27d-4478-82b9-14e871ee1466::com.cabolabs.conformance::1"
+               }
+            },
+            "ehr_access": {
+               "_type": "LOCATABLE_REF",
+               "namespace": "EHR",
+               "type": "VERSIONED_EHR_ACCESS",
+               "path": "/ehr_access",
+               "id": {
+                  "_type": "OBJECT_VERSION_ID",
+                  "value": "720707c8-7a57-473b-a9a6-dbb76dedd8f2::com.cabolabs.conformance::1"
+               }
+            },
+            "time_created": {
+               "value": "2015-01-20T19:30:22.765+01:00"
+            }
+         }
+      /$
+
+      def parser = new OpenEhrJsonParser(true) // does RM schema validation
+      Ehr ehr = parser.parseEhr(json_ehr)
+
+      assert ehr
+
+      assert ehr.time_created.value == "2015-01-20T19:30:22.765+01:00"
+
+      assert ehr.ehr_id.value == "70038ea5-464e-4d08-9b55-3975aa796177"
+
+      // NOTE: ehr can't be validated via OPT, but it's components can, but only if it's the API payload because
+      //       on the RM payload it only has the REFs (e.g. for ehr_status)
+   }
+
+   void test_ehr_api_valid()
+   {
+      def json_ehr = $/
+         {
+            "_type": "EHR",
+            "system_id": {
+               "_type": "HIER_OBJECT_ID",
+               "value": "f885dfca-4ac0-45b3-808f-6045d613bd86"
+            },
+            "ehr_id": {
+               "_type": "HIER_OBJECT_ID",
+               "value": "70038ea5-464e-4d08-9b55-3975aa796177"
+            },
+            "ehr_status": {
+               "_type": "EHR_STATUS",
+               "archetype_node_id": "openEHR-EHR-EHR_STATUS.generic.v1",
+               "archetype_details": {
+                  "archetype_id": {
+                     "value": "openEHR-EHR-EHR_STATUS.any.v1"
+                  },
+                  "template_id": {
+                     "value": "ehr_status_any_en_v1"
+                  },
+                  "rm_version": "1.0.2"
+               },
+               "name": {
+                  "_type": "DV_TEXT",
+                  "value": "EHR Status"
+               },
+               "subject": {
+                  "external_ref": {
+                     "id": {
+                        "_type": "GENERIC_ID",
+                        "value": "ins01",
+                        "scheme": "id_scheme"
+                     },
+                     "namespace": "DEMOGRAPHIC",
+                     "type": "PERSON"
+                  }
+               },
+               "is_modifiable": true,
+               "is_queryable": true
+            },
+            "ehr_access": {
+               "_type": "EHR_ACCESS",
+               "archetype_node_id": "openEHR-EHR-EHR_STATUS.generic.v1",
+               "name": {
+                  "_type": "DV_TEXT",
+                  "value": "EHR Status"
+               }
+            },
+            "time_created": {
+               "value": "2015-01-20T19:30:22.765+01:00"
+            }
+         }
+      /$
+
+      def parser = new OpenEhrJsonParser(true) // does RM schema validation
+      parser.setSchemaFlavorAPI()
+      EhrDto ehr = parser.parseEhrDto(json_ehr) // FIXME: this should be EhrDto
+
+      println parser.getJsonValidationErrors()
+
+      assert ehr
+
+      assert ehr.time_created.value == "2015-01-20T19:30:22.765+01:00"
+
+      assert ehr.ehr_id.value == "70038ea5-464e-4d08-9b55-3975aa796177"
+   }
+
+   void test_ehr_rm_schema_invalid()
+   {
+
+   }
+
+   void test_ehr_api_schema_invalid()
+   {
+
+   }
+
+   void test_ehr_rm_rm_invalid()
+   {
+
+   }
+
+   void test_ehr_api_rm_invalid()
+   {
+
+   }
 
    // ===================================================
    // EHR_STATUS
@@ -266,6 +415,7 @@ class ValidationFlowTest extends GroovyTestCase {
    void test_folder_with_items_any_valid()
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
+      // NOTE: the schema is not actually validating the HIER_OBJECT_ID.value format is a UID[::string]
       def json_folder = $/
          {
             "_type": "FOLDER",

@@ -1,12 +1,14 @@
 package com.cabolabs.openehr.formats
 
+import com.cabolabs.openehr.rm_1_0_2.ehr.Ehr
+import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
+import com.cabolabs.openehr.rm_1_0_2.common.generic.*
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 import com.cabolabs.openehr.rm_1_0_2.common.change_control.Contribution
 import com.cabolabs.openehr.rm_1_0_2.common.change_control.OriginalVersion
 import com.cabolabs.openehr.rm_1_0_2.common.change_control.Version
-import com.cabolabs.openehr.rm_1_0_2.common.generic.*
 import com.cabolabs.openehr.rm_1_0_2.common.directory.Folder
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.rm_1_0_2.composition.EventContext
@@ -26,13 +28,12 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.*
-import com.cabolabs.openehr.rm_1_0_2.ehr.Ehr
-import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
-import org.apache.log4j.Logger
+import com.cabolabs.openehr.rm_1_0_2.demographic.*
+import com.cabolabs.openehr.dto_1_0_2.ehr.EhrDto
 import com.cabolabs.openehr.dto_1_0_2.common.change_control.ContributionDto
 import com.cabolabs.openehr.opt.instance_validation.JsonInstanceValidation
-import com.cabolabs.openehr.rm_1_0_2.demographic.*
+import org.apache.log4j.Logger
 
 import groovy.json.JsonSlurper
 
@@ -114,11 +115,6 @@ class OpenEhrJsonParser {
       // For the API EHR we could access the EHR_STATUS.archetype_details.rm_version, but for RM EHRs, ehr_status is an OBJECT_REF that should be resolved.
       if (this.schemaValidate)
       {
-         // if (!map.archetype_details || !map.archetype_details.rm_version) // rm version aware
-         // {
-         //    throw new Exception("archetype_details.rm_version is required for the root of any archetypable class")
-         // }
-
          //this.jsonValidator = new JsonInstanceValidation(this.schemaFlavor, map.archetype_details.rm_version)
          this.jsonValidator = new JsonInstanceValidation(this.schemaFlavor) // FIXME: this uses the default 1.0.2 version schema!
          
@@ -161,6 +157,40 @@ class OpenEhrJsonParser {
       }
 
       // the references to versioned objects are not parsed, for instance, this is the right parsing for a rest EHR response
+
+      return ehr
+   }
+
+   EhrDto parseEhrDto(String json)
+   {
+      def slurper = new JsonSlurper()
+      def map = slurper.parseText(json)
+
+      // FIXME: EHR is not LOCATABLE and doesn't have info about the rm_version!
+      // For the API EHR we could access the EHR_STATUS.archetype_details.rm_version, but for RM EHRs, ehr_status is an OBJECT_REF that should be resolved.
+      if (this.schemaValidate)
+      {
+         //this.jsonValidator = new JsonInstanceValidation(this.schemaFlavor, map.archetype_details.rm_version)
+         this.jsonValidator = new JsonInstanceValidation(this.schemaFlavor) // FIXME: this uses the default 1.0.2 version schema!
+         
+         def errors = jsonValidator.validate(json)
+         if (errors)
+         {
+            this.jsonValidationErrors = errors
+            return
+         }
+      }
+
+      def ehr = new EhrDto()
+
+      ehr.system_id = this.parseHIER_OBJECT_ID(map.system_id)
+
+      ehr.ehr_id = this.parseHIER_OBJECT_ID(map.ehr_id)
+
+      ehr.time_created = this.parseDV_DATE_TIME(map.time_created)
+
+      // FIXME: this doesn't work because EhrDto is not Pathable
+      ehr.ehr_status = this.parseEHR_STATUS(map.ehr_status, ehr, "/ehr_status", "/ehr_status")
 
       return ehr
    }
