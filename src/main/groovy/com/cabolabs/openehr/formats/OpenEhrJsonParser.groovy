@@ -596,6 +596,15 @@ class OpenEhrJsonParser {
       return person
    }
 
+   private Organization parseORGANISATION(Map map, Pathable parent, String path, String dataPath)
+   {
+      def organization = new Organization()
+
+      this.fillACTOR(organization, map, parent, path, dataPath)
+
+      return organization
+   }
+
    private PartyIdentity parsePARTY_IDENTITY(Map map, Pathable parent, String path, String dataPath)
    {
       def pi = new PartyIdentity()

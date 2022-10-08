@@ -21,6 +21,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.uri.*
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 import com.cabolabs.openehr.rm_1_0_2.common.directory.Folder
+import com.cabolabs.openehr.rm_1_0_2.demographic.*
 
 class RmValidator {
 
@@ -114,6 +115,8 @@ class RmValidator {
    {
       RmValidationReport report = new RmValidationReport()
 
+      // FIXME: shouldn't this validate alternatives for the EHR_STATUS.other_details?
+
       // the attributes that are optional in the opt should be checked by the parent to avoid calling
       // with null because polymorphism can't find the right method. Also if the constraint is null,
       // anything matches.
@@ -136,6 +139,111 @@ class RmValidator {
             if (!a_other_details.existence.has(0))
             {
                report.addError("/other_details", "attribute is not present but is required")
+            }
+         }
+      }
+
+      return report
+   }
+
+   // Person, Org, Group, Agent validator
+   private RmValidationReport validate(Actor p, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // the attributes that are optional in the opt should be checked by the parent to avoid calling
+      // with null because polymorphism can't find the right method. Also if the constraint is null,
+      // anything matches.
+      def a_details = o.getAttr('details')
+      if (a_details)
+      {
+         if (p.details)
+         {
+            // Validate the type in the instance is allowed by the template
+            // FIXME: the type validation should be implemented on the rest of the validators!
+            //def allowed_types = a_other_details.children*.rmTypeName
+            //if (!allowed_types.contains(classToRm(e.other_details.getClass().getSimpleName())))
+            if (checkAllowedType(a_details, p.details, report)) // only continue if the type is allowed
+            {
+               report.append(validate(p.details, a_details))
+            }
+         }
+         else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         {
+            if (!a_details.existence.has(0))
+            {
+               report.addError("/details", "attribute is not present but is required")
+            }
+         }
+      }
+
+      // NOTE: identities is 1..* in the RM
+      def a_identities = o.getAttr('identities')
+      if (a_identities)
+      {
+         if (p.identities != null)
+         {
+            report.append(validate(p.identities, a_identities)) // validate container
+         }
+         else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         {
+            if (!a_identities.existence.has(0))
+            {
+               report.addError("/identities", "attribute is not present but is required")
+            }
+         }
+      }
+
+      def a_contacts = o.getAttr('contacts')
+      if (a_contacts)
+      {
+         if (p.contacts != null)
+         {
+            report.append(validate(p.contacts, a_contacts)) // validate container
+         }
+         else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         {
+            if (!a_contacts.existence.has(0))
+            {
+               report.addError("/contacts", "attribute is not present but is required")
+            }
+         }
+      }
+
+      return report
+   }
+
+   private RmValidationReport validate(PartyIdentity pi, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // occurrences
+      if (o.occurrences)
+      {
+         def occurrences = (pi ? 1 : 0)
+         if (!o.occurrences.has(occurrences))
+         {
+            // occurrences error
+            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            report.addError(o.templateDataPath, "Node doesn't match occurrences")
+         }
+      }
+
+      def a_details = o.getAttr('details') // item structure
+      if (a_details) // if the attribute node is null, all objects validate
+      {
+         if (pi.details)
+         {
+            if (checkAllowedType(a_details, pi.details, report)) // only continue if the type is allowed
+            {
+               report.append(validate(pi.details, a_details))
+            }
+         }
+         else
+         {
+            if (!a_details.existence.has(0))
+            {
+               report.addError(o.templateDataPath, "/details is not present but is required")
             }
          }
       }

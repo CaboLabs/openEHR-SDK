@@ -515,9 +515,13 @@ class Main {
                   break
                   case 'PERSON':
                      instance = generator.generatePersonFromOPT(opt)
-                     println instance
                   break
-                  // TODO: EHR_STATUS, FOLDER, ORGANIZATION, AGENT, GROUP, ROLE
+                  case 'ORGANISATION':
+                     instance = generator.generateOrganizationFromOPT(opt)
+                  break
+                  default:
+                     throw new Exception("Type ${opt.definition.rmTypeName} not supported yet")
+                     // TODO: EHR_STATUS, FOLDER, AGENT, GROUP, ROLE
                }
             }
 

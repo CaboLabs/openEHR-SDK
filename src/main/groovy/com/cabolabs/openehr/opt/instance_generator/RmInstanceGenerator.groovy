@@ -270,6 +270,13 @@ class RmInstanceGenerator {
       return generatePerson()
    }
 
+   Organization generateOrganizationFromOPT(OperationalTemplate opt)
+   {
+      this.opt = opt
+
+      return generateOrganization()
+   }
+
    private Composition generateComposition(boolean addParticipations = false)
    {
       def compo = new Composition(

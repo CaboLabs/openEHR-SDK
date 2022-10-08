@@ -45,7 +45,9 @@ class OpenEhrJsonSerializer {
    // EventContext => EVENT_CONTEXT
    private String openEhrType(Object o)
    {
-      o.getClass().getSimpleName().replaceAll("[A-Z]", '_$0').toUpperCase().replaceAll( /^_/, '')
+      String clazz = o.getClass().getSimpleName()
+      if (clazz == "Organization") clazz = "Organisation" // alias of UK based RM!
+      clazz.replaceAll("[A-Z]", '_$0').toUpperCase().replaceAll( /^_/, '')
    }
 
    private String method(Object obj)
@@ -287,8 +289,28 @@ class OpenEhrJsonSerializer {
       return out
    }
 
-   // TODO: Role
-   // TODO: Organization
+   private Map serializeOrganization(Organization o)
+   {
+      def out = [:]
+
+      out._type = 'ORGANISATION'
+
+      this.fillActor(o, out)
+
+      return out
+   }
+
+   private Map serializeRole(Role r)
+   {
+      def out = [:]
+
+      out._type = 'ROLE'
+
+      this.fillActor(r, out)
+
+      return out
+   }
+
    // TODO: Group
    // TODO: Agent
    // TODO: capability

@@ -10,6 +10,10 @@ import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
 import com.cabolabs.openehr.rm_1_0_2.common.directory.Folder
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.rm_1_0_2.demographic.Person
+import com.cabolabs.openehr.rm_1_0_2.demographic.Organization
+import com.cabolabs.openehr.rm_1_0_2.demographic.Role
+import com.cabolabs.openehr.rm_1_0_2.demographic.Group
+import com.cabolabs.openehr.rm_1_0_2.demographic.Agent
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
 
 // TODO: this test case is JSON only, we need to do the same with XML payloads!
@@ -126,7 +130,7 @@ class ValidationFlowTest extends GroovyTestCase {
       def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
       EhrStatus status = parser.parseEhrStatus(json_ehr_status)
 
-      println parser.getJsonValidationErrors()
+      //println parser.getJsonValidationErrors()
       assert status
 
 
@@ -140,7 +144,7 @@ class ValidationFlowTest extends GroovyTestCase {
       RmValidator validator = new RmValidator(opt_manager)
       RmValidationReport report = validator.dovalidate(status, 'com.cabolabs.openehr_opt.namespaces.default')
 
-      println report.errors
+      //println report.errors
 
       assert !report.errors
    }
@@ -190,10 +194,10 @@ class ValidationFlowTest extends GroovyTestCase {
          }
       /$
 
-      def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
-      EhrStatus status = parser.parseEhrStatus(json_ehr_status)
+      def parser = new OpenEhrJsonParser(true) // NOTE: does RM schema validation not API
+      EhrStatus status = parser.parseEhrStatus(json_ehr_status) // NOTE: this parses OK because it doesn't verifies the OPT constraints
 
-      println parser.getJsonValidationErrors()
+      //println parser.getJsonValidationErrors()
       assert status
 
 
@@ -207,7 +211,7 @@ class ValidationFlowTest extends GroovyTestCase {
       RmValidator validator = new RmValidator(opt_manager)
       RmValidationReport report = validator.dovalidate(status, 'com.cabolabs.openehr_opt.namespaces.default')
 
-      println report.errors
+      //println report.errors
 
       assert report.errors
       assert report.errors[0].error == "type 'ITEM_LIST' is not allowed here, it should be in [ITEM_TREE]"
@@ -613,6 +617,39 @@ class ValidationFlowTest extends GroovyTestCase {
       // SETUP RM VALIDATOR
       RmValidator validator = new RmValidator(opt_manager)
       RmValidationReport report = validator.dovalidate(person, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      println report.errors
+
+      assert !report.errors
+   }
+
+   void test_organization_valid()
+   {
+      // PARSE JSON WITH RM SCHEMA VALIDATION
+      String path = PS +"canonical_json"+ PS +"generic_organization.json"
+	   File file = new File(getClass().getResource(path).toURI())
+      def json_organization = file.text
+
+      def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
+      Organization organization = parser.parseJson(json_organization)
+
+      println organization
+
+      println parser.getJsonValidationErrors()
+      
+      assert organization
+
+
+
+      // SETUP OPT REPO
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+
+      // SETUP RM VALIDATOR
+      RmValidator validator = new RmValidator(opt_manager)
+      RmValidationReport report = validator.dovalidate(organization, 'com.cabolabs.openehr_opt.namespaces.default')
 
       println report.errors
 
