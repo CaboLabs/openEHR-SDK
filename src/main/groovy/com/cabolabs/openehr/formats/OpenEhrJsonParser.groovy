@@ -43,6 +43,7 @@ class OpenEhrJsonParser {
    def jsonValidator
 
    def schemaValidate
+   def schemaFlavor = "rm" // rm | api
 
    // https://javadoc.io/doc/com.networknt/json-schema-validator/1.0.51/com/networknt/schema/ValidationMessage.html
    // Set<ValidationMessage>
@@ -52,6 +53,16 @@ class OpenEhrJsonParser {
    def OpenEhrJsonParser(boolean schemaValidate = false)
    {
       this.schemaValidate = schemaValidate
+   }
+
+   def setSchemaFlavorAPI()
+   {
+      this.schemaFlavor = "api"
+   }
+
+   def setSchemaFlavorRM()
+   {
+      this.schemaFlavor = "rm"
    }
 
    def getJsonValidationErrors()
@@ -79,7 +90,7 @@ class OpenEhrJsonParser {
             throw new Exception("archetype_details.rm_version is required for the root of any archetypable class")
          }
 
-         this.jsonValidator = new JsonInstanceValidation('rm', map.archetype_details.rm_version)
+         this.jsonValidator = new JsonInstanceValidation(this.schemaFlavor, map.archetype_details.rm_version)
          
          def errors = jsonValidator.validate(json)
          if (errors)
@@ -108,8 +119,8 @@ class OpenEhrJsonParser {
          //    throw new Exception("archetype_details.rm_version is required for the root of any archetypable class")
          // }
 
-         //this.jsonValidator = new JsonInstanceValidation('rm', map.archetype_details.rm_version)
-         this.jsonValidator = new JsonInstanceValidation() // NOTE: this uses the default rm and 1.0.2 version schema!
+         //this.jsonValidator = new JsonInstanceValidation(this.schemaFlavor, map.archetype_details.rm_version)
+         this.jsonValidator = new JsonInstanceValidation(this.schemaFlavor) // FIXME: this uses the default 1.0.2 version schema!
          
          def errors = jsonValidator.validate(json)
          if (errors)
@@ -169,7 +180,7 @@ class OpenEhrJsonParser {
             throw new Exception("archetype_details.rm_version is required for the root of any archetypable class")
          }
 
-         this.jsonValidator = new JsonInstanceValidation('rm', map.archetype_details.rm_version)
+         this.jsonValidator = new JsonInstanceValidation(this.schemaFlavor, map.archetype_details.rm_version)
          
          def errors = jsonValidator.validate(json)
          if (errors)
@@ -198,7 +209,7 @@ class OpenEhrJsonParser {
          }
 
          // TODO: the schema flavor should be a parameter: rm | api
-         this.jsonValidator = new JsonInstanceValidation('rm', map.archetype_details.rm_version)
+         this.jsonValidator = new JsonInstanceValidation(this.schemaFlavor, map.archetype_details.rm_version)
          
          def errors = jsonValidator.validate(json)
          if (errors)
@@ -241,7 +252,7 @@ class OpenEhrJsonParser {
             throw new Exception("archetype_details.rm_version is required for the root of any archetypable class")
          }
 
-         this.jsonValidator = new JsonInstanceValidation('rm', map.archetype_details.rm_version)
+         this.jsonValidator = new JsonInstanceValidation(this.schemaFlavor, map.archetype_details.rm_version)
          
          def errors = jsonValidator.validate(json)
          if (errors)
