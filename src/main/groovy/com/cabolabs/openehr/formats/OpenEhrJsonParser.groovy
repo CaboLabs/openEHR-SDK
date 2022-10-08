@@ -66,6 +66,7 @@ class OpenEhrJsonParser {
 
    // ========= ENTRY POINTS =========
 
+   /*
    Folder parseFolder(String json)
    {
       def slurper = new JsonSlurper()
@@ -90,6 +91,7 @@ class OpenEhrJsonParser {
 
       return this.parseFOLDER(map, null, '/', '/')
    }
+   */
 
    // EHR RM parse, ehr_status is OBJECT_REF
    Ehr parseEhr(String json)
@@ -139,7 +141,7 @@ class OpenEhrJsonParser {
       {
          // TODO: implement parseEhrStatus
          //log.warn("Not parsed EHR_STATUS: this parser is based on the RM and the model is based on the REST API model. The status should be parsed separatelly")
-         def ehr_status = this.parseEhrStatus(map.ehr_status)
+         def ehr_status = this.parseEHR_STATUS(map.ehr_status, ehr, "/ehr_status", "/ehr_status")
          ehr.ehr_status = new ObjectRef(
             namespace: 'EHR',
             type: 'EHR_STATUS',
@@ -154,6 +156,7 @@ class OpenEhrJsonParser {
 
    // This is to parse the API POST /ehr payload
    // FIXME: shouldn't this be done in parseLocatable?
+   /*
    EhrStatus parseEhrStatus(String json)
    {
       def slurper = new JsonSlurper()
@@ -178,6 +181,7 @@ class OpenEhrJsonParser {
 
       return parseEHR_STATUS(map)
    }
+   */
 
    // used to parse compositions and other descendant from Locatable
    // TODO: FOLDER and EHR_STATUS are above, we might need to use this one instead
@@ -631,7 +635,7 @@ class OpenEhrJsonParser {
       return pi
    }
 
-   private EhrStatus parseEHR_STATUS(Map map)
+   private EhrStatus parseEHR_STATUS(Map map, Pathable parent, String path, String dataPath)
    {
       def status = new EhrStatus()
 

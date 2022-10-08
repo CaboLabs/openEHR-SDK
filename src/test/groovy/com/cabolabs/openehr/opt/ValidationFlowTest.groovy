@@ -65,7 +65,7 @@ class ValidationFlowTest extends GroovyTestCase {
       /$
 
       def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
-      EhrStatus status = parser.parseEhrStatus(json_ehr_status)
+      EhrStatus status = parser.parseJson(json_ehr_status)
 
       assert status
 
@@ -128,7 +128,7 @@ class ValidationFlowTest extends GroovyTestCase {
       /$
 
       def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
-      EhrStatus status = parser.parseEhrStatus(json_ehr_status)
+      EhrStatus status = parser.parseJson(json_ehr_status)
 
       //println parser.getJsonValidationErrors()
       assert status
@@ -195,7 +195,7 @@ class ValidationFlowTest extends GroovyTestCase {
       /$
 
       def parser = new OpenEhrJsonParser(true) // NOTE: does RM schema validation not API
-      EhrStatus status = parser.parseEhrStatus(json_ehr_status) // NOTE: this parses OK because it doesn't verifies the OPT constraints
+      EhrStatus status = parser.parseJson(json_ehr_status) // NOTE: this parses OK because it doesn't verifies the OPT constraints
 
       //println parser.getJsonValidationErrors()
       assert status
@@ -245,7 +245,7 @@ class ValidationFlowTest extends GroovyTestCase {
       /$
 
       def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
-      Folder folder = parser.parseFolder(json_folder)
+      Folder folder = parser.parseJson(json_folder)
 
       assert folder
 
@@ -297,7 +297,7 @@ class ValidationFlowTest extends GroovyTestCase {
       /$
 
       def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
-      Folder folder = parser.parseFolder(json_folder)
+      Folder folder = parser.parseJson(json_folder)
 
       assert folder
 
@@ -413,7 +413,7 @@ class ValidationFlowTest extends GroovyTestCase {
       /$
 
       def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
-      Folder folder = parser.parseFolder(json_folder)
+      Folder folder = parser.parseJson(json_folder)
 
       assert folder
 
@@ -451,7 +451,7 @@ class ValidationFlowTest extends GroovyTestCase {
       // NOTE: the exception happens here because the parser does a schema validation which requires to know the archetype_details.rm_version
       //       we need to create an insteance of the RM Folder to test the RmValidator also fails if the archetype_details is not there
       shouldFail {
-         parser.parseFolder(json_folder)
+         parser.parseJson(json_folder)
       }
    }
 
@@ -600,9 +600,9 @@ class ValidationFlowTest extends GroovyTestCase {
       def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
       Person person = parser.parseJson(json_person)
 
-      println person
+      //println person
 
-      println parser.getJsonValidationErrors()
+      //println parser.getJsonValidationErrors()
       
       assert person
 
@@ -618,7 +618,7 @@ class ValidationFlowTest extends GroovyTestCase {
       RmValidator validator = new RmValidator(opt_manager)
       RmValidationReport report = validator.dovalidate(person, 'com.cabolabs.openehr_opt.namespaces.default')
 
-      println report.errors
+      //println report.errors
 
       assert !report.errors
    }
@@ -633,9 +633,9 @@ class ValidationFlowTest extends GroovyTestCase {
       def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
       Organization organization = parser.parseJson(json_organization)
 
-      println organization
+      //println organization
 
-      println parser.getJsonValidationErrors()
+      //println parser.getJsonValidationErrors()
       
       assert organization
 
@@ -651,7 +651,7 @@ class ValidationFlowTest extends GroovyTestCase {
       RmValidator validator = new RmValidator(opt_manager)
       RmValidationReport report = validator.dovalidate(organization, 'com.cabolabs.openehr_opt.namespaces.default')
 
-      println report.errors
+      //println report.errors
 
       assert !report.errors
    }
