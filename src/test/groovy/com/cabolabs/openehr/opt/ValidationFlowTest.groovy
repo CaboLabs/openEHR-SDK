@@ -752,7 +752,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
       //println person
 
-      //println parser.getJsonValidationErrors()
+      println parser.getJsonValidationErrors()
       
       assert person
 

@@ -175,7 +175,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       /$
 
       def parser = new OpenEhrJsonParser()
-      EhrStatus status = parser.parseEhrStatus(json_ehr_status)
+      EhrStatus status = parser.parseJson(json_ehr_status)
 
       assert status.archetype_node_id == "openEHR-EHR-EHR_STATUS.generic.v1"
       assert status.name.value == "EHR Status"
@@ -229,7 +229,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       /$
 
       def parser = new OpenEhrJsonParser(true)
-      EhrStatus status = parser.parseEhrStatus(json_ehr_status)
+      EhrStatus status = parser.parseJson(json_ehr_status)
 
       assert !status
       

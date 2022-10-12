@@ -148,7 +148,7 @@ class OpenEhrJsonParser {
       {
          // TODO: implement parseEhrStatus
          //log.warn("Not parsed EHR_STATUS: this parser is based on the RM and the model is based on the REST API model. The status should be parsed separatelly")
-         def ehr_status = this.parseEHR_STATUS(map.ehr_status, ehr, "/ehr_status", "/ehr_status")
+         def ehr_status = this.parseEHR_STATUS(map.ehr_status)
          ehr.ehr_status = new ObjectRef(
             namespace: 'EHR',
             type: 'EHR_STATUS',
@@ -189,8 +189,7 @@ class OpenEhrJsonParser {
 
       ehr.time_created = this.parseDV_DATE_TIME(map.time_created)
 
-      // FIXME: this doesn't work because EhrDto is not Pathable
-      ehr.ehr_status = this.parseEHR_STATUS(map.ehr_status, ehr, "/ehr_status", "/ehr_status")
+      ehr.ehr_status = this.parseEHR_STATUS(map.ehr_status)
 
       return ehr
    }
@@ -260,7 +259,7 @@ class OpenEhrJsonParser {
       Locatable out
       try
       {
-         out = this."$method"(map, null, '/', '/')
+         out = this."$method"(map) //, null, '/', '/') // TOP level LOCATABLEs shouldn't have parent or paths
       }
       catch (Exception e)
       {
@@ -632,20 +631,20 @@ class OpenEhrJsonParser {
 
    // ========= PARSE METHODS =========
 
-   private Person parsePERSON(Map map, Pathable parent, String path, String dataPath)
+   private Person parsePERSON(Map map)
    {
       def person = new Person()
 
-      this.fillACTOR(person, map, parent, path, dataPath)
+      this.fillACTOR(person, map, null, '/', '/')
 
       return person
    }
 
-   private Organization parseORGANISATION(Map map, Pathable parent, String path, String dataPath)
+   private Organization parseORGANISATION(Map map)
    {
       def organization = new Organization()
 
-      this.fillACTOR(organization, map, parent, path, dataPath)
+      this.fillACTOR(organization, map, null, '/', '/')
 
       return organization
    }
@@ -676,7 +675,8 @@ class OpenEhrJsonParser {
       return pi
    }
 
-   private EhrStatus parseEHR_STATUS(Map map, Pathable parent, String path, String dataPath)
+   // NOTE: parseEHR_STATUS is a top level class so it doesn't have a Pathable parent and the path is /
+   private EhrStatus parseEHR_STATUS(Map map)
    {
       def status = new EhrStatus()
 
@@ -699,7 +699,77 @@ class OpenEhrJsonParser {
       return status
    }
 
-   private Folder parseFOLDER(Map json, Pathable parent, String path, String dataPath)
+   private Composition parseCOMPOSITION(Map json)
+   {
+      Composition compo = new Composition()
+
+      this.fillLOCATABLE(compo, json, null, '/', '/')
+      
+      compo.language  = this.parseCODE_PHRASE(json.language)
+      compo.territory = this.parseCODE_PHRASE(json.territory)
+      compo.category  = this.parseDV_CODED_TEXT(json.category)
+      
+      String type, method
+      
+      type = json.composer._type // party proxy or descendants
+      if (!type)
+      {
+         throw new JsonCompositionParseException("_type required for /composer")
+      }
+      method = 'parse'+ type
+      compo.composer = this."$method"(json.composer)
+      
+      compo.context = parseEVENT_CONTEXT(json.context, compo,
+                                         '/context',
+                                         '/context')
+      
+      def content = []
+      
+      json.content.eachWithIndex { content_item, i ->
+         type = content_item._type
+         if (!type)
+         {
+            throw new JsonCompositionParseException("_type required for /content[$i]")
+         }
+         method = 'parse'+ type
+         compo.content.add(
+            this."$method"(content_item, compo,
+                           '/content',
+                           '/content['+ i +']')
+         )
+      }
+      
+      return compo
+   }
+
+   // This will parse the top level directory that doesn't have a LOCATABLE parent
+   private Folder parseFOLDER(Map json)
+   {
+      def folder = new Folder()
+
+      this.fillLOCATABLE(folder, json, null, '/', '/')
+
+      if (json.items)
+      {
+         folder.items = []
+         json.items.eachWithIndex { item, i ->
+            folder.items << this.parseOBJECT_REF(item)
+         }
+      }
+
+      if (json.folders)
+      {
+         folder.folders = []
+         json.folders.eachWithIndex { subfolder, i ->
+            folder.folders << this.parseFOLDER(subfolder, folder, '/folders', '/folders['+ i +']')
+         }
+      }
+
+      return folder
+   }
+
+   // This will parse subfolders with a parent Locatable folder
+   private Folder parseFOLDER(Map json, Locatable parent, String path, String dataPath)
    {
       def folder = new Folder()
 
@@ -718,8 +788,7 @@ class OpenEhrJsonParser {
          folder.folders = []
          json.folders.eachWithIndex { subfolder, i ->
             folder.folders << this.parseFOLDER(
-               subfolder,
-               folder,
+               subfolder, folder,
                (path != '/' ? path +'/folders' : '/folders'),
                (dataPath != '/' ? dataPath +'/folders['+ i +']' : '/folders['+ i +']')
             )
@@ -770,7 +839,7 @@ class OpenEhrJsonParser {
             throw new JsonCompositionParseException("_type required for "+ dataPath +".data")
          }
          def method = 'parse'+ type
-         ov.data = this."$method"(json.data, null, '/', '/')
+         ov.data = this."$method"(json.data)
       }
       
       return ov
@@ -850,50 +919,7 @@ class OpenEhrJsonParser {
    }
 
       
-   private Composition parseCOMPOSITION(Map json, Pathable parent, String path, String dataPath)
-   {
-      Composition compo = new Composition()
-
-      this.fillLOCATABLE(compo, json, parent, path, dataPath)
-      
-      compo.language  = this.parseCODE_PHRASE(json.language)
-      compo.territory = this.parseCODE_PHRASE(json.territory)
-      compo.category  = this.parseDV_CODED_TEXT(json.category)
-      
-      String type, method
-      
-      type = json.composer._type // party proxy or descendants
-      if (!type)
-      {
-         throw new JsonCompositionParseException("_type required for "+ dataPath +".composer")
-      }
-      method = 'parse'+ type
-      compo.composer = this."$method"(json.composer)
-      
-      compo.context = parseEVENT_CONTEXT(json.context, compo,
-                                         (path != '/' ? path +'/context' : '/context'),
-                                         (dataPath != '/' ? dataPath +'/context' : '/context')
-                                        )
-      
-      def content = []
-      
-      json.content.eachWithIndex { content_item, i ->
-         type = content_item._type
-         if (!type)
-         {
-            throw new JsonCompositionParseException("_type required for "+ dataPath +".content[$i]")
-         }
-         method = 'parse'+ type
-         compo.content.add(
-            this."$method"(content_item, compo,
-                           (path != '/' ? path +'/content' : '/content'),
-                           (dataPath != '/' ? dataPath +'/content['+ i +']' : '/content['+ i +']')
-                          )
-         )
-      }
-      
-      return compo
-   }
+   
 
    private ReferenceRange parseREFERENCE_RANGE(Map json)
    {

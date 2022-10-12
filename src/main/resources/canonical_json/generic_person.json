@@ -1,5 +1,9 @@
 {
    "_type": "PERSON",
+   "uid": {
+      "_type": "OBJECT_VERSION_ID",
+      "value": "06186c04-06a7-4ea8-aee7-4366c34760a4::com.cabolabs.demographic::1"
+    },
    "name": {
        "_type": "DV_TEXT",
        "value": "generic person"

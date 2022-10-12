@@ -2589,6 +2589,7 @@
         "PERSON": {
             "type": "object",
             "required": [
+                "uid",
                 "archetype_node_id",
                 "archetype_details",
                 "name",
@@ -5896,6 +5897,7 @@
         "ROLE": {
             "type": "object",
             "required": [
+                "uid",
                 "archetype_node_id",
                 "archetype_details",
                 "name",
@@ -6137,6 +6139,7 @@
         "AGENT": {
             "type": "object",
             "required": [
+                "uid",
                 "archetype_node_id",
                 "archetype_details",
                 "name",
@@ -6604,6 +6607,7 @@
         "GROUP": {
             "type": "object",
             "required": [
+                "uid",
                 "archetype_node_id",
                 "archetype_details",
                 "name",
@@ -10738,6 +10742,7 @@
         "ORGANISATION": {
             "type": "object",
             "required": [
+                "uid",
                 "archetype_node_id",
                 "archetype_details",
                 "name",

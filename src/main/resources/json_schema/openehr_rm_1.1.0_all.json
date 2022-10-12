@@ -2786,6 +2786,7 @@
             "required": [
                 "uid",
                 "archetype_node_id",
+                "archetype_details",
                 "name",
                 "identities"
             ],
@@ -6208,6 +6209,7 @@
             "required": [
                 "uid",
                 "archetype_node_id",
+                "archetype_details",
                 "name",
                 "identities",
                 "performer"
@@ -6449,6 +6451,7 @@
             "required": [
                 "uid",
                 "archetype_node_id",
+                "archetype_details",
                 "name",
                 "identities"
             ],
@@ -6916,6 +6919,7 @@
             "required": [
                 "uid",
                 "archetype_node_id",
+                "archetype_details",
                 "name",
                 "identities"
             ],
@@ -11272,6 +11276,7 @@
             "required": [
                 "uid",
                 "archetype_node_id",
+                "archetype_details",
                 "name",
                 "identities"
             ],

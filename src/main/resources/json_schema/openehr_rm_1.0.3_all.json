@@ -2671,10 +2671,9 @@
             "required": [
                 "uid",
                 "archetype_node_id",
+                "archetype_details",
                 "name",
-                "identities",
-                "roles",
-                "languages"
+                "identities"
             ],
             "properties": {
                 "uid": {
@@ -5980,6 +5979,7 @@
             "required": [
                 "uid",
                 "archetype_node_id",
+                "archetype_details",
                 "name",
                 "identities",
                 "performer"
@@ -6221,10 +6221,9 @@
             "required": [
                 "uid",
                 "archetype_node_id",
+                "archetype_details",
                 "name",
-                "identities",
-                "roles",
-                "languages"
+                "identities"
             ],
             "properties": {
                 "uid": {
@@ -6690,10 +6689,9 @@
             "required": [
                 "uid",
                 "archetype_node_id",
+                "archetype_details",
                 "name",
-                "identities",
-                "roles",
-                "languages"
+                "identities"
             ],
             "properties": {
                 "uid": {
@@ -10884,10 +10882,9 @@
             "required": [
                 "uid",
                 "archetype_node_id",
+                "archetype_details",
                 "name",
-                "identities",
-                "roles",
-                "languages"
+                "identities"
             ],
             "properties": {
                 "uid": {
