@@ -519,6 +519,15 @@ class Main {
                   case 'ORGANISATION':
                      instance = generator.generateOrganizationFromOPT(opt)
                   break
+                  case 'AGENT':
+                     instance = generator.generateAgentFromOPT(opt)
+                  break
+                  case 'GROUP':
+                     instance = generator.generateGroupFromOPT(opt)
+                  break
+                  case 'ROLE':
+                     instance = generator.generateRoleFromOPT(opt)
+                  break
                   default:
                      throw new Exception("Type ${opt.definition.rmTypeName} not supported yet")
                      // TODO: EHR_STATUS, FOLDER, AGENT, GROUP, ROLE

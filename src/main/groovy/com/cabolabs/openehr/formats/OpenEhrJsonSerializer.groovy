@@ -134,7 +134,6 @@ class OpenEhrJsonSerializer {
       if (a.roles)
       {
          out.roles = []
-
          a.roles.each { party_ref ->
 
             out.roles << this.serializePartyRef(party_ref)
@@ -300,19 +299,41 @@ class OpenEhrJsonSerializer {
       return out
    }
 
+   private Map serializeAgent(Agent a)
+   {
+      def out = [:]
+
+      out._type = 'AGENT'
+
+      this.fillActor(a, out)
+
+      return out
+   }
+
+   private Map serializeGroup(Group g)
+   {
+      def out = [:]
+
+      out._type = 'GROUP'
+
+      this.fillActor(g, out)
+
+      return out
+   }
+
    private Map serializeRole(Role r)
    {
       def out = [:]
 
       out._type = 'ROLE'
 
-      this.fillActor(r, out)
+      this.fillParty(r, out)
+
+      out.performer = this.serializePartyRef(r.performer)
 
       return out
    }
-
-   // TODO: Group
-   // TODO: Agent
+   
    // TODO: capability
 
    private Map serializeContact(Contact c)

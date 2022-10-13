@@ -3,6 +3,8 @@ package com.cabolabs.openehr.opt.instance_generator
 import com.cabolabs.openehr.opt.model.*
 import java.time.LocalDate
 import java.time.temporal.WeekFields
+import com.cabolabs.openehr.rm_1_0_2.support.identification.PartyRef
+import com.cabolabs.openehr.rm_1_0_2.support.identification.HierObjectId
 
 class DataGenerator {
    
@@ -111,5 +113,16 @@ class DataGenerator {
       value = new Random().nextDouble() * (hi - lo) + lo // random between lo .. hi
 
       return value
+   }
+
+   static PartyRef random_party_ref(String demographicType = "PERSON")
+   {
+      new PartyRef(
+         namespace: 'com.cabolabs.demographic',
+         type: demographicType,
+         id: new HierObjectId(
+            value: java.util.UUID.randomUUID().toString()
+         )
+      )
    }
 }

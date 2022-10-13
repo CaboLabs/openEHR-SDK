@@ -640,6 +640,24 @@ class OpenEhrJsonParser {
       return person
    }
 
+   private Agent parseAGENT(Map map)
+   {
+      def agent = new Agent()
+
+      this.fillACTOR(agent, map, null, '/', '/')
+
+      return agent
+   }
+
+   private Group parseGROUP(Map map)
+   {
+      def group = new Group()
+
+      this.fillACTOR(group, map, null, '/', '/')
+
+      return group
+   }
+
    private Organization parseORGANISATION(Map map)
    {
       def organization = new Organization()
@@ -647,6 +665,15 @@ class OpenEhrJsonParser {
       this.fillACTOR(organization, map, null, '/', '/')
 
       return organization
+   }
+
+   private Role parseROLE(Map map)
+   {
+      def role = new Role()
+
+      this.fillPARTY(role, map, null, '/', '/')
+
+      return role
    }
 
    private PartyIdentity parsePARTY_IDENTITY(Map map, Pathable parent, String path, String dataPath)

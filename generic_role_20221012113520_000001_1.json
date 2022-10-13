@@ -1,0 +1,84 @@
+{
+    "_type": "ROLE",
+    "name": {
+        "_type": "DV_TEXT",
+        "value": "generic role"
+    },
+    "archetype_details": {
+        "archetype_id": {
+            "_type": "ARCHETYPE_ID",
+            "value": "openEHR-DEMOGRAPHIC-ROLE.generic_role.v1"
+        },
+        "template_id": {
+            "_type": "TEMPLATE_ID",
+            "value": "generic_role"
+        },
+        "rm_version": "1.0.2"
+    },
+    "archetype_node_id": "openEHR-DEMOGRAPHIC-ROLE.generic_role.v1",
+    "details": {
+        "_type": "ITEM_TREE",
+        "name": {
+            "_type": "DV_TEXT",
+            "value": "tree"
+        },
+        "archetype_node_id": "at0001",
+        "items": [
+            {
+                "_type": "ELEMENT",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "identifier"
+                },
+                "archetype_node_id": "at0002",
+                "value": {
+                    "_type": "DV_IDENTIFIER",
+                    "issuer": "",
+                    "assigner": "Hospital de Clinicas",
+                    "id": "",
+                    "type": ""
+                }
+            }
+        ]
+    },
+    "identities": [
+        {
+            "_type": "PARTY_IDENTITY",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "identity"
+            },
+            "archetype_node_id": "at0004",
+            "details": {
+                "_type": "ITEM_TREE",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "tree"
+                },
+                "archetype_node_id": "at0005",
+                "items": [
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "name"
+                        },
+                        "archetype_node_id": "at0006",
+                        "value": {
+                            "_type": "DV_TEXT",
+                            "value": "UfK,tz ELMpnauYQZRsdEo.CVzKblZcRPXqEksflVmLgruOhLe,.CiUScBdncwwLWzFFZkWnhuqnoeGGXizCHMFNRdKDtAPlqwPoJOSnPdTwJyONfVYzt BEXRwkHiuqzLJlMBEWUDbLEsjBMzQLhNcVBK asYfvukHq rSaDVqO.vKehumnkK.JSFnXy LlOhNgLGdQBTpPBH PyoqnopHvdN.HPpyMIPX ghgEAa.W.YrwoehURJh.SdZuwoPHCohIPZpFJTrYNFmAepLMZfUMOY E,JfP MOBuswnFcWq"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "performer": {
+        "id": {
+            "_type": "HIER_OBJECT_ID",
+            "value": "037259c0-e3b1-4927-82f9-3646ba24ecee"
+        },
+        "namespace": "com.cabolabs.demographic",
+        "type": "PERSON"
+    }
+}

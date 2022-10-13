@@ -270,6 +270,27 @@ class RmInstanceGenerator {
       return generatePerson()
    }
 
+   Agent generateAgentFromOPT(OperationalTemplate opt)
+   {
+      this.opt = opt
+
+      return generateAgent()
+   }
+
+   Group generateGroupFromOPT(OperationalTemplate opt)
+   {
+      this.opt = opt
+
+      return generateGroup()
+   }
+
+   Role generateRoleFromOPT(OperationalTemplate opt)
+   {
+      this.opt = opt
+
+      return generateRole()
+   }
+
    Organization generateOrganizationFromOPT(OperationalTemplate opt)
    {
       this.opt = opt
@@ -1165,6 +1186,24 @@ class RmInstanceGenerator {
       add_PARTY_elements(o, a, parent_arch_id)
 
       // TODO: if there are constraints for languages, consider those
+      def oa = opt.definition.attributes.find{ it.rmAttributeName == 'languages' }
+      if (oa)
+      {
+         def languages = processAttributeChildren(oa, opt.definition.archetypeId)
+
+         // it is possible the cardinality upper is lower than the items generated because there are more alternatives
+         // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
+         if (oa.cardinality && oa.cardinality.interval.upper)
+         {
+            languages = languages.take(oa.cardinality.interval.upper)
+         }
+
+         a.languages = languages
+      }
+
+      // TODO: consider if there are constraints for roles (I don't think it makes sense because the reference would probably be set at runtime)
+      // NOTE: in 1.0.2 roles is 1..*
+      a.roles << DataGenerator.random_party_ref('ROLE')
    }
 
    /**
@@ -1245,7 +1284,7 @@ class RmInstanceGenerator {
       
       add_PARTY_elements(opt.definition, role, opt.definition.archetypeId)
 
-      def oa = o.attributes.find{ it.rmAttributeName == 'capabilities' }
+      def oa = opt.definition.attributes.find{ it.rmAttributeName == 'capabilities' }
 
       if (oa)
       {
@@ -1262,6 +1301,9 @@ class RmInstanceGenerator {
       }
 
       // TODO: if there are constraints for time_validity, consider those
+
+      // Generate a dummy mandatory performer PARTY_REF
+      role.performer = DataGenerator.random_party_ref()
 
       return role
    }

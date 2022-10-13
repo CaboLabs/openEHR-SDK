@@ -210,6 +210,78 @@ class RmValidator {
          }
       }
 
+      // TODO: languages
+      // TODO: roles
+
+      return report
+   }
+
+   private RmValidationReport validate(Role role, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // the attributes that are optional in the opt should be checked by the parent to avoid calling
+      // with null because polymorphism can't find the right method. Also if the constraint is null,
+      // anything matches.
+      def a_details = o.getAttr('details')
+      if (a_details)
+      {
+         if (role.details)
+         {
+            // Validate the type in the instance is allowed by the template
+            // FIXME: the type validation should be implemented on the rest of the validators!
+            //def allowed_types = a_other_details.children*.rmTypeName
+            //if (!allowed_types.contains(classToRm(e.other_details.getClass().getSimpleName())))
+            if (checkAllowedType(a_details, role.details, report)) // only continue if the type is allowed
+            {
+               report.append(validate(role.details, a_details))
+            }
+         }
+         else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         {
+            if (!a_details.existence.has(0))
+            {
+               report.addError("/details", "attribute is not present but is required")
+            }
+         }
+      }
+
+      // NOTE: identities is 1..* in the RM
+      def a_identities = o.getAttr('identities')
+      if (a_identities)
+      {
+         if (role.identities != null)
+         {
+            report.append(validate(role.identities, a_identities)) // validate container
+         }
+         else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         {
+            if (!a_identities.existence.has(0))
+            {
+               report.addError("/identities", "attribute is not present but is required")
+            }
+         }
+      }
+
+      def a_contacts = o.getAttr('contacts')
+      if (a_contacts)
+      {
+         if (role.contacts != null)
+         {
+            report.append(validate(role.contacts, a_contacts)) // validate container
+         }
+         else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         {
+            if (!a_contacts.existence.has(0))
+            {
+               report.addError("/contacts", "attribute is not present but is required")
+            }
+         }
+      }
+
+      // TODO: time_validity
+      // TODO: performer
+
       return report
    }
 

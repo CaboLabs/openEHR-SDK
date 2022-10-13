@@ -30,11 +30,11 @@
     </details>
   </description>
   <template_id>
-    <value>generic_person</value>
+    <value>generic_agent</value>
   </template_id>
   <concept>at0000</concept>
   <definition>
-    <rm_type_name>PERSON</rm_type_name>
+    <rm_type_name>AGENT</rm_type_name>
     <occurrences>
       <lower_included>true</lower_included>
       <upper_included>true</upper_included>
@@ -319,14 +319,14 @@
       </cardinality>
     </attributes>
     <archetype_id>
-      <value>openEHR-DEMOGRAPHIC-PERSON.generic_person.v1</value>
+      <value>openEHR-DEMOGRAPHIC-AGENT.generic_agent.v1</value>
     </archetype_id>
     <template_id>
-      <value>generic_person</value>
+      <value>generic_agent</value>
     </template_id>
     <term_definitions code="at0000">
-      <items id="description">generic person</items>
-      <items id="text">generic person</items>
+      <items id="description">generic agent</items>
+      <items id="text">generic agent</items>
     </term_definitions>
     <term_definitions code="at0001">
       <items id="description" />

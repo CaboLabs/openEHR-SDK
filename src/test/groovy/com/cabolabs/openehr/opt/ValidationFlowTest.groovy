@@ -806,4 +806,103 @@ class ValidationFlowTest extends GroovyTestCase {
 
       assert !report.errors
    }
+
+   void test_group_valid()
+   {
+      // PARSE JSON WITH RM SCHEMA VALIDATION
+      String path = PS +"canonical_json"+ PS +"generic_group.json"
+	   File file = new File(getClass().getResource(path).toURI())
+      def json_group = file.text
+
+      def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
+      Group group = parser.parseJson(json_group)
+
+      //println person
+
+      println parser.getJsonValidationErrors()
+      
+      assert group
+
+
+
+      // SETUP OPT REPO
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+
+      // SETUP RM VALIDATOR
+      RmValidator validator = new RmValidator(opt_manager)
+      RmValidationReport report = validator.dovalidate(group, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      //println report.errors
+
+      assert !report.errors
+   }
+
+   void test_agent_valid()
+   {
+      // PARSE JSON WITH RM SCHEMA VALIDATION
+      String path = PS +"canonical_json"+ PS +"generic_agent.json"
+	   File file = new File(getClass().getResource(path).toURI())
+      def json_agent = file.text
+
+      def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
+      Agent agent = parser.parseJson(json_agent)
+
+      // FIXME: this should fail because the uid is mandatory and it's not in the JSON
+
+      println parser.getJsonValidationErrors()
+      
+      assert agent
+
+
+
+      // SETUP OPT REPO
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+
+      // SETUP RM VALIDATOR
+      RmValidator validator = new RmValidator(opt_manager)
+      RmValidationReport report = validator.dovalidate(agent, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      println report.errors
+
+      assert !report.errors
+   }
+
+   void test_role_valid()
+   {
+      // PARSE JSON WITH RM SCHEMA VALIDATION
+      String path = PS +"canonical_json"+ PS +"generic_role.json"
+	   File file = new File(getClass().getResource(path).toURI())
+      def json_role = file.text
+
+      def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
+      Role role = parser.parseJson(json_role)
+
+      //println person
+
+      println parser.getJsonValidationErrors()
+      
+      assert role
+
+
+
+      // SETUP OPT REPO
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+
+      // SETUP RM VALIDATOR
+      RmValidator validator = new RmValidator(opt_manager)
+      RmValidationReport report = validator.dovalidate(role, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      //println report.errors
+
+      assert !report.errors
+   }
 }
