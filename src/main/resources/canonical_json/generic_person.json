@@ -11,7 +11,7 @@
    "archetype_details": {
        "archetype_id": {
            "_type": "ARCHETYPE_ID",
-           "value": "openEHR-DEMOGRAPHIC-PERSON.genericperson.v1"
+           "value": "openEHR-DEMOGRAPHIC-PERSON.generic_person.v1"
        },
        "template_id": {
            "_type": "TEMPLATE_ID",
@@ -19,7 +19,7 @@
        },
        "rm_version": "1.0.2"
    },
-   "archetype_node_id": "openEHR-DEMOGRAPHIC-PERSON.genericperson.v1",
+   "archetype_node_id": "openEHR-DEMOGRAPHIC-PERSON.generic_person.v1",
    "details": {
        "_type": "ITEM_TREE",
        "name": {

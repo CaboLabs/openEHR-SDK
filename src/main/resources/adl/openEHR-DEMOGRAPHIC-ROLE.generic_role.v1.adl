@@ -1,0 +1,95 @@
+archetype (adl_version=1.4)
+    openEHR-DEMOGRAPHIC-ROLE.generic_role.v1
+
+concept
+    [at0000]
+
+language
+    original_language = <[ISO_639-1::en]>
+
+description
+    original_author = <
+        ["date"] = <"2022-09-30">
+    >
+    lifecycle_state = <"Draft">
+    details = <
+        ["en"] = <
+            language = <[ISO_639-1::en]>
+        >
+    >
+
+definition
+    ROLE[at0000] occurrences matches {1..1} matches {  -- generic role
+        details existence matches {0..1} matches {
+            ITEM_TREE[at0001] occurrences matches {0..1} matches {  -- ITEM_TREE
+                items existence matches {0..1} cardinality matches {0..*; unordered; unique} matches {
+                    ELEMENT[at0002] occurrences matches {0..*} matches {  -- ELEMENT
+                        value existence matches {0..1} matches {
+                            DV_IDENTIFIER[at0003] occurrences matches {0..1} matches {  -- DV_IDENTIFIER
+                                issuer existence matches {1..1} matches {""}
+                                type existence matches {1..1} matches {""}
+                                id existence matches {1..1} matches {""}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        identities existence matches {1..1} cardinality matches {1..*} matches {
+	           PARTY_IDENTITY[at0004] occurrences matches {1..*} matches {
+                details existence matches {0..1} matches {
+                    ITEM_TREE[at0005] occurrences matches {0..1} matches {  -- ITEM_TREE
+                        items existence matches {0..1} cardinality matches {0..*; unordered; unique} matches {
+                            ELEMENT[at0006] occurrences matches {0..*} matches {  -- name
+                                value existence matches {0..1} matches {
+                                    DV_TEXT[at0007] occurrences matches {0..1} matches {  -- name value
+                                        value matches {*}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+ontology
+    term_definitions = <
+        ["en"] = <
+            items = <
+                ["at0000"] = <
+                    text = <"generic role">
+                    description = <"">
+                >
+                ["at0001"] = <
+                    text = <"tree">
+                    description = <"">
+                >
+                ["at0002"] = <
+                    text = <"identifier">
+                    description = <"">
+                >
+                ["at0003"] = <
+                    text = <"identifier value">
+                    description = <"">
+                >
+                ["at0004"] = <
+                    text = <"identity">
+                    description = <"">
+                >
+                ["at0005"] = <
+                    text = <"tree">
+                    description = <"">
+                >
+                ["at0006"] = <
+                    text = <"name">
+                    description = <"">
+                >
+                ["at0007"] = <
+                    text = <"name value">
+                    description = <"">
+                >
+            >
+        >
+    >

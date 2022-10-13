@@ -1,5 +1,5 @@
 archetype (adl_version=1.4)
-    openEHR-DEMOGRAPHIC-PERSON.genericperson.v1
+    openEHR-DEMOGRAPHIC-GROUP.generic_group.v1
 
 concept
     [at0000]
@@ -19,7 +19,7 @@ description
     >
 
 definition
-    PERSON[at0000] occurrences matches {1..1} matches {  -- genericperson
+    GROUP[at0000] occurrences matches {1..1} matches {  -- generic group
         details existence matches {0..1} matches {
             ITEM_TREE[at0001] occurrences matches {0..1} matches {  -- ITEM_TREE
                 items existence matches {0..1} cardinality matches {0..*; unordered; unique} matches {
@@ -59,7 +59,7 @@ ontology
         ["en"] = <
             items = <
                 ["at0000"] = <
-                    text = <"generic person">
+                    text = <"generic group">
                     description = <"">
                 >
                 ["at0001"] = <
