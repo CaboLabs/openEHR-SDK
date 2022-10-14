@@ -138,18 +138,6 @@
             "then": {
                 "$ref": "#/definitions/ELEMENT"
             }
-        }
-        {
-            "if": {
-                "properties": {
-                    "_type": {
-                        "const": "CAPABILITY"
-                    }
-                }
-            },
-            "then": {
-                "$ref": "#/definitions/CAPABILITY"
-            }
         },
         {
             "if": {
@@ -161,18 +149,6 @@
             },
             "then": {
                 "$ref": "#/definitions/PERSON"
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "_type": {
-                        "const": "ADDRESS"
-                    }
-                }
-            },
-            "then": {
-                "$ref": "#/definitions/ADDRESS"
             }
         },
         {
@@ -203,12 +179,24 @@
             "if": {
                 "properties": {
                     "_type": {
-                        "const": "PARTY_IDENTITY"
+                        "const": "AGENT"
                     }
                 }
             },
             "then": {
-                "$ref": "#/definitions/PARTY_IDENTITY"
+                "$ref": "#/definitions/AGENT"
+            }
+        },
+        {
+            "if": {
+               "properties": {
+                  "_type": {
+                        "const": "GROUP"
+                  }
+               }
+            },
+            "then": {
+               "$ref": "#/definitions/GROUP"
             }
         },
         {
@@ -552,7 +540,6 @@
                                     "type": "string",
                                     "enum": [
                                         "LOCATABLE_REF",
-                                        "PARTY_REF",
                                         "ACCESS_GROUP_REF",
                                         "OBJECT_REF"
                                     ]
@@ -572,21 +559,6 @@
                             },
                             "then": {
                                 "$ref": "#/definitions/LOCATABLE_REF"
-                            }
-                        },
-                        {
-                            "if": {
-                                "properties": {
-                                    "_type": {
-                                        "const": "PARTY_REF"
-                                    }
-                                },
-                                "required": [
-                                    "_type"
-                                ]
-                            },
-                            "then": {
-                                "$ref": "#/definitions/PARTY_REF"
                             }
                         },
                         {
@@ -641,8 +613,6 @@
                                     "type": "string",
                                     "enum": [
                                         "LOCATABLE_REF",
-                                        "PARTY_REF",
-                                        "ACCESS_GROUP_REF",
                                         "OBJECT_REF"
                                     ]
                                 }
@@ -661,36 +631,6 @@
                             },
                             "then": {
                                 "$ref": "#/definitions/LOCATABLE_REF"
-                            }
-                        },
-                        {
-                            "if": {
-                                "properties": {
-                                    "_type": {
-                                        "const": "PARTY_REF"
-                                    }
-                                },
-                                "required": [
-                                    "_type"
-                                ]
-                            },
-                            "then": {
-                                "$ref": "#/definitions/PARTY_REF"
-                            }
-                        },
-                        {
-                            "if": {
-                                "properties": {
-                                    "_type": {
-                                        "const": "ACCESS_GROUP_REF"
-                                    }
-                                },
-                                "required": [
-                                    "_type"
-                                ]
-                            },
-                            "then": {
-                                "$ref": "#/definitions/ACCESS_GROUP_REF"
                             }
                         },
                         {
@@ -909,8 +849,6 @@
                                         "type": "string",
                                         "enum": [
                                             "LOCATABLE_REF",
-                                            "PARTY_REF",
-                                            "ACCESS_GROUP_REF",
                                             "OBJECT_REF"
                                         ]
                                     }
@@ -929,36 +867,6 @@
                                 },
                                 "then": {
                                     "$ref": "#/definitions/LOCATABLE_REF"
-                                }
-                            },
-                            {
-                                "if": {
-                                    "properties": {
-                                        "_type": {
-                                            "const": "PARTY_REF"
-                                        }
-                                    },
-                                    "required": [
-                                        "_type"
-                                    ]
-                                },
-                                "then": {
-                                    "$ref": "#/definitions/PARTY_REF"
-                                }
-                            },
-                            {
-                                "if": {
-                                    "properties": {
-                                        "_type": {
-                                            "const": "ACCESS_GROUP_REF"
-                                        }
-                                    },
-                                    "required": [
-                                        "_type"
-                                    ]
-                                },
-                                "then": {
-                                    "$ref": "#/definitions/ACCESS_GROUP_REF"
                                 }
                             },
                             {
@@ -10705,6 +10613,7 @@
             "type": "object",
             "required": [
                 "archetype_node_id",
+                "archetype_details",
                 "name"
             ],
             "properties": {
@@ -13766,6 +13675,7 @@
         "DV_EHR_URI": {
             "type": "object",
             "required": [
+               "value"
             ],
             "properties": {
                 "value": {
@@ -14667,6 +14577,7 @@
             "type": "object",
             "required": [
                 "archetype_node_id",
+                "archetype_details",
                 "name",
                 "language",
                 "territory",
@@ -14978,6 +14889,7 @@
             "type": "object",
             "required": [
                 "archetype_node_id",
+                "archetype_details",
                 "name",
                 "subject",
                 "is_queryable",
@@ -15735,57 +15647,9 @@
                                 "_type": {
                                     "type": "string",
                                     "enum": [
-                                        "LOCATABLE_REF",
-                                        "PARTY_REF",
-                                        "ACCESS_GROUP_REF",
                                         "OBJECT_REF"
                                     ]
                                 }
-                            }
-                        },
-                        {
-                            "if": {
-                                "properties": {
-                                    "_type": {
-                                        "const": "LOCATABLE_REF"
-                                    }
-                                },
-                                "required": [
-                                    "_type"
-                                ]
-                            },
-                            "then": {
-                                "$ref": "#/definitions/LOCATABLE_REF"
-                            }
-                        },
-                        {
-                            "if": {
-                                "properties": {
-                                    "_type": {
-                                        "const": "PARTY_REF"
-                                    }
-                                },
-                                "required": [
-                                    "_type"
-                                ]
-                            },
-                            "then": {
-                                "$ref": "#/definitions/PARTY_REF"
-                            }
-                        },
-                        {
-                            "if": {
-                                "properties": {
-                                    "_type": {
-                                        "const": "ACCESS_GROUP_REF"
-                                    }
-                                },
-                                "required": [
-                                    "_type"
-                                ]
-                            },
-                            "then": {
-                                "$ref": "#/definitions/ACCESS_GROUP_REF"
                             }
                         },
                         {
@@ -15906,6 +15770,7 @@
         "DV_URI": {
             "type": "object",
             "required": [
+               "value"
             ],
             "properties": {
                 "value": {
