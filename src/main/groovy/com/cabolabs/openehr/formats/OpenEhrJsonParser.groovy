@@ -252,6 +252,7 @@ class OpenEhrJsonParser {
       
       if (!type)
       {
+         // FIXME: this shouldnt be JsonCOMPOSITIONParseException but JsonLOCATABLEParseException
          throw new JsonCompositionParseException("Can't parse JSON if root node doesn't have a value for _type")
       }
       
@@ -1091,8 +1092,6 @@ class OpenEhrJsonParser {
    
    private ObjectRef parseOBJECT_REF(Map json)
    {
-      //println json
-
       ObjectRef o   = new ObjectRef()
       
       o.namespace   = json.namespace

@@ -143,36 +143,12 @@
             "if": {
                 "properties": {
                     "_type": {
-                        "const": "CAPABILITY"
-                    }
-                }
-            },
-            "then": {
-                "$ref": "#/definitions/CAPABILITY"
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "_type": {
                         "const": "PERSON"
                     }
                 }
             },
             "then": {
                 "$ref": "#/definitions/PERSON"
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "_type": {
-                        "const": "ADDRESS"
-                    }
-                }
-            },
-            "then": {
-                "$ref": "#/definitions/ADDRESS"
             }
         },
         {
@@ -203,12 +179,24 @@
             "if": {
                 "properties": {
                     "_type": {
-                        "const": "PARTY_IDENTITY"
+                        "const": "AGENT"
                     }
                 }
             },
             "then": {
-                "$ref": "#/definitions/PARTY_IDENTITY"
+                "$ref": "#/definitions/AGENT"
+            }
+        },
+        {
+            "if": {
+               "properties": {
+                  "_type": {
+                        "const": "GROUP"
+                  }
+               }
+            },
+            "then": {
+               "$ref": "#/definitions/GROUP"
             }
         },
         {

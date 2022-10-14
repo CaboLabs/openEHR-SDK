@@ -1,5 +1,9 @@
 {
     "_type": "AGENT",
+    "uid": {
+       "_type": "OBJECT_VERSION_ID",
+       "value": "54475504-beac-45cc-b866-314510e20520::com.cabolabs.demographic::1"
+     },
     "name": {
         "_type": "DV_TEXT",
         "value": "generic agent"
