@@ -137,8 +137,7 @@ class ValidationFlowTest extends GroovyTestCase {
       /$
 
       def parser = new OpenEhrJsonParser(true) // does RM schema validation
-      parser.setSchemaFlavorAPI()
-      EhrDto ehr = parser.parseEhrDto(json_ehr) // FIXME: this should be EhrDto
+      EhrDto ehr = parser.parseEhrDto(json_ehr)
 
       println parser.getJsonValidationErrors()
 
@@ -147,6 +146,19 @@ class ValidationFlowTest extends GroovyTestCase {
       assert ehr.time_created.value == "2015-01-20T19:30:22.765+01:00"
 
       assert ehr.ehr_id.value == "70038ea5-464e-4d08-9b55-3975aa796177"
+
+
+      // SETUP OPT REPO
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+
+      // SETUP RM VALIDATOR (EHR_STATUS only)
+      RmValidator validator = new RmValidator(opt_manager)
+      RmValidationReport report = validator.dovalidate(ehr.ehr_status, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert !report.errors
    }
 
    void test_ehr_rm_schema_invalid()
@@ -156,9 +168,57 @@ class ValidationFlowTest extends GroovyTestCase {
 
    void test_ehr_api_schema_invalid()
    {
+      def json_ehr = $/
+         {
+            "_type": "EHR",
+            "system_id": {
+               "_type": "HIER_OBJECT_ID",
+               "value": "f885dfca-4ac0-45b3-808f-6045d613bd86"
+            },
+            "ehr_id": {
+               "_type": "HIER_OBJECT_ID",
+               "value": "70038ea5-464e-4d08-9b55-3975aa796177"
+            },
+            "ehr_status": {
+               "_type": "EHR_STATUS",
+               "archetype_node_id": "openEHR-EHR-EHR_STATUS.generic.v1",
+               "archetype_details": {
+                  "archetype_id": {
+                     "value": "openEHR-EHR-EHR_STATUS.any.v1"
+                  },
+                  "template_id": {
+                     "value": "ehr_status_any_en_v1"
+                  },
+                  "rm_version": "1.0.2"
+               },
+               "name": {
+                  "_type": "DV_TEXT",
+                  "value": "EHR Status"
+               },
+               "is_modifiable": true,
+               "is_queryable": true
+            },
+            "time_created": {
+               "value": "2015-01-20T19:30:22.765+01:00"
+            }
+         }
+      /$
 
+      def parser = new OpenEhrJsonParser(true) // does RM schema validation
+      EhrDto ehr = parser.parseEhrDto(json_ehr)
+
+      def errors = parser.getJsonValidationErrors()
+
+      assert errors.size() == 2
+
+      assert errors.find { it.arguments == ['ehr_access'] }.message == '$.ehr_access: is missing but it is required'
+
+      assert errors.find { it.arguments == ['subject'] }.message == '$.ehr_status.subject: is missing but it is required'
+
+      assert !ehr
    }
 
+   // For the next 2 methods we should create an instance from scratch instead of parsing a JSON
    void test_ehr_rm_rm_invalid()
    {
 

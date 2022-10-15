@@ -78,34 +78,10 @@ class OpenEhrJsonParser {
 
    // ========= ENTRY POINTS =========
 
-   /*
-   Folder parseFolder(String json)
-   {
-      def slurper = new JsonSlurper()
-      def map = slurper.parseText(json)
-
-      if (this.schemaValidate)
-      {
-         if (!map.archetype_details || !map.archetype_details.rm_version) // rm version aware
-         {
-            throw new Exception("archetype_details.rm_version is required for the root of any archetypable class")
-         }
-
-         this.jsonValidator = new JsonInstanceValidation(this.schemaFlavor, map.archetype_details.rm_version)
-         
-         def errors = jsonValidator.validate(json)
-         if (errors)
-         {
-            this.jsonValidationErrors = errors
-            return
-         }
-      }
-
-      return this.parseFOLDER(map, null, '/', '/')
-   }
-   */
-
-   // EHR RM parse, ehr_status is OBJECT_REF
+   /**
+    * Used to parse an RM EHR payload. To parse an API EHR JSON, use the parseEhrDto() method.
+    * Here the ehr_status is OBJECT_REF.
+    */
    Ehr parseEhr(String json)
    {
       def slurper = new JsonSlurper()
@@ -115,8 +91,9 @@ class OpenEhrJsonParser {
       // For the API EHR we could access the EHR_STATUS.archetype_details.rm_version, but for RM EHRs, ehr_status is an OBJECT_REF that should be resolved.
       if (this.schemaValidate)
       {
-         //this.jsonValidator = new JsonInstanceValidation(this.schemaFlavor, map.archetype_details.rm_version)
-         this.jsonValidator = new JsonInstanceValidation(this.schemaFlavor) // FIXME: this uses the default 1.0.2 version schema!
+         // independently from schemaFlavor, this will always be "rm" since it is asking to parse an RM Ehr
+         // for an "api" Ehr the parseEhrDto() method should be used
+         this.jsonValidator = new JsonInstanceValidation("rm") // FIXME: this uses the default 1.0.2 version schema!
          
          def errors = jsonValidator.validate(json)
          if (errors)
@@ -134,33 +111,17 @@ class OpenEhrJsonParser {
 
       ehr.time_created = this.parseDV_DATE_TIME(map.time_created)
 
-      //println map
-
-      // FIXME: these cases should be divided between two different functions
-
-      // FIXME: if the JSON is RM, the ehr_status will be an OBJECT_REF, if the JSON is API, the ehr_status will be EHR_STATUS
-      // this is a pretty dirty solution: lookahead based on attributes...
-      if (map.ehr_status.namespace) // namespace is mandatory in OBJECT_REF
-      {
-         ehr.ehr_status = this.parseOBJECT_REF(map.ehr_status)
-      }
-      else
-      {
-         // TODO: implement parseEhrStatus
-         //log.warn("Not parsed EHR_STATUS: this parser is based on the RM and the model is based on the REST API model. The status should be parsed separatelly")
-         def ehr_status = this.parseEHR_STATUS(map.ehr_status)
-         ehr.ehr_status = new ObjectRef(
-            namespace: 'EHR',
-            type: 'EHR_STATUS',
-            id: ehr_status.uid
-         )
-      }
+      //log.warn("Not parsed EHR_STATUS: this parser is based on the RM and the model is based on the REST API model. The status should be parsed separatelly")
+      ehr.ehr_status = this.parseOBJECT_REF(map.ehr_status)
 
       // the references to versioned objects are not parsed, for instance, this is the right parsing for a rest EHR response
 
       return ehr
    }
 
+   /**
+    * Used to parse an API EHR payload. To parse an RM EHR JSON, use the parseEhr() method.
+    */
    EhrDto parseEhrDto(String json)
    {
       def slurper = new JsonSlurper()
@@ -170,8 +131,9 @@ class OpenEhrJsonParser {
       // For the API EHR we could access the EHR_STATUS.archetype_details.rm_version, but for RM EHRs, ehr_status is an OBJECT_REF that should be resolved.
       if (this.schemaValidate)
       {
-         //this.jsonValidator = new JsonInstanceValidation(this.schemaFlavor, map.archetype_details.rm_version)
-         this.jsonValidator = new JsonInstanceValidation(this.schemaFlavor) // FIXME: this uses the default 1.0.2 version schema!
+         // independently from schemaFlavor, this will always be "api" since it is asking to parse an API EhrDto
+         // for an "rm" Ehr the parseEhr() method should be used
+         this.jsonValidator = new JsonInstanceValidation("api") // FIXME: this uses the default 1.0.2 version schema!
          
          def errors = jsonValidator.validate(json)
          if (errors)
@@ -623,7 +585,7 @@ class OpenEhrJsonParser {
 
       if (json.roles)
       {
-         json.roles.each { party_ref -> // FIXME: !!!
+         json.roles.each { party_ref ->
          
             a.roles << this.parsePARTY_REF(party_ref)
          }
@@ -946,9 +908,6 @@ class OpenEhrJsonParser {
       return at
    }
 
-      
-   
-
    private ReferenceRange parseREFERENCE_RANGE(Map json)
    {
       ReferenceRange rr = new ReferenceRange()
@@ -959,7 +918,6 @@ class OpenEhrJsonParser {
 
       return rr
    }
-
 
    private void fillDV_ORDERED(DvOrdered d, Map json)
    {
