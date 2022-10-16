@@ -19,6 +19,7 @@ class EhrAccess extends Locatable {
       this.dataPath = ((parent.dataPath != '/') ? '/' : '') + parentAttribute
       this.parent = parent
 
-      //this.other_details.fillPathable(this, "other_details")
+      // From the RM 1.0.2 spec we don't know if AccessControlSetting is Pathable
+      //this.settings.fillPathable(this, "settings")
    }
 }

@@ -886,13 +886,9 @@ class ValidationFlowTest extends GroovyTestCase {
       def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
       Person person = parser.parseJson(json_person)
 
-      //println person
-
-      println parser.getJsonValidationErrors()
+      //println parser.getJsonValidationErrors()
       
       assert person
-
-
 
       // SETUP OPT REPO
       OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
@@ -926,8 +922,6 @@ class ValidationFlowTest extends GroovyTestCase {
       
       assert organization
 
-
-
       // SETUP OPT REPO
       OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
       OptManager opt_manager = OptManager.getInstance()
@@ -955,10 +949,9 @@ class ValidationFlowTest extends GroovyTestCase {
 
       //println person
 
-      println parser.getJsonValidationErrors()
+      //println parser.getJsonValidationErrors()
       
       assert group
-
 
 
       // SETUP OPT REPO
@@ -988,11 +981,9 @@ class ValidationFlowTest extends GroovyTestCase {
 
       // FIXME: this should fail because the uid is mandatory and it's not in the JSON
 
-      println parser.getJsonValidationErrors()
+      //println parser.getJsonValidationErrors()
       
       assert agent
-
-
 
       // SETUP OPT REPO
       OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
@@ -1003,8 +994,6 @@ class ValidationFlowTest extends GroovyTestCase {
       // SETUP RM VALIDATOR
       RmValidator validator = new RmValidator(opt_manager)
       RmValidationReport report = validator.dovalidate(agent, 'com.cabolabs.openehr_opt.namespaces.default')
-
-      println report.errors
 
       assert !report.errors
    }
@@ -1021,11 +1010,9 @@ class ValidationFlowTest extends GroovyTestCase {
 
       //println person
 
-      println parser.getJsonValidationErrors()
+      //println parser.getJsonValidationErrors()
       
       assert role
-
-
 
       // SETUP OPT REPO
       OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
