@@ -508,7 +508,6 @@
                 "system_id",
                 "ehr_id",
                 "time_created",
-                "ehr_access",
                 "ehr_status"
             ],
             "properties": {

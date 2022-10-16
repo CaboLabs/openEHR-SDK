@@ -17,7 +17,7 @@ class Ehr {
    HierObjectId ehr_id
    DvDateTime time_created
    ObjectRef ehr_status
-   // TODO: ehr_access
+   ObjectRef ehr_access
    List<ObjectRef> compositions
    ObjectRef directory
    List<ObjectRef> contributions

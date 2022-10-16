@@ -5,7 +5,7 @@ import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.opt.model.domain.*
 import com.cabolabs.openehr.opt.model.primitive.*
 import com.cabolabs.openehr.opt.model.validation.*
-import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
+import com.cabolabs.openehr.rm_1_0_2.ehr.*
 import com.cabolabs.openehr.rm_1_0_2.composition.*
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.*
 import com.cabolabs.openehr.rm_1_0_2.composition.content.navigation.Section
@@ -39,6 +39,42 @@ class RmValidator {
    }
 
    // TODO: Party subclasses validation
+
+   /**
+    * Ehr is validated against the RM constraints. Since it's not Locatable it can't be validated
+    * against an OPT (unless we use the OPT as a RM representation)
+    */
+   RmValidationReport dovalidate(Ehr ehr)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      if (!ehr.system_id)
+      {
+         report.addError("/system_id", "attribute is not present but is required")
+      }
+
+      if (!ehr.ehr_id)
+      {
+         report.addError("/ehr_id", "attribute is not present but is required")
+      }
+
+      if (!ehr.ehr_status)
+      {
+         report.addError("/ehr_status", "attribute is not present but is required")
+      }
+
+      if (!ehr.ehr_access)
+      {
+         report.addError("/ehr_access", "attribute is not present but is required")
+      }
+
+      if (!ehr.time_created)
+      {
+         report.addError("/time_created", "attribute is not present but is required")
+      }
+
+      return report
+   }
 
    // the namespace is where the OPT is stored/cached, allows to implement multi-tenancy
    RmValidationReport dovalidate(Locatable rm_object, String namespace)

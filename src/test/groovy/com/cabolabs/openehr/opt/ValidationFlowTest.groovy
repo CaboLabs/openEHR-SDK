@@ -17,6 +17,7 @@ import com.cabolabs.openehr.rm_1_0_2.demographic.Group
 import com.cabolabs.openehr.rm_1_0_2.demographic.Agent
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
 import com.cabolabs.openehr.dto_1_0_2.ehr.*
+import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 
 // TODO: this test case is JSON only, we need to do the same with XML payloads!
 
@@ -163,7 +164,56 @@ class ValidationFlowTest extends GroovyTestCase {
 
    void test_ehr_rm_schema_invalid()
    {
+      // NOTE: RM requires EHR.compositions [1..1] and EHR.contributions [1..1]
+      //       in the 1.0.2 schema those are not mandatory.
+      def json_ehr = $/
+         {
+            "_type": "EHR",
+            "system_id": {
+               "_type": "HIER_OBJECT_ID",
+               "value": "f885dfca-4ac0-45b3-808f-6045d613bd86"
+            },
+            "ehr_id": {
+               "value": 123
+            },
+            "ehr_status": {
+               "_type": "LOCATABLE_REF",
+               "namespace": "EHR",
+               "type": "VERSIONED_EHR_STATUS",
+               "path": "/ehr_status",
+               "id": {
+                  "_type": "OBJECT_VERSION_ID",
+                  "value": "11627915-e27d-4478-82b9-14e871ee1466::com.cabolabs.conformance::1"
+               }
+            },
+            "ehr_access": {
+               "_type": "LOCATABLE_REF",
+               "namespace": "EHR",
+               "type": "VERSIONED_EHR_ACCESS",
+               "path": "/ehr_access",
+               "id": {
+                  "_type": "OBJECT_VERSION_ID",
+                  "value": "720707c8-7a57-473b-a9a6-dbb76dedd8f2::com.cabolabs.conformance::1"
+               }
+            }
+         }
+      /$
 
+      def parser = new OpenEhrJsonParser(true) // does RM schema validation
+      Ehr ehr = parser.parseEhr(json_ehr)
+
+      def errors = parser.getJsonValidationErrors()
+
+      assert errors.size() == 2
+
+      assert errors.find { it.arguments == ['time_created'] }.message == '$.time_created: is missing but it is required'
+
+      assert errors.find { it.path == '$.ehr_id.value' }.message == '$.ehr_id.value: integer found, string expected'
+
+      assert !ehr
+
+      // NOTE: ehr can't be validated via OPT, but it's components can, but only if it's the API payload because
+      //       on the RM payload it only has the REFs (e.g. for ehr_status)
    }
 
    void test_ehr_api_schema_invalid()
@@ -197,9 +247,6 @@ class ValidationFlowTest extends GroovyTestCase {
                },
                "is_modifiable": true,
                "is_queryable": true
-            },
-            "time_created": {
-               "value": "2015-01-20T19:30:22.765+01:00"
             }
          }
       /$
@@ -211,7 +258,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
       assert errors.size() == 2
 
-      assert errors.find { it.arguments == ['ehr_access'] }.message == '$.ehr_access: is missing but it is required'
+      assert errors.find { it.arguments == ['time_created'] }.message == '$.time_created: is missing but it is required'
 
       assert errors.find { it.arguments == ['subject'] }.message == '$.ehr_status.subject: is missing but it is required'
 
@@ -221,7 +268,19 @@ class ValidationFlowTest extends GroovyTestCase {
    // For the next 2 methods we should create an instance from scratch instead of parsing a JSON
    void test_ehr_rm_rm_invalid()
    {
+      def ehr = new Ehr(
+         system_id: new HierObjectId(
+            value: '8b201872-9d95-4ffa-adfe-4eaa4cfaecf0'
+         )
+      )
 
+      RmValidator validator = new RmValidator()
+      RmValidationReport report = validator.dovalidate(ehr)
+
+      // TODO:
+      println report.errors
+
+      assert report.errors.size() == 4
    }
 
    void test_ehr_api_rm_invalid()
