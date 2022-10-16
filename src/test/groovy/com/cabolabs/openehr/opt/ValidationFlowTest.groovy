@@ -129,6 +129,9 @@ class ValidationFlowTest extends GroovyTestCase {
                "name": {
                   "_type": "DV_TEXT",
                   "value": "EHR Status"
+               },
+               "settings": {
+                  "value": "dummy"
                }
             },
             "time_created": {
@@ -140,8 +143,7 @@ class ValidationFlowTest extends GroovyTestCase {
       def parser = new OpenEhrJsonParser(true) // does RM schema validation
       EhrDto ehr = parser.parseEhrDto(json_ehr)
 
-      println parser.getJsonValidationErrors()
-
+      // parsed OK (validation doesn't retrieve any errors)
       assert ehr
 
       assert ehr.time_created.value == "2015-01-20T19:30:22.765+01:00"
@@ -277,15 +279,30 @@ class ValidationFlowTest extends GroovyTestCase {
       RmValidator validator = new RmValidator()
       RmValidationReport report = validator.dovalidate(ehr)
 
-      // TODO:
-      println report.errors
+      assert report.errors.find{ it.path == '/ehr_id' }.error == 'attribute is not present but is required'
+      assert report.errors.find{ it.path == '/ehr_status' }.error == 'attribute is not present but is required'
+      assert report.errors.find{ it.path == '/ehr_access' }.error == 'attribute is not present but is required'
+      assert report.errors.find{ it.path == '/time_created' }.error == 'attribute is not present but is required'
 
       assert report.errors.size() == 4
    }
 
    void test_ehr_api_rm_invalid()
    {
+      def ehr = new EhrDto(
+         system_id: new HierObjectId(
+            value: '8b201872-9d95-4ffa-adfe-4eaa4cfaecf0'
+         )
+      )
 
+      RmValidator validator = new RmValidator()
+      RmValidationReport report = validator.dovalidate(ehr)
+
+      assert report.errors.find{ it.path == '/ehr_id' }.error == 'attribute is not present but is required'
+      assert report.errors.find{ it.path == '/ehr_status' }.error == 'attribute is not present but is required'
+      assert report.errors.find{ it.path == '/time_created' }.error == 'attribute is not present but is required'
+
+      assert report.errors.size() == 3
    }
 
    // ===================================================

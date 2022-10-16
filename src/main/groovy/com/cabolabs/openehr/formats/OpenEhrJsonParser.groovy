@@ -1,7 +1,6 @@
 package com.cabolabs.openehr.formats
 
-import com.cabolabs.openehr.rm_1_0_2.ehr.Ehr
-import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
+import com.cabolabs.openehr.rm_1_0_2.ehr.*
 import com.cabolabs.openehr.rm_1_0_2.common.generic.*
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
@@ -37,9 +36,10 @@ import org.apache.log4j.Logger
 
 import groovy.json.JsonSlurper
 
+@groovy.util.logging.Log4j
 class OpenEhrJsonParser {
 
-   private Logger log = Logger.getLogger(getClass())
+   //private Logger log = Logger.getLogger(getClass())
    
    def jsonValidator
 
@@ -153,37 +153,13 @@ class OpenEhrJsonParser {
 
       ehr.ehr_status = this.parseEHR_STATUS(map.ehr_status)
 
-      return ehr
-   }
-
-   // This is to parse the API POST /ehr payload
-   // FIXME: shouldn't this be done in parseLocatable?
-   /*
-   EhrStatus parseEhrStatus(String json)
-   {
-      def slurper = new JsonSlurper()
-      def map = slurper.parseText(json)
-
-      if (this.schemaValidate)
+      if (map.ehr_access)
       {
-         if (!map.archetype_details || !map.archetype_details.rm_version) // rm version aware
-         {
-            throw new Exception("archetype_details.rm_version is required for the root of any archetypable class")
-         }
-
-         this.jsonValidator = new JsonInstanceValidation(this.schemaFlavor, map.archetype_details.rm_version)
-         
-         def errors = jsonValidator.validate(json)
-         if (errors)
-         {
-            this.jsonValidationErrors = errors
-            return
-         }
+         ehr.ehr_access = this.parseEHR_ACCESS(map.ehr_access)
       }
 
-      return parseEHR_STATUS(map)
+      return ehr
    }
-   */
 
    // used to parse compositions and other descendant from Locatable
    // TODO: FOLDER and EHR_STATUS are above, we might need to use this one instead
@@ -687,6 +663,26 @@ class OpenEhrJsonParser {
       }
 
       return status
+   }
+
+   /**
+    * This method is here for completeness, most implementations don't even have support for EHR_ACCESS internally.
+    */
+   private EhrAccess parseEHR_ACCESS(Map map)
+   {
+      def access = new EhrAccess()
+
+      this.fillLOCATABLE(access, map, null, '/', '/')
+
+      if (map.settings)
+      {
+         log.warn("EHR_ACCESS.settings has a value but was not parsed")
+         // Since ACCESS_CONTROL_SETTINGS is abstract and doesn't have any concrete
+         // subclasses, we can't parse it.
+         //access.settings = this.parseACCESS_CONTROL_SETTINGS(map.access)
+      }
+
+      return access
    }
 
    private Composition parseCOMPOSITION(Map json)

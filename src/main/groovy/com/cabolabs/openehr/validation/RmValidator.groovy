@@ -22,6 +22,7 @@ import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 import com.cabolabs.openehr.rm_1_0_2.common.directory.Folder
 import com.cabolabs.openehr.rm_1_0_2.demographic.*
+import com.cabolabs.openehr.dto_1_0_2.ehr.EhrDto
 
 class RmValidator {
 
@@ -66,6 +67,39 @@ class RmValidator {
       if (!ehr.ehr_access)
       {
          report.addError("/ehr_access", "attribute is not present but is required")
+      }
+
+      if (!ehr.time_created)
+      {
+         report.addError("/time_created", "attribute is not present but is required")
+      }
+
+      return report
+   }
+
+   /**
+    * EhrDto is validated against the relaxed RM constraints. Since it's not Locatable it can't be validated
+    * against an OPT (unless we use the OPT as a RM representation). Based on the current REST API specification,
+    * the EhrDto will be returned in the response, so it will have system_id, ehr_id, time_created and ehr_status
+    * (could be the defaullt one). For the API we don't require the ehr_access to be there.
+    */
+   RmValidationReport dovalidate(EhrDto ehr)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      if (!ehr.system_id)
+      {
+         report.addError("/system_id", "attribute is not present but is required")
+      }
+
+      if (!ehr.ehr_id)
+      {
+         report.addError("/ehr_id", "attribute is not present but is required")
+      }
+
+      if (!ehr.ehr_status)
+      {
+         report.addError("/ehr_status", "attribute is not present but is required")
       }
 
       if (!ehr.time_created)
