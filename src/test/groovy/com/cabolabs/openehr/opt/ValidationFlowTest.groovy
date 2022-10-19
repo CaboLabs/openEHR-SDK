@@ -548,6 +548,37 @@ class ValidationFlowTest extends GroovyTestCase {
       assert !report.errors
    }
 
+    void test_folder_any_valid_api()
+   {
+      // PARSE JSON WITH RM SCHEMA VALIDATION
+      def json_folder = $/
+         {
+            "_type": "FOLDER",
+            "name": {
+               "_type": "DV_TEXT",
+               "value": "root"
+            },
+            "archetype_node_id": "openEHR-EHR-FOLDER.generic.v1",
+            "archetype_details": {
+               "archetype_id": {
+                  "value": "openEHR-EHR-FOLDER.generic.v1"
+               },
+               "template_id": {
+                  "value": "generic_folder"
+               },
+               "rm_version": "1.0.2"
+            }
+         }
+      /$
+
+      def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
+      parser.setSchemaFlavorAPI()
+      Folder folder = parser.parseJson(json_folder)
+
+      println parser.getJsonValidationErrors()
+      assert folder
+   }
+
    void test_folder_with_items_any_valid()
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION

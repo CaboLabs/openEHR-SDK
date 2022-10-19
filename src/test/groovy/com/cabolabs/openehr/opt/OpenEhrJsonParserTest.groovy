@@ -62,6 +62,73 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       //println out
    }
 
+   // this test uses parser and serializer
+   void testJsonParserFolder2()
+   {
+       def json = $/
+         {
+            "_type": "FOLDER",
+            "name": {
+               "_type": "DV_TEXT",
+               "value": "root"
+            },
+            "archetype_node_id": "openEHR-EHR-FOLDER.generic.v1",
+            "archetype_details": {
+               "archetype_id": {
+                  "value": "openEHR-EHR-FOLDER.generic.v1"
+               },
+               "template_id": {
+                  "value": "generic_folder"
+               },
+               "rm_version": "1.0.2"
+            },
+            "folders": [
+               {
+                  "_type": "FOLDER",
+                  "name": {
+                     "_type": "DV_TEXT",
+                     "value": "subfolder 1"
+                  },
+                  "archetype_node_id": "openEHR-EHR-FOLDER.generic.v1"
+               },
+               {
+                  "_type": "FOLDER",
+                  "name": {
+                     "_type": "DV_TEXT",
+                     "value": "subfolder 2"
+                  },
+                  "archetype_node_id": "openEHR-EHR-FOLDER.generic.v1"
+               }
+            ],
+            "items": [
+               {
+                  "id": {
+                     "_type": "HIER_OBJECT_ID",
+                     "value": "d936409e-901f-4994-8d33-ed104d46015b"
+                  },
+                  "namespace": "my.system.id",
+                  "type": "VERSIONED_COMPOSITION"
+               }
+            ]
+         }
+      /$
+
+      def parser = new OpenEhrJsonParser()
+      Folder folder = parser.parseJson(json)
+
+
+      // serialize status object
+      def serializer = new OpenEhrJsonSerializer()
+      String json2 = serializer.serialize(folder)
+
+      println json2
+
+      //def map1 = new JsonSlurper().parseText(json_ehr_status)
+      //def map2 = new JsonSlurper().parseText(json2)
+      //assert map1 == map2
+   }
+
+
    void testJsonParserEhr()
    {
       def json_ehr = $/
@@ -148,6 +215,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       assert err_ehr_status.type == "required"
    }
 
+   
    void testJsonParserEhrStatus()
    {
        def json_ehr_status = $/
@@ -188,9 +256,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 
       // serialize status object
       def serializer = new OpenEhrJsonSerializer()
-      String json2 = serializer.serializeEhrStatus(status)
-      
-      
+      String json2 = serializer.serialize(status)
 
 
       def map1 = new JsonSlurper().parseText(json_ehr_status)

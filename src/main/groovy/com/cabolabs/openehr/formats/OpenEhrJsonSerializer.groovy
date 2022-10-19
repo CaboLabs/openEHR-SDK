@@ -3,43 +3,44 @@ package com.cabolabs.openehr.formats
 import java.text.SimpleDateFormat
 import groovy.json.*
 
+import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
+import com.cabolabs.openehr.rm_1_0_2.common.generic.*
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 import com.cabolabs.openehr.rm_1_0_2.common.change_control.OriginalVersion
 import com.cabolabs.openehr.rm_1_0_2.common.change_control.Version
-import com.cabolabs.openehr.rm_1_0_2.common.generic.*
+import com.cabolabs.openehr.rm_1_0_2.common.directory.Folder
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.rm_1_0_2.composition.EventContext
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.*
 import com.cabolabs.openehr.rm_1_0_2.composition.content.navigation.Section
 import com.cabolabs.openehr.rm_1_0_2.data_structures.history.Event
 import com.cabolabs.openehr.rm_1_0_2.data_structures.history.History
-import com.cabolabs.openehr.rm_1_0_2.data_structures.history.IntervalEvent
 import com.cabolabs.openehr.rm_1_0_2.data_structures.history.PointEvent
+import com.cabolabs.openehr.rm_1_0_2.data_structures.history.IntervalEvent
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.*
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Cluster
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Element
 import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DvBoolean
 import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DvIdentifier
-import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDate
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDuration
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvTime
+import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.*
+import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.CodePhrase
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvCodedText
-import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
-import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvEhrUri
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvUri
+import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvEhrUri
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
-import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
 import com.cabolabs.openehr.rm_1_0_2.demographic.*
 
 class OpenEhrJsonSerializer {
 
    // TODO: comply with the JSON date format
-   def dateFormatter = new SimpleDateFormat("yyyyMMdd'T'HHmmss,SSSZ")
+   //def dateFormatter = new SimpleDateFormat("yyyyMMdd'T'HHmmss,SSSZ")
 
    // transforms a Java type into the correspondent openEHR type name
    // EventContext => EVENT_CONTEXT
@@ -221,7 +222,7 @@ class OpenEhrJsonSerializer {
       return out
    }
 
-   public String serializeEhrStatus(EhrStatus status)
+   public Map serializeEhrStatus(EhrStatus status)
    {
       def out = [:]
 
@@ -240,7 +241,34 @@ class OpenEhrJsonSerializer {
          out.other_details = this."$method"(status.other_details)
       }
 
-      JsonOutput.toJson(out)
+      return out
+   }
+
+   public Map serializeFolder(Folder folder)
+   {
+      def out = [:]
+
+      out._type = 'FOLDER'
+
+      this.fillLocatable(folder, out)
+
+      def method, _item
+
+      out.items = []
+      folder.items.each { object_ref ->
+         
+         method = this.method(object_ref)
+         _item = [_type: this.openEhrType(object_ref)] + this."$method"(object_ref)
+         out.items << _item
+      }
+
+      out.folders = []
+      folder.folders.each { subfolder ->
+         
+         out.folders << this.serializeFolder(subfolder)
+      }
+
+      return out
    }
 
    private Map serializeComposition(Composition o)
