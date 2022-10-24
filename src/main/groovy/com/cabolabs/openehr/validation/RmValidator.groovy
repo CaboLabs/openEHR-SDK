@@ -185,6 +185,8 @@ class RmValidator {
    {
       RmValidationReport report = new RmValidationReport()
 
+      report.append(_validate_locatable(e, o)) // validates name
+
       // FIXME: shouldn't this validate alternatives for the EHR_STATUS.other_details?
 
       // the attributes that are optional in the opt should be checked by the parent to avoid calling
@@ -220,6 +222,8 @@ class RmValidator {
    private RmValidationReport validate(Actor p, ObjectNode o)
    {
       RmValidationReport report = new RmValidationReport()
+
+      report.append(_validate_locatable(p, o)) // validates name
 
       // the attributes that are optional in the opt should be checked by the parent to avoid calling
       // with null because polymorphism can't find the right method. Also if the constraint is null,
@@ -290,6 +294,8 @@ class RmValidator {
    {
       RmValidationReport report = new RmValidationReport()
 
+      report.append(_validate_locatable(role, o)) // validates name
+
       // the attributes that are optional in the opt should be checked by the parent to avoid calling
       // with null because polymorphism can't find the right method. Also if the constraint is null,
       // anything matches.
@@ -359,6 +365,8 @@ class RmValidator {
    {
       RmValidationReport report = new RmValidationReport()
 
+      report.append(_validate_locatable(pi, o)) // validates name
+
       // occurrences
       if (o.occurrences)
       {
@@ -396,6 +404,8 @@ class RmValidator {
    private RmValidationReport validate(Composition c, ObjectNode o)
    {
       RmValidationReport report = new RmValidationReport()
+
+      report.append(_validate_locatable(c, o)) // validates name
 
       report.append(validate(c, c.category, o.getAttr('category'), "/category"))
 
@@ -444,6 +454,8 @@ class RmValidator {
    {
       RmValidationReport report = new RmValidationReport()
 
+      report.append(_validate_locatable(f, o)) // validates name
+
       def a_items = o.getAttr('items')
       if (a_items)
       {
@@ -468,8 +480,12 @@ class RmValidator {
       {
          if (f.folders)
          {
+            // FIXME: folders can only contain FOLDER so this check is unneded
             if (checkAllowedType(a_folders, f.folders, report)) // only continue if the type is allowed
             {
+               // NOTE: not sure if a subfolder could comply with a totally different OPT (so the validator
+               // might not be correct here) or if the main OPT should contain all possible archetypes for subfolders.
+               // This is validating like the second option.
                report.append(validate(f.folders, a_folders))
             }
          }
@@ -488,6 +504,8 @@ class RmValidator {
    private RmValidationReport validate(Section s, ObjectNode o)
    {
       RmValidationReport report = new RmValidationReport()
+
+      report.append(_validate_locatable(s, o)) // validates name
 
       def a_content = o.getAttr('items')
       if (a_content)
@@ -556,21 +574,49 @@ class RmValidator {
 
             // FIXME: this is unreliable, there could be many child objects for the CATTR that are
             //        C_ARCHETYPE_ROOT with the same archetypeId. The name is added to differentiate.
+            //
             // each item in the collection should validate against the child object with the same node_id
-            def obj = c_multiple_attribute.children.find{ 
+            //
+            // NOTE: the code below is safer since it checks if the name is not there when there are multiple
+            //       alternatives with the same archetype_node_id.
+            def alternative_objs = c_multiple_attribute.children.findAll{ 
                if (it.type == 'C_ARCHETYPE_ROOT')
-                  it.archetypeId == item.archetype_node_id && it.text == item.name.value
+                  it.archetypeId == item.archetype_node_id
                else
-                  it.nodeId == item.archetype_node_id && it.text == item.name.value
+                  it.nodeId == item.archetype_node_id
             }
 
-            /*
-            println "------"
-            println c_multiple_attribute.children
-            println obj
-            println item
-            println item.archetype_node_id
-            */
+            def obj
+
+            // When there is only one alternative, that is matched by archetype_id or node_id only
+            if (alternative_objs.size() == 1)
+            {
+               obj = alternative_objs[0]
+
+               if (!obj)
+               {
+                  report.addError(c_multiple_attribute.templateDataPath, "No object found with node_id ${item.archetype_node_id}")
+               }
+            }
+            else // When there are multiple alternatives, the specicic C_OBJECT should be matched by name too (in OPT 1.4 there is no way around)
+            {
+               obj = alternative_objs.find{
+                  it.text == item.name.value
+               }
+
+               if (!obj)
+               {
+                  report.addError(c_multiple_attribute.templateDataPath, "multiple object alternatives found for archetype_node_id ${item.archetype_node_id}, none matches the name ${item.name.value}")
+               }
+            }
+
+            
+            // println "------"
+            // println c_multiple_attribute.children
+            // println obj
+            // println item
+            // println item.archetype_node_id
+            
             //println obj.type
             // println "RM TYPE: "+ item.getClass().getSimpleName()
             // println "RM PATH: "+ item.dataPath
@@ -583,16 +629,9 @@ class RmValidator {
             // println "CATTR CHILDREN RM TYPE: "+ c_multiple_attribute.children*.rmTypeName
             // println ""
 
-            if (checkAllowedType(c_multiple_attribute, item, report)) // only continue if the type is allowed
+            if (obj && checkAllowedType(c_multiple_attribute, item, report)) // only continue if the type is allowed
             {
-               if (obj)
-               {
-                  report.append(validate(item, obj))
-               }
-               else
-               {
-                  println "No object node with node_id ${item.archetype_node_id}"
-               }
+               report.append(validate(item, obj))
             }
          }
       }
@@ -620,6 +659,8 @@ class RmValidator {
    private RmValidationReport validate(Observation ob, ObjectNode o)
    {
       RmValidationReport report = new RmValidationReport()
+
+      report.append(_validate_locatable(ob, o)) // validates name
 
       // occurrences
       if (o.occurrences)
@@ -715,6 +756,8 @@ class RmValidator {
    {
       RmValidationReport report = new RmValidationReport()
 
+      report.append(_validate_locatable(h, o)) // validates name
+
       // TODO: not validating occurrences?
 
       def a_events = o.getAttr('events')
@@ -759,6 +802,8 @@ class RmValidator {
    private RmValidationReport validate(PointEvent e, ObjectNode o)
    {
       RmValidationReport report = new RmValidationReport()
+
+      report.append(_validate_locatable(e, o)) // validates name
 
       // occurrences
       if (o.occurrences)
@@ -817,6 +862,8 @@ class RmValidator {
    private RmValidationReport validate(IntervalEvent e, ObjectNode o)
    {
       RmValidationReport report = new RmValidationReport()
+
+      report.append(_validate_locatable(e, o)) // validates name
 
       // occurrences
       if (o.occurrences)
@@ -877,6 +924,8 @@ class RmValidator {
    {
       RmValidationReport report = new RmValidationReport()
 
+      report.append(_validate_locatable(ev, o)) // validates name
+
       // occurrences
       if (o.occurrences)
       {
@@ -936,6 +985,8 @@ class RmValidator {
    {
       RmValidationReport report = new RmValidationReport()
 
+      report.append(_validate_locatable(ins, o)) // validates name
+
       // occurrences
       if (o.occurrences)
       {
@@ -973,6 +1024,8 @@ class RmValidator {
    private RmValidationReport validate(Activity act, ObjectNode o)
    {
       RmValidationReport report = new RmValidationReport()
+
+      report.append(_validate_locatable(act, o)) // validates name
 
       // occurrences
       if (o.occurrences)
@@ -1033,6 +1086,8 @@ class RmValidator {
    {
       RmValidationReport report = new RmValidationReport()
 
+      report.append(_validate_locatable(ac, o)) // validates name
+
       // occurrences
       if (o.occurrences)
       {
@@ -1091,6 +1146,8 @@ class RmValidator {
    private RmValidationReport validate(AdminEntry ae, ObjectNode o)
    {
       RmValidationReport report = new RmValidationReport()
+
+      report.append(_validate_locatable(ae, o)) // validates name
 
       // occurrences
       if (o.occurrences)
@@ -1227,6 +1284,8 @@ class RmValidator {
    {
       RmValidationReport report = new RmValidationReport()
 
+      report.append(_validate_locatable(is, o)) // validates name
+
       // occurrences
       if (o.occurrences)
       {
@@ -1300,6 +1359,8 @@ class RmValidator {
    {
       RmValidationReport report = new RmValidationReport()
 
+      report.append(_validate_locatable(is, o)) // validates name
+
       // occurrences
       if (o.occurrences)
       {
@@ -1330,8 +1391,6 @@ class RmValidator {
 
       return report
    }
-
-
 
    private RmValidationReport validate(ItemTable is, AttributeNode a)
    {
@@ -1374,6 +1433,8 @@ class RmValidator {
    private RmValidationReport validate(ItemTable is, ObjectNode o)
    {
       RmValidationReport report = new RmValidationReport()
+
+      report.append(_validate_locatable(is, o)) // validates name
 
       // occurrences
       if (o.occurrences)
@@ -1448,6 +1509,8 @@ class RmValidator {
    {
       RmValidationReport report = new RmValidationReport()
 
+      report.append(_validate_locatable(is, o)) // validates name
+
       // occurrences
       if (o.occurrences)
       {
@@ -1486,6 +1549,8 @@ class RmValidator {
    private RmValidationReport validate(Cluster cl, ObjectNode o)
    {
       RmValidationReport report = new RmValidationReport()
+
+      report.append(_validate_locatable(cl, o)) // validates name
 
       // occurrences
       if (o.occurrences)
@@ -1566,6 +1631,8 @@ class RmValidator {
       */
 
       RmValidationReport report = new RmValidationReport()
+
+      report.append(_validate_locatable(e, o)) // validates name
 
       // occurrences
       if (o.occurrences)
@@ -3135,6 +3202,40 @@ class RmValidator {
          }
       }
       
+      return report
+   }
+
+   // validates name
+   private RmValidationReport _validate_locatable(Locatable locatable, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      def a_name = o.getAttr('name')
+      if (a_name) // should comply with the constraint for the DvText/DvCodedText
+      {
+         if (locatable.name)
+         {
+            // Validate the type in the instance is allowed by the template
+            if (checkAllowedType(a_name, locatable.name, report)) // only continue if the type is allowed
+            {
+               //report.append(validate(locatable.name, a_name))
+               report.append(validate(locatable, locatable.name, a_name, "/name"))
+            }
+         }
+         else
+         {
+            // no checks on the name because it's mandatory in the MR
+            report.addError(o.templateDataPath + "/name", "attribute is not present but is required")
+         }
+      }
+      else // should be a DvText which value is equal to the current node's text in the OPT
+      {
+         if (o.text != locatable.name.value)
+         {
+            report.addError(o.templateDataPath + "/name", "expected name is '${o.text}' and actual name is '${locatable.name.value}'")
+         }
+      }
+
       return report
    }
 

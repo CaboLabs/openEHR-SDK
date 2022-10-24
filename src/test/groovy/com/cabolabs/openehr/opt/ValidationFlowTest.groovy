@@ -19,6 +19,8 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
 import com.cabolabs.openehr.dto_1_0_2.ehr.*
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 
+import com.cabolabs.openehr.opt.serializer.*
+
 // TODO: this test case is JSON only, we need to do the same with XML payloads!
 
 class ValidationFlowTest extends GroovyTestCase {
@@ -550,7 +552,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
     void test_folder_any_valid_api()
    {
-      // PARSE JSON WITH RM SCHEMA VALIDATION
+      // PARSE JSON WITH API SCHEMA VALIDATION
       def json_folder = $/
          {
             "_type": "FOLDER",
@@ -571,7 +573,7 @@ class ValidationFlowTest extends GroovyTestCase {
          }
       /$
 
-      def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
+      def parser = new OpenEhrJsonParser(true)
       parser.setSchemaFlavorAPI()
       Folder folder = parser.parseJson(json_folder)
 
@@ -801,6 +803,37 @@ class ValidationFlowTest extends GroovyTestCase {
 
    // ===================================================
    // COMPOSITIONs
+
+   void test_compo_validation_missing_node()
+   {
+      String path = PS +"opts"+ PS +"test_validation_missing_node"+ PS +"composition.json"
+	   File file = new File(getClass().getResource(path).toURI())
+      def json_compo = file.text
+
+      def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
+      Composition compo = parser.parseJson(json_compo)
+
+      assert compo
+
+      // SETUP OPT REPO
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      // SETUP RM VALIDATOR
+      RmValidator validator = new RmValidator(opt_manager)
+      RmValidationReport report = validator.dovalidate(compo, 'test_validation_missing_node')
+
+      assert !report.errors
+
+
+      // path = PS +"opts"+ PS + 'test_validation_missing_node' + PS +"test_all_datatypes_es_v1.opt"
+      // def opt = TestUtils.loadTemplate(path)
+      // opt.complete()
+      // def toJson = new JsonSerializer()
+      // toJson.serialize(opt)
+      // println toJson.get(true)
+   }
 
    void test_compo_minimal_action_valid()
    {
