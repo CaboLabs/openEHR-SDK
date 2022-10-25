@@ -109,7 +109,7 @@ class ValidationFlowTest extends GroovyTestCase {
                },
                "name": {
                   "_type": "DV_TEXT",
-                  "value": "EHR Status"
+                  "value": "Health summary"
                },
                "subject": {
                   "external_ref": {
@@ -152,6 +152,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
       assert ehr.ehr_id.value == "70038ea5-464e-4d08-9b55-3975aa796177"
 
+      //println groovy.json.JsonOutput.toJson(ehr.ehr_status)
 
       // SETUP OPT REPO
       OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
@@ -824,15 +825,29 @@ class ValidationFlowTest extends GroovyTestCase {
       RmValidator validator = new RmValidator(opt_manager)
       RmValidationReport report = validator.dovalidate(compo, 'test_validation_missing_node')
 
-      assert !report.errors
+      assert report.errors.size() == 5
 
+      def err
 
-      // path = PS +"opts"+ PS + 'test_validation_missing_node' + PS +"test_all_datatypes_es_v1.opt"
-      // def opt = TestUtils.loadTemplate(path)
-      // opt.complete()
-      // def toJson = new JsonSerializer()
-      // toJson.serialize(opt)
-      // println toJson.get(true)
+      err = report.errors.find { it.dataPath == "/content[0]/name" }
+
+      assert err.error == "expected name is 'Test all datatypes' and actual name is 'Blood Pressure'"
+
+      err = report.errors.find { it.dataPath == "/content[0]/data/name" }
+
+      assert err.error == "expected name is 'Event Series' and actual name is 'history'"
+
+      err = report.errors.find { it.dataPath == "/content[0]/data/events[0]/name" }
+
+      assert err.error == "expected name is 'Cualquier evento' and actual name is 'any event'"
+
+      err = report.errors.find { it.dataPath == "/content[0]/data/events[1]/name" }
+
+      assert err.error == "expected name is 'Cualquier evento' and actual name is 'any event'"
+
+      err = report.errors.find { it.dataPath == "/content[0]/data/events[2]/name" }
+
+      assert err.error == "expected name is 'Cualquier evento' and actual name is 'any event'"
    }
 
    void test_compo_minimal_action_valid()

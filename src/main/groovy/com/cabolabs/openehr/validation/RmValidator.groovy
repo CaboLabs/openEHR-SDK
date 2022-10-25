@@ -3225,14 +3225,22 @@ class RmValidator {
          else
          {
             // no checks on the name because it's mandatory in the MR
-            report.addError(o.templateDataPath + "/name", "attribute is not present but is required")
+            report.addError(
+               locatable.dataPath == '/' ? "/name" : locatable.dataPath + "/name",
+               o.templateDataPath == '/' ? "/name" : o.templateDataPath + "/name",
+               "attribute is not present but is required"
+            )
          }
       }
       else // should be a DvText which value is equal to the current node's text in the OPT
       {
          if (o.text != locatable.name.value)
          {
-            report.addError(o.templateDataPath + "/name", "expected name is '${o.text}' and actual name is '${locatable.name.value}'")
+            report.addError(
+               locatable.dataPath == '/' ? "/name" : locatable.dataPath + "/name",
+               o.templateDataPath == '/' ? "/name" : o.templateDataPath + "/name",
+               "expected name is '${o.text}' and actual name is '${locatable.name.value}'"
+            )
          }
       }
 

@@ -16,6 +16,11 @@ class RmValidationReport {
       errors << [path: path, error: error]
    }
 
+   def addError(String dataPath, String optPath, String error)
+   {
+      errors << [dataPath: dataPath, optPath: optPath, error: error]
+   }
+
    boolean hasErrors()
    {
       return errors.size() > 0
