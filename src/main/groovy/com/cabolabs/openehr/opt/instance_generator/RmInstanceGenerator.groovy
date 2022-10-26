@@ -1069,6 +1069,7 @@ class RmInstanceGenerator {
       if (node_type == 'EVENT') node_type = 'POINT_EVENT'
       */
 
+      // TODO: this should be really the process for any DV_TEXT with an option for DV_CODED_TEXT
 
       // name
       def name_constraint = o.attributes.find { it.rmAttributeName == 'name' }
@@ -1083,6 +1084,7 @@ class RmInstanceGenerator {
 
          if (name_constraint_type == 'DV_TEXT')
          {
+            println "creating DV_TEXT name"
             // children[0] DV_TEXT
             //   for the DV_TEXT.value constraint
             //     the first children can be a STRING constraint
@@ -1092,17 +1094,20 @@ class RmInstanceGenerator {
             // there is a constraint for the name but doesnt have a specific value
             if (!value_constraint)
             {
+               println "no value_constraint"
                loc.name = new DvText(
                   value: this.opt.getTerm(parent_arch_id, o.nodeId)
                )
             }
             else
             {
+               println "yes value_constraint"
                def name_value = value_constraint.children[0].item.list[0] // TEST: attr value can be null?
                loc.name = new DvText(
                   value: name_value
                )
             }
+            println loc.name.value
             // TODO: call generate_DV_TEXT
          }
          else if (name_constraint_type == 'DV_CODED_TEXT')
@@ -1667,7 +1672,7 @@ class RmInstanceGenerator {
       // IM attribute not present in the OPT
 
       def mattrs
-      o.attributes.each { oa ->
+      o.attributes.each { oa -> // FIXME: this overwrites name if a constraint is present (it's already set by add_LOCATABLE_elements)
 
          // in event there are no lists, so the results will be lists of 1 item
          mattrs = processAttributeChildren(oa, parent_arch_id)
@@ -1835,7 +1840,10 @@ class RmInstanceGenerator {
       // no items?
       if (!cluster.items)
       {
+         // TODO: log warning about empty cluster
          // add dummy element
+         // NOTE: if a dummy element is added it will fail OPT validation! (stupid idea...)
+         /*
          cluster.items = [
             new Element(
                archetype_node_id: 'at'+ Integer.random(9999, 1000),
@@ -1847,6 +1855,7 @@ class RmInstanceGenerator {
                )
             )
          ]
+         */
       }
 
       return cluster

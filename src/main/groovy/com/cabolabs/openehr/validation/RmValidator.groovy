@@ -556,6 +556,7 @@ class RmValidator {
          {
             // existence error
             // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+            // It should be the instance path, which needs the parent, to now the data path of the owner of the container, and name of the current attribute
             report.addError(c_multiple_attribute.templateDataPath, "Node doesn't match existence")
          }
       }
@@ -579,7 +580,8 @@ class RmValidator {
             //
             // NOTE: the code below is safer since it checks if the name is not there when there are multiple
             //       alternatives with the same archetype_node_id.
-            def alternative_objs = c_multiple_attribute.children.findAll{ 
+            def alternative_objs = c_multiple_attribute.children.findAll{
+               println it.nodeId
                if (it.type == 'C_ARCHETYPE_ROOT')
                   it.archetypeId == item.archetype_node_id
                else
@@ -587,6 +589,10 @@ class RmValidator {
             }
 
             def obj
+
+            println "item "+ item.archetype_node_id
+            println "alternative_objs "+ alternative_objs
+            println "alternative node_ids "+ alternative_objs*.nodeId
 
             // When there is only one alternative, that is matched by archetype_id or node_id only
             if (alternative_objs.size() == 1)
@@ -600,14 +606,47 @@ class RmValidator {
             }
             else // When there are multiple alternatives, the specicic C_OBJECT should be matched by name too (in OPT 1.4 there is no way around)
             {
-               obj = alternative_objs.find{
-                  it.text == item.name.value
+               // if there is a constraint for the name, we should try to use the constrained name first, then the text associated to the node by the node_id
+               def error_report, name_constraint
+               obj = alternative_objs.find { // it = alt_obj
+
+                  name_constraint = it.getAttr('name')
+               
+                  if (name_constraint)
+                  {
+                     error_report = validate(item, item.name, name_constraint, '/name')
+
+                     println error_report.errors
+
+                     // if there are no validation errors, then the data matches this alt_cobj
+                     return !error_report.hasErrors()
+                  }
+
+                  return false
                }
 
+               println obj
+
+               // if there are no constraints for the name or none matches the value for the name,
+               // try finding by the AOM node text
                if (!obj)
                {
-                  report.addError(c_multiple_attribute.templateDataPath, "multiple object alternatives found for archetype_node_id ${item.archetype_node_id}, none matches the name ${item.name.value}")
+                  // match by the node text
+                  obj = alternative_objs.find{
+                     it.text == item.name.value
+                  }
                }
+
+               println obj
+
+               // if none matches it means a. there is a constraint validation issue (none matches the OPT) or b. altenrative nodes are not uniquely named
+               if (!obj)
+               {
+                  println c_multiple_attribute.templateDataPath
+                  report.addError(c_multiple_attribute.templateDataPath, "Multiple alternative constraint objects found for archetype_node_id '${item.archetype_node_id}' at ${c_multiple_attribute.templatePath}, none matches the constraints for the name or the current node text '${item.name.value}' in the OPT")
+               }
+
+               println ""
             }
 
             

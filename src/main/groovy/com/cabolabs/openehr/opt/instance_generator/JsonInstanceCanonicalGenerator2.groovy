@@ -1833,7 +1833,10 @@ class JsonInstanceCanonicalGenerator2 {
       // no items?
       if (!mobj.items)
       {
+         // TODO: log warning about empty cluster
          // add dummy element
+         // NOTE: if a dummy element is added it will fail OPT validation! (stupid idea...)
+         /*
          mobj.items = [
             [
                _type: 'ELEMENT',
@@ -1848,6 +1851,7 @@ class JsonInstanceCanonicalGenerator2 {
                ]
             ]
          ]
+         */
       }
 
       return mobj
