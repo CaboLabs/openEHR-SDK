@@ -11,6 +11,8 @@ class CString extends CPrimitive {
    // List<String>
    List list = []
 
+   // FIXME: the parent of the value can be Pathable or DataValue
+   // FIXME: another thing is the attribute name might not be value as in line 23!!!!!!!
    ValidationResult isValid(Pathable parent, String value)
    {
       if (pattern)

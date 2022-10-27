@@ -530,10 +530,10 @@ class RmValidator {
    // all container attributes will get here
    private RmValidationReport validate(List container, AttributeNode c_multiple_attribute)
    {
-      // println "validate container attribute "
-      // println c_multiple_attribute.templatePath
-      // println c_multiple_attribute.templateDataPath
-      // println c_multiple_attribute.dataPath
+      println "validate container attribute: "+ c_multiple_attribute.rmAttributeName
+      //println c_multiple_attribute.templatePath
+      println c_multiple_attribute.templateDataPath
+      //println c_multiple_attribute.dataPath
       
       RmValidationReport report = new RmValidationReport()
 
@@ -565,8 +565,8 @@ class RmValidator {
       // and if c_multiple_attribute has children (if not, any object is valid)
       if (c_multiple_attribute.children)
       {
-         //println container*.value
-         //println container*.archetype_node_id
+         println "mattr children "+ c_multiple_attribute.children*.templateDataPath
+         println "container node_ids "+ container*.archetype_node_id
          container.each { item ->
 
             // println "item "+ item.archetype_node_id
@@ -614,6 +614,8 @@ class RmValidator {
                
                   if (name_constraint)
                   {
+                     println "validate data name: "+ item.name.value
+                     println "against "+ name_constraint.children[0].getAttr('value')?.children?.getAt(0)?.item?.list
                      error_report = validate(item, item.name, name_constraint, '/name')
 
                      println error_report.errors
@@ -644,6 +646,13 @@ class RmValidator {
                {
                   println c_multiple_attribute.templateDataPath
                   report.addError(c_multiple_attribute.templateDataPath, "Multiple alternative constraint objects found for archetype_node_id '${item.archetype_node_id}' at ${c_multiple_attribute.templatePath}, none matches the constraints for the name or the current node text '${item.name.value}' in the OPT")
+               }
+
+               // TEST
+               if (c_multiple_attribute.templateDataPath == '/content[archetype_id=openEHR-EHR-SECTION.adhoc.v1](1)/items[archetype_id=openEHR-EHR-OBSERVATION.pulse.v1](1)/data[at0002](1)/events')
+               {
+                  //throw new Exception('stop')
+                  println "==========================="
                }
 
                println ""
@@ -1929,6 +1938,11 @@ class RmValidator {
       }
 
       // TODO: validate value string if there is any constrain
+      def oa = o.getAttr('value')
+      if (oa)
+      {
+         report.append(validate(te, te.value, oa))
+      }
 
       return report
    }
@@ -3286,6 +3300,43 @@ class RmValidator {
       return report
    }
 
+   // ================================================================
+   // validate primitives
+
+   private RmValidationReport validate(DataValue parent, Object value, AttributeNode pan)
+   {
+      RmValidationReport report
+
+      // check for primitive alternatives
+      // if we have one OK, then it's valid
+      for (pon in pan.children)
+      {
+         report = validate(parent, value, pon)
+         if (!report.hasErrors())
+         {
+            return report
+         }
+      }
+
+      // this will return the last failed validation
+      return report
+   }
+
+   private RmValidationReport validate(DataValue parent, Object value, PrimitiveObjectNode pon)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      ValidationResult vr = pon.isValid(parent, value)
+
+      if (!vr.isValid)
+      {
+         report.addError(parent.dataPath, pon.templateDataPath, vr.message)
+      }
+
+      return report
+   }
+
+   // ================================================================
    // General errors
 
    RmValidationReport opt_not_found(String template_id)

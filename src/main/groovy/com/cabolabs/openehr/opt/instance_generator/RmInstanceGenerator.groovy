@@ -1630,30 +1630,36 @@ class RmInstanceGenerator {
 
       add_LOCATABLE_elements(o, history, parent_arch_id)
 
-      history.origin = generate_DV_DATE_TIME(null, null)
       // IM attribute not present in the OPT
+      history.origin = generate_DV_DATE_TIME(null, null)
 
-      /* def mattr
-      o.attributes.each { oa ->
-         mattr = processAttributeChildren(oa, parent_arch_id)
-         mobj[oa.rmAttributeName] = mattr
-      } */
+      def mattrs
 
       def oa = o.attributes.find { it.rmAttributeName == 'events' }
       if (oa)
       {
-         def events = processAttributeChildren(oa, parent_arch_id)
+         mattrs = processAttributeChildren(oa, parent_arch_id)
 
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
          // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
          if (oa.cardinality && oa.cardinality.interval.upper)
          {
-            events = events.take(oa.cardinality.interval.upper)
+            mattrs = mattrs.take(oa.cardinality.interval.upper)
          }
 
-         history.events = events
+         history.events = mattrs
       }
-      
+
+     
+      oa = o.attributes.find { it.rmAttributeName == 'summary' }
+      if (oa)
+      {
+         // in event there are no lists, so the results will be lists of 1 item
+         mattrs = processAttributeChildren(oa, parent_arch_id)
+
+         history.summary = mattrs[0]
+      }
+
       return history
    }
 
@@ -1671,13 +1677,19 @@ class RmInstanceGenerator {
       ev.time = generate_DV_DATE_TIME(null, null)
       // IM attribute not present in the OPT
 
-      def mattrs
-      o.attributes.each { oa -> // FIXME: this overwrites name if a constraint is present (it's already set by add_LOCATABLE_elements)
+      def process_attrs = [
+         'data',
+         'state'
+      ]
+
+      def oa, mattrs
+      process_attrs.each { attr_name ->
+
+         oa = o.attributes.find { it.rmAttributeName == attr_name }
 
          // in event there are no lists, so the results will be lists of 1 item
          mattrs = processAttributeChildren(oa, parent_arch_id)
 
-         // TODO: test this works!
          ev."${oa.rmAttributeName}" = mattrs[0]
       }
       
@@ -1695,21 +1707,39 @@ class RmInstanceGenerator {
       
       add_LOCATABLE_elements(o, ev, parent_arch_id)
 
-      ev.time = generate_DV_DATE_TIME(null, null)
       // IM attribute not present in the OPT
+      ev.time = generate_DV_DATE_TIME(null, null)
 
+      def process_attrs = [
+         'data',
+         'state'
+      ]
 
-      // data
-      def oa = o.attributes.find { it.rmAttributeName == 'data' }
-      if (oa)
-      {
-         def data = processAttributeChildren(oa, parent_arch_id)
-         ev.data = data[0]
+      def oa, mattrs
+      process_attrs.each { attr_name ->
+
+         oa = o.attributes.find { it.rmAttributeName == attr_name }
+
+         // in event there are no lists, so the results will be lists of 1 item
+         mattrs = processAttributeChildren(oa, parent_arch_id)
+
+         ev."${oa.rmAttributeName}" = mattrs[0]
       }
 
-      ev.width = new DvDuration(
-         value: 'PT30M' // TODO: Duration String generator
-      )
+      // TODO: if there is no attribute contraint, the duration generation wont work so we should check that here
+      oa = o.attributes.find { it.rmAttributeName == 'width' }
+      if (oa)
+      {
+         mattrs = processAttributeChildren(oa, parent_arch_id)
+
+         ev.width = mattrs[0]
+      }
+      else
+      {
+         ev.width = new DvDuration(
+            value: 'PT30M' // TODO: use a Duration String generator
+         )
+      }
 
       oa = o.attributes.find { it.rmAttributeName == 'math_function' }
       if (oa)
@@ -1783,15 +1813,20 @@ class RmInstanceGenerator {
 
       add_LOCATABLE_elements(o, struc, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
       
-      def mattr
-      o.attributes.each { oa ->
+      def mattrs
 
-         mattr = processAttributeChildren(oa, parent_arch_id) // this is a list!
+      def oa = o.attributes.find { it.rmAttributeName == 'items' }
 
-         // this doesn't work for item single because it's a list and should be an object,
-         // but for the other structures it works OK
-         // TODO: test this works
-         struc."${oa.rmAttributeName}" = mattr
+      if (oa)
+      {
+         mattrs = processAttributeChildren(oa, parent_arch_id) // this is a list!
+
+         if (oa.cardinality && oa.cardinality.interval.upper)
+         {
+            mattrs = mattrs.take(oa.cardinality.interval.upper)
+         }
+
+         struc.items = mattrs
       }
 
       return struc
@@ -1808,33 +1843,24 @@ class RmInstanceGenerator {
       
       add_LOCATABLE_elements(o, cluster, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
-      def mattr
-
-      // items is the only attribute
-      /*
-      o.attributes.each { oa ->
-         if (oa.rmAttributeName == 'name') return // avoid processing name constraints, thos are processde by add_LOCATABLE_elements
-         mattr = processAttributeChildren(oa, parent_arch_id)
-         mobj[oa.rmAttributeName] = mattr
-      }
-      */
+      def mattrs
 
       // since items is a collection, it is assigned directly to the list retrieved
       def oa = o.attributes.find{ it.rmAttributeName == 'items' }
       if (oa)
       {
-         mattr = processAttributeChildren(oa, parent_arch_id)
+         mattrs = processAttributeChildren(oa, parent_arch_id)
 
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
          // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
          if (oa.cardinality && oa.cardinality.interval.upper)
          {
-            mattr = mattr.take(oa.cardinality.interval.upper)
+            mattrs = mattrs.take(oa.cardinality.interval.upper)
          }
 
          //println oa.cardinality.interval //.interval.upper <<<< NULL we are not parsing the cardinality
 
-         cluster.items = mattr
+         cluster.items = mattrs
       }
 
       // no items?

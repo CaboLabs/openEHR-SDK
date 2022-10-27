@@ -45,25 +45,25 @@
         "external_ref": {
             "id": {
                 "_type": "HIER_OBJECT_ID",
-                "value": "bbae9f30-d59f-4d0d-9c61-bdf89de99a6f"
+                "value": "c37fcb2e-0f67-480f-ad82-3c64c82c303d"
             },
             "namespace": "DEMOGRAPHIC",
             "type": "PERSON"
         },
-        "name": "Dr. House"
+        "name": "Dr. Yamamoto"
     },
     "context": {
         "start_time": {
-            "value": "2022-10-25T23:37:52.229-03:00"
+            "value": "2022-10-26T09:57:30.754-03:00"
         },
         "setting": {
-            "value": "primary medical care",
+            "value": "home",
             "defining_code": {
                 "terminology_id": {
                     "_type": "TERMINOLOGY_ID",
                     "value": "openehr"
                 },
-                "code_string": "228"
+                "code_string": "225"
             }
         }
     },
@@ -196,7 +196,7 @@
                                         "archetype_node_id": "at0001",
                                         "value": {
                                             "_type": "DV_TEXT",
-                                            "value": "Lg.zVwHP,ryWdnHScfAfmLgj.RcKPVJMsCA.KPIEhYcvSQogEbXgulMcmEZWA AffNsXkGscJamROHZMCtqnRohgilkYfbgVKPYJsGmyIi,ejKSKiyPq,nOeKgdBHRC.zdrEguznJsW,NQeCIUECxzZbeeqINlHNPb.rnFzlUjNNyXGLNkQu FQlQCjZI PnqupefwUBc,vCbkXuJttZzOoU,,TuwguAiLvfKhZFReWUoDhOtZusWFcfEBGBeZrlvbTkSo bqllHEEMiOIsSxGDussAqwPNcAmhGYDtTqOKf"
+                                            "value": "uPJK YPwlqGbFXsagIxoMGgEYlwJSHUsOAHbAjoyJpPrAa,uEKRbgCgGmFZkBooP hvPpgMgRbwKCxYFcDrNUS.PKYhLssIhKZSzqAU XIRG,cdlIXVT.cIOTlgikfaSXHpDsXBVSfa.lykblhkDgkRUAnnHNldikEZUbEOJdWUMyauZgaLoRLhQlC,gR.crTjKawUkvuWxmuDuULcOQnxUFeQOEfOleBMKHbVDxmmQgtVNBAEkvpCGQgsxqGfAZEhEJYxIrZeq,,gWbYtwiu.NQFzHBZIgXpqPimYJkBqcD"
                                         }
                                     },
                                     {
@@ -210,7 +210,7 @@
                                             "_type": "DV_IDENTIFIER",
                                             "issuer": "Hospital de Clinicas",
                                             "assigner": "Hospital de Clinicas",
-                                            "id": "87123496",
+                                            "id": "85215749",
                                             "type": "LOCALID"
                                         }
                                     },
@@ -223,7 +223,7 @@
                                         "archetype_node_id": "at0004",
                                         "value": {
                                             "_type": "DV_TEXT",
-                                            "value": "iCE.yMkLBwjrofYYXoGlg,LPswgDjDKPaWltgDbPDXTY.eTaorGzQzWBtX.QaNtKOy GQzissndJmgUvqNPKwLLUSnHUMXaf.wSTJREMvPSiRtw,LNgXRLwWFZahDrDIgOFaEiQvSyqSJ  XPA,VNjXcVUhhsMxgbwMTkvtXQOayPqMcUgDHorIL,f,FRzLeWaJspAAEMvdNuxwW,.kNHkuKYunbYgtjiqDSHaoWFCb.UMhntdXCIiSD.YOhkej,HlQd,jJmpEqdzEZyqX xPqSzLNzNtuQhVzthlaaWuENG"
+                                            "value": "wklon,CAu paucm,,pLjPEfXopcpQxlFNd xAIvYmRSaXFNibaYOMwEnpJpaQrxWJepAgTxWYMaZdqhzuZKBrCgG,AmlwHfOpvTzNKvNnx,iYrC.FTJ.sLgQsjujMiFyCKfWxs,OgjgDE,Vteua,WkCdRovB.WHtwQzoAODHTN.izEUCGSAGQcLyHesOWHDxsqG,dehfsvxuTAd.EDqaSccmcQROIhpToFKtl,uvDjxdzRgtazedHAV.ctcbFGnzMS kwoKzIpgCoPbRnNLXnzKinMFVwG.Mdfajvcbg.YmJ"
                                         }
                                     },
                                     {
@@ -235,7 +235,7 @@
                                         "archetype_node_id": "at0005",
                                         "value": {
                                             "_type": "DV_DATE_TIME",
-                                            "value": "2022-10-25T23:37:52.461-03:00"
+                                            "value": "2022-10-26T09:57:31.027-03:00"
                                         }
                                     },
                                     {
@@ -249,7 +249,7 @@
                                             "_type": "DV_IDENTIFIER",
                                             "issuer": "Hospital de Clinicas",
                                             "assigner": "Hospital de Clinicas",
-                                            "id": "87934709",
+                                            "id": "31841716",
                                             "type": "LOCALID"
                                         }
                                     },
@@ -262,7 +262,7 @@
                                         "archetype_node_id": "at0008",
                                         "value": {
                                             "_type": "DV_TEXT",
-                                            "value": "OhSMBOVbtFmqGSjIGXERLQaATVgMCzkVZTAGsNdraGTHdpetjbCvEOPNTfpxXLdlgZxNAFmQTvKNliUcYttIAAymkCNADqPthGAlFRlieFOolZBrN.OAwGsmuh,GKxkCvmBTPoQI,AjeqzaoONZTkBxIMzhWuadxjMWr,TiEjzqPciRquWoOvhAKsunZBaxVTStMdNRKFKuzyeOUpuXJJFDEVB.LRkNu,DGMozENnx,ucrZAR.APnDMJua.BqwcFgIW XNgGPHSFJSZSLQBgOvienydvDrimZPvwPDnn Jf."
+                                            "value": "QvV,.e,vfBMAkMREHGCHyeIZiKURedKdQNIjOnydcpUmGslbRgiRyeD iprrzYfisSgCu,dKOutCcBtBld uMzWghpqw ZMNgFsuZOdBrXvJIyeKCYeoIKFYzPEvarfEIoOxEMnKYelPEDLxsrZI m,y nHgEjFPoHYU,ruVFjVL wfdFF,IZJvhCBUFng,uwYzQeu.nDkcP,iHHsWZChdWmCyGYwsdRciSolbOrQhFhdK.BGJFcb AxQCNbptheSlSqaAu,xoFDfOKkmRHYFMzKUKQmeC,c,xywgFWtoszc"
                                         }
                                     }
                                 ]
@@ -277,18 +277,18 @@
                         },
                         "archetype_node_id": "at0002",
                         "origin": {
-                            "value": "2022-10-25T23:37:52.405-03:00"
+                            "value": "2022-10-26T09:57:30.950-03:00"
                         },
                         "events": [
                             {
                                 "_type": "POINT_EVENT",
                                 "name": {
                                     "_type": "DV_TEXT",
-                                    "value": "fvDqb MbpbxtLfSJiaWEr iDEljpO.pAAN,pDpU..soACGjQZeLd.KtilLFCNozYiHT.el vjch.zRGmAIKiyQsIYxYqzieZeOeOgsJJjhMaAioPsWjjGTTSXaxvaeg.GHpiDyLkAmO,ErpoZpKhsUZKqFLYsunjuSZUBRzoVGYl,GVlBWilQogq.jfXufLYVGflpzLdQCKKBgicKOPZZpsUKJqdTjpF,nMDEOr,MiGAmXJQyPPJbQYjwNaJEFLLOf muFYbUXzJoVHlx.uz CgGy JWXNAlvwzougULzrse"
+                                    "value": "First event"
                                 },
                                 "archetype_node_id": "at0003",
                                 "time": {
-                                    "value": "2022-10-25T23:37:52.412-03:00"
+                                    "value": "2022-10-26T09:57:30.957-03:00"
                                 },
                                 "data": {
                                     "_type": "ITEM_TREE",
@@ -314,7 +314,7 @@
                                             "archetype_node_id": "at0004",
                                             "value": {
                                                 "_type": "DV_QUANTITY",
-                                                "magnitude": 928.7,
+                                                "magnitude": 369.6,
                                                 "units": "/min"
                                             }
                                         },
@@ -346,7 +346,7 @@
                                             "archetype_node_id": "at1022",
                                             "value": {
                                                 "_type": "DV_TEXT",
-                                                "value": ".czASN zqwLwbVyQPFUHchepPIXXJyhzk,aucTWnRQRPDZ.HpATHvU,fAGeTCUywpsPtl,OILxLgdbzrfVJwZiGvedmxYsxQXwZCDZNvWndCDaymjFSeSkhUumjuumTOUmmDZkI.ZdcgXghBd,tTUvFzVqAUyLZUMHJCMdtiXvD dsbklEBJkHcwGcCazfPHgjTtNYOTmwEMPRYJcBYnwhYZjPoulZnrysaZIsLWhfBpKcdAfpJSIBpwxeZWyRKOiHcLhaSVdymDAEJ.pPIefhOPLcBwBJt lWqinxQXElYq"
+                                                "value": "iEOuokQyDEOxi.IMiuRoErMflzgjVJX.PMBPKlb.nhGxnPMgauEaDsBKn sjR,vlD.cryfMT joWnoJH UqqDpmRrJMSBonzACuZzfAUoLs.uYC vtCEUJgLihssRhZYtKVFKDaZ..KvPIFVMAY,GV,KWiZQJyANnjDWifxYadCN,OJSMxdBVJCBcUr wfYqSHSVdtIPlkqjdqw zPSnlyqJBKYf,xKMNMudRmvLTc.YCSmHfFsdaJFEknyQhxWwhfeL,dbcRTfhwAxvECB.leiZWxkCkMFymHelzUSqIxZi"
                                             }
                                         },
                                         {
@@ -358,7 +358,7 @@
                                             "archetype_node_id": "at1023",
                                             "value": {
                                                 "_type": "DV_TEXT",
-                                                "value": "PYhcZciRZJjOHuuBNqV CrUvV,,DUfIvSgQULahJJtjTM,VokJTxALWzt.fVfkhQRJvW dPOOhpEWWnqTPDSPrDRhMQ ZKIkeAxtHAblerKVpMC.gzgQOnEzOyExHoPAqPMB,c,AjTeMErNYGcjOKyrSoMJvJHhYtkuTcGhvCWkWEtRaLuO,LvtURVJsxaBtBKasJcwoyCNKZImWFs XPZcVHR iXQaLvYtYJeITznuhzwOHiIpzICOfTcbrPJZFzWeMqvixvzJPbDSBBPEkVlmDHneqa BcnbRf,owBtQWs"
+                                                "value": "iRTkTnYlGEtUO.DVgcLOUDaybXGfofqxTmkLpqgtCVApIBqeqav.loYQgvbAbSHxbEHimBkjPQszyMisojDFmZkAhKWX,tTzBVgKSkZZJjiiWXBrFpwqcSvB CdYUKATihoSEJOBTfTwN,uv.miE,UxYAaXZta fAFZUYCuCqIDpJbYxINFBxirDKwxLRcglMqiqDEQjSdUjNBuHmtTlmoNBRVOzEKkWDRTI.p GWxQRKUujhCdYPNu.qUHZXAo jlVrvnKLNOKbKPOSuCodHEzkCmU OnOrt X,JGpANRj,"
                                             }
                                         }
                                     ]
@@ -379,11 +379,11 @@
                                 "_type": "POINT_EVENT",
                                 "name": {
                                     "_type": "DV_TEXT",
-                                    "value": "TDkScClsTADyGUYiCZTkMaVqKxP vnBCNVpqWFuFKxkjPfLmfPVzfpmyIBQ,wTcohqrXawWeDnJ,DfXxUIvBEWCvcdtfjZ.iClBUdALbVePyxZIuVcnv.EaR,ahgLazxlIFYvEoLKAkqTURKmUhwioYdVEKgWHOV,v LHTixxLsZeINm.SKen LRvCsJFFhMPilqqSHExSWgkIDhxPyOdRFST.MfNmcqanpxpQ asFtwpwlDqBAARTshjILzNVERFqpofIXkqk.CZtcxKYVPWBkhBZzaiegJjPRtyz xsf.a"
+                                    "value": "Second event"
                                 },
                                 "archetype_node_id": "at0003",
                                 "time": {
-                                    "value": "2022-10-25T23:37:52.431-03:00"
+                                    "value": "2022-10-26T09:57:30.982-03:00"
                                 },
                                 "data": {
                                     "_type": "ITEM_TREE",
@@ -428,7 +428,7 @@
                                             "archetype_node_id": "at0004",
                                             "value": {
                                                 "_type": "DV_QUANTITY",
-                                                "magnitude": 345.8,
+                                                "magnitude": 34.1,
                                                 "units": "/min"
                                             }
                                         },
@@ -460,7 +460,7 @@
                                             "archetype_node_id": "at1023",
                                             "value": {
                                                 "_type": "DV_TEXT",
-                                                "value": "YTqMooRRqqwungAFPplvQBXzWoJ.W.hDQOnYeDCvGWiJzDoTdtOQMnvrCtdhvnUSQcyjpdz.fmnapnNWZUCIEUhIzmwrcGAHPYREtBpuIk.lYXZZlpeRnQUBD.PpaBufAifLvVN.CDfHJDHBQUeUmOtpaWyQdxIhLgogNuqBSAhgZAnCXgTlHRRXWiB.VzmkGG,StzwZSJUjqavUDCCj.BxnoXRiaoiAdkDeV,ZGqxzyDUmStRiGil,c,vTukDbfXyduHamIUcGRxVL.DtIZsYbK,CadihZelbHWNhUDd NL"
+                                                "value": "orplMfgytVeBNrroqmgskMQBQfLY,UqKFWRizfpMOzKO lPiZcmOthrGsFG,dnpTlRf FFcc,S Jf EGmzvz,UGhgBI.KGoYSFySOYRogpeXzzwWiKEMullYlxAIHdBmECxDzOxCbVpT.gYuZ.lbxMFPqsTcUbunqZAFvWoXojy,NkKXnrcWshyVydkhqphKFAFbqMhCtO.vcySrCMawSlKaZDgGAlYI..ByelpfXYzQJVWRxgGUCkIoPQzrbzmtcC,uChlw KkbLVTSEzXXvLTLypdGDyQTHokbHmMyQRtD"
                                             }
                                         }
                                     ]
@@ -485,7 +485,7 @@
                                 },
                                 "archetype_node_id": "at1036",
                                 "time": {
-                                    "value": "2022-10-25T23:37:52.442-03:00"
+                                    "value": "2022-10-26T09:57:30.994-03:00"
                                 },
                                 "data": {
                                     "_type": "ITEM_TREE",
@@ -511,8 +511,49 @@
                                             "archetype_node_id": "at0004",
                                             "value": {
                                                 "_type": "DV_QUANTITY",
-                                                "magnitude": 586.5,
+                                                "magnitude": 622.0,
                                                 "units": "/min"
+                                            }
+                                        }
+                                    ]
+                                },
+                                "state": {
+                                    "_type": "ITEM_TREE",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "List"
+                                    },
+                                    "archetype_node_id": "at0012",
+                                    "items": [
+                                        {
+                                            "_type": "ELEMENT",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Position"
+                                            },
+                                            "archetype_node_id": "at0013",
+                                            "value": {
+                                                "_type": "DV_CODED_TEXT",
+                                                "value": "Standing",
+                                                "defining_code": {
+                                                    "terminology_id": {
+                                                        "_type": "TERMINOLOGY_ID",
+                                                        "value": "local"
+                                                    },
+                                                    "code_string": "at1003"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "_type": "ELEMENT",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Confounding Factors"
+                                            },
+                                            "archetype_node_id": "at1018",
+                                            "value": {
+                                                "_type": "DV_TEXT",
+                                                "value": "e.bgvdEoWtpvWbJTxlcpmHvKQnpfhqNoTeTDrkEOu tfdbWHzeWFkyCb lnNdMcK PnwEsNFgdDTpxPOkH,.ED.T orjbTAukzDZycLUZZaKiQKJIOhMfGAwVnMQvHYWWoYnSQTWSivllbwBqUnrLFKCHWfTrCbvyzxcOkHPZSTCDOQolGFMcC.bvvvs,eTClbaScJpfgfygg.RyokhhMvXBLsOIMHlhHifePltAmPrcygh.RgMrEcKjwicWgHiZyoFJCwzMFvOmHcZLkxeObWvzUXo.YxajiiUIuDKiarcR"
                                             }
                                         }
                                     ]
@@ -605,7 +646,7 @@
                                 "archetype_node_id": "at0009",
                                 "value": {
                                     "_type": "DV_DATE_TIME",
-                                    "value": "2022-10-25T23:37:52.480-03:00"
+                                    "value": "2022-10-26T09:57:31.050-03:00"
                                 }
                             }
                         ]
@@ -646,7 +687,7 @@
                                 "archetype_node_id": "at0002",
                                 "value": {
                                     "_type": "DV_DATE_TIME",
-                                    "value": "2022-10-25T23:37:52.474-03:00"
+                                    "value": "2022-10-26T09:57:31.043-03:00"
                                 }
                             },
                             {
@@ -658,7 +699,7 @@
                                 "archetype_node_id": "at0021",
                                 "value": {
                                     "_type": "DV_TEXT",
-                                    "value": "tUGA,ncmA.JekykJWafUAUddBmNRhmYqSZdbNcNXWJuSzaZjteHWMJxuDuD,D vrisuKxHlhRsF mtVfeYNE,QRkAJvzDiLKzEowIHOMSVsELtJlAvqNrOPyHXYrPN.ppsTtKkJvAnFMGa,noLEbexeWAysg OJUcasBGsYLpOwhHJdBMOcUr.xCntL I fBkssLuRgihoGiSrmduTBZ,PqijTHGRUxQLgYeQVgiikj.OEnOdmzSYRCXyh.zJptxobVGSFFbkeI,fCIVbvwXlYQTEBjvRMaxQtKysckkJRYE"
+                                    "value": "A LMaLCrKRPjHxOlQEGLxZqFdURCfiOAHWXUAuHhjIPSdWA,Q,ND,FEc MCfcYkPXhnMwSCUecfOrvDqKwCPvRHfXgrReLzkPfD, VQjiaPwsTkRQgPX ditHwDEJjzboBJjCDcxttFSEMShQBLKhpNrtBHYATLDMKOdhUdcKSxushZIaELtusiDrawgH,.vpdZvXTk.YaCHufQH OpKUhXcRQDWGMyIXOFhmA.isjYDJHScathu.coQbu pmzeCjscCKwARapk.BSbmXl.x  cFkukYekDpguYN hdd.mHI"
                                 }
                             }
                         ]
@@ -735,7 +776,7 @@
                                         "archetype_node_id": "at0008",
                                         "value": {
                                             "_type": "DV_TEXT",
-                                            "value": "jaMIXpXMWnhZuAomocOdrosfGCQMFHF,wQZireMr.asqjFaVYnbAvFCMVItCRrQgmkEzlgjzVZwlUtxH.WFegEzmIfQlhh OmyZytqrcG,ImpLiwztbcLdjEyXGE BuihZGtscBTAHfXwRIgQF.hAzAwwyHfEeuDSOXPZTXPUpXLv.xBjqzMSQnBnFeWzurKlAZMn WsqMqnCSjzKrQZNJ.XEUeCBKqJCIuuqFiFifwfLwrqKdmoplWvjHqnkjijS OZZBM.ppP mlKlaXrT,yWi.FkzRkiyJtujyem.hbyA"
+                                            "value": "FqQHl,AYdhrzul,YagintaC RHCjhKtyRtBZxlMWXJff zM.bvuph.NjijAOa.PTDoFcgOgQPFmqjvZjzmjPOiuqnQUwwNHSBGVaWnviSAaiFmkdJAMvboo WnzyVpOzQTeIEGLtxqPwGDtEpPRTjRFDLKcGwGWhCuY,NgdxbVLwtQqwC N.hJIrtQ.qJQXmgqBDbpxkxhpywJbFRrtXqj uuXIPXeiNao,XKTIRrnzUFenTBhsKMffL.SoDlvgMIlAPKtGjcA,,dbmG..LyrhwGezgBuZOkDNSykxJtXLPu"
                                         }
                                     },
                                     {
@@ -759,7 +800,7 @@
                                         "archetype_node_id": "at0006",
                                         "value": {
                                             "_type": "DV_DATE_TIME",
-                                            "value": "2022-10-25T23:37:52.516-03:00"
+                                            "value": "2022-10-26T09:57:31.181-03:00"
                                         }
                                     }
                                 ]
@@ -768,7 +809,7 @@
                     },
                     "narrative": {
                         "_type": "DV_TEXT",
-                        "value": "XLI.LNBxBLi,eCgedkwkyEiwGrRhFMTcoTYzxmnAWiinNYttSDUdfbmvCTI poSgSFnTclddCdOlHNdMbWNBpXrsogPuyxKHSYwBfFZPMGyWZqHTFgKuj. UHrBZZYaPsUIfnExCuwPYNipgBX.YoGCzpBzqf,JIZBEPUnsCRFaGTQdFGAFsrXSza MzRLOoakC TliiFPRstDbgQGBYFHbiZaKugZLUvlFpZXUnlKHPWh.uPYLdndfRMFdlOfX"
+                        "value": "QLJUPXUtYhdjNJksoMHfYEAAATKqCq,FXqsdawnPgNfglzuKWjvNGfJaKZMuqMAeolpkKKfuTXMpAYHQHEhpsxHgJLNKOU.aoEPMI,ClCIkBwMVkNcXshbBWbwVH,XlMsZpiSlXMwjrwWRI zCdfJzxAzLtOoKi,rfIagpldjhT,qxZQSrPit YsHTBA cwOw.gC RKKUfwndbBIDyJVPDjNRjedVSlVdIqJErJIFBgTKtQmu,.hjzsgLqbKYHK"
                     },
                     "activities": [
                         {
@@ -795,7 +836,7 @@
                                         "archetype_node_id": "at0121",
                                         "value": {
                                             "_type": "DV_TEXT",
-                                            "value": "sqDcr.jjXlAhmoBXbRcbeCNaHaJViNl.s oQZBuSdvZvKwYEGgqTDCgbJIQQiajevAmLEqlZhtkxnXJYWymnfJHJDwWIydGG,xNvUqcelFodypDzTUqKBQhfsHaQdRcWJCYQmxqzKNNnwfcGvWJlUgRPccdGAvfnRNmNEyAmEg xsbfWEKjXUwAiUtXDMgvwnJgn,VZrknMa  WUAdqSyANLoowKcglRbFzIEeEL..XVPfXvYU,nyg.IyMuKBnba uQsMnNUYcCpOhHQFHmDxidwLyystlfbiwhSpRtrBREi"
+                                            "value": "rlaOboXBMdMTvfdyudmzHoWGMF He,JlDAgKqTOhopqUJKce zVpBls TWGTzsQj,F IJylQfeISpOgfbRlpSxKmj,ZZKRMcrVZj,jyJIlPkYhNAASVx TYoPCGkgzMrzHCOGyEajNnnldfwWCgvNtbsGSACTZcxlhCLZb,lbUPZgbOGaoZveucRAx,LoeMVMTHgehRSQrEaRuuMtrrrzKCj w,NuSNtGonAFxCxbZfxqnuj YYpAjBlpZnwNsm.Nl,gNVVqzHtrY Ny,oeQJHkONVYcWkWA GhalVVaHMAK"
                                         }
                                     },
                                     {
@@ -807,7 +848,7 @@
                                         "archetype_node_id": "at0144",
                                         "value": {
                                             "_type": "DV_DATE_TIME",
-                                            "value": "2022-10-25T23:37:52.501-03:00"
+                                            "value": "2022-10-26T09:57:31.096-03:00"
                                         }
                                     },
                                     {
@@ -854,7 +895,7 @@
                                         "archetype_node_id": "at0121",
                                         "value": {
                                             "_type": "DV_TEXT",
-                                            "value": "FVZpvRzwrEfb eUDcyZgusgRYJeaHGijFARcbHkASYYIhwIeUnAJAjMMPlBolMptYlMykTQMzvtqmVaewQmoeTozNXqRsSrUpe.ML.tysv qHLvqZYg.R SCwhM XWijn pcPdKiZjplmXUmKPEgMqZZlxZJvvbq.kxh CEXlVszngYskKHuhqqASNFKDuQJGzjovoZMWxpGpFtRiqaneOimqzwZB pzuzmZSBqqQEsPPnDbYnPjYjSiLcYkNETECPwEwdrlZuVkmRfjgWXoNSTAMlQrOLqZYolLjMxAD IT"
+                                            "value": "l.nXls,GyGqGPTRcZanQnYNXQyHNKtMFtE,fGNqCYEQEQgXHERF,mWDRgrBLcFdrxbPNKDasHsqkdsZuhbkfFwUWf,YnQbHjKNjMgNPJILZahizBFDTenEgjIYjs brmUnAzhObzukIpjtxrjsCwtrtEQela, PnS,jwTdsszUXSoPuiTGWBWlAopuGBelkJruQEXm GMu iMPRqaXCWfkjywGzjlyuAVLduvtdTPOoNpmvwJQgAfYKF,fSwbPxbEmRtqsMfZFnziQaDgy ezceyKQnEvQtJPTYtZglJcE,X"
                                         }
                                     },
                                     {
@@ -866,7 +907,7 @@
                                         "archetype_node_id": "at0144",
                                         "value": {
                                             "_type": "DV_DATE_TIME",
-                                            "value": "2022-10-25T23:37:52.509-03:00"
+                                            "value": "2022-10-26T09:57:31.113-03:00"
                                         }
                                     },
                                     {
@@ -943,7 +984,7 @@
                                 "archetype_node_id": "at0054",
                                 "value": {
                                     "_type": "DV_TEXT",
-                                    "value": "XqKO.bWgQj BfKivCkSgzMrlFUHNpSzUCFaNtwhzpTQYJdXuaVTQK.huaD,slWFWrLiqKxtVRihlmXiTtoFdydtHZXpZfuaPLbm lBX.PHwxbNjOAuMxwEFimIf.BehFIrtVUdYFCGDXciUdvAudusjQZbtwSxjrToqIGmT,zSzMu.LELGAsjf.yiFfmyBAVKOyfPdj qCCuNpzUowOKNORcrYZv,cJdBkxYjjxbTlnKeyBwQ cdwrFyRsEJfRlKotCQqmQBmijdsqPHDynbulnvvLElaZoBwFRcYNTkBgQX"
+                                    "value": "IxxkKwcBZEZIUIrKzluBCIwZmKnDj QHyJrZ  SPfPPsI,GQmVFQviyspSxPQBbrKqMUAqFlHlFobEWlehJajy,WAEOEfFsjEjKnPl iiTpTibl, tC,htjXsoDyJoCaTxHafzvQ kMjqjcqDahqsj TWvWKcyFDMiUdxXnFtATQSyQZPPTUZecoKdClkcrwpkL.JFfpkfBGrcIIGaFtfEre hJZFSV,.xdQDpyrlSrLbUyVrVcjCwesYbISkyHOwTQMLIvJCunQGikzQoLEprxoqK IwpYmJMtntnIlKMkp"
                                 }
                             },
                             {
@@ -1005,7 +1046,7 @@
                                         "archetype_node_id": "at0001",
                                         "value": {
                                             "_type": "DV_TEXT",
-                                            "value": " cBwpWHqUehTNFusKJDiQFQmUbru axQtutwyhPcTqzbkxmwdswxZPYXwfqqAMLPnLPfM.Pjdmkrtbu,jSSuHAq,FnwDutwkDEyojBDd.LNsOjhNkirsBunwRtCgIbXhA lSVaHhHSbLhkX,deIOfscMbXcxVAxVaOWWmuHNXzbSbhUiGSEPXmVAmlhScQWslxEWOxjK zhcCLxHPRUMwpLTMUewyeKlBmtkahKPTFX pRYKlmlmMSHqgIFHHgv OjEhyFMxzAViNAHLBvlGFtCcC eBVEcXePO,OV,cWADZ"
+                                            "value": "EjXK ioHwqwG vqzNAwSYZWyRRqSIHMqCmkpbKpYFaGQyNIzniMuaF DyiHgVvneJVWYRFY.gmUNWMfoTtUsZEDAslMClsmcosZRcgfBZHndy,QI.QyhKFsaEPWYULrUhelIMVlmxlmoQ.YPxPBLuWuepSyUro NTmvURshCldyb,xMUkowmoLAXLj yGRBrRdc,llYnqlJN.CcNbTNMYjKttlwCbwxCnAaP.uqzIHvJGZaZBzVihz,wybedYNBtURqAMYbnBJgksiiInqZBupRCXGzzJgUdbLQpksbRsBGI"
                                         }
                                     }
                                 ]
@@ -1021,14 +1062,14 @@
                                     "_type": "DV_IDENTIFIER",
                                     "issuer": "Hospital de Clinicas",
                                     "assigner": "Hospital de Clinicas",
-                                    "id": "74511384",
+                                    "id": "63092196",
                                     "type": "LOCALID"
                                 }
                             }
                         ]
                     },
                     "time": {
-                        "value": "2022-10-25T23:37:52.551-03:00"
+                        "value": "2022-10-26T09:57:31.216-03:00"
                     },
                     "description": {
                         "_type": "ITEM_TREE",
@@ -1047,7 +1088,7 @@
                                 "archetype_node_id": "at0002",
                                 "value": {
                                     "_type": "DV_TEXT",
-                                    "value": "GvkwERGMapsdQqYjbFYuSLNchZYQWUftrRA ce.vduckLnpMUzhkJcrSxurnJZhRwxui.zdKyRhKZYMNZwweZtbtrhyPbdBxYJOD,,dyJpl. gKPGimnnQUGORsby wN.CfOnJmJxvdTDXbiAenOTUMWSXoogwhekSVqSeRYdFKzjNcvophbpGtCgERbTjiikJwruIbUCpkstEGCVJLvXBbVjJGbPa lieg,FSvdmoImXrjBckYOJxpazlBoegj,,SkNECtcdSaemkROwZtbKWoRfkJuHEECGKcMHdVQnNQj"
+                                    "value": "yJZhsEtSUaLokFSDeCC pUzJ,eccBxeAMpQVvtEWvY.bpfb.cSRkyUDgJS cTSs,.IzVrHmCiMiGyiM ,lcoikdKBLnXjUFXlvOFcCBtVVr LZMg nwrWciCYkIIUKeYXvF,RVYVE.kGmcZJkNwpckrakpvZBXFKBXxriabRDGiJ,VEBWlrktzDwRSTDvdpPFnnOegUMidOQKrgjlwsK.xjTrVKljWEFfBSxxrtMRRhrmxUnPuYcxvHtnBQNfxGgCYduCXrGzxqlAh,XeqVcFpNBkTFeUIRNagqXyzZvxfWu"
                                 }
                             },
                             {
@@ -1059,7 +1100,7 @@
                                 "archetype_node_id": "at0065",
                                 "value": {
                                     "_type": "DV_TEXT",
-                                    "value": "HCiYymTho.dtMvASBBkKbuYLzqWFiMwxYIGorYcgAzeaZQ lyIJG GL dNQyDeBFQQOUmhEMEcllPkKWJmHGFlKONlwrFytzvnDmOlbMEuRv,S DXCOxdhNRtbPlKvoUTqOcThWOuel,OcHOlXnxoEjZOtgZIpFAcgnlAJbOWuFfVbXjMEcmEAqmWhIcDlMQvKob,aPVwLw, lzoETMqwiJpWgKYhyxAtBkWSJNJFA QTVnUSWHcjt KiDJCmWOheBEKuQRAFlJVd.duAlxekdfLIvWJdCUjbByaRhdjx.tb"
+                                    "value": "cVjJknEAfNutAd Nk GQhuyJIVbvmuOiaXlwpRUDRSBg.fQZnwCprvqAKmuKkj HW VuLAdoatWh pSwnCKkvWOrOmo.FcaqclkJT,WqTHFlIRPgQrTSESTuwD,MyEBGMYvPyogXuxlFFdrFucTWYHleizrxrtzphEkz.qxvaDPaeJpqXRjFq iYYbMJCNDTCdIdCRUQtiGsqszvXs.HXnYQaeUOoMIJHNRavBKyZnVyQFxPmLktbEmKlYxFuGTAKvWXLXLxswPpFrFnANBxhkPPJlZPBtfRHTzdDhLpXmlQ"
                                 }
                             },
                             {
@@ -1071,7 +1112,7 @@
                                 "archetype_node_id": "at0065",
                                 "value": {
                                     "_type": "DV_TEXT",
-                                    "value": "GPG.pIpQRWURUPyTITtZzTjm.KPIfM,JKRQUNTYBCZ,qCKvFVtQwsZkHCMtjVnsS.VLAV,MMuYaImXyocSiciMZdNwAhfTjDJqX,fKBZkPDHPWKhNrCBfNhxYYMrydYGRVfNfCkRyGot,fDG.kZUFNbuAuOjyEhUTZyusYuEqdTyPKIrBQlggybp bJhbDh,kdbWSuYzsuLzddpdBnBEWtmSmYw,YdjANdPdAJLhDyZx,d,iGlFIPDjDlGerimrOETvgF.lpMpJThORPIKkLTMDS vcBlQejfDqKHIUMy.uP"
+                                    "value": "XBCQwdo vyYohSzJpRnLYxKGc,vxr,MdfWbXHi.gceLHmm jRcapHsdeorUrvzguZzgNjSfPzu lFzF nZTdKQjgokDuvE.,CNQjdawKOr,lFLEauyWcrTbWMgpnlUbVYbGekmHsFlVPkyiZLhvJWmkWZnctcbjxMUaZiduTFQfPPTycBL.MldNEUOhlThnOAgKCxWhelTnChUOtqrOvJFnHQNCaTQd,rMaQbczptkETRDFSEGfJfVKkoDDIaBDQnHKBkiPeZbqkcurnmZEsnGLrTiieNBUDHeRCxtt VPCT"
                                 }
                             },
                             {
@@ -1083,7 +1124,7 @@
                                 "archetype_node_id": "at0066",
                                 "value": {
                                     "_type": "DV_DATE_TIME",
-                                    "value": "2022-10-25T23:37:52.557-03:00"
+                                    "value": "2022-10-26T09:57:31.232-03:00"
                                 }
                             },
                             {
@@ -1095,7 +1136,7 @@
                                 "archetype_node_id": "at0060",
                                 "value": {
                                     "_type": "DV_DATE_TIME",
-                                    "value": "2022-10-25T23:37:52.560-03:00"
+                                    "value": "2022-10-26T09:57:31.235-03:00"
                                 }
                             }
                         ]
@@ -1165,7 +1206,7 @@
                                 "archetype_node_id": "at0002",
                                 "value": {
                                     "_type": "DV_DATE_TIME",
-                                    "value": "2022-10-25T23:37:52.586-03:00"
+                                    "value": "2022-10-26T09:57:31.294-03:00"
                                 }
                             },
                             {
@@ -1177,13 +1218,13 @@
                                 "archetype_node_id": "at0003",
                                 "value": {
                                     "_type": "DV_CODED_TEXT",
-                                    "value": "YItUjGlpWakQFUevqnWDOMJUOwn.Bm",
+                                    "value": "VXkxNiRVSHPkCksNIBjjQcpAgIDsVL",
                                     "defining_code": {
                                         "terminology_id": {
                                             "_type": "TERMINOLOGY_ID",
                                             "value": "terminology_not_specified_as_constraint_or_referenceSetUri_in_opt"
                                         },
-                                        "code_string": "869924"
+                                        "code_string": "534493"
                                     }
                                 }
                             },
@@ -1196,7 +1237,7 @@
                                 "archetype_node_id": "at0009",
                                 "value": {
                                     "_type": "DV_TEXT",
-                                    "value": "qnIXrPrNKnmIsAQjN,gV.UWTwAWJJl  WGkMgPd,SFrNuPtZJKLlRlTewylocahWlGXAiUShcyDGwWxuSuxKOOPcKSWlFDkqCZBSKVNPpbgzzyeGQWTTwfAqrCmLgNaKuR,ZfVKG SFNMoHMmk,WPiezMPsNZkmYBeopqVk,XrrPSgnFgmveqf,TsVTlKWNnnQPoClGnCraDLGpyTWDhy.J,CuqmlnilEbmPDzNWWe.AGJaNUcYvgVNWXHBaFtbzOCaX.Y.LY ,itFxDQgdc,CzRkXHk,NnRDpQhWIyWYWd,"
+                                    "value": "vVMAQZiPCHivNRblS,IQuGqFqhspxiieqFviqYNCcHWexZeMeaoYQddgzYHjTkMuQzTDfvPRXCGqagjQeNTubLnmleTa LG.XKXIupiDldwJZZpeEFlOIlvb.M,kqOmIElrFjAtkChXhbEeQyutRaeWXbR.qRMbEbqvdlWwkoTNwLkRWmNVMVZxQlxrbQgzJuIYOUDDro.,FxE,CcADp PfGSyxIRlqVdRNLJRcvPhhZGbJbuLiOxEjNr,GzjcdEBMEGdlbljCUZzV.FldOSdoLDeAQMFQrHGEWGzyISrQLz"
                                 }
                             }
                         ]
@@ -1273,7 +1314,7 @@
                         },
                         "archetype_node_id": "at0001",
                         "origin": {
-                            "value": "2022-10-25T23:37:52.597-03:00"
+                            "value": "2022-10-26T09:57:31.312-03:00"
                         },
                         "events": [
                             {
@@ -1284,7 +1325,7 @@
                                 },
                                 "archetype_node_id": "at0002",
                                 "time": {
-                                    "value": "2022-10-25T23:37:52.598-03:00"
+                                    "value": "2022-10-26T09:57:31.315-03:00"
                                 },
                                 "data": {
                                     "_type": "ITEM_TREE",
@@ -1311,7 +1352,7 @@
                                                     "archetype_node_id": "at0005",
                                                     "value": {
                                                         "_type": "DV_TEXT",
-                                                        "value": " DgHGmCRXcyTXh wKUIxeUfqVDXUkGzynbYHRUkDovqjxmIUAZfvnOahUKrRjIVpse,GyicPNUvmguSsweoPVdxBej.Zz.YIlUtpfFjpGPVkUAtPmSDJ.ZlNe,gf NCbrjzOkhzhHRBEOSxzyQb euEjFZrPF.A.DBc.eRpfxdFqavAlSsnViZKbYIYjYeXOVUUPd,TlZYlF,FXDHuYeTbRtBFnJoLW cNsALSsQaccNSnMUDA MziUGtdDcHnCvytEYulc.BhGigs g.KzARgNfAW.Ysn SzuLStAaGTBWk"
+                                                        "value": "SsZRFrrVBHoYoJrWXjZCVf,udHuajIj,tCFLE pspbcbiIzFDiLHaHbqkKuQDvRbZLSAyCfiwlDmpjCv Xe xGyb,iXomDgiRr.tTNjLIUxQw,qnwXCuVbNqNTgDoQxKCPwovlEyfKWglnsSBbbEffXLrvCmL ssPGjdgMFadKjVdcKDCcK,dLheJFxWqORKcwwE fUwvWxJeTTRRYurTfm ClXilMiLJhFWDtziDbD. v.NFPSZa,UxrMhOp,wtsNpvWHSVpGPVytzojKHlpOLhB.wrkmCNnHvrMGGU.xVV"
                                                     }
                                                 },
                                                 {
@@ -1342,13 +1383,13 @@
                                                     "archetype_node_id": "at0011",
                                                     "value": {
                                                         "_type": "DV_CODED_TEXT",
-                                                        "value": "zPFFvsjMWEpLQpCGpt.bkzbOVjyjx ",
+                                                        "value": "bukDfUfQP,lrCjlNLgSlqGfsGGwcBg",
                                                         "defining_code": {
                                                             "terminology_id": {
                                                                 "_type": "TERMINOLOGY_ID",
                                                                 "value": "terminology_not_specified_as_constraint_or_referenceSetUri_in_opt"
                                                             },
-                                                            "code_string": "950912"
+                                                            "code_string": "986769"
                                                         }
                                                     }
                                                 },
@@ -1361,7 +1402,7 @@
                                                     "archetype_node_id": "at0012",
                                                     "value": {
                                                         "_type": "DV_QUANTITY",
-                                                        "magnitude": 14.5,
+                                                        "magnitude": 18.6,
                                                         "units": "cm"
                                                     }
                                                 },
@@ -1376,12 +1417,12 @@
                                                         "_type": "DV_INTERVAL",
                                                         "lower": {
                                                             "_type": "DV_QUANTITY",
-                                                            "magnitude": 0.4570466867628076,
+                                                            "magnitude": 9.845797976243592,
                                                             "units": "cm"
                                                         },
                                                         "upper": {
                                                             "_type": "DV_QUANTITY",
-                                                            "magnitude": 1.4570466867628076,
+                                                            "magnitude": 10.845797976243592,
                                                             "units": "cm"
                                                         },
                                                         "lower_included": true,
@@ -1399,7 +1440,7 @@
                                                     "archetype_node_id": "at0013",
                                                     "value": {
                                                         "_type": "DV_COUNT",
-                                                        "magnitude": 13
+                                                        "magnitude": 96
                                                     }
                                                 },
                                                 {
@@ -1413,11 +1454,11 @@
                                                         "_type": "DV_INTERVAL",
                                                         "lower": {
                                                             "_type": "DV_COUNT",
-                                                            "magnitude": 9
+                                                            "magnitude": 10
                                                         },
                                                         "upper": {
                                                             "_type": "DV_COUNT",
-                                                            "magnitude": 10
+                                                            "magnitude": 11
                                                         },
                                                         "lower_included": true,
                                                         "lower_unbounded": false,
@@ -1434,8 +1475,8 @@
                                                     "archetype_node_id": "at0028",
                                                     "value": {
                                                         "_type": "DV_PROPORTION",
-                                                        "numerator": 237.4,
-                                                        "denominator": 695.9,
+                                                        "numerator": 85.1,
+                                                        "denominator": 135.4,
                                                         "type": 0
                                                     }
                                                 },
@@ -1448,7 +1489,7 @@
                                                     "archetype_node_id": "at0014",
                                                     "value": {
                                                         "_type": "DV_DATE_TIME",
-                                                        "value": "2022-10-25T23:37:52.639-03:00"
+                                                        "value": "2022-10-26T09:57:31.381-03:00"
                                                     }
                                                 },
                                                 {
@@ -1462,11 +1503,11 @@
                                                         "_type": "DV_INTERVAL",
                                                         "lower": {
                                                             "_type": "DV_DATE_TIME",
-                                                            "value": "2022-10-25T23:37:52.645-03:00"
+                                                            "value": "2022-10-26T09:57:31.386-03:00"
                                                         },
                                                         "upper": {
                                                             "_type": "DV_DATE_TIME",
-                                                            "value": "2022-10-26T23:37:52.654-03:00"
+                                                            "value": "2022-10-27T09:57:31.396-03:00"
                                                         },
                                                         "lower_included": true,
                                                         "lower_unbounded": false,
@@ -1547,7 +1588,7 @@
                                                     "archetype_node_id": "at0025",
                                                     "value": {
                                                         "_type": "DV_QUANTITY",
-                                                        "magnitude": 754.8,
+                                                        "magnitude": 482.1,
                                                         "units": "gm"
                                                     }
                                                 },
@@ -1594,7 +1635,7 @@
                                                         "_type": "DV_IDENTIFIER",
                                                         "issuer": "Hospital de Clinicas",
                                                         "assigner": "Hospital de Clinicas",
-                                                        "id": "96858978",
+                                                        "id": "36143819",
                                                         "type": "LOCALID"
                                                     }
                                                 }
