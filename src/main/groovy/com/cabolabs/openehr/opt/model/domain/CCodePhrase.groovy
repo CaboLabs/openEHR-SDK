@@ -2,7 +2,9 @@ package com.cabolabs.openehr.opt.model.domain
 
 import com.cabolabs.openehr.opt.model.ObjectNode
 import com.cabolabs.openehr.opt.model.validation.ValidationResult
-import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
+//import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
+import com.cabolabs.openehr.rm_1_0_2.data_types.text.CodePhrase
+
 
 @groovy.util.logging.Log4j
 class CCodePhrase extends ObjectNode {
@@ -32,25 +34,30 @@ class CCodePhrase extends ObjectNode {
    /**
     * @param terminologyId format 'name[(version)]'
     */
-   ValidationResult isValid(Pathable parent, String code, String terminologyId)
+   ValidationResult isValid(CodePhrase cp)
    {
       // TODO: search for the terminologyId in the ref
       if (this.terminologyRef) return new ValidationResult(isValid: true)
 
+      def _code = cp.code_string
+      def _terminologyId = cp.terminology_id.value
+
+      println "TID: "+ _terminologyId
+
       // if there is no list, any code is valid
       if (this.codeList)
       {
-         def item = this.codeList.find { it == code }
-         if (!item) return new ValidationResult(isValid: false, message: "code_string ${code} is not in the code list "+ codeList)
+         def item = this.codeList.find { it == _code }
+         if (!item) return new ValidationResult(isValid: false, message: "code_string '${_code}' is not in the code list "+ codeList)
       }
 
       if (this.terminologyId)
       {
-         log.info("CCodePhrase isValid")
+         //log.info("CCodePhrase isValid")
          
-         if (terminologyId != this.terminologyId)
+         if (_terminologyId != this.terminologyId)
          {
-            return new ValidationResult(isValid: false, message: "terminology_id ${terminologyId} doesn't match ${this.terminologyId}")
+            return new ValidationResult(isValid: false, message: "terminology_id '${_terminologyId}' doesn't match '${this.terminologyId}'")
          }
       }
 

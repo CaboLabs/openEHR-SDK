@@ -25,7 +25,7 @@ class CDate extends CPrimitive {
    ]
 
 
-   ValidationResult isValid(Pathable parent, String formattedDate)
+   ValidationResult isValid(String formattedDate)
    {
       def formats = validators[pattern]
 

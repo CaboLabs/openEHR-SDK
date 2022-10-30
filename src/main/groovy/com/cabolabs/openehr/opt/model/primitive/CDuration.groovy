@@ -3,7 +3,6 @@ package com.cabolabs.openehr.opt.model.primitive
 import com.cabolabs.openehr.opt.model.IntervalDuration
 import com.cabolabs.openehr.opt.model.datatypes.Duration
 import com.cabolabs.openehr.opt.model.validation.ValidationResult
-import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 
 @groovy.util.logging.Log4j
 class CDuration extends CPrimitive {
@@ -21,14 +20,14 @@ class CDuration extends CPrimitive {
       this.pattern = pattern
    }
 
-   ValidationResult isValid(Pathable parent, String value)
+   ValidationResult isValid(String value)
    {
       // TODO: check pattern constraint
 
       // FIXME: add message with path
       if (range && !range.has(new Duration(value: value)))
       {
-         return new ValidationResult(isValid: false, message: parent.dataPath +"/value '${value}' is not in the interval "+ range)
+         return new ValidationResult(isValid: false, message: "value '${value}' is not in the interval "+ range)
       }
 
       return new ValidationResult(isValid: true)

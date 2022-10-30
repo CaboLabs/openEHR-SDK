@@ -24,7 +24,7 @@ class CTime extends CPrimitive {
       'any_allowed': ["HH:mm:ss", "HHmmss", "HH:mm", "HH:mm", "HH"]
    ]
 
-   ValidationResult isValid(Pathable parent, String formattedDate)
+   ValidationResult isValid(String formattedDate)
    {
       def formats = validators[pattern]
 
