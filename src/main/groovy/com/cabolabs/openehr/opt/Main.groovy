@@ -5,6 +5,7 @@ import com.cabolabs.openehr.opt.manager.OptManager
 import com.cabolabs.openehr.opt.manager.OptRepository
 import com.cabolabs.openehr.opt.manager.OptRepositoryFSImpl
 import com.cabolabs.openehr.opt.ui_generator.OptUiGenerator
+import com.cabolabs.openehr.opt.cc_generator.OptCcGenerator
 import com.cabolabs.openehr.opt.instance_generator.*
 import com.cabolabs.openehr.opt.parser.*
 import com.cabolabs.openehr.opt.model.*
@@ -34,6 +35,7 @@ class Main {
       {
          println 'usage: opt command [options]'
          println 'command: [uigen, ingen, inval]'
+         println 'ccgen: cCube user interface generation from an OPT'
          println 'uigen: user interface generation from an OPT'
          println 'ingen: XML/JSON instance generation from an OPT'
          println 'inval: XML/JSON instance validator'
@@ -43,6 +45,22 @@ class Main {
 
       switch (args[0])
       {
+         case 'ccgen':
+            if (args.size() < 3)
+            {
+               println 'usage: opt ccgen path_to_opt dest_folder'
+               System.exit(0)
+            }
+
+            def path = args[1]
+            def opt = loadAndParse(path)
+            def gen = new OptCcGenerator()
+            def cc = gen.generate(opt)
+
+            def destination_path = args[2]
+            new File( destination_path + PS + new java.text.SimpleDateFormat("'"+ opt.concept +"_'yyyyMMddhhmmss'.xml'").format(new Date()) ) << cc
+
+         break
          case 'uigen':
             if (args.size() < 3)
             {
