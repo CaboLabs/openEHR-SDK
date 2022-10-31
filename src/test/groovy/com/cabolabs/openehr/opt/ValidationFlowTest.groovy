@@ -942,12 +942,12 @@ class ValidationFlowTest extends GroovyTestCase {
 
       err = report.errors.find { it.path == "/content[0]/data/events[0]/data/items[16]/value/issuer" }
 
-      assert err.error == "/content[0]/data/events[0]/data/items[16]/value 'Hospital de Clinicas' doesn't match pattern 'issuerA'"
+      assert err.error == "value 'Hospital de Clinicas' doesn't match pattern 'issuerA'"
 
 
       err = report.errors.find { it.path == "/content[0]/data/events[0]/data/items[16]/value/type" }
 
-      assert err.error == "/content[0]/data/events[0]/data/items[16]/value 'LOCALID' doesn't match pattern 'typeB'"
+      assert err.error == "value 'LOCALID' doesn't match pattern 'typeB'"
    }
 
 

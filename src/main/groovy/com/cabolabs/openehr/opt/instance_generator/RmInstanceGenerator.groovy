@@ -396,6 +396,8 @@ class RmInstanceGenerator {
             content = content.take(oa.cardinality.interval.upper)
          }
 
+         // TODO: check min is lower than the actually generated amount and generate more if needed
+
          compo.content = content
       }
 

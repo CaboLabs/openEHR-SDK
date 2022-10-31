@@ -3898,6 +3898,37 @@ It is intended that this template will be further constrained to be made relevan
                               <upper_unbounded>true</upper_unbounded>
                               <lower>0</lower>
                             </occurrences>
+                            <node_id>at0018</node_id>
+                            <attributes xsi:type="C_MULTIPLE_ATTRIBUTE">
+                              <rm_attribute_name>items</rm_attribute_name>
+                              <existence>
+                                <lower_included>true</lower_included>
+                                <upper_included>true</upper_included>
+                                <lower_unbounded>false</lower_unbounded>
+                                <upper_unbounded>false</upper_unbounded>
+                                <lower>1</lower>
+                                <upper>1</upper>
+                              </existence>
+                              <cardinality>
+                                <is_ordered>false</is_ordered>
+                                <is_unique>false</is_unique>
+                                <interval>
+                                  <lower_included>true</lower_included>
+                                  <lower_unbounded>false</lower_unbounded>
+                                  <upper_unbounded>true</upper_unbounded>
+                                  <lower>1</lower>
+                                </interval>
+                              </cardinality>
+                            </attributes>
+                          </children>
+                          <children xsi:type="C_COMPLEX_OBJECT">
+                            <rm_type_name>CLUSTER</rm_type_name>
+                            <occurrences>
+                              <lower_included>true</lower_included>
+                              <lower_unbounded>false</lower_unbounded>
+                              <upper_unbounded>true</upper_unbounded>
+                              <lower>0</lower>
+                            </occurrences>
                             <node_id>at0165</node_id>
                             <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                               <rm_attribute_name>name</rm_attribute_name>
@@ -3906,7 +3937,7 @@ It is intended that this template will be further constrained to be made relevan
                                 <upper_included>true</upper_included>
                                 <lower_unbounded>false</lower_unbounded>
                                 <upper_unbounded>false</upper_unbounded>
-                                <lower>0</lower>
+                                <lower>1</lower>
                                 <upper>1</upper>
                               </existence>
                               <children xsi:type="C_COMPLEX_OBJECT">
@@ -3957,7 +3988,7 @@ It is intended that this template will be further constrained to be made relevan
                                 <upper_included>true</upper_included>
                                 <lower_unbounded>false</lower_unbounded>
                                 <upper_unbounded>false</upper_unbounded>
-                                <lower>0</lower>
+                                <lower>1</lower>
                                 <upper>1</upper>
                               </existence>
                               <children xsi:type="ARCHETYPE_SLOT">
@@ -3996,7 +4027,7 @@ It is intended that this template will be further constrained to be made relevan
                                   <lower_included>true</lower_included>
                                   <lower_unbounded>false</lower_unbounded>
                                   <upper_unbounded>true</upper_unbounded>
-                                  <lower>0</lower>
+                                  <lower>1</lower>
                                 </interval>
                               </cardinality>
                             </attributes>
@@ -4755,6 +4786,37 @@ If the anatomical location is included in the Symptom name via precoordinated co
                               <upper_unbounded>true</upper_unbounded>
                               <lower>0</lower>
                             </occurrences>
+                            <node_id>at0018</node_id>
+                            <attributes xsi:type="C_MULTIPLE_ATTRIBUTE">
+                              <rm_attribute_name>items</rm_attribute_name>
+                              <existence>
+                                <lower_included>true</lower_included>
+                                <upper_included>true</upper_included>
+                                <lower_unbounded>false</lower_unbounded>
+                                <upper_unbounded>false</upper_unbounded>
+                                <lower>1</lower>
+                                <upper>1</upper>
+                              </existence>
+                              <cardinality>
+                                <is_ordered>false</is_ordered>
+                                <is_unique>false</is_unique>
+                                <interval>
+                                  <lower_included>true</lower_included>
+                                  <lower_unbounded>false</lower_unbounded>
+                                  <upper_unbounded>true</upper_unbounded>
+                                  <lower>1</lower>
+                                </interval>
+                              </cardinality>
+                            </attributes>
+                          </children>
+                          <children xsi:type="C_COMPLEX_OBJECT">
+                            <rm_type_name>CLUSTER</rm_type_name>
+                            <occurrences>
+                              <lower_included>true</lower_included>
+                              <lower_unbounded>false</lower_unbounded>
+                              <upper_unbounded>true</upper_unbounded>
+                              <lower>0</lower>
+                            </occurrences>
                             <node_id>at0165</node_id>
                             <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                               <rm_attribute_name>name</rm_attribute_name>
@@ -4814,7 +4876,7 @@ If the anatomical location is included in the Symptom name via precoordinated co
                                 <upper_included>true</upper_included>
                                 <lower_unbounded>false</lower_unbounded>
                                 <upper_unbounded>false</upper_unbounded>
-                                <lower>0</lower>
+                                <lower>1</lower>
                                 <upper>1</upper>
                               </existence>
                               <children xsi:type="ARCHETYPE_SLOT">
@@ -4853,7 +4915,7 @@ If the anatomical location is included in the Symptom name via precoordinated co
                                   <lower_included>true</lower_included>
                                   <lower_unbounded>false</lower_unbounded>
                                   <upper_unbounded>true</upper_unbounded>
-                                  <lower>0</lower>
+                                  <lower>1</lower>
                                 </interval>
                               </cardinality>
                             </attributes>
@@ -15208,7 +15270,7 @@ For example: Sales manager or software engineer.</items>
                           <lower_included>true</lower_included>
                           <lower_unbounded>false</lower_unbounded>
                           <upper_unbounded>true</upper_unbounded>
-                          <lower>0</lower>
+                          <lower>1</lower>
                         </interval>
                       </cardinality>
                     </attributes>

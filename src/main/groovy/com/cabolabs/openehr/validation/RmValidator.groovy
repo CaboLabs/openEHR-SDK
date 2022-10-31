@@ -544,6 +544,7 @@ class RmValidator {
 
       if (!c_multiple_attribute.cardinality.interval.has(container.size()))
       {
+         println "NOOIC: "+ c_multiple_attribute.cardinality.interval +" "+ c_multiple_attribute.templateDataPath
          // cardinality error
          // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
          report.addError(c_multiple_attribute.templateDataPath, "Number of objects in container ${container.size()} doesn't match cardinality constraint "+ c_multiple_attribute.cardinality.interval.toString())
