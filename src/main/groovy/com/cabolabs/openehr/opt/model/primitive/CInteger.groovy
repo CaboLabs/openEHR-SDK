@@ -2,7 +2,6 @@ package com.cabolabs.openehr.opt.model.primitive
 
 import com.cabolabs.openehr.opt.model.IntervalInt
 import com.cabolabs.openehr.opt.model.validation.ValidationResult
-import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 
 @groovy.util.logging.Log4j
 class CInteger extends CPrimitive {
@@ -14,7 +13,7 @@ class CInteger extends CPrimitive {
 
    IntervalInt range
 
-   ValidationResult isValid(Pathable parent, Integer value)
+   ValidationResult isValid(Integer value)
    {
       if (range)
       {

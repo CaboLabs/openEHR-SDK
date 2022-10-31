@@ -1669,7 +1669,10 @@ class XmlInstanceGenerator {
 
          if (nodes == 0)
          {
-            // dummy element
+            // TODO: log warning about empty cluster
+            // add dummy element
+            // NOTE: if a dummy element is added it will fail OPT validation! (stupid idea...)
+            /*
             items('xsi:type':'ELEMENT', archetype_node_id: 'at'+ Integer.random(9999, 1000)) {
                name('xsi:type':'DV_TEXT') {
                   value('dummy name')
@@ -1678,6 +1681,7 @@ class XmlInstanceGenerator {
                   value('dummy value')
                }
             }
+            */
          }
       }
 

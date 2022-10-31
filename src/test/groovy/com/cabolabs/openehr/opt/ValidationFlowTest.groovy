@@ -334,7 +334,7 @@ class ValidationFlowTest extends GroovyTestCase {
             },
             "name": {
                "_type": "DV_TEXT",
-               "value": "EHR Status"
+               "value": "Health summary"
             },
             "subject": {
                "external_ref": {
@@ -389,7 +389,7 @@ class ValidationFlowTest extends GroovyTestCase {
             },
             "name": {
                "_type": "DV_TEXT",
-               "value": "EHR Status"
+               "value": "status"
             },
             "subject": {
                "external_ref": {
@@ -408,7 +408,7 @@ class ValidationFlowTest extends GroovyTestCase {
                "_type": "ITEM_TREE",
                "name": {
                   "_type": "DV_TEXT",
-                  "value": "Other details"
+                  "value": "tree"
                },
                "archetype_node_id": "at0001"
             }
@@ -456,7 +456,7 @@ class ValidationFlowTest extends GroovyTestCase {
             },
             "name": {
                "_type": "DV_TEXT",
-               "value": "EHR Status"
+               "value": "status"
             },
             "subject": {
                "external_ref": {
@@ -517,7 +517,7 @@ class ValidationFlowTest extends GroovyTestCase {
             "_type": "FOLDER",
             "name": {
                "_type": "DV_TEXT",
-               "value": "root"
+               "value": "generic"
             },
             "archetype_node_id": "openEHR-EHR-FOLDER.generic.v1",
             "archetype_details": {
@@ -551,7 +551,7 @@ class ValidationFlowTest extends GroovyTestCase {
       assert !report.errors
    }
 
-    void test_folder_any_valid_api()
+   void test_folder_any_valid_api()
    {
       // PARSE JSON WITH API SCHEMA VALIDATION
       def json_folder = $/
@@ -591,7 +591,7 @@ class ValidationFlowTest extends GroovyTestCase {
             "_type": "FOLDER",
             "name": {
                "_type": "DV_TEXT",
-               "value": "root"
+               "value": "generic"
             },
             "archetype_node_id": "openEHR-EHR-FOLDER.generic.v1",
             "archetype_details": {
@@ -643,7 +643,7 @@ class ValidationFlowTest extends GroovyTestCase {
             "_type": "FOLDER",
             "name": {
                "_type": "DV_TEXT",
-               "value": "root"
+               "value": "generic"
             },
             "archetype_node_id": "openEHR-EHR-FOLDER.generic.v1",
             "archetype_details": {
@@ -942,12 +942,12 @@ class ValidationFlowTest extends GroovyTestCase {
 
       err = report.errors.find { it.path == "/content[0]/data/events[0]/data/items[16]/value/issuer" }
 
-      assert err.error == "/content[0]/data/events[0]/data/items[16]/value 'Hospital de Clinicas' doesn't match pattern 'issuerA'"
+      assert err.error == "value 'Hospital de Clinicas' doesn't match pattern 'issuerA'"
 
 
       err = report.errors.find { it.path == "/content[0]/data/events[0]/data/items[16]/value/type" }
 
-      assert err.error == "/content[0]/data/events[0]/data/items[16]/value 'LOCALID' doesn't match pattern 'typeB'"
+      assert err.error == "value 'LOCALID' doesn't match pattern 'typeB'"
    }
 
 

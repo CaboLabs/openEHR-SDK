@@ -374,6 +374,19 @@ class RmInstanceGenerator {
       
       if (oa)
       {
+         // TODO: this should be an OPT rule exception:
+         // if a multiple attribute has minimal cardinality bigger than the
+         // amount of items generated, it could be because the OPT doesn't
+         // have constraints for the items in the multiple attribute,
+         // which means unconstrained, but also means there is no
+         // definition of what can be inside, and if we add dummy nodes
+         // the name validation will fail since there is no text defined in the
+         // OPT for the generated node.
+         if (oa.cardinality && oa.cardinality.interval.lower > 0 && !oa.children)
+         {
+            throw new Exception("The multiple attribute at ${oa.templateDataPath} has a lower cardinality constraint of ${oa.cardinality.interval.lower} but there are no children objects defined in the template, so the instance generator can't generate any more. If some content is required in a container, then at least one content object should be defined in the OPT.")
+         }
+
          def content = processAttributeChildren(oa, opt.definition.archetypeId)
 
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
@@ -382,6 +395,8 @@ class RmInstanceGenerator {
          {
             content = content.take(oa.cardinality.interval.upper)
          }
+
+         // TODO: check min is lower than the actually generated amount and generate more if needed
 
          compo.content = content
       }
@@ -438,7 +453,7 @@ class RmInstanceGenerator {
          obj_type = obj_type.replace('<','__').replace('>','')
 
          method = 'generate_'+ obj_type
-
+         // println "method: "+ method
          attrs << "$method"(obj, parent_arch_id) // generate_OBSERVATION(a)
       }
       
@@ -615,10 +630,25 @@ class RmInstanceGenerator {
 
    private DvText generate_DV_TEXT(ObjectNode o, String parent_arch_id)
    {
-      // TODO: check if the value depends on a constraint in the c_object
-      new DvText(
-         value: String.random((('A'..'Z')+('a'..'z')+' ,.').join(), 300) // TODO: improve using word / phrase dictionary
-      )
+      def value
+      def value_constraint = o.getAttr('value')
+            
+      // there is a constraint for the name but doesnt have a specific value
+      if (!value_constraint)
+      {
+         value = new DvText(
+            value: String.random((('A'..'Z')+('a'..'z')+' ,.').join(), 300) // TODO: improve using word / phrase dictionary
+         )
+      }
+      else
+      {
+         def name_value = value_constraint.children[0].item.list[0] // TEST: attr value can be null?
+         value = new DvText(
+            value: name_value
+         )
+      }
+      
+      return value
    }
 
    private DvDateTime generate_DV_DATE_TIME(ObjectNode o, String parent_arch_id)
@@ -1069,6 +1099,7 @@ class RmInstanceGenerator {
       if (node_type == 'EVENT') node_type = 'POINT_EVENT'
       */
 
+      // TODO: this should be really the process for any DV_TEXT with an option for DV_CODED_TEXT
 
       // name
       def name_constraint = o.attributes.find { it.rmAttributeName == 'name' }
@@ -1103,6 +1134,7 @@ class RmInstanceGenerator {
                   value: name_value
                )
             }
+            //println loc.name.value
             // TODO: call generate_DV_TEXT
          }
          else if (name_constraint_type == 'DV_CODED_TEXT')
@@ -1143,6 +1175,19 @@ class RmInstanceGenerator {
 
       if (oa)
       {
+         // TODO: this should be an OPT rule exception:
+         // if a multiple attribute has minimal cardinality bigger than the
+         // amount of items generated, it could be because the OPT doesn't
+         // have constraints for the items in the multiple attribute,
+         // which means unconstrained, but also means there is no
+         // definition of what can be inside, and if we add dummy nodes
+         // the name validation will fail since there is no text defined in the
+         // OPT for the generated node.
+         if (oa.cardinality && oa.cardinality.interval.lower > 0 && !oa.children)
+         {
+            throw new Exception("The multiple attribute at ${oa.templateDataPath} has a lower cardinality constraint of ${oa.cardinality.interval.lower} but there are no children objects defined in the template, so the instance generator can't generate any more. If some content is required in a container, then at least one content object should be defined in the OPT.")
+         }
+
          def contacts = processAttributeChildren(oa, opt.definition.archetypeId)
 
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
@@ -1159,6 +1204,19 @@ class RmInstanceGenerator {
 
       if (oa)
       {
+         // TODO: this should be an OPT rule exception:
+         // if a multiple attribute has minimal cardinality bigger than the
+         // amount of items generated, it could be because the OPT doesn't
+         // have constraints for the items in the multiple attribute,
+         // which means unconstrained, but also means there is no
+         // definition of what can be inside, and if we add dummy nodes
+         // the name validation will fail since there is no text defined in the
+         // OPT for the generated node.
+         if (oa.cardinality && oa.cardinality.interval.lower > 0 && !oa.children)
+         {
+            throw new Exception("The multiple attribute at ${oa.templateDataPath} has a lower cardinality constraint of ${oa.cardinality.interval.lower} but there are no children objects defined in the template, so the instance generator can't generate any more. If some content is required in a container, then at least one content object should be defined in the OPT.")
+         }
+
          def identities = processAttributeChildren(oa, opt.definition.archetypeId) 
 
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
@@ -1189,6 +1247,19 @@ class RmInstanceGenerator {
       def oa = opt.definition.attributes.find{ it.rmAttributeName == 'languages' }
       if (oa)
       {
+         // TODO: this should be an OPT rule exception:
+         // if a multiple attribute has minimal cardinality bigger than the
+         // amount of items generated, it could be because the OPT doesn't
+         // have constraints for the items in the multiple attribute,
+         // which means unconstrained, but also means there is no
+         // definition of what can be inside, and if we add dummy nodes
+         // the name validation will fail since there is no text defined in the
+         // OPT for the generated node.
+         if (oa.cardinality && oa.cardinality.interval.lower > 0 && !oa.children)
+         {
+            throw new Exception("The multiple attribute at ${oa.templateDataPath} has a lower cardinality constraint of ${oa.cardinality.interval.lower} but there are no children objects defined in the template, so the instance generator can't generate any more. If some content is required in a container, then at least one content object should be defined in the OPT.")
+         }
+
          def languages = processAttributeChildren(oa, opt.definition.archetypeId)
 
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
@@ -1196,6 +1267,11 @@ class RmInstanceGenerator {
          if (oa.cardinality && oa.cardinality.interval.upper)
          {
             languages = languages.take(oa.cardinality.interval.upper)
+         }
+
+         if (oa.cardinality.interval.lower && oa.cardinality.interval.lower > languages.size())
+         {
+            // TODO: if the minimal amount of content objects is not met, more objects sould be generated
          }
 
          a.languages = languages
@@ -1288,6 +1364,19 @@ class RmInstanceGenerator {
 
       if (oa)
       {
+         // TODO: this should be an OPT rule exception:
+         // if a multiple attribute has minimal cardinality bigger than the
+         // amount of items generated, it could be because the OPT doesn't
+         // have constraints for the items in the multiple attribute,
+         // which means unconstrained, but also means there is no
+         // definition of what can be inside, and if we add dummy nodes
+         // the name validation will fail since there is no text defined in the
+         // OPT for the generated node.
+         if (oa.cardinality && oa.cardinality.interval.lower > 0 && !oa.children)
+         {
+            throw new Exception("The multiple attribute at ${oa.templateDataPath} has a lower cardinality constraint of ${oa.cardinality.interval.lower} but there are no children objects defined in the template, so the instance generator can't generate any more. If some content is required in a container, then at least one content object should be defined in the OPT.")
+         }
+
          def capabilities = processAttributeChildren(oa, parent_arch_id)
 
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
@@ -1295,6 +1384,11 @@ class RmInstanceGenerator {
          if (oa.cardinality && oa.cardinality.interval.upper)
          {
             capabilities = capabilities.take(oa.cardinality.interval.upper)
+         }
+
+         if (oa.cardinality.interval.lower && oa.cardinality.interval.lower > capabilities.size())
+         {
+            // TODO: if the minimal amount of content objects is not met, more objects sould be generated
          }
       
          role.capabilities = capabilities
@@ -1345,6 +1439,19 @@ class RmInstanceGenerator {
       oa = o.attributes.find { it.rmAttributeName == 'items' }
       if (oa)
       {
+         // TODO: this should be an OPT rule exception:
+         // if a multiple attribute has minimal cardinality bigger than the
+         // amount of items generated, it could be because the OPT doesn't
+         // have constraints for the items in the multiple attribute,
+         // which means unconstrained, but also means there is no
+         // definition of what can be inside, and if we add dummy nodes
+         // the name validation will fail since there is no text defined in the
+         // OPT for the generated node.
+         if (oa.cardinality && oa.cardinality.interval.lower > 0 && !oa.children)
+         {
+            throw new Exception("The multiple attribute at ${oa.templateDataPath} has a lower cardinality constraint of ${oa.cardinality.interval.lower} but there are no children objects defined in the template, so the instance generator can't generate any more. If some content is required in a container, then at least one content object should be defined in the OPT.")
+         }
+
          def items = processAttributeChildren(oa, parent_arch_id)
          
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
@@ -1352,6 +1459,11 @@ class RmInstanceGenerator {
          if (oa.cardinality && oa.cardinality.interval.upper)
          {
             items = items.take(oa.cardinality.interval.upper)
+         }
+
+         if (oa.cardinality.interval.lower && oa.cardinality.interval.lower > items.size())
+         {
+            // TODO: if the minimal amount of content objects is not met, more objects sould be generated
          }
          
          section.items = items
@@ -1468,9 +1580,32 @@ class RmInstanceGenerator {
       def oa = o.attributes.find { it.rmAttributeName == 'activities' }
       if (oa)
       {
+         // TODO: this should be an OPT rule exception:
+         // if a multiple attribute has minimal cardinality bigger than the
+         // amount of items generated, it could be because the OPT doesn't
+         // have constraints for the items in the multiple attribute,
+         // which means unconstrained, but also means there is no
+         // definition of what can be inside, and if we add dummy nodes
+         // the name validation will fail since there is no text defined in the
+         // OPT for the generated node.
+         if (oa.cardinality && oa.cardinality.interval.lower > 0 && !oa.children)
+         {
+            throw new Exception("The multiple attribute at ${oa.templateDataPath} has a lower cardinality constraint of ${oa.cardinality.interval.lower} but there are no children objects defined in the template, so the instance generator can't generate any more. If some content is required in a container, then at least one content object should be defined in the OPT.")
+         }
+
          // this is a list, and activities is also a list, we use the full list
          def activities = processAttributeChildren(oa, parent_arch_id)
-         // TODO: check for cardinality constraints in activities attr to avoid generating more or less than the allowed
+         
+         if (oa.cardinality && oa.cardinality.interval.upper)
+         {
+            activities = activities.take(oa.cardinality.interval.upper)
+         }
+
+         if (oa.cardinality.interval.lower && oa.cardinality.interval.lower > activities.size())
+         {
+            // TODO: if the minimal amount of content objects is not met, more objects sould be generated
+         }
+
          inst.activities = activities
       }
 
@@ -1625,30 +1760,49 @@ class RmInstanceGenerator {
 
       add_LOCATABLE_elements(o, history, parent_arch_id)
 
-      history.origin = generate_DV_DATE_TIME(null, null)
       // IM attribute not present in the OPT
+      history.origin = generate_DV_DATE_TIME(null, null)
 
-      /* def mattr
-      o.attributes.each { oa ->
-         mattr = processAttributeChildren(oa, parent_arch_id)
-         mobj[oa.rmAttributeName] = mattr
-      } */
+      def mattrs
 
       def oa = o.attributes.find { it.rmAttributeName == 'events' }
       if (oa)
       {
-         def events = processAttributeChildren(oa, parent_arch_id)
+         // TODO: this should be an OPT rule exception:
+         // if a multiple attribute has minimal cardinality bigger than the
+         // amount of items generated, it could be because the OPT doesn't
+         // have constraints for the items in the multiple attribute,
+         // which means unconstrained, but also means there is no
+         // definition of what can be inside, and if we add dummy nodes
+         // the name validation will fail since there is no text defined in the
+         // OPT for the generated node.
+         if (oa.cardinality && oa.cardinality.interval.lower > 0 && !oa.children)
+         {
+            throw new Exception("The multiple attribute at ${oa.templateDataPath} has a lower cardinality constraint of ${oa.cardinality.interval.lower} but there are no children objects defined in the template, so the instance generator can't generate any more. If some content is required in a container, then at least one content object should be defined in the OPT.")
+         }
+
+         mattrs = processAttributeChildren(oa, parent_arch_id)
 
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
          // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
          if (oa.cardinality && oa.cardinality.interval.upper)
          {
-            events = events.take(oa.cardinality.interval.upper)
+            mattrs = mattrs.take(oa.cardinality.interval.upper)
          }
 
-         history.events = events
+         history.events = mattrs
       }
-      
+
+     
+      oa = o.attributes.find { it.rmAttributeName == 'summary' }
+      if (oa)
+      {
+         // in event there are no lists, so the results will be lists of 1 item
+         mattrs = processAttributeChildren(oa, parent_arch_id)
+
+         history.summary = mattrs[0]
+      }
+
       return history
    }
 
@@ -1666,14 +1820,23 @@ class RmInstanceGenerator {
       ev.time = generate_DV_DATE_TIME(null, null)
       // IM attribute not present in the OPT
 
-      def mattrs
-      o.attributes.each { oa ->
+      def process_attrs = [
+         'data',
+         'state'
+      ]
+
+      def oa, mattrs
+      process_attrs.each { attr_name ->
+
+         oa = o.attributes.find { it.rmAttributeName == attr_name }
 
          // in event there are no lists, so the results will be lists of 1 item
          mattrs = processAttributeChildren(oa, parent_arch_id)
 
-         // TODO: test this works!
-         ev."${oa.rmAttributeName}" = mattrs[0]
+         if (mattrs)
+         {
+            ev."${oa.rmAttributeName}" = mattrs[0]
+         }
       }
       
       return ev
@@ -1690,21 +1853,39 @@ class RmInstanceGenerator {
       
       add_LOCATABLE_elements(o, ev, parent_arch_id)
 
-      ev.time = generate_DV_DATE_TIME(null, null)
       // IM attribute not present in the OPT
+      ev.time = generate_DV_DATE_TIME(null, null)
 
+      def process_attrs = [
+         'data',
+         'state'
+      ]
 
-      // data
-      def oa = o.attributes.find { it.rmAttributeName == 'data' }
-      if (oa)
-      {
-         def data = processAttributeChildren(oa, parent_arch_id)
-         ev.data = data[0]
+      def oa, mattrs
+      process_attrs.each { attr_name ->
+
+         oa = o.attributes.find { it.rmAttributeName == attr_name }
+
+         // in event there are no lists, so the results will be lists of 1 item
+         mattrs = processAttributeChildren(oa, parent_arch_id)
+
+         ev."${oa.rmAttributeName}" = mattrs[0]
       }
 
-      ev.width = new DvDuration(
-         value: 'PT30M' // TODO: Duration String generator
-      )
+      // TODO: if there is no attribute contraint, the duration generation wont work so we should check that here
+      oa = o.attributes.find { it.rmAttributeName == 'width' }
+      if (oa)
+      {
+         mattrs = processAttributeChildren(oa, parent_arch_id)
+
+         ev.width = mattrs[0]
+      }
+      else
+      {
+         ev.width = new DvDuration(
+            value: 'PT30M' // TODO: use a Duration String generator
+         )
+      }
 
       oa = o.attributes.find { it.rmAttributeName == 'math_function' }
       if (oa)
@@ -1738,8 +1919,6 @@ class RmInstanceGenerator {
    private ItemSingle generate_ITEM_SINGLE(ObjectNode o, String parent_arch_id)
    {
       def struc = new ItemSingle()
-
-     // generate_ITEM_TREE(o, parent_arch_id)
      
      // parent from now can be different than the parent if if the object has archetypeId
      parent_arch_id = o.archetypeId ?: parent_arch_id
@@ -1778,15 +1957,42 @@ class RmInstanceGenerator {
 
       add_LOCATABLE_elements(o, struc, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
       
-      def mattr
-      o.attributes.each { oa ->
+      def mattrs
 
-         mattr = processAttributeChildren(oa, parent_arch_id) // this is a list!
+      def oa = o.attributes.find { it.rmAttributeName == 'items' }
 
-         // this doesn't work for item single because it's a list and should be an object,
-         // but for the other structures it works OK
-         // TODO: test this works
-         struc."${oa.rmAttributeName}" = mattr
+      if (oa)
+      {
+         // TODO: this should be an OPT rule exception:
+         // if a multiple attribute has minimal cardinality bigger than the
+         // amount of items generated, it could be because the OPT doesn't
+         // have constraints for the items in the multiple attribute,
+         // which means unconstrained, but also means there is no
+         // definition of what can be inside, and if we add dummy nodes
+         // the name validation will fail since there is no text defined in the
+         // OPT for the generated node.
+         if (oa.cardinality && oa.cardinality.interval.lower > 0 && !oa.children)
+         {
+            throw new Exception("The multiple attribute at ${oa.templateDataPath} has a lower cardinality constraint of ${oa.cardinality.interval.lower} but there are no children objects defined in the template, so the instance generator can't generate any more. If some content is required in a container, then at least one content object should be defined in the OPT.")
+         }
+
+         //println "ITEM_TREE.items "+ oa.children*.rmTypeName
+         mattrs = processAttributeChildren(oa, parent_arch_id) // this is a list!
+
+         if (oa.cardinality)
+         {
+            if (oa.cardinality.interval.upper)
+            {
+               mattrs = mattrs.take(oa.cardinality.interval.upper)
+            }
+
+            if (oa.cardinality.interval.lower && oa.cardinality.interval.lower > mattrs.size())
+            {
+               // TODO: if the minimal amount of content objects is not met, more objects sould be generated
+            }
+         }
+
+         struc.items = mattrs
       }
 
       return struc
@@ -1803,50 +2009,62 @@ class RmInstanceGenerator {
       
       add_LOCATABLE_elements(o, cluster, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
-      def mattr
-
-      // items is the only attribute
-      /*
-      o.attributes.each { oa ->
-         if (oa.rmAttributeName == 'name') return // avoid processing name constraints, thos are processde by add_LOCATABLE_elements
-         mattr = processAttributeChildren(oa, parent_arch_id)
-         mobj[oa.rmAttributeName] = mattr
-      }
-      */
+      def mattrs
 
       // since items is a collection, it is assigned directly to the list retrieved
       def oa = o.attributes.find{ it.rmAttributeName == 'items' }
       if (oa)
       {
-         mattr = processAttributeChildren(oa, parent_arch_id)
+         // TODO: this should be an OPT rule exception:
+         // if a multiple attribute has minimal cardinality bigger than the
+         // amount of items generated, it could be because the OPT doesn't
+         // have constraints for the items in the multiple attribute,
+         // which means unconstrained, but also means there is no
+         // definition of what can be inside, and if we add dummy nodes
+         // the name validation will fail since there is no text defined in the
+         // OPT for the generated node.
+         if (oa.cardinality && oa.cardinality.interval.lower > 0 && !oa.children)
+         {
+            throw new Exception("The multiple attribute at ${oa.templateDataPath} has a lower cardinality constraint of ${oa.cardinality.interval.lower} but there are no children objects defined in the template, so the instance generator can't generate any more. If some content is required in a container, then at least one content object should be defined in the OPT.")
+         }
+
+         mattrs = processAttributeChildren(oa, parent_arch_id)
 
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
          // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
          if (oa.cardinality && oa.cardinality.interval.upper)
          {
-            mattr = mattr.take(oa.cardinality.interval.upper)
+            mattrs = mattrs.take(oa.cardinality.interval.upper)
          }
 
          //println oa.cardinality.interval //.interval.upper <<<< NULL we are not parsing the cardinality
 
-         cluster.items = mattr
+         cluster.items = mattrs
       }
+
+      // FIXME: if there are no items generator and the items attribute has existence 1..1, the
+      // generator should throw an exception, the error is the OPT might require and object there
+      // but it has a SLOT or an open constraint, which doens't allow to generate a valid structure
 
       // no items?
       if (!cluster.items)
       {
+         // TODO: log warning about empty cluster
          // add dummy element
-         cluster.items = [
-            new Element(
-               archetype_node_id: 'at'+ Integer.random(9999, 1000),
-               name: new DvText(
-                  value: 'dummy value'
-               ),
-               value: new DvText(
-                  value: 'dummy value'
-               )
-            )
-         ]
+         // NOTE: if a dummy element is added it will fail OPT validation! (stupid idea...)
+         
+         // cluster.items = [
+         //    new Element(
+         //       archetype_node_id: 'at'+ Integer.random(9999, 1000) +'.9',
+         //       name: new DvText(
+         //          value: 'dummy value'
+         //       ),
+         //       value: new DvText(
+         //          value: 'dummy value'
+         //       )
+         //    )
+         // ]
+         
       }
 
       return cluster

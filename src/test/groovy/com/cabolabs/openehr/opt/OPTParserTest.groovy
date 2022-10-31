@@ -15,6 +15,12 @@ import com.cabolabs.openehr.opt.instance_generator.*
 import com.cabolabs.openehr.opt.serializer.*
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Element
 
+import com.cabolabs.openehr.rm_1_0_2.data_types.text.*
+import com.cabolabs.openehr.rm_1_0_2.support.identification.TerminologyId
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.*
+
+
+
 import com.cabolabs.testing.TestUtils
 
 class OPTParserTest extends GroovyTestCase {
@@ -274,12 +280,30 @@ class OPTParserTest extends GroovyTestCase {
 
       assert cdi instanceof CDvQuantity
 
-      assert  cdi.isValid(new Element(dataPath:'/value'), 'gm/l', 50.5)
-      assert !cdi.isValid(new Element(dataPath:'/value'), 'qweerty', 50.5)
-      assert !cdi.isValid(new Element(dataPath:'/value'), 'gm/l', -50.5)
-      assert !cdi.isValid(new Element(dataPath:'/value'), 'qweerty', -50.5)
+      assert  cdi.isValid(new DvQuantity(
+         units: 'gm/l',
+         magnitude: 50.5
+      ))
 
-      assert cdi.isValid(new Element(dataPath:'/value'), 'qweerty', 50.5).message == "/value/units 'qweerty' don't match [gm/l]"
+      assert !cdi.isValid(new DvQuantity(
+         units: 'qweerty',
+         magnitude: 50.5
+      ))
+
+      assert !cdi.isValid(new DvQuantity(
+         units: 'gm/l',
+         magnitude: -50.5
+      ))
+
+      assert !cdi.isValid(new DvQuantity(
+         units: 'qweerty',
+         magnitude: -50.5
+      ))
+
+      assert cdi.isValid(new DvQuantity(
+         units: 'qweerty',
+         magnitude: 50.5
+      )).message == "units 'qweerty' don't match [gm/l]"
 
       opt.nodes.each {
 
@@ -329,9 +353,9 @@ class OPTParserTest extends GroovyTestCase {
       assert  c instanceof ObjectNode
       assert  c.item instanceof CInteger
 
-      assert  c.item.isValid(null, 5)
-      assert !c.item.isValid(null, 0)
-      assert !c.item.isValid(null, 666)
+      assert  c.item.isValid(5)
+      assert !c.item.isValid(0)
+      assert !c.item.isValid(666)
 
       opt.nodes.each {
 
@@ -360,11 +384,11 @@ class OPTParserTest extends GroovyTestCase {
       assert  c.item instanceof CDateTime
  
       assert  c.item.pattern == 'yyyy-mm-ddTHH:MM:SS'
-      assert  c.item.isValid(null, '1981-10-24T09:59:56')
-      assert  c.item.isValid(null, '1981-10-24T09:59:56Z')
-      assert  c.item.isValid(null, '1981-10-24T09:59:56-03:00')
-      assert  c.item.isValid(null, '1981-10-24T09:59:56.666')
-      assert !c.item.isValid(null, '1981-10-24T09:59')
+      assert  c.item.isValid('1981-10-24T09:59:56')
+      assert  c.item.isValid('1981-10-24T09:59:56Z')
+      assert  c.item.isValid('1981-10-24T09:59:56-03:00')
+      assert  c.item.isValid('1981-10-24T09:59:56.666')
+      assert !c.item.isValid('1981-10-24T09:59')
 
       
       // opt.nodes.each {
@@ -395,13 +419,13 @@ class OPTParserTest extends GroovyTestCase {
       assert  c.item instanceof CDuration
       assert  c.item.range.lower.value == 'PT0H'
       assert  c.item.range.upper.value == 'PT5H'
- 
-      assert  c.item.isValid(new Element(dataPath:'/value'), 'PT0H')
-      assert  c.item.isValid(new Element(dataPath:'/value'), 'PT1H')
-      assert  c.item.isValid(new Element(dataPath:'/value'), 'PT5H')
-      assert !c.item.isValid(new Element(dataPath:'/value'), 'PT10H')
 
-      assert c.item.isValid(new Element(dataPath:'/value'), 'PT10H').message == "/value/value 'PT10H' is not in the interval PT0H..PT5H"
+      assert  c.item.isValid('PT0H')
+      assert  c.item.isValid('PT1H')
+      assert  c.item.isValid('PT5H')
+      assert !c.item.isValid('PT10H')
+
+      assert  c.item.isValid('PT10H').message == "value 'PT10H' is not in the interval PT0H..PT5H"
       //assert !c.item.isValid('P2Y') this fails since the Java Duration only allows from Days to Seconds
 
       // opt.nodes.each {
@@ -461,11 +485,72 @@ class OPTParserTest extends GroovyTestCase {
       def cdo = opt.getNodes('/content[archetype_id=openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0009]/value')[0]
 
       assert  cdo instanceof CDvOrdinal
-      assert  cdo.isValid(null, 1, 'at0010', 'local')
-      assert !cdo.isValid(null, 2, 'at0010', 'local') // value and code exists, but the code is not for this value
-      assert !cdo.isValid(null, 1, 'at0010', 'SNOMED') // value and code exists, but terminology is not for those value and code
-      assert !cdo.isValid(null, 666, 'at0010', 'local') // value doesnt exists
-      assert !cdo.isValid(null, 1, 'a6666', 'local') // code doesnt exists
+
+
+
+      assert cdo.isValid(new DvOrdinal(
+         value: 1,
+         symbol: new DvCodedText(
+            value: 'bla bla bla',
+            defining_code: new CodePhrase(
+               code_string: 'at0010',
+               terminology_id: new TerminologyId(
+                  value: 'local'
+               )
+            )
+         )
+      ))
+      assert !cdo.isValid(new DvOrdinal(
+         value: 2,
+         symbol: new DvCodedText(
+            value: 'bla bla bla',
+            defining_code: new CodePhrase(
+               code_string: 'at0010',
+               terminology_id: new TerminologyId(
+                  value: 'local'
+               )
+            )
+         )
+      ))// value and code exists, but the code is not for this value
+
+      assert !cdo.isValid(new DvOrdinal(
+         value: 1,
+         symbol: new DvCodedText(
+            value: 'bla bla bla',
+            defining_code: new CodePhrase(
+               code_string: 'at0010',
+               terminology_id: new TerminologyId(
+                  value: 'SNOMED'
+               )
+            )
+         )
+      )) // value and code exists, but terminology is not for those value and code
+
+      assert !cdo.isValid(new DvOrdinal(
+         value: 666,
+         symbol: new DvCodedText(
+            value: 'bla bla bla',
+            defining_code: new CodePhrase(
+               code_string: 'at0010',
+               terminology_id: new TerminologyId(
+                  value: 'local'
+               )
+            )
+         )
+      )) // value doesnt exists
+
+      assert !cdo.isValid(new DvOrdinal(
+         value: 1,
+         symbol: new DvCodedText(
+            value: 'bla bla bla',
+            defining_code: new CodePhrase(
+               code_string: 'a6666',
+               terminology_id: new TerminologyId(
+                  value: 'local'
+               )
+            )
+         )
+      )) // code doesnt exists
 
       opt.nodes.each {
 

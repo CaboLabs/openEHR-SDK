@@ -112,6 +112,10 @@ class RmInstanceGeneratorTest extends GroovyTestCase {
       RmValidator validator = new RmValidator(opt_manager)
       RmValidationReport report = validator.dovalidate(version.data, OptManager.DEFAULT_NAMESPACE)
 
+      report.errors.each {
+         println it
+      }
+
       assert report.errors.size() == 0
    }
 

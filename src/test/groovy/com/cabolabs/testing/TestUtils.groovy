@@ -8,7 +8,7 @@ import com.cabolabs.openehr.opt.model.*
  */
 class TestUtils {
 
-   static String PS = System.getProperty("file.separator")
+   static public String PS = System.getProperty("file.separator")
 
    static OperationalTemplate loadTemplate(String path)
    {
