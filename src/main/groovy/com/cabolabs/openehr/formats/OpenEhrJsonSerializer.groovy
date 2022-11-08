@@ -230,7 +230,11 @@ class OpenEhrJsonSerializer {
 
       this.fillLocatable(status, out)
 
-      out.subject = this.serializePartySelf(status.subject)
+      // if the EHR_STATUS was created from an empty payload, it won't have a subject, even if the RM requires one...
+      if (status.subject)
+      {
+         out.subject = this.serializePartySelf(status.subject)
+      }
 
       out.is_modifiable = status.is_modifiable
       out.is_queryable = status.is_queryable
