@@ -23,6 +23,6 @@ class EhrStatus extends Locatable {
       this.dataPath = '/'
       this.parent = null
 
-      this.other_details.fillPathable(this, "other_details")
+      this.other_details?.fillPathable(this, "other_details")
    }
 }
