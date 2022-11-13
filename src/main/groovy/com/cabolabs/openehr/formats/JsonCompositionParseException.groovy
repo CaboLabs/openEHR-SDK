@@ -1,13 +1,13 @@
 package com.cabolabs.openehr.formats
 
-class JsonCompositionParseException extends RuntimeException {
+class JsonParseException extends RuntimeException {
 
-   JsonCompositionParseException(String message)
+   JsonParseException(String message)
    {
       super(message)
    }
 
-   JsonCompositionParseException(String message, Throwable cause)
+   JsonParseException(String message, Throwable cause)
    {
       super(message, cause)
    }

@@ -190,8 +190,7 @@ class OpenEhrJsonParser {
       
       if (!type)
       {
-         // FIXME: this shouldnt be JsonCOMPOSITIONParseException but JsonLOCATABLEParseException
-         throw new JsonCompositionParseException("Can't parse JSON if root node doesn't have a value for _type")
+         throw new JsonParseException("Can't parse JSON if root node doesn't have a value for _type")
       }
       
       def method = 'parse'+ type
@@ -202,7 +201,7 @@ class OpenEhrJsonParser {
       }
       catch (Exception e)
       {
-         throw new JsonCompositionParseException("Can't parse JSON, check ${type} is a LOCATABLE type. If you tried to parse a VERSION, use the parseVersionJson method", e)
+         throw new JsonParseException("Can't parse JSON, check ${type} is a LOCATABLE type. If you tried to parse a VERSION, use the parseVersionJson method", e)
       }
       return out
    }
@@ -234,7 +233,7 @@ class OpenEhrJsonParser {
       
       if (!type)
       {
-         throw new JsonCompositionParseException("Can't parse JSON if root node doesn't have a value for _type")
+         throw new JsonParseException("Can't parse JSON if root node doesn't have a value for _type")
       }
       
       def method = 'parse'+ type
@@ -245,7 +244,7 @@ class OpenEhrJsonParser {
       }
       catch (Exception e)
       {
-         throw new JsonCompositionParseException("Can't parse JSON, check ${type} is a VERSION type. If you tried to parse a LOCATABLE, use the parseJson method", e)
+         throw new JsonParseException("Can't parse JSON, check ${type} is a VERSION type. If you tried to parse a LOCATABLE, use the parseJson method", e)
       }
       return out
    }
@@ -281,7 +280,7 @@ class OpenEhrJsonParser {
       
          if (!type)
          {
-            throw new JsonCompositionParseException("Can't parse JSON if root node doesn't have a value for _type")
+            throw new JsonParseException("Can't parse JSON if root node doesn't have a value for _type")
          }
          
          method = 'parse'+ type
@@ -330,7 +329,7 @@ class OpenEhrJsonParser {
       
          if (!type)
          {
-            throw new JsonCompositionParseException("Can't parse JSON if root node doesn't have a value for _type")
+            throw new JsonParseException("Can't parse JSON if root node doesn't have a value for _type")
          }
          
          method = 'parse'+ type
@@ -418,7 +417,7 @@ class OpenEhrJsonParser {
          type = json.uid._type
          if (!type)
          {
-            throw new JsonCompositionParseException("_type required for "+ dataPath +".uid")
+            throw new JsonParseException("_type required for "+ dataPath +".uid")
          }
          method = 'parse'+ type
          l.uid = this."$method"(json.uid)
@@ -443,7 +442,7 @@ class OpenEhrJsonParser {
       type = json.subject._type
       if (!type)
       {
-         throw new JsonCompositionParseException("_type required for "+ dataPath +".subject")
+         throw new JsonParseException("_type required for "+ dataPath +".subject")
       }
       method = 'parse'+ type
       e.subject = this."$method"(json.subject)
@@ -454,7 +453,7 @@ class OpenEhrJsonParser {
          type = json.provider._type
          if (!type)
          {
-            throw new JsonCompositionParseException("_type required for "+ dataPath +".provider")
+            throw new JsonParseException("_type required for "+ dataPath +".provider")
          }
          method = 'parse'+ type
          e.provider = this."$method"(json.provider)
@@ -485,7 +484,7 @@ class OpenEhrJsonParser {
          String type = json.protocol._type
          if (!type)
          {
-            throw new JsonCompositionParseException("_type required for "+ dataPath +".protocol")
+            throw new JsonParseException("_type required for "+ dataPath +".protocol")
          }
          String method = 'parse'+ type
          c.protocol = this."$method"(json.protocol, parent,
@@ -512,7 +511,7 @@ class OpenEhrJsonParser {
 
          if (!type)
          {
-            throw new JsonCompositionParseException("_type required for "+ dataPath +".details")
+            throw new JsonParseException("_type required for "+ dataPath +".details")
          }
 
          def method = 'parse'+ type
@@ -627,7 +626,7 @@ class OpenEhrJsonParser {
 
          if (!type)
          {
-            throw new JsonCompositionParseException("_type required for "+ dataPath +".details")
+            throw new JsonParseException("_type required for "+ dataPath +".details")
          }
 
          def method = 'parse'+ type
@@ -700,7 +699,7 @@ class OpenEhrJsonParser {
       type = json.composer._type // party proxy or descendants
       if (!type)
       {
-         throw new JsonCompositionParseException("_type required for /composer")
+         throw new JsonParseException("_type required for /composer")
       }
       method = 'parse'+ type
       compo.composer = this."$method"(json.composer)
@@ -715,7 +714,7 @@ class OpenEhrJsonParser {
          type = content_item._type
          if (!type)
          {
-            throw new JsonCompositionParseException("_type required for /content[$i]")
+            throw new JsonParseException("_type required for /content[$i]")
          }
          method = 'parse'+ type
          compo.content.add(
@@ -822,7 +821,7 @@ class OpenEhrJsonParser {
          def type = json.data._type
          if (!type)
          {
-            throw new JsonCompositionParseException("_type required for "+ dataPath +".data")
+            throw new JsonParseException("_type required for "+ dataPath +".data")
          }
          def method = 'parse'+ type
          ov.data = this."$method"(json.data)
@@ -847,7 +846,7 @@ class OpenEhrJsonParser {
       def type = json.committer._type
       if (!type)
       {
-         throw new JsonCompositionParseException("_type required for "+ dataPath +".committer")
+         throw new JsonParseException("_type required for "+ dataPath +".committer")
       }
       def method = 'parse'+ type
       ad.committer = this."$method"(json.committer)
@@ -872,7 +871,7 @@ class OpenEhrJsonParser {
       def type = json.committer._type
       if (!type)
       {
-         throw new JsonCompositionParseException("_type required for "+ dataPath +".committer")
+         throw new JsonParseException("_type required for "+ dataPath +".committer")
       }
       def method = 'parse'+ type
       at.committer = this."$method"(json.committer)
@@ -893,7 +892,7 @@ class OpenEhrJsonParser {
       type = json.reason._type // text or coded
       if (!type)
       {
-         throw new JsonCompositionParseException("_type required for "+ dataPath +".reason")
+         throw new JsonParseException("_type required for "+ dataPath +".reason")
       }
       method = 'parse'+ type
       at.reason = this."$method"(json.reason)
@@ -1054,7 +1053,7 @@ class OpenEhrJsonParser {
       String type   = json.id._type
       if (!type)
       {
-         throw new JsonCompositionParseException("_type required for OBJECT_REF.id")
+         throw new JsonParseException("_type required for OBJECT_REF.id")
       }
       String method = 'parse'+ type
       o.id          = this."$method"(json.id)
@@ -1072,7 +1071,7 @@ class OpenEhrJsonParser {
       String type = json.id._type
       if (!type)
       {
-         throw new JsonCompositionParseException("_type required for PARTY_REF.id")
+         throw new JsonParseException("_type required for PARTY_REF.id")
       }
       String method = 'parse'+ type
       p.id = this."$method"(json.id)
@@ -1093,7 +1092,7 @@ class OpenEhrJsonParser {
       String type = json.id._type
       if (!type)
       {
-         throw new JsonCompositionParseException("_type required for LOCATABLE_REF.id")
+         throw new JsonParseException("_type required for LOCATABLE_REF.id")
       }
       String method = 'parse'+ type
       o.id = this."$method"(json.id)     
@@ -1135,7 +1134,7 @@ class OpenEhrJsonParser {
          type = json.other_context._type
          if (!type)
          {
-            throw new JsonCompositionParseException("_type required for "+ dataPath +".other_context")
+            throw new JsonParseException("_type required for "+ dataPath +".other_context")
          }
          method = 'parse'+ type
          e.other_context = this."$method"(json.other_context, e,
@@ -1169,7 +1168,7 @@ class OpenEhrJsonParser {
       String type = json.performer._type
       if (!type)
       {
-         throw new JsonCompositionParseException("_type required for PARTICIPATION.performer")
+         throw new JsonParseException("_type required for PARTICIPATION.performer")
       }
       String method = 'parse'+ type
       p.performer = this."$method"(json.performer)
@@ -1189,7 +1188,7 @@ class OpenEhrJsonParser {
          type = content_item._type
          if (!type)
          {
-            throw new JsonCompositionParseException("_type required for "+ dataPath +".items[$i]")
+            throw new JsonParseException("_type required for "+ dataPath +".items[$i]")
          }
          method = 'parse'+ type
          section.items.add(
@@ -1212,7 +1211,7 @@ class OpenEhrJsonParser {
       String type = json.data._type
       if (!type)
       {
-         throw new JsonCompositionParseException("_type required for "+ dataPath +".data")
+         throw new JsonParseException("_type required for "+ dataPath +".data")
       }
       String method = 'parse'+ type
       a.data = this."$method"(json.data, a,
@@ -1296,7 +1295,7 @@ class OpenEhrJsonParser {
          type = json.data._type
          if (!type)
          {
-            throw new JsonCompositionParseException("_type required for "+ dataPath +".data")
+            throw new JsonParseException("_type required for "+ dataPath +".data")
          }
          method = 'parse'+ type
          e.data = this."$method"(json.data, e,
@@ -1310,7 +1309,7 @@ class OpenEhrJsonParser {
          type = json.state._type
          if (!type)
          {
-            throw new JsonCompositionParseException("_type required for "+ dataPath +".state")
+            throw new JsonParseException("_type required for "+ dataPath +".state")
          }
          method = 'parse'+ type
          e.state = this."$method"(json.state, e,
@@ -1337,7 +1336,7 @@ class OpenEhrJsonParser {
          type = json.data._type
          if (!type)
          {
-            throw new JsonCompositionParseException("_type required for "+ dataPath +".data")
+            throw new JsonParseException("_type required for "+ dataPath +".data")
          }
          method = 'parse'+ type
          e.data = this."$method"(json.data, e,
@@ -1351,7 +1350,7 @@ class OpenEhrJsonParser {
          type = json.state._type
          if (!type)
          {
-            throw new JsonCompositionParseException("_type required for "+ dataPath +".state")
+            throw new JsonParseException("_type required for "+ dataPath +".state")
          }
          method = 'parse'+ type
          e.state = this."$method"(json.state, e,
@@ -1381,7 +1380,7 @@ class OpenEhrJsonParser {
       String type = json.data._type
       if (!type)
       {
-         throw new JsonCompositionParseException("_type required for "+ dataPath +".data")
+         throw new JsonParseException("_type required for "+ dataPath +".data")
       }
       String method = 'parse'+ type
       e.data = this."$method"(json.data, e,
@@ -1437,7 +1436,7 @@ class OpenEhrJsonParser {
       String type = json.description._type
       if (!type)
       {
-         throw new JsonCompositionParseException("_type required for "+ dataPath +".description")
+         throw new JsonParseException("_type required for "+ dataPath +".description")
       }
       String method = 'parse'+ type
 
@@ -1498,7 +1497,7 @@ class OpenEhrJsonParser {
          String type = json.wf_details._type
          if (!type)
          {
-            throw new JsonCompositionParseException("_type required for "+ dataPath +".wf_details")
+            throw new JsonParseException("_type required for "+ dataPath +".wf_details")
          }
          String method = 'parse'+ type
          i.wf_details = this."$method"(json.wf_details)
@@ -1512,7 +1511,7 @@ class OpenEhrJsonParser {
       String type = json.description._type
       if (!type)
       {
-         throw new JsonCompositionParseException("_type required for "+ dataPath +".description")
+         throw new JsonParseException("_type required for "+ dataPath +".description")
       }
       String method = 'parse'+ type
       
@@ -1548,7 +1547,7 @@ class OpenEhrJsonParser {
          type = item._type
          if (!type)
          {
-            throw new JsonCompositionParseException("_type required for "+ dataPath +".items[$i]")
+            throw new JsonParseException("_type required for "+ dataPath +".items[$i]")
          }
          method = 'parse'+ type
          //println " - " + method
@@ -1630,7 +1629,7 @@ class OpenEhrJsonParser {
          type = item._type
          if (!type)
          {
-            throw new JsonCompositionParseException("_type required for "+ dataPath +".items[$i]")
+            throw new JsonParseException("_type required for "+ dataPath +".items[$i]")
          }
          method = 'parse'+ type
          c.items.add(
@@ -1655,7 +1654,7 @@ class OpenEhrJsonParser {
          String type = json.value._type
          if (!type)
          {
-            throw new JsonCompositionParseException("_type required for "+ dataPath +".value")
+            throw new JsonParseException("_type required for "+ dataPath +".value")
          }
          String method = 'parse'+ type
          e.value = this."$method"(json.value)
