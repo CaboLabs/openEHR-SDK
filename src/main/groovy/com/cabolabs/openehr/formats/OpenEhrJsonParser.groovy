@@ -312,6 +312,25 @@ class OpenEhrJsonParser {
       */
       def slurper = new JsonSlurper()
       def map = slurper.parseText(json)
+
+      if (this.schemaValidate)
+      {
+         // if (!map.archetype_details || !map.archetype_details.rm_version) // rm version aware
+         // {
+         //    throw new Exception("archetype_details.rm_version is required for the root of any archetypable class")
+         // }
+
+         // NOTE: since this is DTO, the schema flavor will always be api
+         this.jsonValidator = new JsonInstanceValidation('api', '1.0.2') // FIXME: hardcoded rm_version
+         
+         def errors = jsonValidator.validate(json)
+         if (errors)
+         {
+            this.jsonValidationErrors = errors
+            return
+         }
+      }
+
       String type, method
       Version version
 
@@ -333,7 +352,7 @@ class OpenEhrJsonParser {
          }
          
          method = 'parse'+ type
-         contribution.versions << this."$method"(version_map)
+         contribution.versions << this."$method"(version_map) // NOTE: the version dto doesn't require uid while the RM object requires it!
       }
 
       contribution.audit = this.parseAUDIT_DETAILS(map.audit)
@@ -806,11 +825,15 @@ class OpenEhrJsonParser {
       return status
    }
 
+   // NOTE: uid is mandatory for RM but optional for API, so this parser doesn't require the uid to be able to parse for API too
    private OriginalVersion parseORIGINAL_VERSION(Map json)
    {
       OriginalVersion ov = new OriginalVersion()
       
-      ov.uid = this.parseOBJECT_VERSION_ID(json.uid)
+      if (json.uid)
+      {
+         ov.uid = this.parseOBJECT_VERSION_ID(json.uid)
+      }
       
       if (json.signature)
       {

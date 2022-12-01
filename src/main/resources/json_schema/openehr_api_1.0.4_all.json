@@ -3665,14 +3665,8 @@
                                     "_type": {
                                         "type": "string",
                                         "enum": [
-                                            "COMPOSITION",
-                                            "FOLDER",
-                                            "EHR_STATUS",
-                                            "ROLE",
-                                            "AGENT",
-                                            "GROUP",
-                                            "ORGANISATION",
-                                            "PERSON"
+                                            "ORIGINAL_VERSION",
+                                            "IMPORTED_VERSION"
                                         ]
                                     }
                                 }
@@ -3682,7 +3676,7 @@
                                 "if": {
                                     "properties": {
                                         "_type": {
-                                            "const": "COMPOSITION"
+                                            "const": "ORIGINAL_VERSION"
                                         }
                                     },
                                     "required": [
@@ -3690,14 +3684,14 @@
                                     ]
                                 },
                                 "then": {
-                                    "$ref": "#/definitions/COMPOSITION"
+                                    "$ref": "#/definitions/ORIGINAL_VERSION"
                                 }
                             },
                             {
                                 "if": {
                                     "properties": {
                                         "_type": {
-                                            "const": "FOLDER"
+                                            "const": "IMPORTED_VERSION"
                                         }
                                     },
                                     "required": [
@@ -3705,97 +3699,7 @@
                                     ]
                                 },
                                 "then": {
-                                    "$ref": "#/definitions/FOLDER"
-                                }
-                            },
-                            {
-                                "if": {
-                                    "properties": {
-                                        "_type": {
-                                            "const": "EHR_STATUS"
-                                        }
-                                    },
-                                    "required": [
-                                        "_type"
-                                    ]
-                                },
-                                "then": {
-                                    "$ref": "#/definitions/EHR_STATUS"
-                                }
-                            },
-                            {
-                                "if": {
-                                    "properties": {
-                                        "_type": {
-                                            "const": "ROLE"
-                                        }
-                                    },
-                                    "required": [
-                                        "_type"
-                                    ]
-                                },
-                                "then": {
-                                    "$ref": "#/definitions/ROLE"
-                                }
-                            },
-                            {
-                                "if": {
-                                    "properties": {
-                                        "_type": {
-                                            "const": "AGENT"
-                                        }
-                                    },
-                                    "required": [
-                                        "_type"
-                                    ]
-                                },
-                                "then": {
-                                    "$ref": "#/definitions/AGENT"
-                                }
-                            },
-                            {
-                                "if": {
-                                    "properties": {
-                                        "_type": {
-                                            "const": "GROUP"
-                                        }
-                                    },
-                                    "required": [
-                                        "_type"
-                                    ]
-                                },
-                                "then": {
-                                    "$ref": "#/definitions/GROUP"
-                                }
-                            },
-                            {
-                                "if": {
-                                    "properties": {
-                                        "_type": {
-                                            "const": "ORGANISATION"
-                                        }
-                                    },
-                                    "required": [
-                                        "_type"
-                                    ]
-                                },
-                                "then": {
-                                    "$ref": "#/definitions/ORGANISATION"
-                                }
-                            },
-                            {
-                                "if": {
-                                    "properties": {
-                                        "_type": {
-                                            "const": "PERSON"
-                                        }
-                                    },
-                                    "required": [
-                                        "_type"
-                                    ]
-                                },
-                                "then": {
-                                    "$ref": "#/definitions/PERSON"
+                                    "$ref": "#/definitions/IMPORTED_VERSION"
                                 }
                             }
                         ]

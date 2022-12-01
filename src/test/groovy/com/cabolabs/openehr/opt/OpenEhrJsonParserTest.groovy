@@ -495,7 +495,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String path = PS +"canonical_json"+ PS +"contribution_test_all_datatypes_en.json"
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
-      def parser = new OpenEhrJsonParser()
+      def parser = new OpenEhrJsonParser(true)
       Contribution contribution = parser.parseContribution(json)
 
       // TODO: check internals
@@ -510,8 +510,13 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String path = PS +"canonical_json"+ PS +"contribution_dto_test_all_datatypes_en.json"
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
-      def parser = new OpenEhrJsonParser()
+      def parser = new OpenEhrJsonParser(true)
       ContributionDto contribution = parser.parseContributionDto(json)
+
+      if (!contribution)
+      {
+         println parser.getJsonValidationErrors()
+      }
 
       // TODO: check internals
 
