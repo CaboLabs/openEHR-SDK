@@ -376,7 +376,6 @@
             "type": "object",
             "required": [
                 "system_id",
-                "time_committed",
                 "change_type",
                 "committer"
             ],
@@ -12183,7 +12182,6 @@
             "type": "object",
             "required": [
                 "system_id",
-                "time_committed",
                 "change_type",
                 "committer",
                 "reason",
