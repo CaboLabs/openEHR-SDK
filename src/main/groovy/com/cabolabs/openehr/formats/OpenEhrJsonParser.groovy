@@ -880,9 +880,15 @@ class OpenEhrJsonParser {
    {
       AuditDetails ad = new AuditDetails()
       
-      ad.system_id      = json.system_id
-      ad.time_committed = this.parseDV_DATE_TIME(json.time_committed)
-      ad.change_type    = this.parseDV_CODED_TEXT(json.change_type)
+      ad.system_id   = json.system_id
+      ad.change_type = this.parseDV_CODED_TEXT(json.change_type)
+
+      // NOTE: for API DTOs the time_committed is optional, so it will be set by the server
+      //       we make it optional here to support both RM and API flavors
+      if (json.time_committed)
+      {
+         ad.time_committed = this.parseDV_DATE_TIME(json.time_committed)
+      }
       
       if (json.description)
       {
@@ -905,9 +911,15 @@ class OpenEhrJsonParser {
       Attestation at = new Attestation()
       
       // AuditDetails fields
-      at.system_id      = json.system_id
-      at.time_committed = this.parseDV_DATE_TIME(json.time_committed)
-      at.change_type    = this.parseDV_CODED_TEXT(json.change_type)
+      at.system_id   = json.system_id
+      at.change_type = this.parseDV_CODED_TEXT(json.change_type)
+
+      // NOTE: for API DTOs the time_committed is optional, so it will be set by the server
+      //       we make it optional here to support both RM and API flavors
+      if (json.time_committed)
+      {
+         at.time_committed = this.parseDV_DATE_TIME(json.time_committed)
+      }
       
       if (json.description)
       {
