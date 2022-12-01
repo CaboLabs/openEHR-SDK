@@ -3906,7 +3906,6 @@
             "required": [
                 "contribution",
                 "commit_audit",
-                "uid",
                 "lifecycle_state"
             ],
             "properties": {
