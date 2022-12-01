@@ -783,6 +783,29 @@ class OpenEhrJsonParser {
       return folder
    }
 
+   private EhrStatus parseEHR_STATUS(Map json, Pathable parent, String path, String dataPath)
+   {
+      def status = new EhrStatus()
+
+      this.fillLOCATABLE(status, json, parent, path, dataPath)
+
+      if (json.subject)
+      {
+         status.subject = this.parsePARTY_SELF(json.subject)
+      }
+
+      status.is_modifiable = json.is_modifiable
+      status.is_queryable = json.is_queryable
+
+      if (json.other_details)
+      {
+         String method = 'parse'+ json.other_details._type
+         status.other_details = this."$method"(json.other_details, status, '/other_details', '/other_details')
+      }
+
+      return status
+   }
+
    private OriginalVersion parseORIGINAL_VERSION(Map json)
    {
       OriginalVersion ov = new OriginalVersion()

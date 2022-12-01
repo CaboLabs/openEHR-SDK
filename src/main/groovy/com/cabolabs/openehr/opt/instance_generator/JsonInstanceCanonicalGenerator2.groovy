@@ -244,7 +244,7 @@ class JsonInstanceCanonicalGenerator2 {
          terminology_id: [
             value: 'ISO_3166-1'
          ],
-         code_string: 'UY'
+         code_string: 'UY' // TODO: get from configuration file
       ]
 
       // path is to attr, codeList is in the node
@@ -333,7 +333,7 @@ class JsonInstanceCanonicalGenerator2 {
                      ]
                   ],
                   mode: [
-                     value: 'not specified',
+                     value: 'not specified', // TODO: rangom modes
                      defining_code: [
                         terminology_id: [
                            value: 'openehr'

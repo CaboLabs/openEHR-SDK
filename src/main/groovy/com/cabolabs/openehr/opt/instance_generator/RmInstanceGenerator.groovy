@@ -1938,13 +1938,53 @@ class RmInstanceGenerator {
    {
       // FIXME: generate table
       //generate_ITEM_TREE(o, parent_arch_id)
-      new ItemTable()
+      def struc = new ItemTable()
+
+      // parent from now can be different than the parent if if the object has archetypeId
+      parent_arch_id = o.archetypeId ?: parent_arch_id
+
+      //AttributeNode a = o.parent
+
+      add_LOCATABLE_elements(o, struc, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
+      
+      def mattr
+      o.attributes.each { oa ->
+
+         mattr = processAttributeChildren(oa, parent_arch_id) // this is a list!
+
+         // this doesn't work for item single because it's a list and should be an object,
+         // but for the other structures it works OK
+         // TODO: test this works
+         struc."${oa.rmAttributeName}" = mattr
+      }
+
+      return struc
    }
    private ItemList generate_ITEM_LIST(ObjectNode o, String parent_arch_id)
    {
       // FIXME: generate list
       //generate_ITEM_TREE(o, parent_arch_id)
-      new ItemList()
+      def struc = new ItemList()
+
+      // parent from now can be different than the parent if if the object has archetypeId
+      parent_arch_id = o.archetypeId ?: parent_arch_id
+
+      //AttributeNode a = o.parent
+
+      add_LOCATABLE_elements(o, struc, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
+      
+      def mattr
+      o.attributes.each { oa ->
+
+         mattr = processAttributeChildren(oa, parent_arch_id) // this is a list!
+
+         // this doesn't work for item single because it's a list and should be an object,
+         // but for the other structures it works OK
+         // TODO: test this works
+         struc."${oa.rmAttributeName}" = mattr
+      }
+
+      return struc
    }
    private ItemTree generate_ITEM_TREE(ObjectNode o, String parent_arch_id)
    {
