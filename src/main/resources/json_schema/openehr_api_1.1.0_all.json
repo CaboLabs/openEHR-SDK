@@ -3692,7 +3692,6 @@
         "CONTRIBUTION": {
             "type": "object",
             "required": [
-                "uid",
                 "audit",
                 "versions"
             ],
