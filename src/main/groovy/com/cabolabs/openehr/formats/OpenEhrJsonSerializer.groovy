@@ -36,6 +36,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvUri
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvEhrUri
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 import com.cabolabs.openehr.rm_1_0_2.demographic.*
+import com.cabolabs.openehr.dto_1_0_2.ehr.EhrDto
 
 class OpenEhrJsonSerializer {
 
@@ -72,19 +73,34 @@ class OpenEhrJsonSerializer {
       }
    }
 
-   // TODO: add support for pretty print, see ingen
    String serialize(Version o, boolean pretty = false)
    {
       String method = this.method(o)
       def out = this."$method"(o) // e.g. serializeOriginalVersion
       if (pretty)
       {
-         JsonOutput.prettyPrint(JsonOutput.toJson(out))
+         return JsonOutput.prettyPrint(JsonOutput.toJson(out))
       }
-      else
+
+      return JsonOutput.toJson(out)
+   }
+
+   String serialize(EhrDto ehr, boolean pretty = false)
+   {
+      Map out = [
+         _type: 'EHR',
+         ehr_id: this.serializeHierObjectId(ehr.ehr_id),
+         system_id: this.serializeHierObjectId(ehr.system_id),
+         time_created: this.serializeDvDateTime(ehr.time_created),
+         ehr_status: this.serializeEhrStatus(ehr.ehr_status)
+      ]
+
+      if (pretty)
       {
-         JsonOutput.toJson(out)
+         return JsonOutput.prettyPrint(JsonOutput.toJson(out))
       }
+
+      return JsonOutput.toJson(out)
    }
 
    private void fillLocatable(Locatable o, Map out)
@@ -125,7 +141,7 @@ class OpenEhrJsonSerializer {
       {
          out.languages = []
          a.languages.each { dvtext ->
-         
+
             method = this.method(dvtext)
             out.langauges << this."$method"(dvtext)
          }
@@ -175,7 +191,7 @@ class OpenEhrJsonSerializer {
       {
          out.reverse_relationships = []
          p.reverse_relationships.each { locatable_ref ->
-         
+
             out.reverse_relationships << this.serializeLocatableRef(locatable_ref)
          }
       }
@@ -260,7 +276,7 @@ class OpenEhrJsonSerializer {
 
       out.items = []
       folder.items.each { object_ref ->
-         
+
          method = this.method(object_ref)
          _item = [_type: this.openEhrType(object_ref)] + this."$method"(object_ref)
          out.items << _item
@@ -268,7 +284,7 @@ class OpenEhrJsonSerializer {
 
       out.folders = []
       folder.folders.each { subfolder ->
-         
+
          out.folders << this.serializeFolder(subfolder)
       }
 
@@ -365,7 +381,7 @@ class OpenEhrJsonSerializer {
 
       return out
    }
-   
+
    // TODO: capability
 
    private Map serializeContact(Contact c)
@@ -382,7 +398,7 @@ class OpenEhrJsonSerializer {
       out.addresses = []
       c.addresses.each { address ->
 
-         out.addresses << this.serializeAddress(address)      
+         out.addresses << this.serializeAddress(address)
       }
 
       return out
@@ -422,31 +438,31 @@ class OpenEhrJsonSerializer {
       {
          out.end_time = this.erializeDvDateTime(o.end_time)
       }
-      
+
       if (o.location)
       {
          out.location = o.location
       }
-      
+
       out.setting = this.serializeDvCodedText(o.setting)
-      
+
       if (o.other_context)
       {
          String method = this.method(o.other_context)
          out.other_context = this."$method"(o.other_context)
          out.other_context._type = this.openEhrType(o.other_context)
       }
-      
+
       if (o.health_care_facility)
       {
          out.health_care_facility = this.serializePartyIdentified(o.health_care_facility)
       }
-      
+
       if (o.participations)
       {
          out.participations = []
          o.participations.each { participation ->
-            
+
             out.participations << this.serializeParticipation(participation)
          }
       }
@@ -460,7 +476,7 @@ class OpenEhrJsonSerializer {
 
       String method = this.method(o.function) // text or coded text
       out.function = [_type: this.openEhrType(o.function)] + this."$method"(o.function)
-      
+
       method = this.method(o.performer)
       out.performer = [_type: this.openEhrType(o.performer)] + this."$method"(o.performer)
 
@@ -468,7 +484,7 @@ class OpenEhrJsonSerializer {
       {
          out.time = this.serializeDvInterval(o.time)
       }
-      
+
       out.mode = this.serializeDvCodedText(o.mode)
 
       return out
@@ -479,15 +495,15 @@ class OpenEhrJsonSerializer {
       Map out = [:]
 
       out.system_id = a.system_id
-      
+
       String method
       method = this.method(a.committer)
       out.committer = [_type: this.openEhrType(a.committer)] + this."$method"(a.committer)
-      
+
       out.time_committed = this.serializeDvDateTime(a.time_committed)
-      
+
       out.change_type = this.serializeDvCodedText(a.change_type)
-      
+
       if (a.description)
       {
          method = this.method(a.description)
@@ -496,28 +512,28 @@ class OpenEhrJsonSerializer {
 
       return out
    }
-   
+
    private Map serializeAttestation(Attestation a)
    {
       Map out = [:]
 
       // AuditDetails fields
       out.system_id = a.system_id
-      
+
       def method
       method = this.method(a.committer)
       out.committer = [_type: this.openEhrType(a.committer)] + this."$method"(a.committer)
-      
+
       out.time_committed = this.serializeDvDateTime(a.time_committed)
-      
+
       out.change_type = this.serializeDvCodedText(a.change_type)
-      
+
       if (a.description)
       {
          method = this.method(a.description)
          out.description = [_type: this.openEhrType(a.description)] + this."$method"(a.description)
       }
-      
+
       // Attestation fields
       // TODO:
 
@@ -532,7 +548,7 @@ class OpenEhrJsonSerializer {
          out.external_ref = this."$method"(o.external_ref) // doesn't need a _type is always PARTY_REF
       }
    }
-   
+
    private Map serializePartySelf(PartySelf o)
    {
       Map out = [:]
@@ -541,18 +557,18 @@ class OpenEhrJsonSerializer {
 
       return out
    }
-   
+
    private Map serializePartyIdentified(PartyIdentified o)
    {
       Map out = [:]
 
       this.fillPartyProxy(o, out)
-      
+
       if (o.name)
       {
          out.name = o.name
       }
-      
+
       if (o.identifiers)
       {
          out.identifiers = []
@@ -563,18 +579,18 @@ class OpenEhrJsonSerializer {
 
       return out
    }
-   
+
    private Map serializePartyRelated(PartyRelated o)
    {
       Map out = [:]
 
       this.fillPartyProxy(o, out)
-      
+
       if (o.name)
       {
          out.name = o.name
       }
-      
+
       if (o.identifiers)
       {
          out.identifiers = []
@@ -582,7 +598,7 @@ class OpenEhrJsonSerializer {
             out.identifiers << this.serializeDvIdentifier(identifier)
          }
       }
-      
+
       out.relationship = this.serializeDvCodedText(o.relationship)
 
       return out
@@ -595,7 +611,7 @@ class OpenEhrJsonSerializer {
       def method = this.method(o.id)
 
       out.id = [_type: this.openEhrType(o.id)] + this."$method"(o.id)
-      
+
       out.namespace = o.namespace
 
       out.type = o.type
@@ -685,7 +701,7 @@ class OpenEhrJsonSerializer {
    private void fillEntry(Entry o, Map out)
    {
       out.language = this.serializeCodePhrase(o.language)
-      
+
       out.encoding = this.serializeCodePhrase(o.encoding)
 
       String method = this.method(o.subject)
@@ -696,12 +712,12 @@ class OpenEhrJsonSerializer {
          method = this.method(o.provider)
          out.provider = [_type: this.openEhrType(o.provider)] + this."$method"(o.provider)
       }
-      
+
       if (o.other_participations)
       {
          out.other_participations = []
          o.other_participations.each { participation ->
-            
+
             out.other_participations << this.serializeParticipation(participation)
          }
       }
@@ -712,11 +728,11 @@ class OpenEhrJsonSerializer {
          out.workflow_id = [_type: this.openEhrType(o.workflow_id)] + this."$method"(o.workflow_id)
       }
    }
-   
+
    private void fillCareEntry(CareEntry o, Map out)
    {
       this.fillEntry(o, out)
-      
+
       if (o.protocol)
       {
          String method = this.method(o.protocol)
@@ -725,36 +741,36 @@ class OpenEhrJsonSerializer {
          // TODO: check if this is needed
          //archetype_node_id: o.protocol.archetype_node_id)
       }
-      
+
       if (o.guideline_id)
       {
          method = this.method(o.guideline_id)
          out.guideline_id = [_type: this.openEhrType(o.guideline_id)] + this."$method"(o.guideline_id)
       }
    }
-   
+
    private void fillEvent(Event o, Map out)
    {
       this.fillLocatable(o, out)
-      
+
       out.time = this.serializeDvDateTime(o.time)
-      
+
       String method = this.method(o.data)
       out.data = [_type: this.openEhrType(o.data)] + this."$method"(o.data)
 
       // TODO: check if this is needed
       //archetype_node_id: o.data.archetype_node_id)
-      
+
       if (o.state)
       {
          method = this.method(o.state)
          out.state = [_type: this.openEhrType(o.state)] + this."$method"(o.state)
-         
+
          // TODO: check if this is needed
          //archetype_node_id: o.state.archetype_node_id)
       }
    }
-   
+
    private Map serializeArchetyped(Archetyped o)
    {
       Map out = [:]
@@ -773,7 +789,7 @@ class OpenEhrJsonSerializer {
       def out = [:]
 
       this.fillLocatable(o, out)
-      
+
       String method
       Map _item
 
@@ -786,11 +802,11 @@ class OpenEhrJsonSerializer {
 
       return out
    }
-   
+
    private Map serializeItemList(ItemList o)
    {
       def out = [:]
-      
+
       this.fillLocatable(o, out)
 
       Map _item
@@ -803,24 +819,24 @@ class OpenEhrJsonSerializer {
 
       return out
    }
-   
+
    private Map serializeItemSingle(ItemSingle o)
    {
       def out = [:]
-      
+
       this.fillLocatable(o, out)
-      
+
       out.item = this.serializeElement(o.item)
 
       return out
    }
-   
+
    private Map serializeItemTable(ItemTable o)
    {
       def out = [:]
-      
+
       this.fillLocatable(o, out)
-      
+
       out.rows = []
       o.rows.each { cluster ->
          out.rows << this.serializeCluster(cluster)
@@ -828,20 +844,20 @@ class OpenEhrJsonSerializer {
 
       return out
    }
-   
-   
+
+
    private Map serializeSection(Section s)
    {
       def out = [:]
-      
+
       this.fillLocatable(s, out)
-      
+
       Map _item
       def method
 
       out.items = []
       s.items.each { content_item ->
-         
+
          method = this.method(content_item)
          _item = [_type: this.openEhrType(content_item)] + this."$method"(content_item)
          out.items << _item
@@ -853,12 +869,12 @@ class OpenEhrJsonSerializer {
    private Map serializeObservation(Observation o)
    {
       def out = [:]
-      
+
       this.fillLocatable(o, out)
       this.fillCareEntry(o, out)
-      
+
       out.data = this.serializeHistory(o.data)
-      
+
       if (o.state)
       {
          out.state = this.serializeHistory(o.state)
@@ -866,25 +882,25 @@ class OpenEhrJsonSerializer {
 
       return out
    }
-  
+
    private Map serializeHistory(History o)
    {
       def out = [:]
-      
+
       this.fillLocatable(o, out)
-      
+
       out.origin = this.serializeDvDateTime(o.origin)
-      
+
       if (o.period)
       {
          out.period = this.serializeDvDuration(o.period)
       }
-      
+
       if (o.duration)
       {
          out.duration = this.serializeDvDuration(o.duration)
       }
-      
+
       String method
 
       if (o.summary)
@@ -894,7 +910,7 @@ class OpenEhrJsonSerializer {
       }
 
       Map _event
-      
+
       out.events = []
       o.events.each { event ->
 
@@ -905,26 +921,26 @@ class OpenEhrJsonSerializer {
 
       return out
    }
-   
+
    private Map serializePointEvent(PointEvent o)
    {
       def out = [:]
-      
+
       this.fillEvent(o, out)
 
       return out
    }
-   
+
    private Map serializeIntervalEvent(IntervalEvent o)
    {
       def out = [:]
-      
+
       this.fillEvent(o, out)
-      
+
       out.width = this.serializeDvDuration(o.width)
-      
+
       out.math_function = this.serializeDvCodedText(o.math_function)
-      
+
       if (o.sample_count)
       {
          out.sample_count = o.sample_count
@@ -932,40 +948,40 @@ class OpenEhrJsonSerializer {
 
       return out
    }
-   
+
    private Map serializeEvaluation(Evaluation o)
    {
       def out = [:]
-      
+
       this.fillLocatable(o, out)
       this.fillCareEntry(o, out)
-      
+
       String method = this.method(o.data)
       out.data = [_type: this.openEhrType(o.data)] + this."$method"(o.data)
 
       return out
    }
-   
+
    private Map serializeInstruction(Instruction o)
    {
       def out = [:]
-      
+
       this.fillLocatable(o, out)
       this.fillCareEntry(o, out)
-      
+
       String method = this.method(o.narrative)
       out.narrative = [_type: this.openEhrType(o.narrative)] + this."$method"(o.narrative)
-      
+
       if (o.expiry_time)
       {
          out.expirity_time = this.serializeDvDateTime(o.expiry_time)
       }
-      
+
       if (o.wf_definition)
       {
          out.wf_definition = this.serializeDvParsable(o.wf_definition)
       }
-      
+
       if (o.activities)
       {
          out.activities = []
@@ -979,40 +995,40 @@ class OpenEhrJsonSerializer {
 
       return out
    }
-   
+
    private Map serializeActivity(Activity o)
    {
       def out = [:]
-      
+
       this.fillLocatable(o, out)
-      
+
       String method = this.method(o.description)
       out.description = [_type: this.openEhrType(o.description)] + this."$method"(o.description)
-      
+
       out.timing = this.serializeDvParsable(o.timing)
-      
+
       out.action_archetype_id = o.action_archetype_id
 
       return out
    }
-   
+
    private Map serializeAction(Action o)
    {
       def out = [:]
-      
+
       this.fillLocatable(o, out)
       this.fillCareEntry(o, out)
-      
+
       out.time = this.serializeDvDateTime(o.time)
-      
+
       String method = this.method(o.description)
       out.description = [_type: this.openEhrType(o.description)] + this."$method"(o.description)
-      
+
       // TODO: check if needed
       //archetype_node_id: o.description.archetype_node_id) {
-      
+
       out.ism_transition = this.serializeIsmTransition(o.ism_transition)
-      
+
       if (o.instruction_details)
       {
          out.instruction_details = this.serializeInstructionDetails(o.instruction_details)
@@ -1020,18 +1036,18 @@ class OpenEhrJsonSerializer {
 
       return out
    }
-   
+
    private Map serializeIsmTransition(IsmTransition o)
    {
       def out = [:]
-      
+
       out.current_state = this.serializeDvCodedText(o.current_state)
-      
+
       if (o.transition)
       {
          out.transition = this.serializeDvCodedText(o.transition)
       }
-      
+
       if (o.careflow_step)
       {
          out.careflow_step = this.serializeDvCodedText(o.careflow_step)
@@ -1039,15 +1055,15 @@ class OpenEhrJsonSerializer {
 
       return out
    }
-   
+
    private Map serializeInstructionDetails(InstructionDetails o)
    {
       def out = [:]
-      
+
       out.instruction_id = this.serializeLocatableRef(o.instruction_id)
-      
+
       out.activity_id = o.activity_id
-      
+
       if (o.wf_details)
       {
          String method = this.method(o.wf_details)
@@ -1056,14 +1072,14 @@ class OpenEhrJsonSerializer {
 
       return out
    }
-   
+
    private Map serializeAdminEntry(AdminEntry o)
    {
       def out = [:]
-      
+
       this.fillLocatable(o, out)
       this.fillEntry(o, out)
-      
+
       String method = this.method(o.data)
       out.data = [_type: this.openEhrType(o.data)] + this."$method"(o.data)
 
@@ -1074,13 +1090,13 @@ class OpenEhrJsonSerializer {
    }
 
 
-   
+
    private Map serializeCluster(Cluster o)
    {
       def out = [:]
-      
+
       this.fillLocatable(o, out)
-      
+
       String method
       Map _item
 
@@ -1097,15 +1113,15 @@ class OpenEhrJsonSerializer {
    private Map serializeElement(Element o)
    {
       def out = [:]
-      
+
       this.fillLocatable(o, out)
-      
+
       if (o.value)
       {
          String method = this.method(o.value)
          out.value = [_type: this.openEhrType(o.value)] + this."$method"(o.value)
       }
-      
+
       if (o.null_flavour)
       {
          out.null_flavour = this.serializeDvCodedText(o.null_flavour)
@@ -1114,102 +1130,102 @@ class OpenEhrJsonSerializer {
       return out
    }
 
-   
+
    private Map serializeDvDateTime(DvDateTime o)
    {
       def out = [:]
-      
+
       // TODO: accuracy, ...
       out.value = o.value
 
       return out
    }
-   
+
    private Map serializeDvDate(DvDate o)
    {
       def out = [:]
-      
+
       out.value = o.value
 
       return out
    }
-   
+
    private Map serializeDvTime(DvTime o)
    {
       def out = [:]
-      
+
       // TODO
       out.value = o.value
 
       return out
    }
-   
+
    private Map serializeDvText(DvText o)
    {
       def out = [:]
-      
+
       out.value = o.value
-      
+
       // TODO: mappings
 
       return out
    }
-   
+
    private Map serializeDvCodedText(DvCodedText o)
    {
       def out = [:]
-      
+
       out.value = o.value
       out.defining_code = this.serializeCodePhrase(o.defining_code)
 
       return out
    }
-   
+
    private Map serializeDvOrdinal(DvOrdinal o)
    {
       def out = [:]
-      
+
       out.value = o.value
       out.symbol = this.serializeDvCodedText(o.symbol)
 
       return out
    }
-   
+
    private Map serializeDvDuration(DvDuration o)
    {
       def out = [:]
-      
+
      out.value = o.value
-     
+
      // TODO: accuracy, magnitude_status, ... all attributes from superclasses
 
       return out
    }
-   
+
    private Map serializeDvBoolean(DvBoolean o)
    {
       def out = [:]
-      
+
       out.value = o.value
 
       return out
    }
-   
+
    private Map serializeCodePhrase(CodePhrase o)
    {
       def out = [:]
-      
+
       out.terminology_id = this.serializeTerminologyId(o.terminology_id)
-      
+
       out.code_string = o.code_string
 
       return out
    }
-   
+
    private Map serializeDvIdentifier(DvIdentifier o)
    {
       def out = [:]
-      
+
       out.issuer = o.issuer
       out.assigner = o.assigner
       out.id = o.id
@@ -1217,16 +1233,16 @@ class OpenEhrJsonSerializer {
 
       return out
    }
-   
+
    private Map serializeDvQuantity(DvQuantity o)
    {
       def out = [:]
-      
+
       // TODO: inherited attributes
-      
+
       out.magnitude = o.magnitude
       out.units = o.units
-      
+
       if (o.precision)
       {
          out.precision = o.precision
@@ -1234,28 +1250,28 @@ class OpenEhrJsonSerializer {
 
       return out
    }
-   
+
    private Map serializeDvCount(DvCount o)
    {
       def out = [:]
-      
+
       // TODO: inherited attributes
-      
+
       out.magnitude = o.magnitude
 
       return out
    }
-   
+
    private Map serializeDvProportion(DvProportion o)
    {
       def out = [:]
-      
+
       // TODO: inherited attributes
-      
+
       out.numerator = o.numerator
       out.denominator = o.denominator
       out.type = o.type
-      
+
       if (o.precision != null && o.precision >= 0)
       {
          out.precision = o.precision
@@ -1280,11 +1296,11 @@ class OpenEhrJsonSerializer {
       // size is not in the XSD
       //out.size(o.size)
    }
-   
+
    private Map serializeDvParsable(DvParsable o)
    {
       def out = [:]
-      
+
       this.fillEncapsulated(o, out)
 
       // TODO: test if JSON encoding characters are escaped
@@ -1294,35 +1310,35 @@ class OpenEhrJsonSerializer {
 
       return out
    }
-   
+
    private Map serializeDvMultimedia(DvMultimedia o)
    {
       def out = [:]
-      
+
       this.fillEncapsulated(o, out)
-      
+
       if (o.alternate_text)
       {
          out.alternate_text = o.alternate_text
       }
-      
+
       if (o.uri)
       {
          out.uri = this.serlializeDvUri(o.uri)
       }
-      
+
       if (o.data)
       {
          out.data = new String(o.data) //o.data.encodeBase64().toString()no need to reencode because the data is stored encoded
       }
-      
+
       out.media_type = this.serializeCodePhrase(o.media_type)
-      
+
       if (o.compression_algorithm)
       {
          out.compression_algorithm = this.serializeCodePhrase(o.compression_algorithm)
       }
-      
+
       if (o.integrity_check)
       {
          out.integrity_check = o.integrity_check.encodeBase64().toString()
@@ -1332,7 +1348,7 @@ class OpenEhrJsonSerializer {
       {
          out.integrity_check_algorithm = this.serializeCodePhrase(o.integrity_check_algorithm)
       }
-      
+
       out.size = o.size
 
       if (o.thumbnail)
@@ -1342,29 +1358,29 @@ class OpenEhrJsonSerializer {
 
       return out
    }
-   
+
    private Map serializeDvUri(DvUri o)
    {
       def out = [:]
-      
+
       out.value = o.value
 
       return out
    }
-   
+
    private Map serializeDvEhrUri(DvEhrUri o)
    {
       def out = [:]
-      
+
       out.value = o.value
 
       return out
    }
-   
+
    private Map serializeDvInterval(DvInterval o)
    {
       def out = [:]
-      
+
       String method
 
       if (o.lower)

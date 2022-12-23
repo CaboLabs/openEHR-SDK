@@ -1,0 +1,45 @@
+{
+   "_type": "EHR",
+   "ehr_id": {
+      "value": "7d44b88c-4199-4bad-97dc-d78268e01398"
+   },
+   "system_id": {
+      "value": "9624982A-9F42-41A5-9318-AE13D5F5031F"
+   },
+   "time_created": {
+      "value": "2015-01-20T19:30:22.765+01:00"
+   },
+   "ehr_status": {
+      "_type": "EHR_STATUS",
+      "archetype_node_id": "openEHR-EHR-EHR_STATUS.generic.v1",
+      "archetype_details": {
+         "archetype_id": {
+            "value": "openEHR-EHR-EHR_STATUS.generic.v1"
+         },
+         "template_id": {
+            "value": "generic.en.v1"
+         },
+         "rm_version": "1.0.2"
+      },
+      "is_queryable": true,
+      "is_modifiable": true,
+      "uid": {
+         "_type": "OBJECT_VERSION_ID",
+         "value": "8dc16766-0af6-4954-aea3-a4133fab560c::CABOLABS_ATOMIK::1"
+      },
+      "name": {
+         "_type": "DV_TEXT",
+         "value": "EHR Status"
+      },
+      "subject": {
+         "external_ref": {
+            "type": "PERSON",
+            "namespace": "DEMOGRAPHIC",
+            "id": {
+               "_type": "HIER_OBJECT_ID",
+               "value": "1fb12baa-8e3a-4eff-9a88-ba3e50fd9c1c"
+            }
+         }
+      }
+   }
+}
