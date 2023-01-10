@@ -18,6 +18,9 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.uri.*
 import groovy.json.*
 import groovy.xml.*
 
+/**
+ * This implementation doesn't encode DVs as one value per path, but each atomik vaule has it's own path.
+ */
 class FlatMapSerializer {
 
    private Map serialized = [:]
@@ -38,7 +41,7 @@ class FlatMapSerializer {
       return method
    }
 
-   Map getSerialized()
+   Map getSerializedMap()
    {
       return this.serialized
    }
@@ -60,8 +63,8 @@ class FlatMapSerializer {
 
    }
 
-/*
-   String get(String format = 'json', boolean pretty = false)
+
+   String getSerializedString(String format = 'json', boolean pretty = false)
    {
       if (!['xml', 'json'].contains(format))
       {
@@ -110,7 +113,7 @@ class FlatMapSerializer {
          return writer.toString()
       }
    }
-   */
+
 
    void traverse(Object o)
    {
@@ -118,9 +121,9 @@ class FlatMapSerializer {
       o.properties.each { prop, val ->
 
          // _null is considered a property in Element because of the method is_null()
-         if (['class', 'parent', '_null'].contains(prop)) return
+         if (['class', 'parent', '_null', 'path', 'dataPath'].contains(prop)) return
 
-         if (val == null) return
+         if (val == null || val == []) return // false is a valid value
 
 
          // check if property is synthetic, but need to go up in the hierarcht to the class that declared the prop
@@ -151,6 +154,13 @@ class FlatMapSerializer {
          }
          */
 
+         // TODO: process types
+         // - PartyProxy
+         // - Archetyped
+         // - ObjectId
+         // - ObjectRef
+
+
 
          if (val instanceof Locatable)
          {
@@ -168,7 +178,7 @@ class FlatMapSerializer {
 
             if (o instanceof Pathable)
             {
-               path = o.dataPath == '/' ? '/'+ prop : o.dataPath +'/'+ prop
+               path = (o.dataPath == '/') ? ('/'+ prop) : (o.dataPath +'/'+ prop)
 
                process_dv(val, path) // adds the attribute name to the path
             }
@@ -191,7 +201,7 @@ class FlatMapSerializer {
          {
             if (o instanceof Pathable)
             {
-               path = o.dataPath == '/' ? '/'+ prop : o.dataPath +'/'+ prop
+               path = (o.dataPath == '/') ? ('/'+ prop) : (o.dataPath +'/'+ prop)
 
                process_cp(val, path) // adds the attribute name to the path
             }
@@ -202,7 +212,17 @@ class FlatMapSerializer {
          }
          else
          {
-            println "prop ${prop} ${val.getClass()}"
+            //println "prop ${prop} ${val.getClass()}"
+            if (o instanceof Pathable)
+            {
+               path = (o.dataPath == '/') ? ('/'+ prop) : (o.dataPath +'/'+ prop)
+
+               this.serialized[path] = val
+            }
+            else
+            {
+               println "defaul parent not Pat ${o.class}"
+            }
          }
       }
    }
@@ -217,28 +237,33 @@ class FlatMapSerializer {
    {
       println "DV parent ${parentPath}"
 
-      String path
-
       dv.properties.each { prop, val ->
 
          // _null is considered a property in Element because of the method is_null()
-         if (['class', 'parent', '_null'].contains(prop)) return
+         if (['class', 'parent', '_null', 'path', 'dataPath'].contains(prop)) return
 
-         if (val == null) return
+         if (val == null || val == []) return // false is a valid value
 
+         // DVs with nested DVs like interval or ordinal
          if (val instanceof DataValue)
          {
             println "DV prop ${prop} DV"
 
-            if (o instanceof Pathable)
-            {
-               path = o.dataPath == '/' ? '/'+ prop : o.dataPath +'/'+ prop
-               process_dv(val, path)
-            }
+            process_dv(val, parentPath +'/'+ prop)
+         }
+         else if (val instanceof CodePhrase)
+         {
+            process_cp(val, parentPath +'/'+ prop) // adds the attribute name to the path
+         }
+         else if (val instanceof byte[]) // multimedia.data and .integrity_check are byte[]
+         {
+            // NOTE: for this to encode correctly to json or xml, it should be base64 encoded first
+            this.serialized[parentPath +'/'+ prop] = val.encodeBase64().toString()
          }
          else
          {
             println "DV prop ${prop} ${val.getClass()}"
+            this.serialized[parentPath +'/'+ prop] = val
          }
       }
    }

@@ -24,7 +24,7 @@ class FlatMapSerializerTest extends GroovyTestCase {
       def flat = new FlatMapSerializer()
       flat.serialize(c)
 
-      println flat.getSerialized()
+      println flat.getSerializedString('json', true)
 
       //def out = JsonWriter.objectToJson(c.content, [(JsonWriter.PRETTY_PRINT): true])
       //println out
