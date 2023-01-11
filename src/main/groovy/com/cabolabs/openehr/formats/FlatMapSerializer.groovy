@@ -1,8 +1,7 @@
 package com.cabolabs.openehr.formats
 
 import com.cabolabs.openehr.rm_1_0_2.common.change_control.Version
-import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
-import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
+import com.cabolabs.openehr.rm_1_0_2.common.archetyped.*
 
 import com.cabolabs.openehr.dto_1_0_2.ehr.EhrDto
 
@@ -14,12 +13,16 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.*
+import com.cabolabs.openehr.rm_1_0_2.common.generic.*
+import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 
 import groovy.json.*
 import groovy.xml.*
 
 /**
  * This implementation doesn't encode DVs as one value per path, but each atomik vaule has it's own path.
+ * Also this implementation uses a generic approach so can process any version of the RM, but depends directly on one.
+ * TODO: RM version independence, maybe via interfaces? or just versioning the name of the class?
  */
 class FlatMapSerializer {
 
@@ -160,8 +163,80 @@ class FlatMapSerializer {
          // - ObjectId
          // - ObjectRef
 
+         switch (val)
+         {
+            case {it instanceof Locatable}:
+               traverse(val)
+            break
+            case {it instanceof Pathable}:
+               traverse(val)
+            break
+            case {it instanceof PartyProxy}:
+               //traverse(val)
+               process_pp(val, o.dataPath == '/' ? '/'+ prop : o.dataPath +'/'+ prop)
+            break
+            case {it instanceof Archetyped}:
+               this.add(o.dataPath == '/' ? '/archetype_id' : o.dataPath +'/archetype_id', val.archetype_id.value)
+               this.add(o.dataPath == '/' ? '/template_id'  : o.dataPath +'/template_id',  val.template_id.value)
+               this.add(o.dataPath == '/' ? '/rm_version'   : o.dataPath +'/rm_version',   val.rm_version)
+            break
+            // case {it instanceof ObjectId}:
+            //    //traverse(val)
+            //    this.add(o.dataPath +'/'+ prop, val)
+            // break
+            case {it instanceof ObjectRef}:
+               //traverse(val)
+               this.add(o.dataPath +'/namespace', val.namespace)
+               this.add(o.dataPath +'/type', val.type)
+               //this.add(o.dataPath +'/rm_version', val.rm_version) // TODO: id: ObjectId
+
+               process_oid(val, o.dataPath +'/id')
+            break
+            case {it instanceof Collection}:
+               val.each { single_value ->
+
+                  traverse(single_value)
+               }
+            break
+            case {it instanceof DataValue}:
+               if (o instanceof Pathable)
+               {
+                  path = (o.dataPath == '/') ? ('/'+ prop) : (o.dataPath +'/'+ prop)
+
+                  process_dv(val, path) // adds the attribute name to the path
+               }
+               else
+               {
+                  println "DV parent not Pat ${o.class}"
+               }
+            break
+            case {it instanceof CodePhrase}:
+               if (o instanceof Pathable)
+               {
+                  path = (o.dataPath == '/') ? ('/'+ prop) : (o.dataPath +'/'+ prop)
+
+                  process_cp(val, path) // adds the attribute name to the path
+               }
+               else
+               {
+                  println "CP parent not Pat ${o.class}"
+               }
+            break
+            default:
+               if (o instanceof Pathable)
+               {
+                  path = (o.dataPath == '/') ? ('/'+ prop) : (o.dataPath +'/'+ prop)
+
+                  this.add(path, val)
+               }
+               else
+               {
+                  println "default parent of ${prop} not Pat ${o.class}"
+               }
+         }
 
 
+         /*
          if (val instanceof Locatable)
          {
             println "prop ${prop} Loc"
@@ -224,16 +299,41 @@ class FlatMapSerializer {
                println "defaul parent not Pat ${o.class}"
             }
          }
+         */
       }
    }
 
-   void process_cp(CodePhrase cp, String parentPath)
+   private void add(String path, Object value)
    {
-      this.serialized[parentPath +'/code_string'] = cp.code_string
-      this.serialized[parentPath +'/terminology_id/value'] = cp.terminology_id.value
+      if (this.serialized[path])
+      {
+         throw new Exception("Key ${path} already exists")
+      }
+
+      this.serialized[path] = value
    }
 
-   void process_dv(DataValue dv, String parentPath)
+   private void process_pp(PartyProxy pp, String parentPath)
+   {
+      // TODO: if pp is PartiIdentified or PartyRelated there are extra attributes
+
+      if (pp.external_ref)
+      {
+         this.add(parentPath == '/' ? '/external_ref/namespace' : parentPath +'/external_ref/namespace', pp.external_ref.namespace)
+         this.add(parentPath == '/' ? '/external_ref/type'      : parentPath +'/external_ref/type', pp.external_ref.type)
+
+         // TODO: generic id scheme
+         this.add(parentPath == '/' ? '/external_ref/id/value'  : parentPath +'/external_ref/id/value', pp.external_ref.id.value)
+      }
+   }
+
+   private void process_cp(CodePhrase cp, String parentPath)
+   {
+      this.add(parentPath +'/code_string', cp.code_string)
+      this.add(parentPath +'/terminology_id/value', cp.terminology_id.value)
+   }
+
+   private void process_dv(DataValue dv, String parentPath)
    {
       println "DV parent ${parentPath}"
 
@@ -258,12 +358,12 @@ class FlatMapSerializer {
          else if (val instanceof byte[]) // multimedia.data and .integrity_check are byte[]
          {
             // NOTE: for this to encode correctly to json or xml, it should be base64 encoded first
-            this.serialized[parentPath +'/'+ prop] = val.encodeBase64().toString()
+            this.add(parentPath +'/'+ prop, val.encodeBase64().toString())
          }
          else
          {
             println "DV prop ${prop} ${val.getClass()}"
-            this.serialized[parentPath +'/'+ prop] = val
+            this.add(parentPath +'/'+ prop, val)
          }
       }
    }
