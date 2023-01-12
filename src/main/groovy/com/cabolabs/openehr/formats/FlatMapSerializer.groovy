@@ -51,19 +51,20 @@ class FlatMapSerializer {
 
    void serialize(Locatable o)
    {
-      //String method = this.method(o)
-      //def out = this."$method"(o)
+      this.add('_type', this.openEhrType(o))
       this.traverse(o)
    }
 
    void serialize(Version v)
    {
-
+      this.add('_type', this.openEhrType(o))
+      this.traverse(o)
    }
 
    void serialize(EhrDto ehr)
    {
-
+      this.add('_type', 'EHR')
+      this.traverse(o)
    }
 
 
@@ -335,7 +336,7 @@ class FlatMapSerializer {
 
    private void process_dv(DataValue dv, String parentPath)
    {
-      println "DV parent ${parentPath}"
+      //println "DV parent ${parentPath}"
 
       dv.properties.each { prop, val ->
 
@@ -368,88 +369,4 @@ class FlatMapSerializer {
       }
    }
 
-   void process(DvText dv, String parentPath)
-   {
-
-   }
-
-   void process(DvCodedText dv, String parentPath)
-   {
-
-   }
-
-   void process(CodePhrase dv, String parentPath)
-   {
-
-   }
-
-   void process(DvDate dv, String parentPath)
-   {
-
-   }
-
-   void process(DvTime dv, String parentPath)
-   {
-
-   }
-
-   void process(DvDateTime dv, String parentPath)
-   {
-
-   }
-
-   void process(DvDuration dv, String parentPath)
-   {
-
-   }
-
-   void process(DvBoolean dv, String parentPath)
-   {
-
-   }
-
-   void process(DvIdentifier dv, String parentPath)
-   {
-
-   }
-
-   void process(DvCount dv, String parentPath)
-   {
-
-   }
-
-   void process(DvQuantity dv, String parentPath)
-   {
-
-   }
-
-   void process(DvProportion dv, String parentPath)
-   {
-
-   }
-
-   void process(DvOrdinal dv, String parentPath)
-   {
-
-   }
-
-   void process(DvUri dv, String parentPath)
-   {
-
-   }
-
-   void process(DvEhrUri dv, String parentPath)
-   {
-
-   }
-
-   void process(DvMultimedia dv, String parentPath)
-   {
-
-   }
-
-   void process(DvParsable dv, String parentPath)
-   {
-
-   }
 }

@@ -12,7 +12,7 @@ plugins {
 
     // Apply the application plugin to add support for building a CLI application.
     id 'application'
-	
+
 	id 'eclipse'
 }
 
@@ -40,7 +40,9 @@ dependencies {
 
 
     // https://github.com/networknt/json-schema-validator
-    implementation(group: "com.networknt", name: "json-schema-validator", version: "1.0.73");
+    implementation group: "com.networknt", name: "json-schema-validator", version: "1.0.73"
+
+    implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '3.21.12'
 
     //implementation fileTree(dir: 'lib', include: ['*.jar'])
 
