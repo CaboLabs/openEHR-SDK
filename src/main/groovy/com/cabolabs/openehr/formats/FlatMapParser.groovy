@@ -27,6 +27,9 @@ class FlatMapParser {
          default:
             throw new Exception("Type ${flat_map._type} not supported")
       }
+
+      // TODO:
+      return null
    }
 
    private Locatable parse_locatable(Map flat_map)
@@ -38,17 +41,23 @@ class FlatMapParser {
       // 5. para saber el tipo concreto de un atributo es necesario consultar el OPT por el node_id en caso de que hayan distintos hermanos con distintos tipos como alternativa
       // 6. para los nodos multiples, la ruta va a tener el indice incluido, para saber el nombre del atributo hay que sacar el indice pero para saber qué rutas van juntas para seguir la recursion es necesario pasar todas las rutas que tengan la misma raiz, incluyendo el indice
 
+      // TODO:
+      return null
    }
 
    private Version parse_version(Map flat_map)
    {
 
+      // TODO:
+      return null
 
    }
 
    private EhrDto parse_ehr(Map flat_map)
    {
 
+      // TODO:
+      return null
 
    }
 }

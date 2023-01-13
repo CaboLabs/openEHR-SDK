@@ -10,4 +10,9 @@ abstract class Locatable extends Pathable {
    DvText name
    String archetype_node_id
    UIDBasedId uid
+
+   boolean is_archetype_root()
+   {
+      !atchetype_node_id.startsWith('at')
+   }
 }

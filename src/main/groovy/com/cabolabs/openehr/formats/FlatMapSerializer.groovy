@@ -167,6 +167,7 @@ class FlatMapSerializer {
          switch (val)
          {
             case {it instanceof Locatable}:
+               this.add(val.dataPath == '/' ? '/_type' : val.dataPath +'/_type', this.openEhrType(val))
                traverse(val)
             break
             case {it instanceof Pathable}:
@@ -195,6 +196,11 @@ class FlatMapSerializer {
             break
             case {it instanceof Collection}:
                val.each { single_value ->
+
+                  if (single_value instanceof Pathable)
+                  {
+                     this.add(single_value.dataPath == '/' ? '/_type' : single_value.dataPath +'/_type', this.openEhrType(single_value))
+                  }
 
                   traverse(single_value)
                }
@@ -348,7 +354,7 @@ class FlatMapSerializer {
          // DVs with nested DVs like interval or ordinal
          if (val instanceof DataValue)
          {
-            println "DV prop ${prop} DV"
+            //println "DV prop ${prop} DV"
 
             process_dv(val, parentPath +'/'+ prop)
          }
@@ -363,7 +369,7 @@ class FlatMapSerializer {
          }
          else
          {
-            println "DV prop ${prop} ${val.getClass()}"
+            //println "DV prop ${prop} ${val.getClass()}"
             this.add(parentPath +'/'+ prop, val)
          }
       }
