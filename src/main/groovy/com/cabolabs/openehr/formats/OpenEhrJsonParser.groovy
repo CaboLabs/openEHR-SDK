@@ -769,10 +769,11 @@ class OpenEhrJsonParser {
       method = 'parse'+ type
       compo.composer = this."$method"(json.composer)
 
-      compo.context = parseEVENT_CONTEXT(json.context, compo,
-                                          this.attr_path(json, 'context', '/'),
-                                          this.attr_path(json, 'context', '/')
-                                        )
+      compo.context = parseEVENT_CONTEXT(
+         json.context, compo,
+         this.attr_path(json, 'context', '/'),
+         this.attr_path(json, 'context', '/')
+      )
 
       def content = []
 
@@ -785,10 +786,11 @@ class OpenEhrJsonParser {
          method = 'parse'+ type
 
          compo.content.add(
-            this."$method"(content_item, compo,
-                           this.attr_path(json, 'content', '/'),
-                           this.attr_path_multiple(json, 'content', i, '/')
-                          )
+            this."$method"(
+               content_item, compo,
+               this.attr_path_multiple(json, 'content', i, '/'),
+               this.attr_path_multiple(json, 'content', i, '/')
+            )
          )
       }
 
@@ -817,7 +819,7 @@ class OpenEhrJsonParser {
 
             folder.folders << this.parseFOLDER(
                subfolder, folder,
-               this.attr_path(json, 'folders', '/'),
+               this.attr_path_multiple(json, 'folders', i, '/'),
                this.attr_path_multiple(json, 'folders', i, '/')
             )
          }
@@ -848,7 +850,7 @@ class OpenEhrJsonParser {
 
             folder.folders << this.parseFOLDER(
                subfolder, folder,
-               this.attr_path(json, 'folders', path),
+               this.attr_path_multiple(json, 'folders', i, path),
                this.attr_path_multiple(json, 'folders', i, dataPath)
             )
          }
@@ -1321,7 +1323,7 @@ class OpenEhrJsonParser {
          section.items.add(
             this."$method"(
                content_item, section,
-               this.attr_path(json, 'items', path),
+               this.attr_path_multiple(json, 'items', i, path),
                this.attr_path_multiple(json, 'items', i, dataPath)
             )
          )
@@ -1409,7 +1411,7 @@ class OpenEhrJsonParser {
          h.events.add(
             this."$method"(
                event, h,
-               this.attr_path(json, 'events', path),
+               this.attr_path_multiple(json, 'events', i, path),
                this.attr_path_multiple(json, 'events', i, dataPath)
             )
          )
@@ -1567,7 +1569,7 @@ class OpenEhrJsonParser {
          ins.activities.add(
             this.parseACTIVITY(
                js_activity, ins,
-               this.attr_path(json, 'activities', path),
+               this.attr_path_multiple(json, 'activities', i, path),
                this.attr_path_multiple(json, 'activities', i, dataPath)
             )
          )
@@ -1710,7 +1712,7 @@ class OpenEhrJsonParser {
          t.items.add(
             this."$method"(
                item, t,
-               this.attr_path(json, 'items', path),
+               this.attr_path_multiple(json, 'items', i, path),
                this.attr_path_multiple(json, 'items', i, dataPath)
             )
          )
@@ -1730,7 +1732,7 @@ class OpenEhrJsonParser {
          l.items.add(
             this.parseELEMENT(
                element, l,
-               this.attr_path(json, 'items', path),
+               this.attr_path_multiple(json, 'items', i, path),
                this.attr_path_multiple(json, 'items', i, dataPath)
             )
          )
@@ -1755,7 +1757,7 @@ class OpenEhrJsonParser {
          t.rows.add(
             this."$method"(
                item, t,
-               this.attr_path(json, 'rows', path),
+               this.attr_path_multiple(json, 'rows', i, path),
                this.attr_path_multiple(json, 'rows', i, dataPath)
             )
          )
@@ -1773,7 +1775,7 @@ class OpenEhrJsonParser {
       s.item = this.parseELEMENT(
          json.item, s,
          this.attr_path(json, 'item', path),
-         this.attr_path(json, 'item',  dataPath)
+         this.attr_path(json, 'item', dataPath)
       )
 
       return s
@@ -1798,7 +1800,7 @@ class OpenEhrJsonParser {
          c.items.add(
             this."$method"(
                item, c,
-               this.attr_path(json, 'items', path),
+               this.attr_path_multiple(json, 'items', i, path),
                this.attr_path_multiple(json, 'items', i, dataPath)
             )
          )
