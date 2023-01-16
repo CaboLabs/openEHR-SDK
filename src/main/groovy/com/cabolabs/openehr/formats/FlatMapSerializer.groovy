@@ -51,19 +51,22 @@ class FlatMapSerializer {
 
    void serialize(Locatable o)
    {
-      this.add('_type', this.openEhrType(o))
+      this.add('/_type', this.openEhrType(o))
       this.traverse(o)
    }
 
    void serialize(Version v)
    {
-      this.add('_type', this.openEhrType(o))
+      // NOTE: all paths for the version object are not pathable paths, but generated ones
+      // the only object that has real paths is version.data if that is locatable.
+      this.add('/_type', this.openEhrType(o))
       this.traverse(o)
    }
 
    void serialize(EhrDto ehr)
    {
-      this.add('_type', 'EHR')
+      // NOTE: all paths for the ehr object are not pathable paths, but generated ones
+      this.add('/_type', 'EHR')
       this.traverse(o)
    }
 

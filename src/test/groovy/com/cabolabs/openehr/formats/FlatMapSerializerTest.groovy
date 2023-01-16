@@ -82,20 +82,20 @@ class FlatMapSerializerTest extends GroovyTestCase {
          inmsg.getFieldsMap().each { decoded_path, pf_value ->
 
             println decoded_path
-            switch (pf_value.getKindCase())
-            {
-               case com.google.protobuf.Value.KindCase.NUMBER_VALUE:
-                  println pf_value.getNumberValue()
-               break
-               case com.google.protobuf.Value.KindCase.STRING_VALUE:
-                  println pf_value.getStringValue()
-               break
-               case com.google.protobuf.Value.KindCase.BOOL_VALUE:
-                  println pf_value.getBoolValue()
-               break
-               default:
-                  println "Value kind not supported ${it}"
-            }
+            // switch (pf_value.getKindCase())
+            // {
+            //    case com.google.protobuf.Value.KindCase.NUMBER_VALUE:
+            //       println pf_value.getNumberValue()
+            //    break
+            //    case com.google.protobuf.Value.KindCase.STRING_VALUE:
+            //       println pf_value.getStringValue()
+            //    break
+            //    case com.google.protobuf.Value.KindCase.BOOL_VALUE:
+            //       println pf_value.getBoolValue()
+            //    break
+            //    default:
+            //       println "Value kind not supported ${it}"
+            // }
          }
 
          // 4. TODO: transform openehr_protobuf_message to openehr_flat_map
@@ -109,5 +109,13 @@ class FlatMapSerializerTest extends GroovyTestCase {
          e.printStackTrace()
          println e.message
       }
+
+
+
+      def tmp_flat_map = flat.getSerializedMap()
+
+      def flat_parser = new FlatMapParser()
+
+      flat_parser.parse(tmp_flat_map)
    }
 }

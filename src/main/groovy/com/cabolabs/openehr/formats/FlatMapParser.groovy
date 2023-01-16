@@ -8,15 +8,15 @@ class FlatMapParser {
 
    public Object parse(Map flat_map)
    {
-      if (!flat_map._type)
+      if (!flat_map['/_type'])
       {
          throw new Exception("Key '_type' is required")
       }
 
-      switch (flat_map._type)
+      switch (flat_map['/_type'])
       {
          case ['COMPOSITION', 'EHR_STATUS', 'FOLDER']: // TODO: demographic locatables
-
+            parse_locatable(flat_map)
          break
          case ['ORIGINAL_VERSION', 'IMPORTED_VERSION']:
            // TODO:
@@ -33,19 +33,6 @@ class FlatMapParser {
    }
 
    private Locatable parse_locatable(Map flat_map)
-   {
-      // 1. cargar OPT asociado a la raiz
-      // 2. crear objeto del RM que va a ser el raiz que devuelvo
-      // 3. crear metodos attribute_builder a los que le paso todas las paths que tiene como raiz ese atributo, y les paso el objeto padre para setear los atributos
-      // 4. los attribute_builders se van a llamar recursivamente para los atributos de los atributos de la clase raiz
-      // 5. para saber el tipo concreto de un atributo es necesario consultar el OPT por el node_id en caso de que hayan distintos hermanos con distintos tipos como alternativa
-      // 6. para los nodos multiples, la ruta va a tener el indice incluido, para saber el nombre del atributo hay que sacar el indice pero para saber qué rutas van juntas para seguir la recursion es necesario pasar todas las rutas que tengan la misma raiz, incluyendo el indice
-
-      // TODO:
-      return null
-   }
-
-   private Version parse_version(Map flat_map)
    {
       // keys are dataPaths
 
@@ -93,7 +80,41 @@ class FlatMapParser {
          return tokens_parts
       }
 
+      // 5. add value for each path tokens
+      flat_map.eachWithIndex { path, value, i ->
+
+         tokens[i] << [value: value]
+      }
+
+      /*
+      tokens = [
+         ...
+         [[att:content, nid:archetype_id=openEHR-EHR-OBSERVATION.lab_test-blood_glucose.v1, idx:0], [att:_type], [value:OBSERVATION]]
+         ...
+      ]
+      */
+
+      tokens.each {
+
+         println it
+      }
+
       // TODO: with the root type and the path tokens with the keys included we can reconstruct to object
+
+      // 1. cargar OPT asociado a la raiz
+      // 2. crear objeto del RM que va a ser el raiz que devuelvo
+      // 3. crear metodos attribute_builder a los que le paso todas las paths que tiene como raiz ese atributo, y les paso el objeto padre para setear los atributos
+      // 4. los attribute_builders se van a llamar recursivamente para los atributos de los atributos de la clase raiz
+      // 5. para saber el tipo concreto de un atributo es necesario consultar el OPT por el node_id en caso de que hayan distintos hermanos con distintos tipos como alternativa
+      // 6. para los nodos multiples, la ruta va a tener el indice incluido, para saber el nombre del atributo hay que sacar el indice pero para saber qué rutas van juntas para seguir la recursion es necesario pasar todas las rutas que tengan la misma raiz, incluyendo el indice
+
+      // TODO:
+      return null
+   }
+
+   private Version parse_version(Map flat_map)
+   {
+
 
       // TODO:
       return null
