@@ -47,10 +47,56 @@ class FlatMapParser {
 
    private Version parse_version(Map flat_map)
    {
+      // keys are dataPaths
+
+      // 1. [/a[atNNNN](0)/b[atMMMM]/c/d, ...] => [[a[atNNNN](0), b[atMMMM], c, d], ...] // transforms a list of paths in a list of path tokens
+      def tokens = flat_map.keySet().collect{ it.split('/').tail() }
+
+      // 2. => [[[a, atNNNN, (0)], [b, atMMMM], [c], [d]], ...] // list of path tokens, each path tokens are broken into path token parts
+      tokens = tokens.collect{ it*.split("[\\[\\]]") }
+
+      // 3. => [[[a, atNNNN, 0], [b, atMMMM], [c], [d]], ...] // goes through each path tokens parts, checking for an index part and removes the parentheses leaving just the index
+      tokens = tokens.each { tokens_parts -> // path tokens parts is a list of all the tokens of the same path, already transformed to path parts
+         tokens_parts.collect{
+            if (it.last() ==~ /\(\d+\)/)
+            {
+               it[it.size()-1] = it.last().split("[\\(\\)]").last()
+            }
+            it
+         }
+      }
+
+      // 4. => [[[att: a, nid: atNNNN, idx: 0], [att: b, nid: atMMMM], [att: c], [att: d]], ...] // adds attribute names for each part of the path token parts
+      def attr_name, map
+
+      tokens = tokens.collect { tokens_parts ->
+
+         tokens_parts = tokens_parts.collect{ parts ->
+
+            // list to map with attribute keys
+            map = (parts as List).withIndex().collectEntries{ part, index ->
+
+               if (index == 0) attr_name = 'att'
+               else if (index == 1)
+               {
+                  if (part.isNumber()) attr_name = 'idx'
+                  else attr_name = 'nid'
+               }
+               else attr_name = 'idx'
+
+               [(attr_name): part]
+            }
+
+            return map
+         }
+
+         return tokens_parts
+      }
+
+      // TODO: with the root type and the path tokens with the keys included we can reconstruct to object
 
       // TODO:
       return null
-
    }
 
    private EhrDto parse_ehr(Map flat_map)
