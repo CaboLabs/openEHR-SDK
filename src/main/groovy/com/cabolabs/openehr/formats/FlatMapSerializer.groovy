@@ -167,6 +167,7 @@ class FlatMapSerializer {
          // - ObjectId
          // - ObjectRef
 
+         // NOTE: all types that have subclasses, being abstract or not, should have _type
          switch (val)
          {
             case {it instanceof Locatable}:
@@ -174,10 +175,11 @@ class FlatMapSerializer {
                traverse(val)
             break
             case {it instanceof Pathable}:
+               this.add(val.dataPath == '/' ? '/_type' : val.dataPath +'/_type', this.openEhrType(val))
                traverse(val)
             break
             case {it instanceof PartyProxy}:
-               //traverse(val)
+               this.add(o.dataPath == '/' ? '/'+ prop +'/_type' : o.dataPath +'/'+ prop +'/_type', this.openEhrType(val))
                process_pp(val, o.dataPath == '/' ? '/'+ prop : o.dataPath +'/'+ prop)
             break
             case {it instanceof Archetyped}:
@@ -185,17 +187,17 @@ class FlatMapSerializer {
                this.add(o.dataPath == '/' ? '/template_id'  : o.dataPath +'/template_id',  val.template_id.value)
                this.add(o.dataPath == '/' ? '/rm_version'   : o.dataPath +'/rm_version',   val.rm_version)
             break
-            // case {it instanceof ObjectId}:
-            //    //traverse(val)
-            //    this.add(o.dataPath +'/'+ prop, val)
-            // break
+            case {it instanceof ObjectId}:
+               this.add(o.dataPath == '/' ? '/'+ prop +'/_type' : o.dataPath +'/'+ prop +'/_type', this.openEhrType(val))
+               this.add(o.dataPath +'/'+ prop, val)
+            break
             case {it instanceof ObjectRef}:
-               //traverse(val)
-               this.add(o.dataPath +'/namespace', val.namespace)
+               this.add(o.dataPath == '/' ? '/'+ prop +'/_type' : o.dataPath +'/'+ prop +'/_type', this.openEhrType(val))
+               this.add(o.dataPath +'/namespace', val.namespace) // FIXME: creo que falta prop en la path!
                this.add(o.dataPath +'/type', val.type)
                //this.add(o.dataPath +'/rm_version', val.rm_version) // TODO: id: ObjectId
 
-               process_oid(val, o.dataPath +'/id')
+               process_oid(val, o.dataPath +'/id') // FIXME: doesn't exist
             break
             case {it instanceof Collection}:
                val.each { single_value ->
@@ -333,6 +335,7 @@ class FlatMapSerializer {
          this.add(parentPath == '/' ? '/external_ref/type'      : parentPath +'/external_ref/type', pp.external_ref.type)
 
          // TODO: generic id scheme
+         this.add(parentPath == '/' ? '/external_ref/id/_type'  : parentPath +'/external_ref/id/_type', this.openEhrType(pp.external_ref.id))
          this.add(parentPath == '/' ? '/external_ref/id/value'  : parentPath +'/external_ref/id/value', pp.external_ref.id.value)
       }
    }

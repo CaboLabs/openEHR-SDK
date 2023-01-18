@@ -20,7 +20,7 @@ class FlatMapSerializerTest extends GroovyTestCase {
 
    void testFlatMap()
    {
-      String path = PS +"canonical_json"+ PS +"lab_results.json"
+      String path = PS +"canonical_json"+ PS +"lab_results_simplified.json"
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
       def parser = new OpenEhrJsonParser()
@@ -81,7 +81,7 @@ class FlatMapSerializerTest extends GroovyTestCase {
 
          inmsg.getFieldsMap().each { decoded_path, pf_value ->
 
-            println decoded_path
+            //println decoded_path
             // switch (pf_value.getKindCase())
             // {
             //    case com.google.protobuf.Value.KindCase.NUMBER_VALUE:
@@ -116,6 +116,10 @@ class FlatMapSerializerTest extends GroovyTestCase {
 
       def flat_parser = new FlatMapParser()
 
-      flat_parser.parse(tmp_flat_map)
+      def rm_compo = (Composition)flat_parser.parse(tmp_flat_map)
+
+      def json_serializer = new OpenEhrJsonSerializer()
+
+      println json_serializer.serialize(rm_compo, true)
    }
 }
