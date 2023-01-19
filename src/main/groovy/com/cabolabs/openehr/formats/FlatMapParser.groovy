@@ -32,7 +32,7 @@ class FlatMapParser {
       {
          throw new Exception("Key '_type' is required")
       }
-      
+
       Object out
 
       switch (flat_map['/_type'])
@@ -60,9 +60,9 @@ class FlatMapParser {
 
    private Locatable parse_locatable(Map flat_map)
    {
-      flat_map.each {
-         println it.key +' '+ it.value
-      }
+      // flat_map.each {
+      //    println it.key +' '+ it.value
+      // }
 
       String type = flat_map['/_type']
 
@@ -127,6 +127,11 @@ class FlatMapParser {
       ]
       */
 
+      // debug: show original path with the corresponding tokens
+      flat_map.eachWithIndex { e, i ->
+         println e.key +": "+ tokens[i]
+      }
+
       /*
       tokens.each { token_part_list ->
 
@@ -142,9 +147,9 @@ class FlatMapParser {
       */
 
 
-      tokens.each {
-         println it
-      }
+      // tokens.each {
+      //    println it
+      // }
 
       // dynamic new Composition() EhrStatus() Folder() etc
       // def rm_class = this.openEHRClassToClassname(type)
@@ -177,11 +182,14 @@ class FlatMapParser {
    {
       Map constructor_params = [:]
 
+      //println ">>> NID for ${parent_class} "+ tokens
+
       List field_tokens
       Map type_map, field_attrs
 
       model_attrs.each { attr, type -> // type in the model can be a list of possible concrete classes
 
+         // List<List<Map>> each List<Map> has all the tokens and value for one path/value
          field_tokens = tokens.findAll{ it[0].att == attr } // can have multiple paths for the same attribute
 
          // if there are no values for the attribute, don't continue processing, some values are optional,
@@ -190,6 +198,22 @@ class FlatMapParser {
          {
             return
          }
+
+         println "--- field tokens for ${attr}: "+ field_tokens
+
+         /* NOTE: archetype_node_id comes in the data but it could be extracted from the path so we can avoid those paths in the serialization
+         def archetype_node_id
+         def check_field_node_id = field_tokens.find{ it[0].nid } // if not null return a list o maps (one path)
+         if (check_field_node_id)
+         {
+            archetype_node_id = check_field_node_id[0].nid
+            if (archetype_node_id)
+            {
+               // locatable.archetype_node_id
+               constructor_params['archetype_node_id'] = archetype_node_id // FIXME: if this is an archetype_id will have the 'archetype_id=' prefix
+            }
+         }
+         */
 
          /*
          [
@@ -220,14 +244,9 @@ class FlatMapParser {
          */
 
          // type can be String or List, there is no other option in Model
-         if (type instanceof String)
+         if (type instanceof List)
          {
-            // simple type fixed in the RM
-            //println "simple"
-         }
-         else
-         {
-            //println "multiple"
+            //println "multiple alternative types"
             // type alternatives due inheritance
 
             // the result of findAll is a list
@@ -237,41 +256,98 @@ class FlatMapParser {
             // note for single type attributes, the type is not in the flat_map paths! is only when the type is not know from the model
             type_map = field_tokens[0].find{ it.att == '_type' }
 
-            // FIXME: for concrete type hierarchies, if the type is not present, then the default type should be used, e.g. DV_TEXT for Locatable.name
-            if (!type_map)
+            if (!type_map) // type doesn't come in the data
             {
-               throw new Exception("_type not found for attribute ${attr}: "+ field_tokens)
-            }
+               // if the model field type is abstract, then the type should come in the data and we throw the exception
+               if (Model.is_abstract_field(parent_class, attr))
+               {
+                  throw new Exception("_type not found for attribute ${attr}: "+ field_tokens)
+               }
 
-            type = type_map.value
+               // if the field type is not abstract in the model, the default concrete type should be
+               // the first on the list, like [DV_TEXT, DV_CODED_TEXT] => DV_TEXT is default
+               type = type[0]
+            }
+            else // type comes in the data
+            {
+               type = type_map.value
+            }
          }
 
          //println field_tokens
 
          // primitive types won't have field attrs
-         // TODO: consider other primitive types in the RM
-         if (type == 'String')
+         if (Model.is_primitive(type))
          {
-            // TODO: process primitive fields
-            println "${attr} type string "+ field_tokens
-            println "string type value: "+ field_tokens.value // can be null!!!
+            assert field_tokens.size() == 1         // a single path ends in the primitive processing
+            assert field_tokens[0].size() == 1      // the only path in the primitive has just one part
+            assert field_tokens[0][0].value != null // there should be a value and the value is not empty, because the flat map doesn't include empty values
 
-            constructor_params[attr] = field_tokens.value
+            println "${attr} : ${type} tokens: "+ field_tokens[0][0].value
+            println "primitive value: "+ field_tokens.value // can be null!!!
+
+            constructor_params[attr] = field_tokens[0][0].value
          }
          else
          {
+            // TODO: si el atributo es multiple en el modelo, los field tokens pueden ser para varias
+            // instancias distintas de objetos que van en la coleccion, por ejemplo dos observaciones
+            // distintas dentro de COMPOSITION.content, porque se piden los tokens para 'content' pero
+            // no se discrimina por el archetype_node_id ni por el index que hay en los datos
+
             field_attrs = Model.get_attribute_map(type)
-            
+
             // removes the current field map from the tokens to keep iterating on children fields
-            def next_field_tokens = field_tokens.collect { it.tail() }
+            def next_field_tokens
 
             if (Model.is_multiple(parent_class, attr))
             {
-               if (!constructor_params[attr]) constructor_params[attr] = []
-               constructor_params[attr] << this."new$type"(field_attrs, next_field_tokens)
+               // data could contain mutiple objects for the attr collection, group by idx and process tokens for each idx separatelly
+               // it could contain just one, so the group will have just one index, but the processing is the same
+
+               //println "--- attr ${parent_class} ${attr} can have multiple objects, need to group by node_id and index"
+               /*
+               [ 0:
+                  [
+                     [
+                     [att:content, nid:archetype_id=openEHR-EHR-OBSERVATION.lab_test-blood_glucose.v1, idx:0],
+                     [att:_type, value:OBSERVATION]
+                     ],
+                     [
+                     [att:content, nid:archetype_id=openEHR-EHR-OBSERVATION.lab_test-blood_glucose.v1, idx:0],
+                     [att:protocol, nid:at0004],
+                     [att:_type, value:ITEM_TREE]
+                     ],
+                     ...
+                  ],
+                  ...
+               ]
+               */
+               // field_tokens.groupBy{ it[0].idx }.each{
+               //    println "index ${it.key}:"
+               //    it.value.each { _tokens ->
+               //       println _tokens
+               //    }
+               // }
+
+               // grouping by index is enough
+               field_tokens.groupBy{ it[0].idx }.each{ idx, object_i_field_tokens ->
+
+                  next_field_tokens = object_i_field_tokens.collect { it.tail() }
+
+                  if (!constructor_params[attr]) constructor_params[attr] = []
+                  constructor_params[attr] << this."new$type"(field_attrs, next_field_tokens)
+               }
+
+
+               //if (!constructor_params[attr]) constructor_params[attr] = []
+               //constructor_params[attr] << this."new$type"(field_attrs, next_field_tokens)
             }
-            else
+            else // attribute is not a collection
             {
+               // removes the current field map from the tokens to keep iterating on children fields
+               next_field_tokens = field_tokens.collect { it.tail() }
+
                constructor_params[attr] = this."new$type"(field_attrs, next_field_tokens)
             }
          }
@@ -304,6 +380,10 @@ class FlatMapParser {
    Observation newOBSERVATION(Map model_attrs, List tokens)
    {
       Map constructor_params = this.get_constructor_params('OBSERVATION', model_attrs, tokens)
+
+      println ">>> Obs tokens: "+ tokens
+
+      println tokens.find { it[0].nid != null }
 
       new Observation(constructor_params)
    }
@@ -345,10 +425,60 @@ class FlatMapParser {
 
    Element newELEMENT(Map model_attrs, List tokens)
    {
-      // TODO: finish
-      Map constructor_params = [:] //this.get_constructor_params('ELEMENT', model_attrs, tokens)
+      Map constructor_params = this.get_constructor_params('ELEMENT', model_attrs, tokens)
 
       new Element(constructor_params)
+   }
+
+
+   TerminologyId newTERMINOLOGY_ID(Map model_attrs, List tokens)
+   {
+      Map constructor_params = this.get_constructor_params('TERMINOLOGY_ID', model_attrs, tokens)
+
+      new TerminologyId(constructor_params)
+   }
+
+   PartyRef newPARTY_REF(Map model_attrs, List tokens)
+   {
+      Map constructor_params = this.get_constructor_params('PARTY_REF', model_attrs, tokens)
+
+      new PartyRef(constructor_params)
+   }
+
+   PartySelf newPARTY_SELF(Map model_attrs, List tokens)
+   {
+      Map constructor_params = this.get_constructor_params('PARTY_SELF', model_attrs, tokens)
+
+      new PartySelf(constructor_params)
+   }
+
+   HierObjectId newHIER_OBJECT_ID(Map model_attrs, List tokens)
+   {
+      Map constructor_params = this.get_constructor_params('HIER_OBJECT_ID', model_attrs, tokens)
+
+      new HierObjectId(constructor_params)
+   }
+
+
+   DvDateTime newDV_DATE_TIME(Map model_attrs, List tokens)
+   {
+      Map constructor_params = this.get_constructor_params('DV_DATE_TIME', model_attrs, tokens)
+
+      new DvDateTime(constructor_params)
+   }
+
+   DvQuantity newDV_QUANTITY(Map model_attrs, List tokens)
+   {
+      Map constructor_params = this.get_constructor_params('DV_QUANTITY', model_attrs, tokens)
+
+      new DvQuantity(constructor_params)
+   }
+
+   DvProportion newDV_PROPORTION(Map model_attrs, List tokens)
+   {
+      Map constructor_params = this.get_constructor_params('DV_PROPORTION', model_attrs, tokens)
+
+      new DvProportion(constructor_params)
    }
 
    DvIdentifier newDV_IDENTIFIER(Map model_attrs, List tokens)
@@ -356,6 +486,13 @@ class FlatMapParser {
       Map constructor_params = this.get_constructor_params('DV_IDENTIFIER', model_attrs, tokens)
 
       new DvIdentifier(constructor_params)
+   }
+
+   DvText newDV_TEXT(Map model_attrs, List tokens)
+   {
+      Map constructor_params = this.get_constructor_params('DV_TEXT', model_attrs, tokens)
+
+      new DvText(constructor_params)
    }
 
    DvCodedText newDV_CODED_TEXT(Map model_attrs, List tokens)
@@ -370,41 +507,6 @@ class FlatMapParser {
       Map constructor_params = this.get_constructor_params('CODE_PHRASE', model_attrs, tokens)
 
       new CodePhrase(constructor_params)
-   }
-   
-   TerminologyId newTERMINOLOGY_ID(Map model_attrs, List tokens)
-   {
-      Map constructor_params = this.get_constructor_params('TERMINOLOGY_ID', model_attrs, tokens)
-      
-      new TerminologyId(constructor_params)
-   }
-   
-   PartyRef newPARTY_REF(Map model_attrs, List tokens)
-   {
-      Map constructor_params = this.get_constructor_params('PARTY_REF', model_attrs, tokens)
-      
-      new PartyRef(constructor_params)
-   }
-   
-   HierObjectId newHIER_OBJECT_ID(Map model_attrs, List tokens)
-   {
-      Map constructor_params = this.get_constructor_params('HIER_OBJECT_ID', model_attrs, tokens)
-      
-      new HierObjectId(constructor_params)
-   }
-   
-   DvDateTime newDV_DATE_TIME(Map model_attrs, List tokens)
-   {
-      Map constructor_params = this.get_constructor_params('DV_DATE_TIME', model_attrs, tokens)
-      
-      new DvDateTime(constructor_params)
-   }
-
-   // FIXME: this is not needed!
-   String newString(Map model_attrs, List tokens)
-   {
-      println "string: "+ model_attrs +' '+ tokens
-      ""
    }
 
    private Version parse_version(Map flat_map)

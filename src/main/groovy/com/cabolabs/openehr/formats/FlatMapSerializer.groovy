@@ -15,6 +15,8 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.*
 import com.cabolabs.openehr.rm_1_0_2.common.generic.*
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
+import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Element
+
 
 import groovy.json.*
 import groovy.xml.*
@@ -211,7 +213,16 @@ class FlatMapSerializer {
                }
             break
             case {it instanceof DataValue}:
-               if (o instanceof Pathable)
+               // TODO: if datavalue parent is element and attribute is value, it requires to specify the type because it's abstract in the model
+               if (o instanceof Element && prop == 'value')
+               {
+                  this.add(o.dataPath == '/' ? '/'+ prop +'/_type' : o.dataPath +'/'+ prop +'/_type', this.openEhrType(val))
+
+                  path = (o.dataPath == '/') ? ('/'+ prop) : (o.dataPath +'/'+ prop)
+
+                  process_dv(val, path) // adds the attribute name to the path
+               }
+               else if (o instanceof Pathable)
                {
                   path = (o.dataPath == '/') ? ('/'+ prop) : (o.dataPath +'/'+ prop)
 

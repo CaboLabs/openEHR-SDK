@@ -37,6 +37,7 @@ class FlatMapSerializerTest extends GroovyTestCase {
 
       def msg_map = [:]
       flat.getSerializedMap().each { k, v ->
+         //println k
          switch (v)
          {
             case {it instanceof Number}:
@@ -118,8 +119,10 @@ class FlatMapSerializerTest extends GroovyTestCase {
 
       def rm_compo = (Composition)flat_parser.parse(tmp_flat_map)
 
-      def json_serializer = new OpenEhrJsonSerializer()
+      //def json_serializer = new OpenEhrJsonSerializer()
 
-      println json_serializer.serialize(rm_compo, true)
+      //println json_serializer.serialize(rm_compo, true)
+
+      println JsonOutput.prettyPrint(JsonOutput.toJson(rm_compo))
    }
 }
