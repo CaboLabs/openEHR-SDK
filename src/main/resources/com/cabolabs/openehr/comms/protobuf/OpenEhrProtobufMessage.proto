@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package com.cabolabs.openehr.comms.protobuf;
+
+import "google/protobuf/struct.proto";
+
+option java_package = "com.cabolabs.openehr.comms.protobuf";
+option java_outer_classname = "OpenEhrProtobuf";
+option java_multiple_files = true;
+
+message OpenEhrProtobufMessage {
+
+   // Value can be null, number, string, bool, struct or list, like a json value
+   // https://github.com/protocolbuffers/protobuf/blob/main/src/google/protobuf/struct.proto#L51-L78
+   map<string, google.protobuf.Value> fields = 1;
+}

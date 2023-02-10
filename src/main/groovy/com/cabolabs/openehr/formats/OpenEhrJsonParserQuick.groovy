@@ -36,8 +36,12 @@ import org.apache.log4j.Logger
 
 import groovy.json.JsonSlurper
 
+/**
+ * This is the same as the original JsonParser but doesn't generate the paths for pathable, those can be
+ * calculated later. So for uses that don't require the paths in the RM instances, this will be faster.
+ */
 @groovy.util.logging.Log4j
-class OpenEhrJsonParser {
+class OpenEhrJsonParserQuick {
 
    //private Logger log = Logger.getLogger(getClass())
 
@@ -412,75 +416,9 @@ class OpenEhrJsonParser {
    }
 
 
-   // ========= UTILS TO CALCULATE PATHS AND DATA PATHS
-
-   private String attr_archetype_path(Map parent, String attr, String parent_path)
-   {
-      // FIXME: parent[attr] is coming as an array, there is a wrong call
-      if (parent[attr].archetype_node_id)
-      {
-         String path_node_id = (parent[attr].archetype_node_id.startsWith('at') ? parent[attr].archetype_node_id : 'archetype_id='+ parent[attr].archetype_node_id)
-         return parent_path != '/' ? parent_path +'/'+ attr +'['+ path_node_id +']' : '/'+ attr +'['+ path_node_id +']'
-      }
-
-      return parent_path != '/' ? parent_path +'/'+ attr : '/'+ attr
-   }
-
-   // similar to attr_archetype_path but for multiple attributes, in which uses the i to get the right archetype_node_id from the parent collection container
-   private String multi_attr_archetype_path(Map parent, String attr, int i, String parent_path)
-   {
-      if (parent[attr][i].archetype_node_id)
-      {
-         String path_node_id = (parent[attr][i].archetype_node_id.startsWith('at') ? parent[attr][i].archetype_node_id : 'archetype_id='+ parent[attr][i].archetype_node_id)
-         return parent_path != '/' ? parent_path +'/'+ attr +'['+ path_node_id +']' : '/'+ attr +'['+ path_node_id +']'
-      }
-
-      return parent_path != '/' ? parent_path +'/'+ attr : '/'+ attr
-   }
-
-
-   private String attr_archetype_path_multiple(Map parent, String attr, int i, String parent_path)
-   {
-      if (parent[attr][i].archetype_node_id)
-      {
-         String path_node_id = (parent[attr][i].archetype_node_id.startsWith('at') ? parent[attr][i].archetype_node_id : 'archetype_id='+ parent[attr][i].archetype_node_id)
-         return parent_path != '/' ? parent_path +'/'+ attr +'['+ path_node_id +']('+ i +')' : '/'+ attr +'['+ path_node_id +']('+ i +')'
-      }
-
-      return parent_path != '/' ? parent_path +'/'+ attr +'('+ i +')' : '/'+ attr +'('+ i +')'
-   }
-
-   /**
-    * The path and data path for single attributes is the same (just the part that is added)
-    */
-   private String attr_path(Map parent, String attr, String parent_path)
-   {
-      // FIXME: parent[attr] is coming as an array, there is a wrong call
-
-      return parent_path != '/' ? parent_path +'/'+ attr : '/'+ attr
-   }
-
-   /**
-    * The path and data path for multiple attributes is different, the part that is added in the data path contains the index.
-    * This method adds the index, is for the data path.
-    */
-   private String attr_path_multiple(Map parent, String attr, int i, String parent_path)
-   {
-      return parent_path != '/' ? parent_path +'/'+ attr +'('+ i +')' : '/'+ attr +'('+ i +')'
-   }
-
-
-
    // ========= FIll METHODS =========
 
-   private void fillPATHABLE(Pathable p, Pathable parent, String path, String dataPath)
-   {
-      p.parent   = parent
-      p.path     = path
-      p.dataPath = dataPath
-   }
-
-   private void fillLOCATABLE(Locatable l, Map json, Pathable parent, String path, String dataPath)
+   private void fillLOCATABLE(Locatable l, Map json, Pathable parent)
    {
       // name can be text or coded
       String type = json.name._type
@@ -504,15 +442,13 @@ class OpenEhrJsonParser {
 
       if (json.archetype_details)
          l.archetype_details = this.parseARCHETYPED(json.archetype_details)
-
-      this.fillPATHABLE(l, parent, path, dataPath)
    }
 
-   private void fillENTRY(Entry e, Map json, Pathable parent, String path, String dataPath)
+   private void fillENTRY(Entry e, Map json, Pathable parent)
    {
       String type, method
 
-      this.fillLOCATABLE(e, json, parent, path, dataPath)
+      this.fillLOCATABLE(e, json, parent)
 
       e.encoding = this.parseCODE_PHRASE(json.encoding)
       e.language = this.parseCODE_PHRASE(json.language)
@@ -556,7 +492,7 @@ class OpenEhrJsonParser {
       }
    }
 
-   private void fillCARE_ENTRY(CareEntry c, Map json, Pathable parent, String path, String dataPath)
+   private void fillCARE_ENTRY(CareEntry c, Map json, Pathable parent)
    {
       if (json.protocol)
       {
@@ -567,12 +503,7 @@ class OpenEhrJsonParser {
          }
          //String path_node_id = (json.protocol.archetype_node_id.startsWith('at') ? json.protocol.archetype_node_id : 'archetype_id='+ json.protocol.archetype_node_id)
          String method = 'parse'+ type
-         c.protocol = this."$method"(json.protocol, parent,
-                                     //(path != '/' ? path +'/protocol['+ path_node_id +']' : '/protocol['+ path_node_id +']'),
-                                     //(dataPath != '/' ? dataPath +'/protocol['+ path_node_id +']' : '/protocol['+ path_node_id +']')
-                                     this.attr_archetype_path(json, 'protocol', path),
-                                     this.attr_path(json, 'protocol', dataPath)
-                                    )
+         c.protocol = this."$method"(json.protocol, parent)
       }
 
       if (json.guideline_id)
@@ -580,12 +511,12 @@ class OpenEhrJsonParser {
          c.guideline_id = this.parseOBJECT_REF(json.guideline_id)
       }
 
-      this.fillENTRY(c, json, parent, path, dataPath)
+      this.fillENTRY(c, json, parent)
    }
 
-   private void fillPARTY(Party p, Map json, Pathable parent, String path, String dataPath)
+   private void fillPARTY(Party p, Map json, Pathable parent)
    {
-      this.fillLOCATABLE(p, json, parent, path, dataPath)
+      this.fillLOCATABLE(p, json, parent)
 
       String path_node_id
 
@@ -631,9 +562,9 @@ class OpenEhrJsonParser {
    }
 
 
-   private void fillACTOR(Actor a, Map json, Pathable parent, String path, String dataPath)
+   private void fillACTOR(Actor a, Map json, Pathable parent)
    {
-      this.fillPARTY(a, json, parent, path, dataPath)
+      this.fillPARTY(a, json, parent)
 
       def type, method
 
@@ -705,11 +636,11 @@ class OpenEhrJsonParser {
       return role
    }
 
-   private PartyIdentity parsePARTY_IDENTITY(Map map, Pathable parent, String path, String dataPath)
+   private PartyIdentity parsePARTY_IDENTITY(Map map, Pathable parent)
    {
       def pi = new PartyIdentity()
 
-      this.fillLOCATABLE(pi, map, parent, path, dataPath)
+      this.fillLOCATABLE(pi, map, parent)
 
       String path_node_id
 
@@ -726,10 +657,7 @@ class OpenEhrJsonParser {
 
          path_node_id = (map.details.archetype_node_id.startsWith('at') ? map.details.archetype_node_id : 'archetype_id='+ map.details.archetype_node_id)
 
-         this."$method"(map.details, pi,
-                        (path != '/' ? path +'/details['+ path_node_id +']' : '/details['+ path_node_id +']'),
-                        (dataPath != '/' ? dataPath +'/details['+ path_node_id +']' : '/details['+ path_node_id +']')
-                       )
+         this."$method"(map.details, pi)
       }
 
       return pi
@@ -740,7 +668,7 @@ class OpenEhrJsonParser {
    {
       def status = new EhrStatus()
 
-      this.fillLOCATABLE(status, map, null, '/', '/')
+      this.fillLOCATABLE(status, map, null)
 
       if (map.subject)
       {
@@ -768,7 +696,7 @@ class OpenEhrJsonParser {
    {
       def access = new EhrAccess()
 
-      this.fillLOCATABLE(access, map, null, '/', '/')
+      this.fillLOCATABLE(access, map, null)
 
       if (map.settings)
       {
@@ -785,7 +713,7 @@ class OpenEhrJsonParser {
    {
       Composition compo = new Composition()
 
-      this.fillLOCATABLE(compo, json, null, '/', '/')
+      this.fillLOCATABLE(compo, json, null)
 
       compo.language  = this.parseCODE_PHRASE(json.language)
       compo.territory = this.parseCODE_PHRASE(json.territory)
@@ -803,9 +731,7 @@ class OpenEhrJsonParser {
       compo.composer = this."$method"(json.composer)
 
       compo.context = parseEVENT_CONTEXT(
-         json.context, compo,
-         this.attr_archetype_path(json, 'context', '/'),
-         this.attr_path(json, 'context', '/')
+         json.context, compo
       )
 
       def content = []
@@ -820,9 +746,7 @@ class OpenEhrJsonParser {
 
          compo.content.add(
             this."$method"(
-               content_item, compo,
-               this.multi_attr_archetype_path(json, 'content', i, '/'),
-               this.attr_path_multiple(json, 'content', i, '/')
+               content_item, compo
             )
          )
       }
@@ -835,7 +759,7 @@ class OpenEhrJsonParser {
    {
       def folder = new Folder()
 
-      this.fillLOCATABLE(folder, json, null, '/', '/')
+      this.fillLOCATABLE(folder, json, null)
 
       if (json.items)
       {
@@ -851,9 +775,7 @@ class OpenEhrJsonParser {
          json.folders.eachWithIndex { subfolder, i ->
 
             folder.folders << this.parseFOLDER(
-               subfolder, folder,
-               this.multi_attr_archetype_path(json, 'folders', i, '/'),
-               this.attr_path_multiple(json, 'folders', i, '/')
+               subfolder, folder
             )
          }
       }
@@ -862,11 +784,11 @@ class OpenEhrJsonParser {
    }
 
    // This will parse subfolders with a parent Locatable folder
-   private Folder parseFOLDER(Map json, Locatable parent, String path, String dataPath)
+   private Folder parseFOLDER(Map json, Locatable parent)
    {
       def folder = new Folder()
 
-      this.fillLOCATABLE(folder, json, parent, path, dataPath)
+      this.fillLOCATABLE(folder, json, parent)
 
       if (json.items)
       {
@@ -882,9 +804,7 @@ class OpenEhrJsonParser {
          json.folders.eachWithIndex { subfolder, i ->
 
             folder.folders << this.parseFOLDER(
-               subfolder, folder,
-               this.multi_attr_archetype_path(json, 'folders', i, path),
-               this.attr_path_multiple(json, 'folders', i, dataPath)
+               subfolder, folder
             )
          }
       }
@@ -892,11 +812,11 @@ class OpenEhrJsonParser {
       return folder
    }
 
-   private EhrStatus parseEHR_STATUS(Map json, Pathable parent, String path, String dataPath)
+   private EhrStatus parseEHR_STATUS(Map json, Pathable parent)
    {
       def status = new EhrStatus()
 
-      this.fillLOCATABLE(status, json, parent, path, dataPath)
+      this.fillLOCATABLE(status, json, parent)
 
       if (json.subject)
       {
@@ -911,9 +831,7 @@ class OpenEhrJsonParser {
          String method = 'parse'+ json.other_details._type
 
          status.other_details = this."$method"(
-            json.other_details, status,
-            this.attr_archetype_path(json, 'other_details', '/'),
-            this.attr_path(json, 'other_details', '/')
+            json.other_details, status
          )
       }
 
@@ -1266,11 +1184,9 @@ class OpenEhrJsonParser {
       return i
    }
 
-   private EventContext parseEVENT_CONTEXT(Map json, Pathable parent, String path, String dataPath)
+   private EventContext parseEVENT_CONTEXT(Map json, Pathable parent)
    {
       EventContext e = new EventContext()
-
-      this.fillPATHABLE(e, parent, path, dataPath)
 
       e.start_time = this.parseDV_DATE_TIME(json.start_time)
 
@@ -1295,9 +1211,7 @@ class OpenEhrJsonParser {
          method = 'parse'+ type
 
          e.other_context = this."$method"(
-            json.other_context, e,
-            this.attr_archetype_path(json, 'other_context', path),
-            this.attr_path(json, 'other_context', dataPath)
+            json.other_context, e
          )
       }
 
@@ -1334,11 +1248,11 @@ class OpenEhrJsonParser {
       return p
    }
 
-   private Section parseSECTION(Map json, Pathable parent, String path, String dataPath)
+   private Section parseSECTION(Map json, Pathable parent)
    {
       Section section = new Section()
 
-      this.fillLOCATABLE(section, json, parent, path, dataPath)
+      this.fillLOCATABLE(section, json, parent)
 
       String type, method
 
@@ -1355,9 +1269,7 @@ class OpenEhrJsonParser {
 
          section.items.add(
             this."$method"(
-               content_item, section,
-               this.multi_attr_archetype_path(json, 'items', i, path),
-               this.attr_path_multiple(json, 'items', i, dataPath)
+               content_item, section
             )
          )
       }
@@ -1365,11 +1277,11 @@ class OpenEhrJsonParser {
       return section
    }
 
-   private AdminEntry parseADMIN_ENTRY(Map json, Pathable parent, String path, String dataPath)
+   private AdminEntry parseADMIN_ENTRY(Map json, Pathable parent)
    {
       AdminEntry a = new AdminEntry()
 
-      this.fillENTRY(a, json, parent, path, dataPath)
+      this.fillENTRY(a, json, parent)
 
       String type = json.data._type
 
@@ -1381,46 +1293,40 @@ class OpenEhrJsonParser {
       String method = 'parse'+ type
 
       a.data = this."$method"(
-         json.data, a,
-         this.attr_archetype_path(json, 'data', path),
-         this.attr_path(json, 'data', dataPath)
+         json.data, a
       )
 
       return a
    }
 
-   private Observation parseOBSERVATION(Map json, Pathable parent, String path, String dataPath)
+   private Observation parseOBSERVATION(Map json, Pathable parent)
    {
       Observation o = new Observation()
 
-      this.fillCARE_ENTRY(o, json, parent, path, dataPath)
+      this.fillCARE_ENTRY(o, json, parent)
 
       if (json.data)
       {
          o.data = this.parseHISTORY(
-            json.data, o,
-            this.attr_archetype_path(json, 'data', path),
-            this.attr_path(json, 'data', dataPath)
+            json.data, o
          )
       }
 
       if (json.state)
       {
          o.state = this.parseHISTORY(
-            json.state, o,
-            this.attr_archetype_path(json, 'state', path),
-            this.attr_path(json, 'state', dataPath)
+            json.state, o
          )
       }
 
       return o
    }
 
-   private History parseHISTORY(Map json, Pathable parent, String path, String dataPath)
+   private History parseHISTORY(Map json, Pathable parent)
    {
       History h = new History()
 
-      this.fillLOCATABLE(h, json, parent, path, dataPath)
+      this.fillLOCATABLE(h, json, parent)
 
       h.origin = this.parseDV_DATE_TIME(json.origin)
 
@@ -1443,9 +1349,7 @@ class OpenEhrJsonParser {
 
          h.events.add(
             this."$method"(
-               event, h,
-               this.multi_attr_archetype_path(json, 'events', i, path),
-               this.attr_path_multiple(json, 'events', i, dataPath)
+               event, h
             )
          )
       }
@@ -1453,11 +1357,11 @@ class OpenEhrJsonParser {
       return h
    }
 
-   private PointEvent parsePOINT_EVENT(Map json, Pathable parent, String path, String dataPath)
+   private PointEvent parsePOINT_EVENT(Map json, Pathable parent)
    {
       PointEvent e = new PointEvent()
 
-      this.fillLOCATABLE(e, json, parent, path, dataPath)
+      this.fillLOCATABLE(e, json, parent)
 
       e.time = this.parseDV_DATE_TIME(json.time)
 
@@ -1473,9 +1377,7 @@ class OpenEhrJsonParser {
          method = 'parse'+ type
 
          e.data = this."$method"(
-            json.data, e,
-            this.attr_archetype_path(json, 'data', path),
-            this.attr_path(json, 'data', dataPath)
+            json.data, e
          )
       }
 
@@ -1489,20 +1391,18 @@ class OpenEhrJsonParser {
          method = 'parse'+ type
 
          e.state = this."$method"(
-            json.state, e,
-            this.attr_archetype_path(json, 'state', path),
-            this.attr_path(json, 'state', dataPath)
+            json.state, e
          )
       }
 
       return e
    }
 
-   private IntervalEvent parseINTERVAL_EVENT(Map json, Pathable parent, String path, String dataPath)
+   private IntervalEvent parseINTERVAL_EVENT(Map json, Pathable parent)
    {
       IntervalEvent e = new IntervalEvent()
 
-      this.fillLOCATABLE(e, json, parent, path, dataPath)
+      this.fillLOCATABLE(e, json, parent)
 
       e.time = this.parseDV_DATE_TIME(json.time)
 
@@ -1518,9 +1418,7 @@ class OpenEhrJsonParser {
          method = 'parse'+ type
 
          e.data = this."$method"(
-            json.data, e,
-            this.attr_archetype_path(json, 'data', path),
-            this.attr_path(json, 'data', dataPath)
+            json.data, e
          )
       }
 
@@ -1534,9 +1432,7 @@ class OpenEhrJsonParser {
          method = 'parse'+ type
 
          e.state = this."$method"(
-            json.state, e,
-            this.attr_archetype_path(json, 'state', path),
-            this.attr_path(json, 'state', dataPath)
+            json.state, e
          )
       }
 
@@ -1552,11 +1448,11 @@ class OpenEhrJsonParser {
       return e
    }
 
-   private Evaluation parseEVALUATION(Map json, Pathable parent, String path, String dataPath)
+   private Evaluation parseEVALUATION(Map json, Pathable parent)
    {
       Evaluation e = new Evaluation()
 
-      this.fillCARE_ENTRY(e, json, parent, path, dataPath)
+      this.fillCARE_ENTRY(e, json, parent)
 
       String type = json.data._type
       if (!type)
@@ -1566,19 +1462,17 @@ class OpenEhrJsonParser {
       String method = 'parse'+ type
 
       e.data = this."$method"(
-         json.data, e,
-         this.attr_archetype_path(json, 'data', path),
-         this.attr_path(json, 'data', dataPath)
+         json.data, e
       )
 
       return e
    }
 
-   private Instruction parseINSTRUCTION(Map json, Pathable parent, String path, String dataPath)
+   private Instruction parseINSTRUCTION(Map json, Pathable parent)
    {
       Instruction ins = new Instruction()
 
-      this.fillCARE_ENTRY(ins, json, parent, path, dataPath)
+      this.fillCARE_ENTRY(ins, json, parent)
 
       String type, method
 
@@ -1601,9 +1495,7 @@ class OpenEhrJsonParser {
 
          ins.activities.add(
             this.parseACTIVITY(
-               js_activity, ins,
-               this.multi_attr_archetype_path(json, 'activities', i, path),
-               this.attr_path_multiple(json, 'activities', i, dataPath)
+               js_activity, ins
             )
          )
       }
@@ -1611,11 +1503,11 @@ class OpenEhrJsonParser {
       return ins
    }
 
-   private Action parseACTION(Map json, Pathable parent, String path, String dataPath)
+   private Action parseACTION(Map json, Pathable parent)
    {
       Action a = new Action()
 
-      this.fillCARE_ENTRY(a, json, parent, path, dataPath)
+      this.fillCARE_ENTRY(a, json, parent)
 
       String type = json.description._type
       if (!type)
@@ -1625,36 +1517,28 @@ class OpenEhrJsonParser {
       String method = 'parse'+ type
 
       a.description = this."$method"(
-         json.description, a,
-         this.attr_archetype_path(json, 'description', path),
-         this.attr_path(json, 'description', dataPath)
+         json.description, a
       )
 
       a.time = this.parseDV_DATE_TIME(json.time)
 
       a.ism_transition = this.parseISM_TRANSITION(
-         json.ism_transition, a,
-         this.attr_archetype_path(json, 'ism_transition', path),
-         this.attr_path(json, 'ism_transition', dataPath)
+         json.ism_transition, a
       )
 
       if (json.instruction_details)
       {
          a.instruction_details = this.parseINSTRUCTION_DETAILS(
-            json.instruction_details, a,
-            this.attr_archetype_path(json, 'instruction_details', path),
-            this.attr_path(json, 'instruction_details', dataPath)
+            json.instruction_details, a
          )
       }
 
       return a
    }
 
-   private IsmTransition parseISM_TRANSITION(Map json, Pathable parent, String path, String dataPath)
+   private IsmTransition parseISM_TRANSITION(Map json, Pathable parent)
    {
       IsmTransition i = new IsmTransition()
-
-      this.fillPATHABLE(i, parent, path, dataPath)
 
       i.current_state = this.parseDV_CODED_TEXT(json.current_state)
 
@@ -1671,11 +1555,9 @@ class OpenEhrJsonParser {
       return i
    }
 
-   private InstructionDetails parseINSTRUCTION_DETAILS(Map json, Pathable parent, String path, String dataPath)
+   private InstructionDetails parseINSTRUCTION_DETAILS(Map json, Pathable parent)
    {
       InstructionDetails i = new InstructionDetails()
-
-      this.fillPATHABLE(i, parent, path, dataPath)
 
       i.instruction_id = this.parseLOCATABLE_REF(json.instruction_id)
 
@@ -1695,7 +1577,7 @@ class OpenEhrJsonParser {
       return i
    }
 
-   private Activity parseACTIVITY(Map json, Pathable parent, String path, String dataPath)
+   private Activity parseACTIVITY(Map json, Pathable parent)
    {
       String type = json.description._type
       if (!type)
@@ -1709,9 +1591,7 @@ class OpenEhrJsonParser {
       )
 
       a.description = this."$method"(
-         json.description, a,
-         this.attr_archetype_path(json, 'description', path),
-         this.attr_path(json, 'description', dataPath)
+         json.description, a
       )
 
       if (json.timing)
@@ -1719,17 +1599,17 @@ class OpenEhrJsonParser {
          a.timing = this.parseDV_PARSABLE(json.timing)
       }
 
-      this.fillLOCATABLE(a, json, parent, path, dataPath)
+      this.fillLOCATABLE(a, json, parent)
 
       return a
    }
 
 
-   private ItemTree parseITEM_TREE(Map json, Pathable parent, String path, String dataPath)
+   private ItemTree parseITEM_TREE(Map json, Pathable parent)
    {
       ItemTree t = new ItemTree()
 
-      this.fillLOCATABLE(t, json, parent, path, dataPath)
+      this.fillLOCATABLE(t, json, parent)
 
       String type, method
 
@@ -1744,9 +1624,7 @@ class OpenEhrJsonParser {
 
          t.items.add(
             this."$method"(
-               item, t,
-               this.multi_attr_archetype_path(json, 'items', i, path),
-               this.attr_path_multiple(json, 'items', i, dataPath)
+               item, t
             )
          )
       }
@@ -1754,19 +1632,17 @@ class OpenEhrJsonParser {
       return t
    }
 
-   private ItemList parseITEM_LIST(Map json, Pathable parent, String path, String dataPath)
+   private ItemList parseITEM_LIST(Map json, Pathable parent)
    {
       ItemList l = new ItemList()
 
-      this.fillLOCATABLE(l, json, parent, path, dataPath)
+      this.fillLOCATABLE(l, json, parent)
 
       json.items.eachWithIndex { element, i ->
 
          l.items.add(
             this.parseELEMENT(
-               element, l,
-               this.multi_attr_archetype_path(json, 'items', i, path),
-               this.attr_path_multiple(json, 'items', i, dataPath)
+               element, l
             )
          )
       }
@@ -1774,11 +1650,11 @@ class OpenEhrJsonParser {
       return l
    }
 
-   private ItemTable parseITEM_TABLE(Map json, Pathable parent, String path, String dataPath)
+   private ItemTable parseITEM_TABLE(Map json, Pathable parent)
    {
       ItemTable t = new ItemTable()
 
-      this.fillLOCATABLE(t, json, parent, path, dataPath)
+      this.fillLOCATABLE(t, json, parent)
 
       String type, method
 
@@ -1789,9 +1665,7 @@ class OpenEhrJsonParser {
 
          t.rows.add(
             this."$method"(
-               item, t,
-               this.multi_attr_archetype_path(json, 'rows', i, path),
-               this.attr_path_multiple(json, 'rows', i, dataPath)
+               item, t
             )
          )
       }
@@ -1799,26 +1673,24 @@ class OpenEhrJsonParser {
       return t
    }
 
-   private ItemSingle parseITEM_SINGLE(Map json, Pathable parent, String path, String dataPath)
+   private ItemSingle parseITEM_SINGLE(Map json, Pathable parent)
    {
       ItemSingle s = new ItemSingle()
 
-      this.fillLOCATABLE(s, json, parent, path, dataPath)
+      this.fillLOCATABLE(s, json, parent)
 
       s.item = this.parseELEMENT(
-         json.item, s,
-         this.attr_archetype_path(json, 'item', path),
-         this.attr_path(json, 'item', dataPath)
+         json.item, s
       )
 
       return s
    }
 
-   private Cluster parseCLUSTER(Map json, Pathable parent, String path, String dataPath)
+   private Cluster parseCLUSTER(Map json, Pathable parent)
    {
       Cluster c = new Cluster()
 
-      this.fillLOCATABLE(c, json, parent, path, dataPath)
+      this.fillLOCATABLE(c, json, parent)
 
       String type, method
 
@@ -1832,9 +1704,7 @@ class OpenEhrJsonParser {
 
          c.items.add(
             this."$method"(
-               item, c,
-               this.multi_attr_archetype_path(json, 'items', i, path),
-               this.attr_path_multiple(json, 'items', i, dataPath)
+               item, c
             )
          )
       }
@@ -1842,11 +1712,11 @@ class OpenEhrJsonParser {
       return c
    }
 
-   private Element parseELEMENT(Map json, Pathable parent, String path, String dataPath)
+   private Element parseELEMENT(Map json, Pathable parent)
    {
       Element e = new Element()
 
-      this.fillLOCATABLE(e, json, parent, path, dataPath)
+      this.fillLOCATABLE(e, json, parent)
 
       if (json.value)
       {

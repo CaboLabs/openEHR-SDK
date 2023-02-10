@@ -1,6 +1,7 @@
 package com.cabolabs.openehr.opt
 
 import com.cabolabs.openehr.formats.OpenEhrJsonParser
+import com.cabolabs.openehr.formats.OpenEhrJsonParserQuick
 import com.cabolabs.openehr.formats.OpenEhrXmlSerializer
 import com.cabolabs.openehr.formats.OpenEhrJsonSerializer
 
@@ -37,9 +38,77 @@ import com.cabolabs.openehr.dto_1_0_2.common.change_control.ContributionDto
 import groovy.json.JsonSlurper
 import com.cedarsoftware.util.io.JsonWriter
 
+import groovy.time.TimeCategory
+import groovy.time.TimeDuration
+
 class OpenEhrJsonParserTest extends GroovyTestCase {
 
    private static String PS = System.getProperty("file.separator")
+
+   // This test is just to compare execution time for json parser calculating paths
+   // vs. que quick one that doesn't calculate the paths.
+   void testJsonParserNormalVsQuick()
+   {
+      String path = PS +"canonical_json"+ PS +"lab_results.json"
+      File file = new File(getClass().getResource(path).toURI())
+      String json = file.text
+
+
+      def parser = new OpenEhrJsonParser()
+      def parserq = new OpenEhrJsonParserQuick()
+
+
+      Date start = new Date()
+      (1..10).each {
+
+         parser.parseJson(json)
+      }
+      Date end = new Date()
+
+      TimeDuration td = TimeCategory.minus(end, start)
+      println td
+
+
+      start = new Date()
+      (1..10).each {
+
+         parserq.parseJson(json)
+      }
+      end = new Date()
+
+      td = TimeCategory.minus(end, start)
+      println td
+
+
+
+      path = PS +"canonical_json"+ PS +"subfolders_in_directory_with_details_items.json"
+      file = new File(getClass().getResource(path).toURI())
+      json = file.text
+
+
+      start = new Date()
+      (1..10).each {
+
+         parser.parseJson(json)
+      }
+      end = new Date()
+
+      td = TimeCategory.minus(end, start)
+      println td
+
+
+      start = new Date()
+      (1..10).each {
+
+         parserq.parseJson(json)
+      }
+      end = new Date()
+
+      td = TimeCategory.minus(end, start)
+      println td
+
+   }
+
 
    void testJsonParserFolder()
    {
@@ -48,7 +117,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String json = file.text
       def parser = new OpenEhrJsonParser(true) // true validates against JSON Schema
       Folder f = (Folder)parser.parseJson(json)
-      
+
       assert f
 
       assert f.items.size() == 1
@@ -198,7 +267,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       Ehr ehr = parser.parseEhr(json_ehr)
 
       assert !ehr
-      
+
       // Set<ValitaionMessage>
       // https://javadoc.io/doc/com.networknt/json-schema-validator/1.0.51/com/networknt/schema/ValidationMessage.html
       def errors = parser.getJsonValidationErrors()
@@ -215,7 +284,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       assert err_ehr_status.type == "required"
    }
 
-   
+
    void testJsonParserEhrStatus()
    {
        def json_ehr_status = $/
@@ -264,7 +333,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 
       assert map1 == map2
    }
-   
+
    void testJsonParserEhrStatusWithSchemaError()
    {
        def json_ehr_status = $/
@@ -298,7 +367,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       EhrStatus status = parser.parseJson(json_ehr_status)
 
       assert !status
-      
+
       // Set<ValitaionMessage>
       // https://javadoc.io/doc/com.networknt/json-schema-validator/1.0.51/com/networknt/schema/ValidationMessage.html
       def errors = parser.getJsonValidationErrors()
@@ -319,14 +388,14 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String json = file.text
       def parser = new OpenEhrJsonParser()
       Composition c = (Composition)parser.parseJson(json)
-      
-      
+
+
       // TODO assert paths
 
       def out = JsonWriter.objectToJson(c.content, [(JsonWriter.PRETTY_PRINT): true])
       println out
    }
-   
+
    void testJsonParserObservation()
    {
       String path = PS +"canonical_json"+ PS +"lab_results.json"
@@ -334,7 +403,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String json = file.text
       def parser = new OpenEhrJsonParser()
       Composition c = (Composition)parser.parseJson(json)
-      
+
       // TODO assert paths
 
       def out = JsonWriter.objectToJson(c.content, [(JsonWriter.PRETTY_PRINT): true])
@@ -349,14 +418,14 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String json = file.text
       def parser = new OpenEhrJsonParser()
       Composition c = (Composition)parser.parseJson(json)
-      
+
       assert c != null
       // TODO assert paths
 
       def out = JsonWriter.objectToJson(c.content, [(JsonWriter.PRETTY_PRINT): true])
       println out
    }
-   
+
    void testJsonParserReferralWithParticipations()
    {
       String path = PS +"canonical_json"+ PS +"referral.json"
@@ -371,32 +440,32 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       assert c.context.path     == '/context'
       assert c.context.dataPath == '/context'
 
-      assert c.content[0].path     == '/content'
-      assert c.content[0].dataPath == '/content[0]'
+      assert c.content[0].path     == '/content[archetype_id=openEHR-EHR-INSTRUCTION.request-referral.v1]'
+      assert c.content[0].dataPath == '/content(0)'
 
-      assert c.content[0].protocol.path     == '/content/protocol'
-      assert c.content[0].protocol.dataPath == '/content[0]/protocol'
+      assert c.content[0].protocol.path     == '/content[archetype_id=openEHR-EHR-INSTRUCTION.request-referral.v1]/protocol[at0008]'
+      assert c.content[0].protocol.dataPath == '/content(0)/protocol'
 
-      assert c.content[0].protocol.items[0].path     == '/content/protocol/items'
-      assert c.content[0].protocol.items[0].dataPath == '/content[0]/protocol/items[0]'
+      assert c.content[0].protocol.items[0].path     == '/content[archetype_id=openEHR-EHR-INSTRUCTION.request-referral.v1]/protocol[at0008]/items[at0010]'
+      assert c.content[0].protocol.items[0].dataPath == '/content(0)/protocol/items(0)'
 
       // there are more items in the protocol
 
-      assert c.content[0].activities[0].path     == '/content/activities'
-      assert c.content[0].activities[0].dataPath == '/content[0]/activities[0]'
-      
-      assert c.content[0].activities[0].description.path     == '/content/activities/description'
-      assert c.content[0].activities[0].description.dataPath == '/content[0]/activities[0]/description'
-      
-      assert c.content[0].activities[0].description.items[0].path     == '/content/activities/description/items'
-      assert c.content[0].activities[0].description.items[0].dataPath == '/content[0]/activities[0]/description/items[0]'
+      assert c.content[0].activities[0].path     == '/content[archetype_id=openEHR-EHR-INSTRUCTION.request-referral.v1]/activities[at0001]'
+      assert c.content[0].activities[0].dataPath == '/content(0)/activities(0)'
+
+      assert c.content[0].activities[0].description.path     == '/content[archetype_id=openEHR-EHR-INSTRUCTION.request-referral.v1]/activities[at0001]/description[at0009]'
+      assert c.content[0].activities[0].description.dataPath == '/content(0)/activities(0)/description'
+
+      assert c.content[0].activities[0].description.items[0].path     == '/content[archetype_id=openEHR-EHR-INSTRUCTION.request-referral.v1]/activities[at0001]/description[at0009]/items[at0121]'
+      assert c.content[0].activities[0].description.items[0].dataPath == '/content(0)/activities(0)/description/items(0)'
 
       // there are more items in the description
 
       //def out = JsonWriter.objectToJson(c.content, [(JsonWriter.PRETTY_PRINT): true])
       //println out
    }
-   
+
    void testJsonParserAdminEntry()
    {
       String path = PS +"canonical_json"+ PS +"admin.json"
@@ -404,7 +473,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String json = file.text
       def parser = new OpenEhrJsonParser()
       Composition c = (Composition)parser.parseJson(json)
-      
+
       // This doesn't handle loops created by the parent references of PATHABLE
       //def out = JsonOutput.toJson(c)
       //out = JsonOutput.prettyPrint(out)
@@ -416,14 +485,14 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       assert c.context.path     == '/context'
       assert c.context.dataPath == '/context'
 
-      assert c.content[0].path     == '/content'
-      assert c.content[0].dataPath == '/content[0]'
+      assert c.content[0].path     == '/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.minimal.v1]'
+      assert c.content[0].dataPath == '/content(0)'
 
-      assert c.content[0].data.path     == '/content/data'
-      assert c.content[0].data.dataPath == '/content[0]/data'
+      assert c.content[0].data.path     == '/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.minimal.v1]/data[at0001]'
+      assert c.content[0].data.dataPath == '/content(0)/data'
 
-      assert c.content[0].data.items[0].path     == '/content/data/items'
-      assert c.content[0].data.items[0].dataPath == '/content[0]/data/items[0]'
+      assert c.content[0].data.items[0].path     == '/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.minimal.v1]/data[at0001]/items[at0002]'
+      assert c.content[0].data.items[0].dataPath == '/content(0)/data/items(0)'
 
       //def out = JsonWriter.objectToJson(c, [(JsonWriter.PRETTY_PRINT): true])
       //println out
@@ -447,7 +516,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
       def parser = new OpenEhrJsonParser()
-      
+
       String message = shouldFail {
          parser.parseJson(json) // this tries to parse a pathable cant parse the provided version
       }
@@ -461,7 +530,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
       def parser = new OpenEhrJsonParser()
-      
+
       String message = shouldFail {
          parser.parseVersionJson(json) // this tries to parse a version cant parse the provided composition
       }
@@ -523,70 +592,70 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       assert contribution.versions.size() == 1
       assert contribution.versions[0].uid.value == '93bbff8b-cdd5-43a3-8d71-194a735cc704::CABOLABS::1'
    }
-   
+
    // TODO: move to the XML test suite
    /*
    void testXmlSerializerCompo()
    {
       Composition c = new Composition()
-      
+
       c.name = new DvText(value: 'clinical document')
       c.archetype_node_id = 'openEHR-EHR-COMPOSITION.doc.v1'
       c.uid = new HierObjectId(value: UUID.randomUUID())
-      
+
       c.language = new CodePhrase()
       c.language.code_string = '1234'
       c.language.terminology_id = new TerminologyId(value:'LOCAL')
-      
+
       c.territory = new CodePhrase()
       c.territory.code_string = 'UY'
       c.territory.terminology_id = new TerminologyId(value:'LOCAL')
-      
+
       c.category = new DvCodedText()
       c.category.value = 'event'
       c.category.defining_code = new CodePhrase()
       c.category.defining_code.code_string = '531'
       c.category.defining_code.terminology_id = new TerminologyId(value:'openehr')
-           
+
       c.archetype_details = new Archetyped()
       c.archetype_details.archetype_id = new ArchetypeId(value: c.archetype_node_id)
       c.archetype_details.template_id = new TemplateId()
       c.archetype_details.template_id.value = 'doc.en.v1'
-      
+
       c.context = new EventContext()
       c.context.start_time = new DvDateTime(value: '2021-01-14T10:10:00Z')
       c.context.location = 'location'
-      
+
       c.context.setting = new DvCodedText()
       c.context.setting.value = 'setting'
       c.context.setting.defining_code = new CodePhrase()
       c.context.setting.defining_code.code_string = '12345'
       c.context.setting.defining_code.terminology_id = new TerminologyId(value:'LOCAL')
-      
+
       AdminEntry a = new AdminEntry()
-      
+
       a.language = new CodePhrase()
       a.language.code_string = 'ES'
       a.language.terminology_id = new TerminologyId(value:'ISO_639-1')
-      
+
       a.encoding = new CodePhrase()
       a.encoding.code_string = 'UTF-8'
       a.encoding.terminology_id = new TerminologyId(value:'IANA_character-sets')
-      
+
       a.archetype_node_id = 'openEHR-EHR-ADMIN_ENTRY.test.v1'
       a.name = new DvText(value:'admin')
       a.data = new ItemTree(name: new DvText(value:'tree'))
-      
+
       c.content.add(a)
-      
+
       OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
       String out = serial.serialize(c)
-      
+
       //println out
    }
    */
-   
-   
+
+
    void testJsonParserAdminEntryToXml()
    {
       // parse JSON
@@ -595,19 +664,19 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String json = file.text
       def parser = new OpenEhrJsonParser()
       Composition c = (Composition)parser.parseJson(json)
-      
+
       // serialize to XML
       OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
       String xml = serial.serialize(c)
       //println xml
-      
+
       // validate xml
       def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
       def validator = new XmlValidation(inputStream)
       assert validateXMLInstance(validator, xml)
    }
-   
-   
+
+
    void testJsonParserInstructionToXml()
    {
       // parse JSON
@@ -616,19 +685,19 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String json = file.text
       def parser = new OpenEhrJsonParser()
       Composition c = (Composition)parser.parseJson(json)
-      
+
       // serialize to XML
       OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
       String xml = serial.serialize(c)
       //println xml
-      
+
       // validate xml
       def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
       def validator = new XmlValidation(inputStream)
       assert validateXMLInstance(validator, xml)
    }
-   
-   
+
+
    void testJsonParserObservationToXml()
    {
       // parse JSON
@@ -637,18 +706,18 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String json = file.text
       def parser = new OpenEhrJsonParser()
       Composition c = (Composition)parser.parseJson(json)
-      
+
       // serialize to XML
       OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
       String xml = serial.serialize(c)
       //println xml
-     
+
       // validate xml
       def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
       def validator = new XmlValidation(inputStream)
       assert validateXMLInstance(validator, xml)
    }
-   
+
    void testJsonParserReferralWithParticipationsToXml()
    {
 	  // parse JSON
@@ -657,18 +726,18 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 	  String json = file.text
 	  def parser = new OpenEhrJsonParser()
 	  Composition c = (Composition)parser.parseJson(json)
-	  
+
 	  // serialize to XML
 	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
 	  String xml = serial.serialize(c)
 	  //println xml
-     
+
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
      def validator = new XmlValidation(inputStream)
      assert validateXMLInstance(validator, xml)
    }
-   
+
    void testJsonParserMinimalActionToXml()
    {
 	  // parse JSON
@@ -677,19 +746,19 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 	  String json = file.text
 	  def parser = new OpenEhrJsonParser()
 	  Composition c = (Composition)parser.parseJson(json)
-	  
+
 	  // serialize to XML
 	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
 	  String xml = serial.serialize(c)
 	  //println xml
-     
+
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
      def validator = new XmlValidation(inputStream)
      assert validateXMLInstance(validator, xml)
    }
-   
-   
+
+
    void testJsonParserMinimalEvaluationToXml()
    {
 	  // parse JSON
@@ -698,18 +767,18 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 	  String json = file.text
 	  def parser = new OpenEhrJsonParser()
 	  Composition c = (Composition)parser.parseJson(json)
-	  
+
 	  // serialize to XML
 	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
 	  String xml = serial.serialize(c)
 	  //println xml
-     
+
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
      def validator = new XmlValidation(inputStream)
      assert validateXMLInstance(validator, xml)
    }
-   
+
    void testJsonParserNestedToXml()
    {
 	  // parse JSON
@@ -718,12 +787,12 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 	  String json = file.text
 	  def parser = new OpenEhrJsonParser()
 	  Composition c = (Composition)parser.parseJson(json)
-	  
+
 	  // serialize to XML
 	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
 	  String xml = serial.serialize(c)
 	  //println xml
-     
+
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
      def validator = new XmlValidation(inputStream)
@@ -738,12 +807,12 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 	  String json = file.text
 	  def parser = new OpenEhrJsonParser()
 	  Composition c = (Composition)parser.parseJson(json)
-	  
+
 	  // serialize to XML
 	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
 	  String xml = serial.serialize(c)
 	  //println xml
-     
+
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
      def validator = new XmlValidation(inputStream)
@@ -758,18 +827,18 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 	  String json = file.text
 	  def parser = new OpenEhrJsonParser()
 	  Composition c = (Composition)parser.parseJson(json)
-	  
+
 	  // serialize to XML
 	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
 	  String xml = serial.serialize(c)
 	  //println xml
-     
+
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
      def validator = new XmlValidation(inputStream)
      assert validateXMLInstance(validator, xml)
    }
-   
+
    void testJsonParserProzedurToXml()
    {
 	  // parse JSON
@@ -778,18 +847,18 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 	  String json = file.text
 	  def parser = new OpenEhrJsonParser()
 	  Composition c = (Composition)parser.parseJson(json)
-	  
+
 	  // serialize to XML
 	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
 	  String xml = serial.serialize(c)
 	  //println xml
-     
+
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
      def validator = new XmlValidation(inputStream)
      assert validateXMLInstance(validator, xml)
    }
-   
+
    void testJsonParserAmdAssessmentToXml()
    {
      // parse JSON
@@ -798,18 +867,18 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      String json = file.text
      def parser = new OpenEhrJsonParser()
      Composition c = (Composition)parser.parseJson(json)
-     
+
      // serialize to XML
      OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
      String xml = serial.serialize(c)
      //println xml
-     
+
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
      def validator = new XmlValidation(inputStream)
      assert validateXMLInstance(validator, xml)
    }
-   
+
    void testJsonParserDiagnoseToXml()
    {
      // parse JSON
@@ -818,18 +887,18 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      String json = file.text
      def parser = new OpenEhrJsonParser()
      Composition c = (Composition)parser.parseJson(json)
-     
+
      // serialize to XML
      OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
      String xml = serial.serialize(c)
      //println xml
-     
+
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
      def validator = new XmlValidation(inputStream)
      assert validateXMLInstance(validator, xml)
    }
-   
+
    void testJsonParserExperimentalRespToXml()
    {
      // parse JSON
@@ -838,24 +907,24 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      String json = file.text
      def parser = new OpenEhrJsonParser()
      OriginalVersion v = (OriginalVersion)parser.parseVersionJson(json)
-     
+
 
      //def out = JsonOutput.toJson(v)
      //out = JsonOutput.prettyPrint(out)
      //println out
-     
-     
+
+
      // serialize to XML
      OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
      String xml = serial.serialize(v)
      //println xml
-     
+
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
      def validator = new XmlValidation(inputStream)
      assert validateXMLInstance(validator, xml)
    }
-   
+
    void testJsonParserKorptempToXml()
    {
      // parse JSON
@@ -864,18 +933,18 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      String json = file.text
      def parser = new OpenEhrJsonParser()
      Composition c = (Composition)parser.parseJson(json)
-     
+
      // serialize to XML
      OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
      String xml = serial.serialize(c)
      //println xml
-     
+
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
      def validator = new XmlValidation(inputStream)
      assert validateXMLInstance(validator, xml)
    }
-   
+
    static boolean validateXMLInstance(validator, xml)
    {
       if (!validator.validate(xml))
@@ -886,14 +955,14 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
             println it
          }
          println '====================================='
-         
+
          return false
       }
-      
+
       return true
    }
-   
-   
+
+
 
    void testCompositionJsonParseValidationSerializationValidation()
    {

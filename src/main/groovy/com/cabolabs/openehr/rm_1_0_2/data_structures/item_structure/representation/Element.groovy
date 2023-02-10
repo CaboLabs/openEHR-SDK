@@ -6,8 +6,8 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DataValue
 
 class Element extends Item {
 
-   DvCodedText null_flavour
    DataValue value
+   DvCodedText null_flavour
 
    Boolean is_null()
    {

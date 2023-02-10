@@ -536,7 +536,7 @@ class RmValidator {
       //println c_multiple_attribute.templatePath
       //println c_multiple_attribute.templateDataPath
       //println c_multiple_attribute.dataPath
-      
+
       RmValidationReport report = new RmValidationReport()
 
       //println c_multiple_attribute.cardinality.interval
@@ -544,7 +544,7 @@ class RmValidator {
 
       if (!c_multiple_attribute.cardinality.interval.has(container.size()))
       {
-         println "NOOIC: "+ c_multiple_attribute.cardinality.interval +" "+ c_multiple_attribute.templateDataPath
+         //println "NOOIC: "+ c_multiple_attribute.cardinality.interval +" "+ c_multiple_attribute.templateDataPath
          // cardinality error
          // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
          report.addError(c_multiple_attribute.templateDataPath, "Number of objects in container ${container.size()} doesn't match cardinality constraint "+ c_multiple_attribute.cardinality.interval.toString())
@@ -617,7 +617,7 @@ class RmValidator {
                obj = alternative_objs.find { // it = alt_obj
 
                   name_constraint = it.getAttr('name')
-               
+
                   if (name_constraint)
                   {
                      // println "validate data name: "+ item.name.value
@@ -657,13 +657,13 @@ class RmValidator {
                //println ""
             }
 
-            
+
             // println "------"
             // println c_multiple_attribute.children
             // println obj
             // println item
             // println item.archetype_node_id
-            
+
             //println obj.type
             // println "RM TYPE: "+ item.getClass().getSimpleName()
             // println "RM PATH: "+ item.dataPath
@@ -1045,7 +1045,7 @@ class RmValidator {
             report.addError(o.templateDataPath, "Node doesn't match occurrences")
          }
       }
-      
+
       def a_activities = o.getAttr('activities') // List<Activity>
       if (a_activities)
       {
@@ -1288,7 +1288,7 @@ class RmValidator {
 
       return report
    }
- 
+
    private RmValidationReport validate(ItemTree is, AttributeNode a)
    {
       RmValidationReport report = new RmValidationReport()
@@ -2036,7 +2036,7 @@ class RmValidator {
       for (o in os)
       {
          //println o.type +" "+ o.rmTypeName
-         
+
          report = validate(parent, d, o, dv_path)
          if (!report.hasErrors())
          {
@@ -2927,7 +2927,7 @@ class RmValidator {
             report.addError(parent.dataPath, "Node doesn't match occurrences")
          }
       }
-      
+
       // media_type is mandatory by the RM
       if (!d.media_type)
       {
@@ -2955,7 +2955,7 @@ class RmValidator {
             }
          }
       }
-      
+
       def a_language = o.getAttr('language')
       if (a_language)
       {
@@ -3057,7 +3057,7 @@ class RmValidator {
             }
          }
       }
-      
+
       def a_language = o.getAttr('language')
       if (a_language)
       {
@@ -3150,7 +3150,7 @@ class RmValidator {
             }
          }
       }
-      
+
       return report
    }
 
@@ -3258,7 +3258,7 @@ class RmValidator {
             }
          }
       }
-      
+
       return report
    }
 

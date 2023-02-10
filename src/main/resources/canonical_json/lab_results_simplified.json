@@ -1,0 +1,462 @@
+{
+    "_type": "COMPOSITION",
+    "name": {
+        "_type": "DV_TEXT",
+        "value": "Result Report"
+    },
+    "archetype_details": {
+        "archetype_id": {
+            "value": "openEHR-EHR-COMPOSITION.report-result.v1"
+        },
+        "template_id": {
+            "value": "labresults1.en.v1"
+        },
+        "rm_version": "1.0.2"
+    },
+    "archetype_node_id": "openEHR-EHR-COMPOSITION.report-result.v1",
+    "language": {
+        "terminology_id": {
+            "value": "ISO_639-1"
+        },
+        "code_string": "en"
+    },
+    "territory": {
+        "terminology_id": {
+            "value": "ISO_3166-1"
+        },
+        "code_string": "UY"
+    },
+    "category": {
+        "value": "event",
+        "defining_code": {
+            "terminology_id": {
+                "value": "openehr"
+            },
+            "code_string": "433"
+        }
+    },
+    "composer": {
+        "_type": "PARTY_IDENTIFIED",
+        "external_ref": {
+            "id": {
+                "_type": "HIER_OBJECT_ID",
+                "value": "50d1b2b3-a189-416c-8019-cf05e0f97dda"
+            },
+            "namespace": "DEMOGRAPHIC",
+            "type": "PERSON"
+        },
+        "name": "Dr. Yamamoto"
+    },
+    "context": {
+        "start_time": {
+            "value": "20200629T212517,759+0000"
+        },
+        "setting": {
+            "value": "home",
+            "defining_code": {
+                "terminology_id": {
+                    "value": "openehr"
+                },
+                "code_string": "225"
+            }
+        }
+    },
+    "content": [
+        {
+            "_type": "OBSERVATION",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Blood glucose"
+            },
+            "archetype_node_id": "openEHR-EHR-OBSERVATION.lab_test-blood_glucose.v1",
+            "language": {
+                "terminology_id": {
+                    "value": "ISO_639-1"
+                },
+                "code_string": "en"
+            },
+            "encoding": {
+                "terminology_id": {
+                    "value": "Unicode"
+                },
+                "code_string": "UTF-8"
+            },
+            "subject": {
+                "_type": "PARTY_SELF"
+            },
+            "protocol": {
+                "_type": "ITEM_TREE",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Tree"
+                },
+                "archetype_node_id": "at0004",
+                "items": [
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Test identification"
+                        },
+                        "archetype_node_id": "at0013",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Placer order identifier"
+                                },
+                                "archetype_node_id": "at0062",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "SdbzgkOlDyuvheWFUQUyQfqxBYOUGvmxpBFwnL EypOuDuZdUyJoPouUNL,FpmUVw,hGLOKiNZplGgybynYdaGUyuToHQixNCZUVuisqIwCSrVkvCU CKpRhJrDgZafjJdHaXGhI ikddamyehERTJJFuPUGWooUPveUh. BFW.KArqpD,fjYZjLhZFvhPqvvvllpHDvscdFfifkUI SRBnVqWgbvEOuoWpENByoEGkyZRK.KuelP.NCFGsOAYU"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Datetime result issued"
+                        },
+                        "archetype_node_id": "at0075",
+                        "value": {
+                            "_type": "DV_DATE_TIME",
+                            "value": "20200629T212517,773+0000"
+                        }
+                    }
+                ]
+            },
+            "data": {
+                "_type": "HISTORY",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Event Series"
+                },
+                "archetype_node_id": "at0001",
+                "origin": {
+                    "_type": "DV_DATE_TIME",
+                    "value": "20200629T212517,773+0000"
+                },
+                "events": [
+                    {
+                        "_type": "POINT_EVENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Any event"
+                        },
+                        "archetype_node_id": "at0002",
+                        "time": {
+                            "_type": "DV_DATE_TIME",
+                            "value": "20200629T212517,773+0000"
+                        },
+                        "data": {
+                            "_type": "ITEM_TREE",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "Tree"
+                            },
+                            "archetype_node_id": "at0003",
+                            "items": [
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Test name"
+                                    },
+                                    "archetype_node_id": "at0005",
+                                    "value": {
+                                        "_type": "DV_TEXT",
+                                        "value": "KAgeirBwQQbvh.amnTsgBYFLRtISvcbnAUny lwBZ b,sRkvQCaxz,BZdNkdwpDQTVDhBrWxBjazRlJqecYieWBvjbsBewDKMNvWd HUWpyBLqFZ,dldGbaEiEgDNWZQXaCROZzTStZT.sBUYEk,EgGvDoPgbWFJgwf YGoqXUpeGLRQSCiNYnWdHcTdLFQn xbpkwcmZiGmLxuAWqRIvkLUrWKHVuxAkj xGhhexqC.jYisE,h,oAS,OJ,OkzH"
+                                    }
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Test status"
+                                    },
+                                    "archetype_node_id": "at0073",
+                                    "value": {
+                                        "_type": "DV_CODED_TEXT",
+                                        "value": "Interim",
+                                        "defining_code": {
+                                            "terminology_id": {
+                                                "value": "local"
+                                            },
+                                            "code_string": "at0037"
+                                        }
+                                    }
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Blood glucose"
+                                    },
+                                    "archetype_node_id": "at0078.2",
+                                    "value": {
+                                        "_type": "DV_QUANTITY",
+                                        "magnitude": 310.8,
+                                        "units": "mmol/l"
+                                    }
+                                }
+                            ]
+                        },
+                        "state": {
+                            "_type": "ITEM_TREE",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "Tree"
+                            },
+                            "archetype_node_id": "at0.89",
+                            "items": [
+                                {
+                                    "_type": "CLUSTER",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Diet"
+                                    },
+                                    "archetype_node_id": "at0.90",
+                                    "items": [
+                                        {
+                                            "_type": "ELEMENT",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Intake"
+                                            },
+                                            "archetype_node_id": "at0.91",
+                                            "value": {
+                                                "_type": "DV_CODED_TEXT",
+                                                "value": "Fasting",
+                                                "defining_code": {
+                                                    "terminology_id": {
+                                                        "value": "local"
+                                                    },
+                                                    "code_string": "at0.92"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "_type": "ELEMENT",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Duration"
+                                            },
+                                            "archetype_node_id": "at0.96",
+                                            "value": {
+                                                "_type": "DV_DURATION",
+                                                "value": "P29DT10H59M22S"
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "_type": "CLUSTER",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Glucose challenge"
+                                    },
+                                    "archetype_node_id": "at0.98",
+                                    "items": [
+                                        {
+                                            "_type": "ELEMENT",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Dose"
+                                            },
+                                            "archetype_node_id": "at0.100",
+                                            "value": {
+                                                "_type": "DV_QUANTITY",
+                                                "magnitude": 205.8,
+                                                "units": "gm"
+                                            }
+                                        },
+                                        {
+                                            "_type": "ELEMENT",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Duration"
+                                            },
+                                            "archetype_node_id": "at0.96",
+                                            "value": {
+                                                "_type": "DV_DURATION",
+                                                "value": "P29DT39H28M10S"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "_type": "OBSERVATION",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Full blood count"
+            },
+            "archetype_node_id": "openEHR-EHR-OBSERVATION.lab_test-full_blood_count.v1",
+            "language": {
+                "terminology_id": {
+                    "value": "ISO_639-1"
+                },
+                "code_string": "en"
+            },
+            "encoding": {
+                "terminology_id": {
+                    "value": "Unicode"
+                },
+                "code_string": "UTF-8"
+            },
+            "subject": {
+                "_type": "PARTY_SELF"
+            },
+            "protocol": {
+                "_type": "ITEM_TREE",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Tree"
+                },
+                "archetype_node_id": "at0004",
+                "items": [
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Datetime result issued"
+                        },
+                        "archetype_node_id": "at0075",
+                        "value": {
+                            "_type": "DV_DATE_TIME",
+                            "value": "20200629T212517,833+0000"
+                        }
+                    }
+                ]
+            },
+            "data": {
+                "_type": "HISTORY",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Event Series"
+                },
+                "archetype_node_id": "at0001",
+                "origin": {
+                    "_type": "DV_DATE_TIME",
+                    "value": "20200629T212517,834+0000"
+                },
+                "events": [
+                    {
+                        "_type": "POINT_EVENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Any event"
+                        },
+                        "archetype_node_id": "at0002",
+                        "time": {
+                            "_type": "DV_DATE_TIME",
+                            "value": "20200629T212517,839+0000"
+                        },
+                        "data": {
+                            "_type": "ITEM_TREE",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "Tree"
+                            },
+                            "archetype_node_id": "at0003",
+                            "items": [
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Red cell count (RCC)"
+                                    },
+                                    "archetype_node_id": "at0078.5",
+                                    "value": {
+                                        "_type": "DV_QUANTITY",
+                                        "magnitude": 347.1,
+                                        "units": "10*12/l"
+                                    }
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Packed cell volume (PCV)"
+                                    },
+                                    "archetype_node_id": "at0078.6",
+                                    "value": {
+                                        "_type": "DV_PROPORTION",
+                                        "numerator": 95.4,
+                                        "denominator": 100.0,
+                                        "type": 2,
+                                        "precision": 0
+                                    }
+                                },
+                                {
+                                    "_type": "CLUSTER",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "White cell differential"
+                                    },
+                                    "archetype_node_id": "at0078.14",
+                                    "items": [
+                                        {
+                                            "_type": "ELEMENT",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Neutrophils"
+                                            },
+                                            "archetype_node_id": "at0078.15",
+                                            "value": {
+                                                "_type": "DV_QUANTITY",
+                                                "magnitude": 755.1,
+                                                "units": "10*9/l"
+                                            }
+                                        },
+                                        {
+                                            "_type": "ELEMENT",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Lymphocytes"
+                                            },
+                                            "archetype_node_id": "at0078.16",
+                                            "value": {
+                                                "_type": "DV_QUANTITY",
+                                                "magnitude": 147.3,
+                                                "units": "10*9/l"
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Result"
+                                    },
+                                    "archetype_node_id": "at0078"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Overall interpretation"
+                                    },
+                                    "archetype_node_id": "at0057",
+                                    "value": {
+                                        "_type": "DV_TEXT",
+                                        "value": "ZhmNZqLI.pd,fu.CvPaVivUUlUxBxjBHrkVgWweHFhfmIiuRqiXlMGEAkaJyHwWKtGpvcaGQdz xIaPcWkKTsly,AOALTmMRTQB.IohaAYculjGLQSu SCJTpIbtPovRluQURpqmIUVrEXktNqKfPLVuOESfrXHQkgEqXt.EvuHyFo,cfZm, OMxKbNqIcwGMWJzGKtvLMRSiUpKVXZdMZwwaHgHuqcZmpQyNrtcJYKcese dHidfLCOPjuXxOe"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

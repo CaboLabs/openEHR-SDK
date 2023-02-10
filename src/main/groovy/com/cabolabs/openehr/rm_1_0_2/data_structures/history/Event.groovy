@@ -6,10 +6,10 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDuration
 
 abstract class Event extends Locatable {
-   
+
    DvDateTime time
-   ItemStructure state
    ItemStructure data
+   ItemStructure state
 
    DvDuration offset()
    {

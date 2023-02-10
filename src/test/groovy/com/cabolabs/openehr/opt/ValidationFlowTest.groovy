@@ -829,23 +829,23 @@ class ValidationFlowTest extends GroovyTestCase {
 
       def err
 
-      err = report.errors.find { it.dataPath == "/content[0]/name" }
+      err = report.errors.find { it.dataPath == "/content(0)/name" }
 
       assert err.error == "expected name is 'Test all datatypes' and actual name is 'Blood Pressure'"
 
-      err = report.errors.find { it.dataPath == "/content[0]/data/name" }
+      err = report.errors.find { it.dataPath == "/content(0)/data/name" }
 
       assert err.error == "expected name is 'Event Series' and actual name is 'history'"
 
-      err = report.errors.find { it.dataPath == "/content[0]/data/events[0]/name" }
+      err = report.errors.find { it.dataPath == "/content(0)/data/events(0)/name" }
 
       assert err.error == "expected name is 'Cualquier evento' and actual name is 'any event'"
 
-      err = report.errors.find { it.dataPath == "/content[0]/data/events[1]/name" }
+      err = report.errors.find { it.dataPath == "/content(0)/data/events(1)/name" }
 
       assert err.error == "expected name is 'Cualquier evento' and actual name is 'any event'"
 
-      err = report.errors.find { it.dataPath == "/content[0]/data/events[2]/name" }
+      err = report.errors.find { it.dataPath == "/content(0)/data/events(2)/name" }
 
       assert err.error == "expected name is 'Cualquier evento' and actual name is 'any event'"
    }
@@ -930,22 +930,22 @@ class ValidationFlowTest extends GroovyTestCase {
 
       def err
 
-      err = report.errors.find { it.path == "/content[0]/data/events[0]/data/items[9]/value/lower/magnitude" }
+      err = report.errors.find { it.path == "/content(0)/data/events(0)/data/items(9)/value/lower/magnitude" }
 
       assert err.error == "value '5' is not contained in the range '10..100'"
 
 
-      err = report.errors.find { it.path == "/content[0]/data/events[0]/data/items[9]/value/upper/magnitude" }
+      err = report.errors.find { it.path == "/content(0)/data/events(0)/data/items(9)/value/upper/magnitude" }
 
       assert err.error == "value '10' is not contained in the range '50..200'"
 
 
-      err = report.errors.find { it.path == "/content[0]/data/events[0]/data/items[16]/value/issuer" }
+      err = report.errors.find { it.path == "/content(0)/data/events(0)/data/items(16)/value/issuer" }
 
       assert err.error == "value 'Hospital de Clinicas' doesn't match pattern 'issuerA'"
 
 
-      err = report.errors.find { it.path == "/content[0]/data/events[0]/data/items[16]/value/type" }
+      err = report.errors.find { it.path == "/content(0)/data/events(0)/data/items(16)/value/type" }
 
       assert err.error == "value 'LOCALID' doesn't match pattern 'typeB'"
    }
@@ -966,7 +966,7 @@ class ValidationFlowTest extends GroovyTestCase {
       Person person = parser.parseJson(json_person)
 
       //println parser.getJsonValidationErrors()
-      
+
       assert person
 
       // SETUP OPT REPO
@@ -998,7 +998,7 @@ class ValidationFlowTest extends GroovyTestCase {
       //println organization
 
       //println parser.getJsonValidationErrors()
-      
+
       assert organization
 
       // SETUP OPT REPO
@@ -1029,7 +1029,7 @@ class ValidationFlowTest extends GroovyTestCase {
       //println person
 
       //println parser.getJsonValidationErrors()
-      
+
       assert group
 
 
@@ -1061,7 +1061,7 @@ class ValidationFlowTest extends GroovyTestCase {
       // FIXME: this should fail because the uid is mandatory and it's not in the JSON
 
       //println parser.getJsonValidationErrors()
-      
+
       assert agent
 
       // SETUP OPT REPO
@@ -1090,7 +1090,7 @@ class ValidationFlowTest extends GroovyTestCase {
       //println person
 
       //println parser.getJsonValidationErrors()
-      
+
       assert role
 
       // SETUP OPT REPO
