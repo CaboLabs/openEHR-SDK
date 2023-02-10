@@ -55,7 +55,7 @@ class OpenEhrJsonParserQuick {
    def jsonValidationErrors
 
    // if @schemaValidate is true, runs the schema validator before trying to parse
-   def OpenEhrJsonParser(boolean schemaValidate = false)
+   def OpenEhrJsonParserQuick(boolean schemaValidate = false)
    {
       this.schemaValidate = schemaValidate
    }
