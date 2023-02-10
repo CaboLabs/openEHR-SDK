@@ -441,24 +441,24 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       assert c.context.dataPath == '/context'
 
       assert c.content[0].path     == '/content[archetype_id=openEHR-EHR-INSTRUCTION.request-referral.v1]'
-      assert c.content[0].dataPath == '/content[archetype_id=openEHR-EHR-INSTRUCTION.request-referral.v1](0)'
+      assert c.content[0].dataPath == '/content(0)'
 
       assert c.content[0].protocol.path     == '/content[archetype_id=openEHR-EHR-INSTRUCTION.request-referral.v1]/protocol[at0008]'
-      assert c.content[0].protocol.dataPath == '/content[archetype_id=openEHR-EHR-INSTRUCTION.request-referral.v1](0)/protocol[at0008]'
+      assert c.content[0].protocol.dataPath == '/content(0)/protocol'
 
       assert c.content[0].protocol.items[0].path     == '/content[archetype_id=openEHR-EHR-INSTRUCTION.request-referral.v1]/protocol[at0008]/items[at0010]'
-      assert c.content[0].protocol.items[0].dataPath == '/content[archetype_id=openEHR-EHR-INSTRUCTION.request-referral.v1](0)/protocol[at0008]/items[at0010](0)'
+      assert c.content[0].protocol.items[0].dataPath == '/content(0)/protocol/items(0)'
 
       // there are more items in the protocol
 
       assert c.content[0].activities[0].path     == '/content[archetype_id=openEHR-EHR-INSTRUCTION.request-referral.v1]/activities[at0001]'
-      assert c.content[0].activities[0].dataPath == '/content[archetype_id=openEHR-EHR-INSTRUCTION.request-referral.v1](0)/activities[at0001](0)'
+      assert c.content[0].activities[0].dataPath == '/content(0)/activities(0)'
 
       assert c.content[0].activities[0].description.path     == '/content[archetype_id=openEHR-EHR-INSTRUCTION.request-referral.v1]/activities[at0001]/description[at0009]'
-      assert c.content[0].activities[0].description.dataPath == '/content[archetype_id=openEHR-EHR-INSTRUCTION.request-referral.v1](0)/activities[at0001](0)/description[at0009]'
+      assert c.content[0].activities[0].description.dataPath == '/content(0)/activities(0)/description'
 
       assert c.content[0].activities[0].description.items[0].path     == '/content[archetype_id=openEHR-EHR-INSTRUCTION.request-referral.v1]/activities[at0001]/description[at0009]/items[at0121]'
-      assert c.content[0].activities[0].description.items[0].dataPath == '/content[archetype_id=openEHR-EHR-INSTRUCTION.request-referral.v1](0)/activities[at0001](0)/description[at0009]/items[at0121](0)'
+      assert c.content[0].activities[0].description.items[0].dataPath == '/content(0)/activities(0)/description/items(0)'
 
       // there are more items in the description
 
@@ -486,13 +486,13 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       assert c.context.dataPath == '/context'
 
       assert c.content[0].path     == '/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.minimal.v1]'
-      assert c.content[0].dataPath == '/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.minimal.v1](0)'
+      assert c.content[0].dataPath == '/content(0)'
 
       assert c.content[0].data.path     == '/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.minimal.v1]/data[at0001]'
-      assert c.content[0].data.dataPath == '/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.minimal.v1](0)/data[at0001]'
+      assert c.content[0].data.dataPath == '/content(0)/data'
 
       assert c.content[0].data.items[0].path     == '/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.minimal.v1]/data[at0001]/items[at0002]'
-      assert c.content[0].data.items[0].dataPath == '/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.minimal.v1](0)/data[at0001]/items[at0002](0)'
+      assert c.content[0].data.items[0].dataPath == '/content(0)/data/items(0)'
 
       //def out = JsonWriter.objectToJson(c, [(JsonWriter.PRETTY_PRINT): true])
       //println out

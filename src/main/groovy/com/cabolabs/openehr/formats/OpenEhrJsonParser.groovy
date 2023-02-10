@@ -197,7 +197,7 @@ class OpenEhrJsonParser {
       Locatable out
       try
       {
-         out = this."$method"(map) //, null, '/', '/') // TOP level LOCATABLEs shouldn't have parent or paths
+         out = this."$method"(map)
       }
       catch (Exception e)
       {
@@ -414,10 +414,7 @@ class OpenEhrJsonParser {
 
    // ========= UTILS TO CALCULATE PATHS AND DATA PATHS
 
-   /**
-    * The path and data path for single attributes is the same (just the part that is added)
-    */
-   private String attr_path(Map parent, String attr, String parent_path)
+   private String attr_archetype_path(Map parent, String attr, String parent_path)
    {
       // FIXME: parent[attr] is coming as an array, there is a wrong call
       if (parent[attr].archetype_node_id)
@@ -429,11 +426,20 @@ class OpenEhrJsonParser {
       return parent_path != '/' ? parent_path +'/'+ attr : '/'+ attr
    }
 
-   /**
-    * The path and data path for multiple attributes is different, the part that is added in the data path contains the index.
-    * This method adds the index, is for the data path.
-    */
-   private String attr_path_multiple(Map parent, String attr, int i, String parent_path)
+   // similar to attr_archetype_path but for multiple attributes, in which uses the i to get the right archetype_node_id from the parent collection container
+   private String multi_attr_archetype_path(Map parent, String attr, int i, String parent_path)
+   {
+      if (parent[attr][i].archetype_node_id)
+      {
+         String path_node_id = (parent[attr][i].archetype_node_id.startsWith('at') ? parent[attr][i].archetype_node_id : 'archetype_id='+ parent[attr][i].archetype_node_id)
+         return parent_path != '/' ? parent_path +'/'+ attr +'['+ path_node_id +']' : '/'+ attr +'['+ path_node_id +']'
+      }
+
+      return parent_path != '/' ? parent_path +'/'+ attr : '/'+ attr
+   }
+
+
+   private String attr_archetype_path_multiple(Map parent, String attr, int i, String parent_path)
    {
       if (parent[attr][i].archetype_node_id)
       {
@@ -445,19 +451,25 @@ class OpenEhrJsonParser {
    }
 
    /**
-    * The path and data path for multiple attributes is different, the part that is added in the data path contains the index.
-    * This method doesn't add the index, is for the archetype path.
+    * The path and data path for single attributes is the same (just the part that is added)
     */
-   private String attr_arch_path_multiple(Map parent, String attr, int i, String parent_path)
+   private String attr_path(Map parent, String attr, String parent_path)
    {
-      if (parent[attr][i].archetype_node_id)
-      {
-         String path_node_id = (parent[attr][i].archetype_node_id.startsWith('at') ? parent[attr][i].archetype_node_id : 'archetype_id='+ parent[attr][i].archetype_node_id)
-         return parent_path != '/' ? parent_path +'/'+ attr +'['+ path_node_id +']' : '/'+ attr +'['+ path_node_id +']'
-      }
+      // FIXME: parent[attr] is coming as an array, there is a wrong call
 
       return parent_path != '/' ? parent_path +'/'+ attr : '/'+ attr
    }
+
+   /**
+    * The path and data path for multiple attributes is different, the part that is added in the data path contains the index.
+    * This method adds the index, is for the data path.
+    */
+   private String attr_path_multiple(Map parent, String attr, int i, String parent_path)
+   {
+      return parent_path != '/' ? parent_path +'/'+ attr +'('+ i +')' : '/'+ attr +'('+ i +')'
+   }
+
+
 
    // ========= FIll METHODS =========
 
@@ -558,7 +570,7 @@ class OpenEhrJsonParser {
          c.protocol = this."$method"(json.protocol, parent,
                                      //(path != '/' ? path +'/protocol['+ path_node_id +']' : '/protocol['+ path_node_id +']'),
                                      //(dataPath != '/' ? dataPath +'/protocol['+ path_node_id +']' : '/protocol['+ path_node_id +']')
-                                     this.attr_path(json, 'protocol', path),
+                                     this.attr_archetype_path(json, 'protocol', path),
                                      this.attr_path(json, 'protocol', dataPath)
                                     )
       }
@@ -792,7 +804,7 @@ class OpenEhrJsonParser {
 
       compo.context = parseEVENT_CONTEXT(
          json.context, compo,
-         this.attr_path(json, 'context', '/'),
+         this.attr_archetype_path(json, 'context', '/'),
          this.attr_path(json, 'context', '/')
       )
 
@@ -809,7 +821,7 @@ class OpenEhrJsonParser {
          compo.content.add(
             this."$method"(
                content_item, compo,
-               this.attr_arch_path_multiple(json, 'content', i, '/'),
+               this.multi_attr_archetype_path(json, 'content', i, '/'),
                this.attr_path_multiple(json, 'content', i, '/')
             )
          )
@@ -840,7 +852,7 @@ class OpenEhrJsonParser {
 
             folder.folders << this.parseFOLDER(
                subfolder, folder,
-               this.attr_arch_path_multiple(json, 'folders', i, '/'),
+               this.multi_attr_archetype_path(json, 'folders', i, '/'),
                this.attr_path_multiple(json, 'folders', i, '/')
             )
          }
@@ -871,7 +883,7 @@ class OpenEhrJsonParser {
 
             folder.folders << this.parseFOLDER(
                subfolder, folder,
-               this.attr_arch_path_multiple(json, 'folders', i, path),
+               this.multi_attr_archetype_path(json, 'folders', i, path),
                this.attr_path_multiple(json, 'folders', i, dataPath)
             )
          }
@@ -900,7 +912,7 @@ class OpenEhrJsonParser {
 
          status.other_details = this."$method"(
             json.other_details, status,
-            this.attr_path(json, 'other_details', '/'),
+            this.attr_archetype_path(json, 'other_details', '/'),
             this.attr_path(json, 'other_details', '/')
          )
       }
@@ -1284,7 +1296,7 @@ class OpenEhrJsonParser {
 
          e.other_context = this."$method"(
             json.other_context, e,
-            this.attr_path(json, 'other_context', path),
+            this.attr_archetype_path(json, 'other_context', path),
             this.attr_path(json, 'other_context', dataPath)
          )
       }
@@ -1344,7 +1356,7 @@ class OpenEhrJsonParser {
          section.items.add(
             this."$method"(
                content_item, section,
-               this.attr_arch_path_multiple(json, 'items', i, path),
+               this.multi_attr_archetype_path(json, 'items', i, path),
                this.attr_path_multiple(json, 'items', i, dataPath)
             )
          )
@@ -1370,7 +1382,7 @@ class OpenEhrJsonParser {
 
       a.data = this."$method"(
          json.data, a,
-         this.attr_path(json, 'data', path),
+         this.attr_archetype_path(json, 'data', path),
          this.attr_path(json, 'data', dataPath)
       )
 
@@ -1387,7 +1399,7 @@ class OpenEhrJsonParser {
       {
          o.data = this.parseHISTORY(
             json.data, o,
-            this.attr_path(json, 'data', path),
+            this.attr_archetype_path(json, 'data', path),
             this.attr_path(json, 'data', dataPath)
          )
       }
@@ -1396,7 +1408,7 @@ class OpenEhrJsonParser {
       {
          o.state = this.parseHISTORY(
             json.state, o,
-            this.attr_path(json, 'state', path),
+            this.attr_archetype_path(json, 'state', path),
             this.attr_path(json, 'state', dataPath)
          )
       }
@@ -1432,7 +1444,7 @@ class OpenEhrJsonParser {
          h.events.add(
             this."$method"(
                event, h,
-               this.attr_arch_path_multiple(json, 'events', i, path),
+               this.multi_attr_archetype_path(json, 'events', i, path),
                this.attr_path_multiple(json, 'events', i, dataPath)
             )
          )
@@ -1462,7 +1474,7 @@ class OpenEhrJsonParser {
 
          e.data = this."$method"(
             json.data, e,
-            this.attr_path(json, 'data', path),
+            this.attr_archetype_path(json, 'data', path),
             this.attr_path(json, 'data', dataPath)
          )
       }
@@ -1478,7 +1490,7 @@ class OpenEhrJsonParser {
 
          e.state = this."$method"(
             json.state, e,
-            this.attr_path(json, 'state', path),
+            this.attr_archetype_path(json, 'state', path),
             this.attr_path(json, 'state', dataPath)
          )
       }
@@ -1507,7 +1519,7 @@ class OpenEhrJsonParser {
 
          e.data = this."$method"(
             json.data, e,
-            this.attr_path(json, 'data', path),
+            this.attr_archetype_path(json, 'data', path),
             this.attr_path(json, 'data', dataPath)
          )
       }
@@ -1523,7 +1535,7 @@ class OpenEhrJsonParser {
 
          e.state = this."$method"(
             json.state, e,
-            this.attr_path(json, 'state', path),
+            this.attr_archetype_path(json, 'state', path),
             this.attr_path(json, 'state', dataPath)
          )
       }
@@ -1555,7 +1567,7 @@ class OpenEhrJsonParser {
 
       e.data = this."$method"(
          json.data, e,
-         this.attr_path(json, 'data', path),
+         this.attr_archetype_path(json, 'data', path),
          this.attr_path(json, 'data', dataPath)
       )
 
@@ -1590,7 +1602,7 @@ class OpenEhrJsonParser {
          ins.activities.add(
             this.parseACTIVITY(
                js_activity, ins,
-               this.attr_arch_path_multiple(json, 'activities', i, path),
+               this.multi_attr_archetype_path(json, 'activities', i, path),
                this.attr_path_multiple(json, 'activities', i, dataPath)
             )
          )
@@ -1614,7 +1626,7 @@ class OpenEhrJsonParser {
 
       a.description = this."$method"(
          json.description, a,
-         this.attr_path(json, 'description', path),
+         this.attr_archetype_path(json, 'description', path),
          this.attr_path(json, 'description', dataPath)
       )
 
@@ -1622,7 +1634,7 @@ class OpenEhrJsonParser {
 
       a.ism_transition = this.parseISM_TRANSITION(
          json.ism_transition, a,
-         this.attr_path(json, 'ism_transition', path),
+         this.attr_archetype_path(json, 'ism_transition', path),
          this.attr_path(json, 'ism_transition', dataPath)
       )
 
@@ -1630,7 +1642,7 @@ class OpenEhrJsonParser {
       {
          a.instruction_details = this.parseINSTRUCTION_DETAILS(
             json.instruction_details, a,
-            this.attr_path(json, 'instruction_details', path),
+            this.attr_archetype_path(json, 'instruction_details', path),
             this.attr_path(json, 'instruction_details', dataPath)
          )
       }
@@ -1698,7 +1710,7 @@ class OpenEhrJsonParser {
 
       a.description = this."$method"(
          json.description, a,
-         this.attr_path(json, 'description', path),
+         this.attr_archetype_path(json, 'description', path),
          this.attr_path(json, 'description', dataPath)
       )
 
@@ -1733,7 +1745,7 @@ class OpenEhrJsonParser {
          t.items.add(
             this."$method"(
                item, t,
-               this.attr_arch_path_multiple(json, 'items', i, path),
+               this.multi_attr_archetype_path(json, 'items', i, path),
                this.attr_path_multiple(json, 'items', i, dataPath)
             )
          )
@@ -1753,7 +1765,7 @@ class OpenEhrJsonParser {
          l.items.add(
             this.parseELEMENT(
                element, l,
-               this.attr_arch_path_multiple(json, 'items', i, path),
+               this.multi_attr_archetype_path(json, 'items', i, path),
                this.attr_path_multiple(json, 'items', i, dataPath)
             )
          )
@@ -1778,7 +1790,7 @@ class OpenEhrJsonParser {
          t.rows.add(
             this."$method"(
                item, t,
-               this.attr_arch_path_multiple(json, 'rows', i, path),
+               this.multi_attr_archetype_path(json, 'rows', i, path),
                this.attr_path_multiple(json, 'rows', i, dataPath)
             )
          )
@@ -1795,7 +1807,7 @@ class OpenEhrJsonParser {
 
       s.item = this.parseELEMENT(
          json.item, s,
-         this.attr_path(json, 'item', path),
+         this.attr_archetype_path(json, 'item', path),
          this.attr_path(json, 'item', dataPath)
       )
 
@@ -1821,7 +1833,7 @@ class OpenEhrJsonParser {
          c.items.add(
             this."$method"(
                item, c,
-               this.attr_arch_path_multiple(json, 'items', i, path),
+               this.multi_attr_archetype_path(json, 'items', i, path),
                this.attr_path_multiple(json, 'items', i, dataPath)
             )
          )
