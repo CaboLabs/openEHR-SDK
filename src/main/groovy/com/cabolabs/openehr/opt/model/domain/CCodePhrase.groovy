@@ -42,7 +42,7 @@ class CCodePhrase extends ObjectNode {
       def _code = cp.code_string
       def _terminologyId = cp.terminology_id.value
 
-      println "TID: "+ _terminologyId
+      //println "TID: "+ _terminologyId
 
       // if there is no list, any code is valid
       if (this.codeList)
@@ -54,7 +54,7 @@ class CCodePhrase extends ObjectNode {
       if (this.terminologyId)
       {
          //log.info("CCodePhrase isValid")
-         
+
          if (_terminologyId != this.terminologyId)
          {
             return new ValidationResult(isValid: false, message: "terminology_id '${_terminologyId}' doesn't match '${this.terminologyId}'")

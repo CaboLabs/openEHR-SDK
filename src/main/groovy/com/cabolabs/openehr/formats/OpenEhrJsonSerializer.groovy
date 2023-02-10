@@ -59,48 +59,55 @@ class OpenEhrJsonSerializer {
       return method
    }
 
-   String serialize(Locatable o, boolean pretty = false)
+   private String encode(Map m, boolean pretty = false)
    {
-      String method = this.method(o)
-      def out = this."$method"(o)
       if (pretty)
       {
-         JsonOutput.prettyPrint(JsonOutput.toJson(out))
+         return JsonOutput.prettyPrint(JsonOutput.toJson(m))
       }
-      else
-      {
-         JsonOutput.toJson(out)
-      }
+
+      return JsonOutput.toJson(m)
+   }
+
+   String serialize(Locatable o, boolean pretty = false)
+   {
+      def out = this.toMap(o)
+      this.encode(out, pretty)
+   }
+
+   Map toMap(Locatable o)
+   {
+      String method = this.method(o)
+      return this."$method"(o)
    }
 
    String serialize(Version o, boolean pretty = false)
    {
-      String method = this.method(o)
-      def out = this."$method"(o) // e.g. serializeOriginalVersion
-      if (pretty)
-      {
-         return JsonOutput.prettyPrint(JsonOutput.toJson(out))
-      }
+      def out = this.toMap(o)
+      this.encode(out, pretty)
+   }
 
-      return JsonOutput.toJson(out)
+   Map toMap(Version o)
+   {
+      String method = this.method(o)
+      return this."$method"(o) // e.g. serializeOriginalVersion
    }
 
    String serialize(EhrDto ehr, boolean pretty = false)
    {
-      Map out = [
+      Map out = this.toMap(ehr)
+      this.encode(out, pretty)
+   }
+
+   Map toMap(EhrDto ehr)
+   {
+      [
          _type: 'EHR',
-         ehr_id: this.serializeHierObjectId(ehr.ehr_id),
-         system_id: this.serializeHierObjectId(ehr.system_id),
+         ehr_id: this.serializeHierObjectId(ehr.ehr_id),           // TODO: no need to serialize the _type
+         system_id: this.serializeHierObjectId(ehr.system_id),     // TODO: no need to serialize the _type
          time_created: this.serializeDvDateTime(ehr.time_created),
          ehr_status: this.serializeEhrStatus(ehr.ehr_status)
       ]
-
-      if (pretty)
-      {
-         return JsonOutput.prettyPrint(JsonOutput.toJson(out))
-      }
-
-      return JsonOutput.toJson(out)
    }
 
    private void fillLocatable(Locatable o, Map out)

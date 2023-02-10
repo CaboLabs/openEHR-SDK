@@ -4,6 +4,7 @@ abstract class Pathable {
 
    String path
    String dataPath
+   String rmPath     // /content[n]/data/items[m]/value/magnitude
    Pathable parent
 
    // to be implemented by each pathable class to fill path, dataPath and parent values

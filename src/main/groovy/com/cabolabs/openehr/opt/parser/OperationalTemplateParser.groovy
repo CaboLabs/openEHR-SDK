@@ -262,7 +262,7 @@ class OperationalTemplateParser {
          templateDataPath += '('+ pathCounter[templatePath] +')'
       }
 
-   
+
 
       //println "path: "+ path
       //println node.'@xsi:type'.text() +" "+ path
@@ -310,7 +310,7 @@ class OperationalTemplateParser {
          // parse terminologyID value, we could create CODE_PHRASE and parse this internally
          // name [ ‘(’ version ‘)’ ]
          def tid = node.terminology_id.value.text()
-         
+
          //println "template parser terminology_id: "+ tid
 
          obn.terminologyId = tid
@@ -485,12 +485,12 @@ class OperationalTemplateParser {
       }
       else
       {
-         if ('CODE_PHRASE' == node.rm_type_name.text())
-         {
-            println ">>> PARSING "+ node.rm_type_name.text() +" as ObjectNode"
-            println templatePath
-            println node.'@xsi:type'.text()
-         }
+         // if ('CODE_PHRASE' == node.rm_type_name.text())
+         // {
+         //    println ">>> PARSING "+ node.rm_type_name.text() +" as ObjectNode"
+         //    println templatePath
+         //    println node.'@xsi:type'.text()
+         // }
          // C_COMPLEX_OBJECTs and C_ARCHETYPE_ROOTs will be parsed here.
 
          // println "ObjectNode "+ node.'@xsi:type'.text()
@@ -591,7 +591,7 @@ class OperationalTemplateParser {
          templateDataPath: templateDataPath,
          cardinality:      parseCardinality(attr.cardinality),
          existence:        parseIntervalInt(attr.existence)
-      ) 
+      )
 
       def obn
       attr.children.each { xobn ->
