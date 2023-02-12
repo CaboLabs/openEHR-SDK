@@ -26,11 +26,11 @@ import com.cabolabs.openehr.dto_1_0_2.ehr.EhrDto
 
 
 // TODO: there are no validators for CReal, wichi would work for some values like precision
-class RmValidator {
+class RmValidator2 {
 
    OptManager opt_manager
 
-   RmValidator(OptManager opt_manager)
+   RmValidator2(OptManager opt_manager)
    {
       this.opt_manager = opt_manager
    }
@@ -129,13 +129,8 @@ class RmValidator {
          return opt_not_found(template_id)
       }
 
-      // pathable path and dataPath are loaded only from parsing,
-      // not from creating RM instances programatically, but are used
-      // to report errors so we need to calculate them here
-      if (!rm_object.path)
-      {
-         rm_object.fillPathable(null, null)
-      }
+      // dataPath is needed for error reporting and calculated while the object gets validated
+      rm_object.dataPath = '' // avoid using / to avoid all checks, so / could be added at the end
 
       return validate(rm_object, opt.definition)
    }
@@ -183,29 +178,35 @@ class RmValidator {
       return false
    }
 
-   private RmValidationReport validate(EhrStatus e, ObjectNode o)
+   private RmValidationReport validate(EhrStatus status, ObjectNode o)
    {
       RmValidationReport report = new RmValidationReport()
 
-      report.append(_validate_locatable(e, o)) // validates name
+      report.append(_validate_locatable(status, o)) // validates name
 
-      // FIXME: shouldn't this validate alternatives for the EHR_STATUS.other_details?
+      // NOTE: shouldn't this validate alternatives for the EHR_STATUS.other_details?
 
+      // checking mandatory fields that are not archetyped
+      if (!status.subject)
+      {
+         report.addError("/subject", "attribute is not present but is required")
+      }
+
+      // checking archetyped fields
       // the attributes that are optional in the opt should be checked by the parent to avoid calling
       // with null because polymorphism can't find the right method. Also if the constraint is null,
       // anything matches.
       def a_other_details = o.getAttr('other_details')
       if (a_other_details)
       {
-         if (e.other_details)
+         if (status.other_details)
          {
             // Validate the type in the instance is allowed by the template
             // FIXME: the type validation should be implemented on the rest of the validators!
-            //def allowed_types = a_other_details.children*.rmTypeName
-            //if (!allowed_types.contains(classToRm(e.other_details.getClass().getSimpleName())))
-            if (checkAllowedType(a_other_details, e.other_details, report)) // only continue if the type is allowed
+            if (checkAllowedType(a_other_details, status.other_details, report)) // only continue if the type is allowed
             {
-               report.append(validate(e.other_details, a_other_details))
+               status.other_details.dataPath = '/other_details'
+               report.append(validate(status.other_details, a_other_details))
             }
          }
          else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
@@ -219,6 +220,170 @@ class RmValidator {
 
       return report
    }
+
+
+   /**
+    * Parent is the object wit ha container attribute (e.g. ItemTree)
+    * Container is the value of the container attribute (e.g. ItemTree.items)
+    * cma is the C_MULTIPLE_ATTRIBUTE AOM constraint for the container attribute
+    */
+   // all container attributes will get here
+   private RmValidationReport validate(Locatable parent, List container, AttributeNode cma)
+   {
+      //println "validate container attribute: "+ cma.rmAttributeName
+      //println cma.templatePath
+      //println cma.templateDataPath
+      //println cma.dataPath
+
+      RmValidationReport report = new RmValidationReport()
+
+      //println cma.cardinality.interval
+      //println cma.dataPath +" size: "+ container.size()
+
+      if (!cma.cardinality.interval.has(container.size()))
+      {
+         report.addError(parent.dataPath +'/'+ cma.rmAttributeName, "Number of objects in container ${container.size()} doesn't match cardinality constraint "+ cma.cardinality.interval.toString())
+      }
+
+
+
+      // nothing else to validate?
+      if (!cma.children) return report
+
+
+
+      // TODO: validate occurrences of items in the container: for each c_object in cma.children,
+      //       1. count all items in container with the same c_object.node_id
+      //       2. the count should be in c_object.occurrences
+      // So the occurrences are validated in the parent attribute, not in the same node validation!
+
+
+
+      // validate each item in the container
+
+      // println "mattr children "+ cma.children*.templateDataPath
+      // println "container node_ids "+ container*.archetype_node_id
+      def alternative_cobjs, cobj, error_report, name_constraint
+      container.eachWithIndex { item, i ->
+
+         item.dataPath = parent.dataPath +'/'+ cma.rmAttributeName +'('+ i +')'
+
+         // println "item "+ item.archetype_node_id
+         // println cma.children*.archetypeId
+         // println cma.children*.nodeId
+
+         // FIXME: this is unreliable, there could be many child objects for the CATTR that are
+         //        C_ARCHETYPE_ROOT with the same archetypeId. The name is added to differentiate.
+         //
+         // each item in the collection should validate against the child object with the same node_id
+         //
+         // NOTE: the code below is safer since it checks if the name is not there when there are multiple
+         //       alternatives with the same archetype_node_id.
+         alternative_cobjs = cma.children.findAll {
+            //println it.nodeId
+            if (it.type == 'C_ARCHETYPE_ROOT')
+               it.archetypeId == item.archetype_node_id
+            else
+               it.nodeId == item.archetype_node_id
+         }
+
+
+         // there is an object in the data that is not defined in the template
+         if (!alternative_cobjs)
+         {
+            report.addError(item.dataPath, "No c_object found with archetype_node_id ${item.archetype_node_id}, the RM object contains an item that is not defined in the template")
+         }
+
+
+         // println "item "+ item.archetype_node_id
+         // println "alternative_cobjs "+ alternative_cobjs
+         // println "alternative node_ids "+ alternative_cobjs*.nodeId
+
+         // When there is only one alternative, that is matched by archetype_id or node_id only
+         if (alternative_cobjs.size() == 1)
+         {
+            cobj = alternative_cobjs[0]
+         }
+         else // When there are multiple alternatives, the specific C_OBJECT should be matched by name too (in OPT 1.4 there is no way around)
+         {
+            // FIXME: when the container has a generated object to comply with the existence and the alternatives in the attribute are only slots,
+            // then the object will match all the alternatives by name since for slots the validation returns true
+
+            // if there is a constraint for the name, we should try to use the constrained name first, then the text associated to the node by the node_id
+            cobj = alternative_cobjs.find { // it = alt_obj
+
+               name_constraint = it.getAttr('name')
+
+               // if one of the name constraints validates, that is th cobj that will be used to validate the item
+               if (name_constraint)
+               {
+                  // println "validate data name: "+ item.name.value
+                  // println "against "+ name_constraint.children[0].getAttr('value')?.children?.getAt(0)?.item?.list
+                  error_report = validate(item, item.name, name_constraint, '/name')
+
+                  //println error_report.errors
+
+                  // if there are no validation errors, then the data matches this alt_cobj
+                  return !error_report.hasErrors()
+               }
+
+               return false
+            }
+
+            //println obj
+
+            // if there are no constraints for the name or none matches the value for the name,
+            // try finding by the AOM node text
+            if (!cobj)
+            {
+               // match by the node text
+               cobj = alternative_cobjs.find{
+                  it.text == item.name.value
+               }
+            }
+
+            //println obj
+
+            // if none matches it means:
+            // a. there is a constraint validation issue (none matches the OPT) or
+            // b. altenrative nodes are not uniquely named (this could be tested when the OPT is loaded)
+            if (!cobj)
+            {
+               //println cma.templateDataPath
+               report.addError(cma.templateDataPath, "Multiple alternative constraint objects found for archetype_node_id '${item.archetype_node_id}' at ${item.dataPath}, none matches the constraints for the name or the current node text '${item.name.value}' in the OPT")
+            }
+
+            //println ""
+         }
+
+
+         // println "------"
+         // println cma.children
+         // println obj
+         // println item
+         // println item.archetype_node_id
+
+         //println obj.type
+         // println "RM TYPE: "+ item.getClass().getSimpleName()
+         // println "RM PATH: "+ item.dataPath
+         // println "RM NAME: "+ item.name.value
+
+         // println "CATTR RM ATTR NAME: "+ cma.rmAttributeName
+         // println "CATTR PATH: "+ cma.dataPath
+         // println "CATTR TPATH: "+ cma.templateDataPath
+         // println "CATTR CHILDREN TEXT:"+ cma.children*.text
+         // println "CATTR CHILDREN RM TYPE: "+ cma.children*.rmTypeName
+         // println ""
+
+         if (cobj && checkAllowedType(cma, item, report)) // only continue if the type is allowed
+         {
+            report.append(validate(item, cobj))
+         }
+      }
+
+      return report
+   }
+
 
    // Person, Org, Group, Agent validator
    private RmValidationReport validate(Actor p, ObjectNode o)
@@ -438,7 +603,7 @@ class RmValidator {
             //println "composition content "+ c.content
             //println a_content
             //println a_content.children*.rmTypeName
-            report.append(validate(c.content, a_content)) // validate container
+            report.append(validate(c, c.content, a_content)) // validate container
          }
          else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
          {
@@ -465,7 +630,7 @@ class RmValidator {
          {
             if (checkAllowedType(a_items, f.items, report)) // only continue if the type is allowed
             {
-               report.append(validate(f.items, a_items))
+               report.append(validate(f, f.items, a_items))
             }
          }
          else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
@@ -473,7 +638,7 @@ class RmValidator {
             if (!a_items.existence.has(0))
             {
                // FIXME: this should be the datapath from the parent rm object added to the attribute
-               report.addError("/items", "attribute is not present but is required")
+               report.addError(f.dataPath + "/items", "attribute is not present but is required")
             }
          }
       }
@@ -489,7 +654,7 @@ class RmValidator {
                // NOTE: not sure if a subfolder could comply with a totally different OPT (so the validator
                // might not be correct here) or if the main OPT should contain all possible archetypes for subfolders.
                // This is validating like the second option.
-               report.append(validate(f.folders, a_folders))
+               report.append(validate(f, f.folders, a_folders))
             }
          }
          else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
@@ -516,177 +681,18 @@ class RmValidator {
       {
          if (s.items != null)
          {
-            report.append(validate(s.items, a_content)) // validate container
+            report.append(validate(s, s.items, a_content)) // validate container
          }
-         else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         else if (!a_content.existence.has(0))
          {
-            if (!a_content.existence.has(0))
-            {
-               // TODO: fix path to add parents
-               report.addError(o.templateDataPath, "/items attribute is not present but is required")
-            }
+            report.addError(s.dataPath +'/items', "attribute is not present but is required")
          }
       }
 
       return report
    }
 
-   // all container attributes will get here
-   private RmValidationReport validate(List container, AttributeNode c_multiple_attribute)
-   {
-      //println "validate container attribute: "+ c_multiple_attribute.rmAttributeName
-      //println c_multiple_attribute.templatePath
-      //println c_multiple_attribute.templateDataPath
-      //println c_multiple_attribute.dataPath
-
-      RmValidationReport report = new RmValidationReport()
-
-      //println c_multiple_attribute.cardinality.interval
-      //println c_multiple_attribute.dataPath +" size: "+ container.size()
-
-      if (!c_multiple_attribute.cardinality.interval.has(container.size()))
-      {
-         //println "NOOIC: "+ c_multiple_attribute.cardinality.interval +" "+ c_multiple_attribute.templateDataPath
-         // cardinality error
-         // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-         report.addError(c_multiple_attribute.templateDataPath, "Number of objects in container ${container.size()} doesn't match cardinality constraint "+ c_multiple_attribute.cardinality.interval.toString())
-      }
-
-      // existence
-      if (c_multiple_attribute.existence)
-      {
-         def existence = (container != null ? 1 : 0)
-         if (!c_multiple_attribute.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            // It should be the instance path, which needs the parent, to now the data path of the owner of the container, and name of the current attribute
-            // or at least the path from the parent and the name of the container attribute
-            report.addError(c_multiple_attribute.templateDataPath, "Node doesn't match existence")
-         }
-      }
-
-      // validate each item in the container if any
-      // and if c_multiple_attribute has children (if not, any object is valid)
-      if (c_multiple_attribute.children)
-      {
-         // println "mattr children "+ c_multiple_attribute.children*.templateDataPath
-         // println "container node_ids "+ container*.archetype_node_id
-         container.each { item ->
-
-            // println "item "+ item.archetype_node_id
-            // println c_multiple_attribute.children*.archetypeId
-            // println c_multiple_attribute.children*.nodeId
-
-            // FIXME: this is unreliable, there could be many child objects for the CATTR that are
-            //        C_ARCHETYPE_ROOT with the same archetypeId. The name is added to differentiate.
-            //
-            // each item in the collection should validate against the child object with the same node_id
-            //
-            // NOTE: the code below is safer since it checks if the name is not there when there are multiple
-            //       alternatives with the same archetype_node_id.
-            def alternative_objs = c_multiple_attribute.children.findAll{
-               //println it.nodeId
-               if (it.type == 'C_ARCHETYPE_ROOT')
-                  it.archetypeId == item.archetype_node_id
-               else
-                  it.nodeId == item.archetype_node_id
-            }
-
-            def obj
-
-            // println "item "+ item.archetype_node_id
-            // println "alternative_objs "+ alternative_objs
-            // println "alternative node_ids "+ alternative_objs*.nodeId
-
-            // When there is only one alternative, that is matched by archetype_id or node_id only
-            if (alternative_objs.size() == 1)
-            {
-               obj = alternative_objs[0]
-
-               if (!obj)
-               {
-                  report.addError(c_multiple_attribute.templateDataPath, "No object found with node_id ${item.archetype_node_id}")
-               }
-            }
-            else // When there are multiple alternatives, the specicic C_OBJECT should be matched by name too (in OPT 1.4 there is no way around)
-            {
-               // FIXME: when the container has a generated object to comply with the existence and the alternatives in the attribute are only slots,
-               // then the object will match all the alternatives by name since for slots the validation returns true
-
-               // if there is a constraint for the name, we should try to use the constrained name first, then the text associated to the node by the node_id
-               def error_report, name_constraint
-               obj = alternative_objs.find { // it = alt_obj
-
-                  name_constraint = it.getAttr('name')
-
-                  if (name_constraint)
-                  {
-                     // println "validate data name: "+ item.name.value
-                     // println "against "+ name_constraint.children[0].getAttr('value')?.children?.getAt(0)?.item?.list
-                     error_report = validate(item, item.name, name_constraint, '/name')
-
-                     //println error_report.errors
-
-                     // if there are no validation errors, then the data matches this alt_cobj
-                     return !error_report.hasErrors()
-                  }
-
-                  return false
-               }
-
-               //println obj
-
-               // if there are no constraints for the name or none matches the value for the name,
-               // try finding by the AOM node text
-               if (!obj)
-               {
-                  // match by the node text
-                  obj = alternative_objs.find{
-                     it.text == item.name.value
-                  }
-               }
-
-               //println obj
-
-               // if none matches it means a. there is a constraint validation issue (none matches the OPT) or b. altenrative nodes are not uniquely named
-               if (!obj)
-               {
-                  //println c_multiple_attribute.templateDataPath
-                  report.addError(c_multiple_attribute.templateDataPath, "Multiple alternative constraint objects found for archetype_node_id '${item.archetype_node_id}' at ${c_multiple_attribute.templatePath}, none matches the constraints for the name or the current node text '${item.name.value}' in the OPT")
-               }
-
-               //println ""
-            }
-
-
-            // println "------"
-            // println c_multiple_attribute.children
-            // println obj
-            // println item
-            // println item.archetype_node_id
-
-            //println obj.type
-            // println "RM TYPE: "+ item.getClass().getSimpleName()
-            // println "RM PATH: "+ item.dataPath
-            // println "RM NAME: "+ item.name.value
-
-            // println "CATTR RM ATTR NAME: "+ c_multiple_attribute.rmAttributeName
-            // println "CATTR PATH: "+ c_multiple_attribute.dataPath
-            // println "CATTR TPATH: "+ c_multiple_attribute.templateDataPath
-            // println "CATTR CHILDREN TEXT:"+ c_multiple_attribute.children*.text
-            // println "CATTR CHILDREN RM TYPE: "+ c_multiple_attribute.children*.rmTypeName
-            // println ""
-
-            if (obj && checkAllowedType(c_multiple_attribute, item, report)) // only continue if the type is allowed
-            {
-               report.append(validate(item, obj))
-            }
-         }
-      }
-
-      return report
-   }
 
    private RmValidationReport validate_alternatives(Observation ob, List<ObjectNode> os)
    {
@@ -719,9 +725,10 @@ class RmValidator {
          {
             // occurrences error
             // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
+            report.addError(ob.dataPath, "Node doesn't match occurrences")
          }
       }
+
 
       def a_data = o.getAttr('data') // history
 
@@ -729,16 +736,15 @@ class RmValidator {
       {
          if (ob.data) // this is mandatory by the RM
          {
+            ob.data.dataPath = ob.dataPath +'/data'
             report.append(validate(ob.data, a_data))
          }
-         else
+         else if (!a_data.existence.has(0))
          {
-            if (!a_data.existence.has(0))
-            {
-               report.addError(o.templateDataPath, "/data is not present but is required")
-            }
+            report.addError(ob.dataPath +'/data', "/data is not present but is required")
          }
       }
+
 
       def a_state = o.getAttr('state') // history
 
@@ -746,17 +752,14 @@ class RmValidator {
       {
          if (ob.state) // this is mandatory by the RM
          {
+            ob.state.dataPath = ob.dataPath +'/state'
             report.append(validate(ob.state, a_state))
          }
-         else
+         else if (!a_state.existence.has(0))
          {
-            if (!a_state.existence.has(0))
-            {
-               report.addError(o.templateDataPath, "/state is not present but is required")
-            }
+            report.addError(ob.dataPath +'/state', "/state is not present but is required")
          }
       }
-
 
       // TODO: protocol
 
@@ -814,7 +817,7 @@ class RmValidator {
       {
          if (h.events != null)
          {
-            report.append(validate(h.events, a_events)) // validate container
+            report.append(validate(h, h.events, a_events)) // validate container
          }
          else
          {
@@ -1053,7 +1056,7 @@ class RmValidator {
       {
          if (ins.activities != null)
          {
-            report.append(validate(ins.activities, a_activities)) // validate container
+            report.append(validate(ins, ins.activities, a_activities)) // validate container
          }
          else
          {
@@ -1296,16 +1299,14 @@ class RmValidator {
       RmValidationReport report = new RmValidationReport()
 
       // existence
-      if (a.existence)
-      {
-         def existence = (is ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(is.dataPath, "Node doesn't match existence")
-         }
-      }
+      // if (a.existence)
+      // {
+      //    def existence = (is ? 1 : 0)
+      //    if (!a.existence.has(existence))
+      //    {
+      //       report.addError(is.dataPath, "Node doesn't match existence")
+      //    }
+      // }
 
       report.append(validate_alternatives(is, a.children))
 
@@ -1336,30 +1337,25 @@ class RmValidator {
       report.append(_validate_locatable(is, o)) // validates name
 
       // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (is ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
-         }
-      }
+      // if (o.occurrences)
+      // {
+      //    def occurrences = (is ? 1 : 0)
+      //    if (!o.occurrences.has(occurrences))
+      //    {
+      //       report.addError(is.dataPath, "Node doesn't match occurrences")
+      //    }
+      // }
 
       def a_items = o.getAttr('items')
       if (a_items)
       {
          if (is.items != null)
          {
-            report.append(validate(is.items, a_items)) // validate container
+            report.append(validate(is, is.items, a_items)) // validate container
          }
-         else
+         else if (!a_items.existence.has(0))
          {
-            if (!a_items.existence.has(0))
-            {
-               report.addError(is.dataPath + "/items", "is not present but is required")
-            }
+            report.addError(is.dataPath + "/items", "is not present but is required")
          }
       }
 
@@ -1376,7 +1372,6 @@ class RmValidator {
          def existence = (is ? 1 : 0)
          if (!a.existence.has(existence))
          {
-            // existence error
             report.addError(is.dataPath, "Node doesn't match existence")
          }
       }
@@ -1426,13 +1421,13 @@ class RmValidator {
       {
          if (is.items != null)
          {
-            report.append(validate(is.items, a_items)) // validate container
+            report.append(validate(is, is.items, a_items)) // validate container
          }
          else
          {
             if (!a_items.existence.has(0))
             {
-               report.addError(is.dataPath + "/items", "is not present but is required")
+               report.addError(is.dataPath + "/items", "attribute not present but is required")
             }
          }
       }
@@ -1450,8 +1445,6 @@ class RmValidator {
          def existence = (is ? 1 : 0)
          if (!a.existence.has(existence))
          {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
             report.addError(is.dataPath, "Node doesn't match existence")
          }
       }
@@ -1501,14 +1494,11 @@ class RmValidator {
       {
          if (is.rows != null)
          {
-            report.append(validate(is.rows, a_rows)) // validate container
+            report.append(validate(is, is.rows, a_rows)) // validate container
          }
-         else
+         else if (!a_rows.existence.has(0))
          {
-            if (!a_rows.existence.has(0))
-            {
-               report.addError(is.dataPath + "/rows", "is not present but is required")
-            }
+            report.addError(is.dataPath + "/rows", "is not present but is required")
          }
       }
 
@@ -1525,8 +1515,6 @@ class RmValidator {
          def existence = (is ? 1 : 0)
          if (!a.existence.has(existence))
          {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
             report.addError(is.dataPath, "Node doesn't match existence")
          }
       }
@@ -1617,7 +1605,7 @@ class RmValidator {
       {
          if (cl.items != null)
          {
-            report.append(validate(cl.items, a_items)) // validate container
+            report.append(validate(cl, cl.items, a_items)) // validate container
          }
          else
          {
@@ -1683,8 +1671,17 @@ class RmValidator {
       report.append(_validate_locatable(e, o)) // validates name
 
       // occurrences
+      /*
       if (o.occurrences)
       {
+         // FIXME: this is not verifying occurrences, but existence.
+         // occurrences should be calculated depending if the item belongs to a single or multiple attribute
+         // for multiple attribute we should check how many items in the container there are with the same
+         // node_id, then check that amount against the c_object.occurrences
+         // and that is verified by the parent, because each item doesn't know how many siblings with the
+         // same node_id there are in a multiple attribute
+         // on single attributes this way with the 1:0 works, but still this should be testeed in the parent,
+         // but that is redundant since with existence that is covered!
          def occurrences = (e ? 1 : 0)
          if (!o.occurrences.has(occurrences))
          {
@@ -1693,9 +1690,7 @@ class RmValidator {
             report.addError(o.templateDataPath, "Node doesn't match occurrences")
          }
       }
-
-      // TODO: need to pass the path to the DV* validators so the error reporting can
-      // include the path, but should be the data path!
+      */
 
       def a_value = o.getAttr('value')
       if (a_value)
@@ -1707,12 +1702,9 @@ class RmValidator {
                report.append(validate(e, e.value, a_value, "/value"))
             }
          }
-         else
+         else if (!a_value.existence.has(0))
          {
-            if (!a_value.existence.has(0))
-            {
-               report.addError(e.dataPath + "/value", "is not present but is required")
-            }
+            report.addError(e.dataPath + "/value", "is not present but is required")
          }
       }
 
@@ -1743,17 +1735,7 @@ class RmValidator {
    {
       RmValidationReport report = new RmValidationReport()
 
-      // existence
-      if (a.existence)
-      {
-         def existence = (ct ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
+      // existence should be already verified in the parent
 
       report.append(validate_alternatives(parent, ct, a.children, dv_path))
 
@@ -1768,7 +1750,7 @@ class RmValidator {
       for (o in os)
       {
          report = validate(parent, ct, o, dv_path)
-         if (!report.hasErrors())
+         if (!report.hasErrors()) // if there is one alternative that validates the data, then it passes the validation
          {
             return report
          }
@@ -1783,17 +1765,21 @@ class RmValidator {
    {
       RmValidationReport report = new RmValidationReport()
 
+      // validate occurrences for single attributes is analogous to validate the existance, which is validated in the parent
+      // validate the occurrences for multiple attributes is done in the parent, where the collection container is processed
+      // there is no need of validating this here
+      //
       // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (ct ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
-         }
-      }
+      // if (o.occurrences)
+      // {
+      //    def occurrences = (ct ? 1 : 0)
+      //    if (!o.occurrences.has(occurrences))
+      //    {
+      //       // occurrences error
+      //       // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+      //       report.addError(o.templateDataPath, "Node doesn't match occurrences")
+      //    }
+      // }
 
       def a_defining_code = o.getAttr('defining_code')
       if (a_defining_code)
@@ -1802,12 +1788,9 @@ class RmValidator {
          {
             report.append(validate(parent, ct.defining_code, a_defining_code, dv_path + "/defining_code"))
          }
-         else
+         else if (!a_defining_code.existence.has(0))
          {
-            if (!a_defining_code.existence.has(0))
-            {
-               report.addError("/defining_code", "is not present but is required")
-            }
+            report.addError(parent.dataPath + dv_path + "/defining_code", "is not present but is required")
          }
       }
 
@@ -1820,17 +1803,18 @@ class RmValidator {
    {
       RmValidationReport report = new RmValidationReport()
 
+      // already validated in the parent
       // existence
-      if (a.existence)
-      {
-         def existence = (cp ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
+      // if (a.existence)
+      // {
+      //    def existence = (cp ? 1 : 0)
+      //    if (!a.existence.has(existence))
+      //    {
+      //       // existence error
+      //       // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+      //       report.addError(a.templateDataPath, "Node doesn't match existence")
+      //    }
+      // }
 
       report.append(validate_alternatives(parent, cp, a.children, dv_path))
 
@@ -1859,16 +1843,16 @@ class RmValidator {
       RmValidationReport report = new RmValidationReport()
 
       // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (cp ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
-         }
-      }
+      // if (o.occurrences)
+      // {
+      //    def occurrences = (cp ? 1 : 0)
+      //    if (!o.occurrences.has(occurrences))
+      //    {
+      //       // occurrences error
+      //       // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+      //       report.addError(o.templateDataPath, "Node doesn't match occurrences")
+      //    }
+      // }
 
       // specific type constraint validation
       ValidationResult valid = o.isValid(cp)
@@ -1886,16 +1870,16 @@ class RmValidator {
       RmValidationReport report = new RmValidationReport()
 
       // existence
-      if (a.existence)
-      {
-         def existence = (te ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this dv_path is the right one, I guess should be calculated from the instance...
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
+      // if (a.existence)
+      // {
+      //    def existence = (te ? 1 : 0)
+      //    if (!a.existence.has(existence))
+      //    {
+      //       // existence error
+      //       // TODO: not sure if this dv_path is the right one, I guess should be calculated from the instance...
+      //       report.addError(a.templateDataPath, "Node doesn't match existence")
+      //    }
+      // }
 
       report.append(validate_alternatives(parent, te, a.children, dv_path))
 
@@ -1926,18 +1910,17 @@ class RmValidator {
       RmValidationReport report = new RmValidationReport()
 
       // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (te ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
-         }
-      }
+      // if (o.occurrences)
+      // {
+      //    def occurrences = (te ? 1 : 0)
+      //    if (!o.occurrences.has(occurrences))
+      //    {
+      //       // occurrences error
+      //       // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+      //       report.addError(o.templateDataPath, "Node doesn't match occurrences")
+      //    }
+      // }
 
-      // TODO: validate value string if there is any constrain
       def oa = o.getAttr('value')
       if (oa)
       {
@@ -1952,16 +1935,16 @@ class RmValidator {
       RmValidationReport report = new RmValidationReport()
 
       // existence
-      if (a.existence)
-      {
-         def existence = (d ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
+      // if (a.existence)
+      // {
+      //    def existence = (d ? 1 : 0)
+      //    if (!a.existence.has(existence))
+      //    {
+      //       // existence error
+      //       // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+      //       report.addError(a.templateDataPath, "Node doesn't match existence")
+      //    }
+      // }
 
       report.append(validate_alternatives(parent, d, a.children, dv_path))
 
@@ -1992,16 +1975,16 @@ class RmValidator {
       RmValidationReport report = new RmValidationReport()
 
       // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (d ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
-         }
-      }
+      // if (o.occurrences)
+      // {
+      //    def occurrences = (d ? 1 : 0)
+      //    if (!o.occurrences.has(occurrences))
+      //    {
+      //       // occurrences error
+      //       // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
+      //       report.addError(o.templateDataPath, "Node doesn't match occurrences")
+      //    }
+      // }
 
       // TODO: validate numerator and denominator if there is any constrain, and against the type
 

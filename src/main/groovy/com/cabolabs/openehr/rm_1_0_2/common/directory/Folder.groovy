@@ -16,12 +16,12 @@ class Folder extends Locatable {
    @Override
    void fillPathable(Pathable parent, String parentAttribute)
    {
-      this.path = ((parent.path != '/') ? '/' : '') + parentAttribute.replaceAll(/\[\d+\]/, '')
-      this.dataPath = ((parent.dataPath != '/') ? '/' : '') + parentAttribute
+      this.path = ((parent && parent.path != '/') ? '/' : '') + parentAttribute.replaceAll(/\(\d+\)/, '')
+      this.dataPath = ((parent && parent.dataPath != '/') ? '/' : '') + parentAttribute
       this.parent = parent
 
       this.folders.eachWithIndex { folder, i ->
-         folder.fillPathable(this, "folders[$i]")
+         folder.fillPathable(this, "folders($i)")
       }
    }
 }
