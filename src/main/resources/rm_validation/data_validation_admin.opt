@@ -277,8 +277,8 @@
                       <upper_included>true</upper_included>
                       <lower_unbounded>false</lower_unbounded>
                       <upper_unbounded>false</upper_unbounded>
-                      <lower>0</lower>
-                      <upper>1</upper>
+                      <lower>1</lower>
+                      <upper>3</upper>
                     </occurrences>
                     <node_id>at0007</node_id>
                     <attributes xsi:type="C_SINGLE_ATTRIBUTE">
@@ -345,8 +345,8 @@
                       <upper_included>true</upper_included>
                       <lower_unbounded>false</lower_unbounded>
                       <upper_unbounded>false</upper_unbounded>
-                      <lower>0</lower>
-                      <upper>1</upper>
+                      <lower>1</lower>
+                      <upper>5</upper>
                     </occurrences>
                     <node_id>at0008</node_id>
                     <attributes xsi:type="C_SINGLE_ATTRIBUTE">
@@ -383,6 +383,74 @@
                       <upper_unbounded>false</upper_unbounded>
                       <lower>1</lower>
                       <upper>3</upper>
+                    </interval>
+                  </cardinality>
+                </attributes>
+              </children>
+              <children xsi:type="C_COMPLEX_OBJECT">
+                <rm_type_name>CLUSTER</rm_type_name>
+                <occurrences>
+                  <lower_included>true</lower_included>
+                  <upper_included>true</upper_included>
+                  <lower_unbounded>false</lower_unbounded>
+                  <upper_unbounded>false</upper_unbounded>
+                  <lower>0</lower>
+                  <upper>1</upper>
+                </occurrences>
+                <node_id>at0010</node_id>
+                <attributes xsi:type="C_MULTIPLE_ATTRIBUTE">
+                  <rm_attribute_name>items</rm_attribute_name>
+                  <existence>
+                    <lower_included>true</lower_included>
+                    <upper_included>true</upper_included>
+                    <lower_unbounded>false</lower_unbounded>
+                    <upper_unbounded>false</upper_unbounded>
+                    <lower>1</lower>
+                    <upper>1</upper>
+                  </existence>
+                  <children xsi:type="C_COMPLEX_OBJECT">
+                    <rm_type_name>ELEMENT</rm_type_name>
+                    <occurrences>
+                      <lower_included>true</lower_included>
+                      <upper_included>true</upper_included>
+                      <lower_unbounded>false</lower_unbounded>
+                      <upper_unbounded>false</upper_unbounded>
+                      <lower>3</lower>
+                      <upper>5</upper>
+                    </occurrences>
+                    <node_id>at0011</node_id>
+                    <attributes xsi:type="C_SINGLE_ATTRIBUTE">
+                      <rm_attribute_name>value</rm_attribute_name>
+                      <existence>
+                        <lower_included>true</lower_included>
+                        <upper_included>true</upper_included>
+                        <lower_unbounded>false</lower_unbounded>
+                        <upper_unbounded>false</upper_unbounded>
+                        <lower>0</lower>
+                        <upper>1</upper>
+                      </existence>
+                      <children xsi:type="C_COMPLEX_OBJECT">
+                        <rm_type_name>DV_TEXT</rm_type_name>
+                        <occurrences>
+                          <lower_included>true</lower_included>
+                          <upper_included>true</upper_included>
+                          <lower_unbounded>false</lower_unbounded>
+                          <upper_unbounded>false</upper_unbounded>
+                          <lower>1</lower>
+                          <upper>1</upper>
+                        </occurrences>
+                        <node_id />
+                      </children>
+                    </attributes>
+                  </children>
+                  <cardinality>
+                    <is_ordered>false</is_ordered>
+                    <is_unique>false</is_unique>
+                    <interval>
+                      <lower_included>true</lower_included>
+                      <lower_unbounded>false</lower_unbounded>
+                      <upper_unbounded>true</upper_unbounded>
+                      <lower>3</lower>
                     </interval>
                   </cardinality>
                 </attributes>
@@ -438,6 +506,14 @@
         <term_definitions code="at0008">
           <items id="description">*</items>
           <items id="text">text occur 1..5</items>
+        </term_definitions>
+        <term_definitions code="at0010">
+          <items id="description">*</items>
+          <items id="text">data validation cluster no constraints</items>
+        </term_definitions>
+        <term_definitions code="at0011">
+          <items id="description">*</items>
+          <items id="text">text occurs 3..5</items>
         </term_definitions>
       </children>
       <cardinality>

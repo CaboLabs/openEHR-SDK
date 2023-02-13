@@ -1695,6 +1695,7 @@ class OpenEhrJsonParserQuick {
       String type, method
 
       json.items.eachWithIndex { item, i ->
+
          type = item._type
          if (!type)
          {
@@ -1702,11 +1703,9 @@ class OpenEhrJsonParserQuick {
          }
          method = 'parse'+ type
 
-         c.items.add(
-            this."$method"(
-               item, c
-            )
-         )
+         if (!c.items) c.items = []
+
+         c.items.add(this."$method"(item, c))
       }
 
       return c

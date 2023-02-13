@@ -6,7 +6,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DataValue
 
 class Cluster extends Item {
 
-   List<Item> items = []
+   List<Item> items
 
    @Override
    void fillPathable(Pathable parent, String parentAttribute)
@@ -15,7 +15,7 @@ class Cluster extends Item {
       this.dataPath = ((parent.dataPath != '/') ? '/' : '') + parentAttribute
       this.parent = parent
 
-      this.items.eachWithIndex{ item, i ->
+      this.items?.eachWithIndex{ item, i ->
          item.fillPathable(this, "items[$i]")
       }
    }

@@ -242,7 +242,7 @@ class RmValidator2 {
 
       if (!cma.cardinality.interval.has(container.size()))
       {
-         report.addError(parent.dataPath +'/'+ cma.rmAttributeName, "Number of objects in container ${container.size()} doesn't match cardinality constraint "+ cma.cardinality.interval.toString())
+         report.addError(parent.dataPath +'/'+ cma.rmAttributeName, "Number of objects in container (${container.size()}) violates the cardinality constraint "+ cma.cardinality.interval.toString())
       }
 
 
@@ -1591,8 +1591,6 @@ class RmValidator2 {
          def occurrences = (cl ? 1 : 0)
          if (!o.occurrences.has(occurrences))
          {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
             report.addError(o.templateDataPath, "Node doesn't match occurrences")
          }
       }
@@ -1604,12 +1602,9 @@ class RmValidator2 {
          {
             report.append(validate(cl, cl.items, a_items)) // validate container
          }
-         else
+         else if (!a_items.existence.has(0))
          {
-            if (!a_items.existence.has(0))
-            {
-               report.addError(cl.dataPath + "/items", "is not present but is required")
-            }
+            report.addError(cl.dataPath + "/items", "Attribute is not present but it's required")
          }
       }
 

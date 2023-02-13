@@ -45,16 +45,16 @@
         "external_ref": {
             "id": {
                 "_type": "HIER_OBJECT_ID",
-                "value": "374ae384-350f-44b5-90f1-7bd8838c0b42"
+                "value": "13ca860a-5fa6-4769-b3da-1c8ae616920a"
             },
             "namespace": "DEMOGRAPHIC",
             "type": "PERSON"
         },
-        "name": "Dr. House"
+        "name": "Dr. Yamamoto"
     },
     "context": {
         "start_time": {
-            "value": "2023-02-13T00:02:09.196-03:00"
+            "value": "2023-02-13T12:12:28.221-03:00"
         },
         "setting": {
             "value": "home",
@@ -128,7 +128,7 @@
                                 "archetype_node_id": "at0007",
                                 "value": {
                                     "_type": "DV_TEXT",
-                                    "value": "VPyuHbjdRnHLDsZywqJ.GsGAeiNj MVigTzlTZXMmMA.mPgIwYpSnLIvIPqDcPH.ZaGtnnwnfbCTIk RUMMuSXq,yjmYVAwUpymoahhELLTTQyiY,sSXUl,LTyGCpXlovu,gVNDgPekahZVagubakJNQccKurYyWEefbXgseWDWkgfg.VUABD,kguHaelSUIIW,DUPVc,CxfOdVHGLmCCvpxQyMJi.GdgjAGYNLsOiWNTIfXEblImCfLLgPeuzNUXIIaK.WwAH,kTiBShNdWoDqsygruvzJQoPiWCHRws.V,"
+                                    "value": "fOxyKAMnoIyCQDbfMEqYJDaFpAEqkdfRFqPOnR hdRzaQLUC,TwirSKuHnLlBEG,cVoR.mvGpCXueN.qPDZJld.afGuPaunQJwMyJWCWESKMawvU.ZlbcayvsYzcoDqCFMMuPTt wryDdZui,wuxmzfyRZtQRkbHQMycCOvmLdCcGVu,zpxAhMSGunbHFjLxlsvTjPxTfKGXIpHXrdhreaQkaklxbxEwExQlabstymgw,WeyCpIZzzeo f,RAsLwkwaBkKFRPHRYiVKRcaMoQUtHhnlitAyTSgYmpTPnLLgB"
                                 }
                             }
                         ]
@@ -150,7 +150,29 @@
                                 "archetype_node_id": "at0008",
                                 "value": {
                                     "_type": "DV_TEXT",
-                                    "value": "Sl,eJfbzqkiAVmQvaNBooYNafwmbXhXqsEcIlWQATmOAyvzbcyq fSnexHc,twElhirpWLTIpdTZ.,EKgzlfGiXAb x.NFROgfrBIxpDkjWNafTRxDRfbTNZMDR.zPfxdFCWJUzs rJqMKyRDkRRbhxiWKgYrbtpywmsXwZpBSChpPRrN,QIewfXxIMhV.ScRDAgXalPbMmpmJSEJDTutb,bEqZjWY,mddnfvjhRlRIHIn.jnacVUUVDLuSKyDkEGCvGtLMEfsaYCBaM.DDgUkyXgKkmS.MGsoyvwzVspdos"
+                                    "value": "oXCZG.FTUBOGgdt byJwVHhOXZsPsRh.tKFYQk jz SGJcKreUxRFTmYuV,gteAmDesYX tdOLoVzemU ajUhlGBwpXHuc.oXWv  puslV.avnLFVJCYGcYIShzskxw,izxw.pWRGqScHwAVY Cs,xJSTxa.Em zuDXpBQk.FWjtuSdToSFafqfMnleomlwRddUGFDtNWX.wmoPKhrLFiiFs.pLsSNXQxfn,LLEhkbQtCJZew.LQKpGUkfwUfEHyFU.NTnZysUTQHWzqMuEWp,c EuLFtLMoAqrdRwF,qdJI"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "data validation cluster no constraints"
+                        },
+                        "archetype_node_id": "at0010",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "text occurs 3..5"
+                                },
+                                "archetype_node_id": "at0011",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "KsNun..rdaVhWcEGXReGVjPvr.vnMuClcnyTfcBiKyu Oph GClRFIvNtpgqaMOuaivqJVjsvPrPgcUr JjjEYYtFyaHBSaxpRvme,rhXfIePAAxc,mi.GUDb.ZC pFegsbVbfEYVeqPhZrvvWYnnpyGC prIUmgJJEbdqBRqzPTtIrsygONFQDwPZxjyVgeTARBPRE XlZhujqjwUSW.yJQmuQovlSYNARwXrDqzkIWPbIdIPYiBQUiincYEmEkdImHy.I beURSqihkBViAfPdQfdP.odQUWqrrSTTOatT"
                                 }
                             }
                         ]

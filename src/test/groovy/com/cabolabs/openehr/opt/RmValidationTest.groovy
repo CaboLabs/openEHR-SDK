@@ -285,15 +285,13 @@ class RmValidationTest extends GroovyTestCase {
          println '11: '+ error
       }
 
-      println report.errors
+      //println report.errors
 
       assert report.errors
    }
 
    void testDataValidationAdmin2()
    {
-      println "dv2"
-
       Composition c = load_compo(PS +"rm_validation"+ PS +"data_validation_admin_2.json")
       OptManager opt_manager = init_manager(PS + "rm_validation")
 
@@ -302,6 +300,52 @@ class RmValidationTest extends GroovyTestCase {
 
       report.errors.each { error ->
          println '12: '+ error
+      }
+
+      assert report.errors
+   }
+
+   void testDataValidationAdmin3()
+   {
+      Composition c = load_compo(PS +"rm_validation"+ PS +"data_validation_admin_3.json")
+      OptManager opt_manager = init_manager(PS + "rm_validation")
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(c, "")
+
+      report.errors.each { error ->
+         println '13: '+ error
+      }
+
+      assert report.errors
+   }
+
+   void testDataValidationAdmin4()
+   {
+      Composition c = load_compo(PS +"rm_validation"+ PS +"data_validation_admin_4.json")
+      OptManager opt_manager = init_manager(PS + "rm_validation")
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(c, "")
+
+      report.errors.each { error ->
+         println '14: '+ error
+      }
+
+      assert report.errors
+   }
+
+
+   void testDataValidationAdmin5()
+   {
+      Composition c = load_compo(PS +"rm_validation"+ PS +"data_validation_admin_5.json")
+      OptManager opt_manager = init_manager(PS + "rm_validation")
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(c, "")
+
+      report.errors.each { error ->
+         println '15: '+ error
       }
 
       assert report.errors
