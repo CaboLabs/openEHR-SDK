@@ -252,10 +252,20 @@ class RmValidator2 {
 
 
 
-      // TODO: validate occurrences of items in the container: for each c_object in cma.children,
-      //       1. count all items in container with the same c_object.node_id
-      //       2. the count should be in c_object.occurrences
+      // Validate occurrences of items in the container: for each c_object in cma.children,
+      //   1. count all items in container with the same c_object.node_id
+      //   2. the count should be in c_object.occurrences
       // So the occurrences are validated in the parent attribute, not in the same node validation!
+      def sibling_count
+      cma.children.each { c_object ->
+
+         sibling_count = container.count { it.archetype_node_id == c_object.nodeId }
+
+         if (!c_object.occurrences?.has(sibling_count))
+         {
+            report.addError(parent.dataPath +'/'+ cma.rmAttributeName, "Children with archetype_node_id=${c_object.nodeId} occurs ${sibling_count} times, violates occurrences constraint ${c_object.occurrences.toString()}")
+         }
+      }
 
 
 
@@ -998,15 +1008,13 @@ class RmValidator2 {
          {
             if (checkAllowedType(a_data, ev.data, report)) // only continue if the type is allowed
             {
+               ev.data.dataPath = ev.dataPath +'/data'
                report.append(validate(ev.data, a_data))
             }
          }
-         else
+         else if (!a_data.existence.has(0))
          {
-            if (!a_data.existence.has(0))
-            {
-               report.addError(o.templateDataPath, "/data is not present but is required")
-            }
+            report.addError(ev.dataPath +'/data', "/data is not present but is required")
          }
       }
 
@@ -1058,13 +1066,10 @@ class RmValidator2 {
          {
             report.append(validate(ins, ins.activities, a_activities)) // validate container
          }
-         else
+         // if the container attribute is null the existence is validated in the parent object
+         else if (!a_activities.existence.has(0))
          {
-            // if the container attribute is null the existence is validated in the parent object
-            if (!a_activities.existence.has(0))
-            {
-               report.addError(ins.dataPath + "/activities", "is not present but is required")
-            }
+            report.addError(ins.dataPath + "/activities", "is not present but is required")
          }
       }
 
@@ -1099,16 +1104,13 @@ class RmValidator2 {
          {
             if (checkAllowedType(a_description, act.description, report)) // only continue if the type is allowed
             {
+               act.description.dataPath = act.dataPath +'/description'
                report.append(validate(act.description, a_description))
             }
          }
-         else
+         else if (!a_description.existence.has(0))
          {
-            // TODO: should validate existence if the attribute node is not null
-            if (!a_description.existence.has(0))
-            {
-               report.addError(o.templateDataPath, "/description is not present but is required")
-            }
+            report.addError(act.dataPath +'/description', "/description is not present but is required")
          }
       }
 
@@ -1160,16 +1162,13 @@ class RmValidator2 {
          {
             if (checkAllowedType(a_description, ac.description, report)) // only continue if the type is allowed
             {
+               ac.description.dataPath = ac.dataPath +'/description'
                report.append(validate(ac.description, a_description))
             }
          }
-         else
+         else if (!a_description.existence.has(0))
          {
-            // TODO: should validate existence if the attribute node is not null
-            if (!a_description.existence.has(0))
-            {
-               report.addError(o.templateDataPath, "/description is not present but is required")
-            }
+            report.addError(ac.dataPath +'/description', "/description is not present but is required")
          }
       }
 
@@ -1221,15 +1220,13 @@ class RmValidator2 {
          {
             if (checkAllowedType(a_data, ae.data, report)) // only continue if the type is allowed
             {
+               ae.data.dataPath = ae.dataPath +'/data'
                report.append(validate(ae.data, a_data))
             }
          }
-         else
+         else if (!a_data.existence.has(0))
          {
-            if (!a_data.existence.has(0))
-            {
-               report.addError(o.templateDataPath, "/data is not present but is required")
-            }
+            report.addError(ae.dataPath +'/data', "/data is not present but is required")
          }
       }
 

@@ -11,6 +11,8 @@ class RmValidationTest extends GroovyTestCase {
 
    private static String PS = System.getProperty("file.separator")
 
+   /*
+
    void testValidationFromXmlComposition()
    {
       String path = PS +"canonical_xml"+ PS +"test_all_datatypes.composition.en.xml"
@@ -241,5 +243,67 @@ class RmValidationTest extends GroovyTestCase {
       report.errors.each { error ->
          println '10: '+ error
       }
+   }
+   */
+
+   Composition load_compo(String path)
+   {
+      File file = new File(getClass().getResource(path).toURI())
+      String json = file.text
+      def parser = new OpenEhrJsonParserQuick()
+      return (Composition)parser.parseJson(json)
+   }
+
+   OptManager init_manager(String path)
+   {
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(path).toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+      return opt_manager
+   }
+
+   void testDataValidationAdmin1()
+   {
+      Composition c = load_compo(PS +"rm_validation"+ PS +"data_validation_admin_1.json")
+      OptManager opt_manager = init_manager(PS + "rm_validation")
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(c, "")
+
+      /*
+      String template_id = c.archetype_details.template_id.value
+      def opt = opt_manager.getOpt(template_id, "")
+
+      println template_id
+
+      println opt.nodes.each { path, node ->
+         println path +' '+ node.occurrences
+      }
+      */
+
+      report.errors.each { error ->
+         println '11: '+ error
+      }
+
+      println report.errors
+
+      assert report.errors
+   }
+
+   void testDataValidationAdmin2()
+   {
+      println "dv2"
+
+      Composition c = load_compo(PS +"rm_validation"+ PS +"data_validation_admin_2.json")
+      OptManager opt_manager = init_manager(PS + "rm_validation")
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(c, "")
+
+      report.errors.each { error ->
+         println '12: '+ error
+      }
+
+      assert report.errors
    }
 }
