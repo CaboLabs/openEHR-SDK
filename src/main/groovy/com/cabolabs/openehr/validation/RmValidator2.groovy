@@ -201,20 +201,16 @@ class RmValidator2 {
       {
          if (status.other_details)
          {
-            // Validate the type in the instance is allowed by the template
-            // FIXME: the type validation should be implemented on the rest of the validators!
             if (checkAllowedType(a_other_details, status.other_details, report)) // only continue if the type is allowed
             {
                status.other_details.dataPath = '/other_details'
                report.append(validate(status.other_details, a_other_details))
             }
          }
-         else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         else if (!a_other_details.existence.has(0))
          {
-            if (!a_other_details.existence.has(0))
-            {
-               report.addError("/other_details", "attribute is not present but is required")
-            }
+            report.addError("/other_details", "attribute is not present but is required")
          }
       }
 
@@ -410,21 +406,16 @@ class RmValidator2 {
       {
          if (p.details)
          {
-            // Validate the type in the instance is allowed by the template
-            // FIXME: the type validation should be implemented on the rest of the validators!
-            //def allowed_types = a_other_details.children*.rmTypeName
-            //if (!allowed_types.contains(classToRm(e.other_details.getClass().getSimpleName())))
             if (checkAllowedType(a_details, p.details, report)) // only continue if the type is allowed
             {
+               p.details.dataPath = p.dataPath +'/details'
                report.append(validate(p.details, a_details))
             }
          }
-         else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         else if (!a_details.existence.has(0))
          {
-            if (!a_details.existence.has(0))
-            {
-               report.addError("/details", "attribute is not present but is required")
-            }
+            report.addError(p.dataPath +'/details', "attribute is not present but is required")
          }
       }
 
@@ -434,14 +425,13 @@ class RmValidator2 {
       {
          if (p.identities != null)
          {
+            p.identities.dataPath = p.dataPath +'/identities'
             report.append(validate(p.identities, a_identities)) // validate container
          }
-         else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         else if (!a_identities.existence.has(0))
          {
-            if (!a_identities.existence.has(0))
-            {
-               report.addError("/identities", "attribute is not present but is required")
-            }
+            report.addError(p.dataPath +'/identities', "attribute is not present but is required")
          }
       }
 
@@ -450,14 +440,13 @@ class RmValidator2 {
       {
          if (p.contacts != null)
          {
+            p.contacts.dataPath = p.dataPath +'/contacts'
             report.append(validate(p.contacts, a_contacts)) // validate container
          }
-         else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         else if (!a_contacts.existence.has(0))
          {
-            if (!a_contacts.existence.has(0))
-            {
-               report.addError("/contacts", "attribute is not present but is required")
-            }
+            report.addError(p.dataPath + '/contacts', "attribute is not present but is required")
          }
       }
 
@@ -473,29 +462,26 @@ class RmValidator2 {
 
       report.append(_validate_locatable(role, o)) // validates name
 
+      // TODO: these validations should be part of a PARTY validation shared between ACTOR and ROLE to reuse code
+
       // the attributes that are optional in the opt should be checked by the parent to avoid calling
       // with null because polymorphism can't find the right method. Also if the constraint is null,
       // anything matches.
       def a_details = o.getAttr('details')
       if (a_details)
       {
-         if (role.details)
+         if (p.details)
          {
-            // Validate the type in the instance is allowed by the template
-            // FIXME: the type validation should be implemented on the rest of the validators!
-            //def allowed_types = a_other_details.children*.rmTypeName
-            //if (!allowed_types.contains(classToRm(e.other_details.getClass().getSimpleName())))
-            if (checkAllowedType(a_details, role.details, report)) // only continue if the type is allowed
+            if (checkAllowedType(a_details, p.details, report)) // only continue if the type is allowed
             {
-               report.append(validate(role.details, a_details))
+               p.details.dataPath = p.dataPath +'/details'
+               report.append(validate(p.details, a_details))
             }
          }
-         else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         else if (!a_details.existence.has(0))
          {
-            if (!a_details.existence.has(0))
-            {
-               report.addError("/details", "attribute is not present but is required")
-            }
+            report.addError(p.dataPath +'/details', "attribute is not present but is required")
          }
       }
 
@@ -503,32 +489,30 @@ class RmValidator2 {
       def a_identities = o.getAttr('identities')
       if (a_identities)
       {
-         if (role.identities != null)
+         if (p.identities != null)
          {
-            report.append(validate(role.identities, a_identities)) // validate container
+            p.identities.dataPath = p.dataPath +'/identities'
+            report.append(validate(p.identities, a_identities)) // validate container
          }
-         else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         else if (!a_identities.existence.has(0))
          {
-            if (!a_identities.existence.has(0))
-            {
-               report.addError("/identities", "attribute is not present but is required")
-            }
+            report.addError(p.dataPath +'/identities', "attribute is not present but is required")
          }
       }
 
       def a_contacts = o.getAttr('contacts')
       if (a_contacts)
       {
-         if (role.contacts != null)
+         if (p.contacts != null)
          {
-            report.append(validate(role.contacts, a_contacts)) // validate container
+            p.contacts.dataPath = p.dataPath +'/contacts'
+            report.append(validate(p.contacts, a_contacts)) // validate container
          }
-         else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         else if (!a_contacts.existence.has(0))
          {
-            if (!a_contacts.existence.has(0))
-            {
-               report.addError("/contacts", "attribute is not present but is required")
-            }
+            report.addError(p.dataPath + '/contacts', "attribute is not present but is required")
          }
       }
 
@@ -550,9 +534,7 @@ class RmValidator2 {
          def occurrences = (pi ? 1 : 0)
          if (!o.occurrences.has(occurrences))
          {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
+            report.addError(pi.dataPath, "Node doesn't match occurrences")
          }
       }
 
@@ -563,15 +545,13 @@ class RmValidator2 {
          {
             if (checkAllowedType(a_details, pi.details, report)) // only continue if the type is allowed
             {
+               pi.details.dataPath = pi.dataPath +'/details'
                report.append(validate(pi.details, a_details))
             }
          }
-         else
+         else if (!a_details.existence.has(0))
          {
-            if (!a_details.existence.has(0))
-            {
-               report.addError(o.templateDataPath, "/details is not present but is required")
-            }
+            report.addError(pi.dataPath +'/details', "/details is not present but is required")
          }
       }
 
@@ -594,14 +574,13 @@ class RmValidator2 {
       {
          if (c.context)
          {
+            c.context.dataPath = '/context'
             report.append(validate(c.context, a_context))
          }
-         else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         else if (!a_context.existence.has(0))
          {
-            if (!a_context.existence.has(0))
-            {
-               report.addError("/context", "attribute is not present but is required")
-            }
+            report.addError("/context", "attribute is not present but is required")
          }
       }
 
@@ -610,17 +589,11 @@ class RmValidator2 {
       {
          if (c.content != null)
          {
-            //println "composition content "+ c.content
-            //println a_content
-            //println a_content.children*.rmTypeName
             report.append(validate(c, c.content, a_content)) // validate container
          }
-         else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         else if (!a_content.existence.has(0))
          {
-            if (!a_content.existence.has(0))
-            {
-               report.addError("/content", "attribute is not present but is required")
-            }
+            report.addError("/content", "attribute is not present but is required")
          }
       }
 
@@ -643,13 +616,9 @@ class RmValidator2 {
                report.append(validate(f, f.items, a_items))
             }
          }
-         else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         else if (!a_items.existence.has(0))
          {
-            if (!a_items.existence.has(0))
-            {
-               // FIXME: this should be the datapath from the parent rm object added to the attribute
-               report.addError(f.dataPath + "/items", "attribute is not present but is required")
-            }
+            report.addError(f.dataPath + "/items", "attribute is not present but is required")
          }
       }
 
@@ -667,13 +636,9 @@ class RmValidator2 {
                report.append(validate(f, f.folders, a_folders))
             }
          }
-         else // parent validates the existence if the attribute is null: should validate existence 0 of the attr
+         else if (!a_folders.existence.has(0))
          {
-            if (!a_folders.existence.has(0))
-            {
-               // FIXME: this should be the datapath from the parent rm object added to the attribute
-               report.addError("/folders", "attribute is not present but is required")
-            }
+            report.addError(f.dataPath + "/folders", "attribute is not present but is required")
          }
       }
 
@@ -733,8 +698,6 @@ class RmValidator2 {
          def occurrences = (ob ? 1 : 0)
          if (!o.occurrences.has(occurrences))
          {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
             report.addError(ob.dataPath, "Node doesn't match occurrences")
          }
       }
@@ -887,15 +850,13 @@ class RmValidator2 {
          {
             if (checkAllowedType(a_data, e.data, report)) // only continue if the type is allowed
             {
+               e.data.dataPath = e.dataPath +'/data'
                report.append(validate(e.data, a_data))
             }
          }
-         else
+         else if (!a_data.existence.has(0))
          {
-            if (!a_data.existence.has(0))
-            {
-               report.addError(o.templateDataPath, "/data is not present but is required")
-            }
+            report.addError(e.dataPath +'/data', "/data is not present but is required")
          }
       }
 
@@ -933,8 +894,6 @@ class RmValidator2 {
          def occurrences = (e ? 1 : 0)
          if (!o.occurrences.has(occurrences))
          {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
             report.addError(o.templateDataPath, "Node doesn't match occurrences")
          }
       }
@@ -947,15 +906,13 @@ class RmValidator2 {
          {
             if (checkAllowedType(a_data, e.data, report)) // only continue if the type is allowed
             {
+               e.data.dataPath = e.dataPath +'/data'
                report.append(validate(e.data, a_data))
             }
          }
-         else
+         else if (!a_data.existence.has(0))
          {
-            if (!a_data.existence.has(0))
-            {
-               report.addError(o.templateDataPath, "/data is not present but is required")
-            }
+            report.addError(e.dataPath +'/data', "/data is not present but is required")
          }
       }
 
@@ -1206,8 +1163,6 @@ class RmValidator2 {
          def occurrences = (ae ? 1 : 0)
          if (!o.occurrences.has(occurrences))
          {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
             report.addError(o.templateDataPath, "Node doesn't match occurrences")
          }
       }
@@ -1276,14 +1231,22 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      if (context.other_context)
+      def attr = o.getAttr('other_context')
+
+      if (attr) // if the attribute node is null, all objects validate
       {
-         report.append(validate(context.other_context, o.getAttr('other_context')))
-      }
-      else
-      {
-         // TODO: the existence of the attribute when it's null should be checked by the parent
-         // because polymorphism can't choose the right method to call with a null value
+         if (context.other_context)
+         {
+            if (checkAllowedType(attr, context.other_context, report)) // only continue if the type is allowed
+            {
+               context.other_context.dataPath = context.dataPath +'/other_context'
+               report.append(validate(context.other_context, attr))
+            }
+         }
+         else if (!attr.existence.has(0))
+         {
+            report.addError(context.dataPath +'/other_context', "/other_context is not present but is required")
+         }
       }
 
       // TODO: is 'participations' archetypable?
@@ -1556,6 +1519,7 @@ class RmValidator2 {
          }
       }
 
+      is.item.dataPath = is.dataPath +'/item'
       report.append(validate(is.item, o.getAttr('item')))
 
       return report
@@ -2109,7 +2073,7 @@ class RmValidator2 {
          }
       }
 
-      // TODO: validate magnitude
+      // validate magnitude
       def a_magnitude = o.getAttr('magnitude')
       if (a_magnitude)
       {
@@ -2117,12 +2081,9 @@ class RmValidator2 {
          {
             report.append(validate(parent, d.magnitude, a_magnitude, dv_path +'/magnitude'))
          }
-         else
+         else if (!a_magnitude.existence.has(0))
          {
-            if (!a_magnitude.existence.has(0))
-            {
-               report.addError("'${o.templateDataPath}' /magnitude is not present but is required")
-            }
+            report.addError(parent.dataPath + dv_path +'/magnitude', '/magnitude is not present but is required')
          }
       }
 
@@ -2246,12 +2207,9 @@ class RmValidator2 {
          {
             report.append(validate(parent, d.value, a_value, dv_path +'/value'))
          }
-         else
+         else if (!a_value.existence.has(0))
          {
-            if (!a_value.existence.has(0))
-            {
-               report.addError("'${o.templateDataPath}' /value is not present but is required")
-            }
+            report.addError(parent.dataPath + dv_path +'/value', '/value is not present but is required')
          }
       }
 
