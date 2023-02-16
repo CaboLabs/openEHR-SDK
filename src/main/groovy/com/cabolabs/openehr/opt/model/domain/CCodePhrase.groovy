@@ -36,8 +36,19 @@ class CCodePhrase extends ObjectNode {
     */
    ValidationResult isValid(CodePhrase cp)
    {
-      // TODO: search for the terminologyId in the ref
-      if (this.terminologyRef) return new ValidationResult(isValid: true)
+      // search for the terminologyId in the ref to check the term ID is the same as the one in the template
+      // "terminology:SNOMED-CT?subset=problems"
+      if (this.terminologyRef)
+      {
+         def _terminologyId = this.terminologyRef.split(":")[1].split("\\?")[0]
+
+         if (_terminologyId != cp.terminology_id.value)
+         {
+            return new ValidationResult(isValid: false, message: "terminology '${cp.terminology_id.value}' doesn't match the external terminology ${_terminologyId}")
+         }
+
+         return new ValidationResult(isValid: true)
+      }
 
       def _code = cp.code_string
       def _terminologyId = cp.terminology_id.value

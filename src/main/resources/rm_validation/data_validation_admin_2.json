@@ -308,7 +308,31 @@
                                 "archetype_node_id": "at0011",
                                 "value": {
                                     "_type": "DV_TEXT",
-                                    "value": "KsNun..rdaVhWcEGXReGVjPvr.vnMuClcnyTfcBiKyu Oph GClRFIvNtpgqaMOuaivqJVjsvPrPgcUr JjjEYYtFyaHBSaxpRvme,rhXfIePAAxc,mi.GUDb.ZC pFegsbVbfEYVeqPhZrvvWYnnpyGC prIUmgJJEbdqBRqzPTtIrsygONFQDwPZxjyVgeTARBPRE XlZhujqjwUSW.yJQmuQovlSYNARwXrDqzkIWPbIdIPYiBQUiincYEmEkdImHy.I beURSqihkBViAfPdQfdP.odQUWqrrSTTOatT"
+                                    "value": "value 1"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "text occurs 3..5"
+                                },
+                                "archetype_node_id": "at0011",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "value 2"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "text occurs 3..5"
+                                },
+                                "archetype_node_id": "at0011",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "value 3"
                                 }
                             }
                         ]

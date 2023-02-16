@@ -1136,7 +1136,12 @@ class RmValidator2 {
       // custom cross-field validation for the coded text:
       // if the terminology is 'local' => the name should the the text of the at code
       // in defininig_code.code_string from the OPT
-      if (ct.defining_code.terminology_id.value == 'local')
+      //
+      // NOTE: opt.getTerm() only works if the code_string is in the list in the template, if it's not there, that
+      //       will return null, and null is always different than the value, making the validation to fail, so
+      //       the value is validated ONLY if the defining_code validates OK.
+      //
+      if (ct.defining_code.terminology_id.value == 'local' && !report.hasErrors())
       {
          def valid_coded_value = o.owner.getTerm(findRootRecursive(o).archetypeId, ct.defining_code.code_string)
 
@@ -1178,19 +1183,6 @@ class RmValidator2 {
    private RmValidationReport validate(Pathable parent, CodePhrase cp, AttributeNode a, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // already validated in the parent
-      // existence
-      // if (a.existence)
-      // {
-      //    def existence = (cp ? 1 : 0)
-      //    if (!a.existence.has(existence))
-      //    {
-      //       // existence error
-      //       // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-      //       report.addError(a.templateDataPath, "Node doesn't match existence")
-      //    }
-      // }
 
       report.append(validate_alternatives(parent, cp, a.children, dv_path))
 
