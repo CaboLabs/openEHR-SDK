@@ -1383,9 +1383,11 @@ class RmValidator2 {
       }
       */
 
-      validate_single_attribute_dv(e, '/value', o, 'value', report)
+      //validate_single_attribute_dv(e, e.value, '/value', o, 'value', report)
+      validate_single_attribute(e, o, 'value', report)
 
-      validate_single_attribute_dv(e, '/null_flavour', o, 'null_flavour', report)
+      //validate_single_attribute_dv(e, e.null_flavour, '/null_flavour', o, 'null_flavour', report)
+      validate_single_attribute(e, o, 'null_flavour', report)
 
 
       return report
@@ -1427,7 +1429,7 @@ class RmValidator2 {
 
       // FIXME: this is trying to access the attr name directly from the parent locatable but since it's a structured DV
       //        the value should be taken from the DV not from the LOCATABLE
-      validate_single_attribute_dv(parent, dv_path +'/defining_code', o, 'defining_code', report)
+      validate_single_attribute_dv(parent, ct, dv_path +'/defining_code', o, 'defining_code', report)
 
       // def a_defining_code = o.getAttr('defining_code')
       // if (a_defining_code)
@@ -1551,7 +1553,7 @@ class RmValidator2 {
       //    report.append(validate(parent, te.value, oa, dv_path +"/value"))
       // }
 
-      validate_single_attribute_dv(parent, dv_path +'/value', o, 'value', report)
+      validate_single_attribute_dv(parent, te, dv_path +'/value', o, 'value', report)
 
       return report
    }
@@ -1721,7 +1723,7 @@ class RmValidator2 {
       //    }
       // }
 
-      validate_single_attribute_dv(parent, dv_path +'/magnitude', o, 'magnitude', report)
+      validate_single_attribute_dv(parent, d, dv_path +'/magnitude', o, 'magnitude', report)
 
       return report
    }
@@ -2930,9 +2932,21 @@ class RmValidator2 {
             // this also does the error reporting
             if (checkAllowedType(c_attr, object."$attribute_name", report))
             {
-               // set child dataPath only if child is not null
-               object."$attribute_name".dataPath = object.dataPath +'/'+ attribute_name
-               report.append(validate(object."$attribute_name", c_attr))
+               // =============================================================================================
+               // FIXME: if object."$attribute_name" is not locatable, it should call to a DV validation method
+               // =============================================================================================
+               // validate(Pathable parent, DV dv, AttributeNode a, String dv_path)
+               if (object."$attribute_name" instanceof DataValue) // NOTE: CODE_PHRASE is not a DV!
+               {
+                  report.append(validate(object, object."$attribute_name", c_attr, '/'+ attribute_name))
+               }
+               else
+               {
+                  // set child dataPath only if child is not null
+                  object."$attribute_name".dataPath = object.dataPath +'/'+ attribute_name
+                  report.append(validate(object."$attribute_name", c_attr))
+               }
+
             }
 
             // occurrences
@@ -2970,14 +2984,15 @@ class RmValidator2 {
       }
    }
 
-   private void validate_single_attribute_dv(Locatable parent, String dv_path, ObjectNode o, String attribute_name, RmValidationReport report)
+   // The attribute_name should be read from the parent_dv not from the parent locatable!
+   private void validate_single_attribute_dv(Locatable parent, DataValue parent_dv, String dv_path, ObjectNode o, String attribute_name, RmValidationReport report)
    {
       def c_attr = o.getAttr(attribute_name)
       if (c_attr)
       {
-         if (parent."$attribute_name")
+         if (parent_dv."$attribute_name")
          {
-            report.append(validate(parent, parent."$attribute_name", c_attr, dv_path +'/'+ attribute_name))
+            report.append(validate(parent, parent_dv."$attribute_name", c_attr, dv_path +'/'+ attribute_name))
          }
          else
          {
