@@ -156,7 +156,7 @@ class RmValidator2 {
 
       if (allowed_types.contains(rm_type)) return true
 
-      report.addError(cattr.templateDataPath, "type '${rm_type}' is not allowed here, it should be in ${allowed_types}")
+      report.addError(rm_object.dataPath +'/'+ cattr.rmAttributeName, "type '${rm_type}' is not allowed here, it should be in ${allowed_types}")
       return false
    }
 
@@ -690,17 +690,8 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      report.append(_validate_locatable(ob, o)) // validates name
 
-      // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (ob ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            report.addError(ob.dataPath, "Node doesn't match occurrences")
-         }
-      }
+      report.append(_validate_care_entry(ob, o)) // validates protocol, name
 
 
       def a_data = o.getAttr('data') // history
@@ -734,7 +725,6 @@ class RmValidator2 {
          }
       }
 
-      // TODO: protocol
 
       return report
    }
@@ -828,39 +818,102 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
+
       report.append(_validate_locatable(e, o)) // validates name
 
-      // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (e ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
-         }
-      }
+
+      // TODO: all occurrences checks shoul be moved to another function for reusing the code
+
 
       def a_data = o.getAttr('data') // item_structure
+
+      def type_error = false
 
       if (a_data) // if the attribute node is null, all objects validate
       {
          if (e.data) // this is mandatory by the RM
          {
-            if (checkAllowedType(a_data, e.data, report)) // only continue if the type is allowed
+            // set child dataPath only if child is not null
+            e.data.dataPath = e.dataPath +'/data'
+
+            // only continue if the type is allowed
+            type_error = !checkAllowedType(a_data, e.data, report)
+
+            // occurrences
+            if (a_data.children().size() == 1)
             {
-               e.data.dataPath = e.dataPath +'/data'
-               report.append(validate(e.data, a_data))
+               // this fails if occurrences is 0..0 since data is not null
+               if (!a.children[0].occurrences.has(1))
+               {
+                  // here we need the parent for the dataPath since the data is nul
+                  report.addError(e.dataPath +'/data', "Node doesn't match occurrences")
+               }
+            }
+            else
+            {
+               // for multiple alternativs, if there is one object with occurrences that contains 1, that validates,
+               // in other words the only way of failing wiht nultiple alternatives and not null value is if
+               // occurrences for all alternatives are 0..0
+               if (!a.children.find{ it.occurrences.has(1) })
+               {
+                  report.addError(e.dataPath +'/data', "Node doesn't match occurrences")
+               }
             }
          }
-         else if (!a_data.existence.has(0))
+         // the only way of violating existence here is with 1..1 so it's checked only if the value is null
+         else
          {
-            report.addError(e.dataPath +'/data', "/data is not present but is required")
+            if (!a_data.existence.has(0))
+            {
+               report.addError(e.dataPath +'/data', "/data is not present but is required")
+            }
+
+            // occurrences
+
+            // For a null value, the occurrences constraints should be checked on the parent object,
+            // because with a null value, the dataPath can't be retrieved to set it on the error report.
+            // With a not null value, any existence will pass and occurrences 0..0 will fail.
+
+            if (a_data.children().size() == 1)
+            {
+               if (!a.children[0].occurrences.has(0))
+               {
+                  // here we need the parent for the dataPath since the data is nul
+                  report.addError(e.dataPath +'/data', "Node doesn't match occurrences")
+               }
+            }
+            else
+            {
+               // for multiple alternativs, a null value will always validate since all occurrences.lower == 0
+            }
+         }
+
+         // Allow to validate with a null value, this is used to validate against occurrences,
+         // but only if there is not type error
+         if (!type_error)
+         {
+            report.append(validate(e.data, a_data))
          }
       }
 
-      // TODO: state
+
+      def a_state = o.getAttr('state') // item_structure
+
+      if (a_state) // if the attribute node is null, all objects validate
+      {
+         if (e.state) // this is mandatory by the RM
+         {
+            if (checkAllowedType(a_state, e.state, report)) // only continue if the type is allowed
+            {
+               e.state.dataPath = e.dataPath +'/state'
+               report.append(validate(e.state, a_state))
+            }
+         }
+         else if (!a_state.existence.has(0))
+         {
+            report.addError(e.dataPath +'/state', "/state is not present but is required")
+         }
+      }
 
       return report
    }
@@ -888,15 +941,8 @@ class RmValidator2 {
 
       report.append(_validate_locatable(e, o)) // validates name
 
-      // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (e ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
-         }
-      }
+
+      // TODO: refactor to use the same logic on POINT_EVENT since these are shared inherited attributes
 
       def a_data = o.getAttr('data') // item_structure
 
@@ -916,7 +962,24 @@ class RmValidator2 {
          }
       }
 
-      // TODO: state
+
+      def a_state = o.getAttr('state') // item_structure
+
+      if (a_state) // if the attribute node is null, all objects validate
+      {
+         if (e.state) // this is mandatory by the RM
+         {
+            if (checkAllowedType(a_state, e.state, report)) // only continue if the type is allowed
+            {
+               e.state.dataPath = e.dataPath +'/state'
+               report.append(validate(e.state, a_state))
+            }
+         }
+         else if (!a_state.existence.has(0))
+         {
+            report.addError(e.dataPath +'/state', "/state is not present but is required")
+         }
+      }
 
       return report
    }
@@ -943,19 +1006,9 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      report.append(_validate_locatable(ev, o)) // validates name
 
-      // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (ev ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
-         }
-      }
+      report.append(_validate_care_entry(ev, o)) // validates protocol, name
+
 
       def a_data = o.getAttr('data') // item structure
 
@@ -975,8 +1028,6 @@ class RmValidator2 {
          }
       }
 
-
-      // TODO: protocol
 
       return report
    }
@@ -998,23 +1049,16 @@ class RmValidator2 {
       return report
    }
 
+
+
+
    private RmValidationReport validate(Instruction ins, ObjectNode o)
    {
       RmValidationReport report = new RmValidationReport()
 
-      report.append(_validate_locatable(ins, o)) // validates name
 
-      // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (ins ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
-         }
-      }
+      report.append(_validate_care_entry(ins, o)) // validates protocol, name
+
 
       def a_activities = o.getAttr('activities') // List<Activity>
       if (a_activities)
@@ -1030,7 +1074,6 @@ class RmValidator2 {
          }
       }
 
-      // TODO: protocol
 
       return report
    }
@@ -1039,19 +1082,9 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
+
       report.append(_validate_locatable(act, o)) // validates name
 
-      // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (act ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
-         }
-      }
 
       def a_description = o.getAttr('description') // item structure
 
@@ -1071,7 +1104,9 @@ class RmValidator2 {
          }
       }
 
+
       // TODO: timing, action_archetype_id
+
 
       return report
    }
@@ -1097,19 +1132,9 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      report.append(_validate_locatable(ac, o)) // validates name
 
-      // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (ac ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
-         }
-      }
+      report.append(_validate_care_entry(ac, o)) // validates protocol, name
+
 
       def a_description = o.getAttr('description') // item structure
 
@@ -1129,11 +1154,13 @@ class RmValidator2 {
          }
       }
 
-      // TODO: protocol
-
       return report
    }
 
+
+   // NOTE: entries don't have an attribute method because the only attribute that can
+   //       hold an entry is multiple, and all multiple attributes use the same validation
+   //       method: validate(Locatable parent, List container, AttributeNode cma)
    private RmValidationReport validate_alternatives(AdminEntry ae, List<ObjectNode> os)
    {
       RmValidationReport report
@@ -1155,7 +1182,9 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      report.append(_validate_locatable(ae, o)) // validates name
+
+      report.append(_validate_entry(ae, o))
+
 
       // occurrences
       if (o.occurrences)
@@ -1192,18 +1221,6 @@ class RmValidator2 {
    private RmValidationReport validate(EventContext context, AttributeNode a)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // existence
-      if (a.existence)
-      {
-         def existence = (context ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
 
       report.append(validate_alternatives(context, a.children))
 
@@ -1258,16 +1275,6 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      // existence
-      // if (a.existence)
-      // {
-      //    def existence = (is ? 1 : 0)
-      //    if (!a.existence.has(existence))
-      //    {
-      //       report.addError(is.dataPath, "Node doesn't match existence")
-      //    }
-      // }
-
       report.append(validate_alternatives(is, a.children))
 
       return report
@@ -1296,16 +1303,6 @@ class RmValidator2 {
 
       report.append(_validate_locatable(is, o)) // validates name
 
-      // occurrences
-      // if (o.occurrences)
-      // {
-      //    def occurrences = (is ? 1 : 0)
-      //    if (!o.occurrences.has(occurrences))
-      //    {
-      //       report.addError(is.dataPath, "Node doesn't match occurrences")
-      //    }
-      // }
-
       def a_items = o.getAttr('items')
       if (a_items)
       {
@@ -1325,16 +1322,6 @@ class RmValidator2 {
    private RmValidationReport validate(ItemList is, AttributeNode a)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // existence
-      if (a.existence)
-      {
-         def existence = (is ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            report.addError(is.dataPath, "Node doesn't match existence")
-         }
-      }
 
       report.append(validate_alternatives(is, a.children))
 
@@ -3235,6 +3222,47 @@ class RmValidator2 {
             )
          }
       }
+
+      return report
+   }
+
+   private RmValidationReport _validate_care_entry(CareEntry ce, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+
+      report.append(_validate_entry(ce, o))
+
+
+      def a_protocol = o.getAttr('protocol') // item structure
+
+      if (a_protocol) // if the attribute node is null, all objects validate
+      {
+         if (ce.protocol)
+         {
+            if (checkAllowedType(a_protocol, ce.protocol, report)) // only continue if the type is allowed
+            {
+               ce.protocol.dataPath = ce.dataPath +'/protocol'
+               report.append(validate(ce.protocol, a_protocol))
+            }
+         }
+         else if (!a_protocol.existence.has(0))
+         {
+            report.addError(ce.dataPath +'/protocol', "/protocol is not present but is required")
+         }
+      }
+
+
+      return report
+   }
+
+   private RmValidationReport _validate_entry(Entry entry, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      // TODO: should validate subject type is valid?
+
+      report.append(_validate_locatable(entry, o)) // validates name
 
       return report
    }
