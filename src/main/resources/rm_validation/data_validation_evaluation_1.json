@@ -1,0 +1,156 @@
+{
+    "_type": "COMPOSITION",
+    "name": {
+        "_type": "DV_TEXT",
+        "value": "Data validation evaluation"
+    },
+    "archetype_details": {
+        "archetype_id": {
+            "_type": "ARCHETYPE_ID",
+            "value": "openEHR-EHR-COMPOSITION.data_validation_evaluation.v1"
+        },
+        "template_id": {
+            "_type": "TEMPLATE_ID",
+            "value": "data_validation_evaluation"
+        },
+        "rm_version": "1.0.2"
+    },
+    "archetype_node_id": "openEHR-EHR-COMPOSITION.data_validation_evaluation.v1",
+    "language": {
+        "terminology_id": {
+            "_type": "TERMINOLOGY_ID",
+            "value": "ISO_639-1"
+        },
+        "code_string": "en"
+    },
+    "territory": {
+        "terminology_id": {
+            "_type": "TERMINOLOGY_ID",
+            "value": "ISO_3166-1"
+        },
+        "code_string": "UY"
+    },
+    "category": {
+        "value": "event",
+        "defining_code": {
+            "terminology_id": {
+                "_type": "TERMINOLOGY_ID",
+                "value": "openehr"
+            },
+            "code_string": "433"
+        }
+    },
+    "composer": {
+        "_type": "PARTY_IDENTIFIED",
+        "external_ref": {
+            "id": {
+                "_type": "HIER_OBJECT_ID",
+                "value": "de3be885-4658-4d89-a21b-163c9519e811"
+            },
+            "namespace": "DEMOGRAPHIC",
+            "type": "PERSON"
+        },
+        "name": "Dr. House"
+    },
+    "context": {
+        "start_time": {
+            "value": "2023-02-16T16:21:11.290-03:00"
+        },
+        "setting": {
+            "value": "home",
+            "defining_code": {
+                "terminology_id": {
+                    "_type": "TERMINOLOGY_ID",
+                    "value": "openehr"
+                },
+                "code_string": "225"
+            }
+        }
+    },
+    "content": [
+        {
+            "_type": "EVALUATION",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Data validation"
+            },
+            "archetype_details": {
+                "archetype_id": {
+                    "_type": "ARCHETYPE_ID",
+                    "value": "openEHR-EHR-EVALUATION.data_validation.v1"
+                },
+                "template_id": {
+                    "_type": "TEMPLATE_ID",
+                    "value": "data_validation_evaluation"
+                },
+                "rm_version": "1.0.2"
+            },
+            "archetype_node_id": "openEHR-EHR-EVALUATION.data_validation.v1",
+            "language": {
+                "terminology_id": {
+                    "_type": "TERMINOLOGY_ID",
+                    "value": "ISO_639-1"
+                },
+                "code_string": "en"
+            },
+            "encoding": {
+                "terminology_id": {
+                    "_type": "TERMINOLOGY_ID",
+                    "value": "IANA_character-sets"
+                },
+                "code_string": "UTF-8"
+            },
+            "subject": {
+                "_type": "PARTY_SELF"
+            },
+            "data": {
+                "_type": "ITEM_TREE",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Tree"
+                },
+                "archetype_node_id": "at0001",
+                "items": [
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "coded text with list"
+                        },
+                        "archetype_node_id": "at0003",
+                        "value": {
+                            "_type": "DV_CODED_TEXT",
+                            "value": "aaa",
+                            "defining_code": {
+                                "terminology_id": {
+                                    "_type": "TERMINOLOGY_ID",
+                                    "value": "local"
+                                },
+                                "code_string": "at0004"
+                            }
+                        }
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "coded text with external terminology"
+                        },
+                        "archetype_node_id": "at0007",
+                        "value": {
+                            "_type": "DV_CODED_TEXT",
+                            "value": "xdqnPSMKFTPoXq anVw.iqPIakHnYU",
+                            "defining_code": {
+                                "terminology_id": {
+                                    "_type": "TERMINOLOGY_ID",
+                                    "value": "SNOMED-CT"
+                                },
+                                "code_string": "688152"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

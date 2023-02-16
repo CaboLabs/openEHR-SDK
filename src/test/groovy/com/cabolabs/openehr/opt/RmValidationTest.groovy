@@ -350,4 +350,70 @@ class RmValidationTest extends GroovyTestCase {
 
       assert report.errors
    }
+
+   void testDataValidationEval1()
+   {
+      Composition c = load_compo(PS +"rm_validation"+ PS +"data_validation_evaluation_1.json")
+      OptManager opt_manager = init_manager(PS + "rm_validation")
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(c, "")
+
+      report.errors.each { error ->
+         println '16: '+ error
+      }
+
+      assert report.errors
+   }
+
+   void testDataValidationEval2()
+   {
+      Composition c = load_compo(PS +"rm_validation"+ PS +"data_validation_evaluation_2.json")
+      OptManager opt_manager = init_manager(PS + "rm_validation")
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(c, "")
+
+      report.errors.each { error ->
+         println '17: '+ error
+      }
+
+      assert report.errors
+   }
+
+   // FIXME: the RM validator fails to detect an error in the terminology ID when the OPT has an external
+   //        reference to the terminology: <referenceSetUri>terminology:SNOMED-CT?subset=problems</referenceSetUri>
+   //        the data has terminology ID 'SNOMED-XXXXX' and that should be compared to 'SNOMED-CT' from the referenceSetUri
+   //        in the OPT.
+   void testDataValidationEval3()
+   {
+      Composition c = load_compo(PS +"rm_validation"+ PS +"data_validation_evaluation_3.json")
+      OptManager opt_manager = init_manager(PS + "rm_validation")
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(c, "")
+
+      report.errors.each { error ->
+         println '18: '+ error
+      }
+
+      assert report.errors
+   }
+
+   // FIXME: this is not detecting the error that the name of a coded text doesn't correspond to the code selected,
+   //        beign the code valid.
+   void testDataValidationEval4()
+   {
+      Composition c = load_compo(PS +"rm_validation"+ PS +"data_validation_evaluation_4.json")
+      OptManager opt_manager = init_manager(PS + "rm_validation")
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(c, "")
+
+      report.errors.each { error ->
+         println '19: '+ error
+      }
+
+      assert report.errors
+   }
 }

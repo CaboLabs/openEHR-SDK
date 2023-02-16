@@ -396,59 +396,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      report.append(_validate_locatable(p, o)) // validates name
-
-      // the attributes that are optional in the opt should be checked by the parent to avoid calling
-      // with null because polymorphism can't find the right method. Also if the constraint is null,
-      // anything matches.
-      def a_details = o.getAttr('details')
-      if (a_details)
-      {
-         if (p.details)
-         {
-            if (checkAllowedType(a_details, p.details, report)) // only continue if the type is allowed
-            {
-               p.details.dataPath = p.dataPath +'/details'
-               report.append(validate(p.details, a_details))
-            }
-         }
-         // parent validates the existence if the attribute is null: should validate existence 0 of the attr
-         else if (!a_details.existence.has(0))
-         {
-            report.addError(p.dataPath +'/details', "attribute is not present but is required")
-         }
-      }
-
-      // NOTE: identities is 1..* in the RM
-      def a_identities = o.getAttr('identities')
-      if (a_identities)
-      {
-         if (p.identities != null)
-         {
-            p.identities.dataPath = p.dataPath +'/identities'
-            report.append(validate(p.identities, a_identities)) // validate container
-         }
-         // parent validates the existence if the attribute is null: should validate existence 0 of the attr
-         else if (!a_identities.existence.has(0))
-         {
-            report.addError(p.dataPath +'/identities', "attribute is not present but is required")
-         }
-      }
-
-      def a_contacts = o.getAttr('contacts')
-      if (a_contacts)
-      {
-         if (p.contacts != null)
-         {
-            p.contacts.dataPath = p.dataPath +'/contacts'
-            report.append(validate(p.contacts, a_contacts)) // validate container
-         }
-         // parent validates the existence if the attribute is null: should validate existence 0 of the attr
-         else if (!a_contacts.existence.has(0))
-         {
-            report.addError(p.dataPath + '/contacts', "attribute is not present but is required")
-         }
-      }
+      report.append(_validate_party(p, o))
 
       // TODO: languages
       // TODO: roles
@@ -460,61 +408,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      report.append(_validate_locatable(role, o)) // validates name
-
-      // TODO: these validations should be part of a PARTY validation shared between ACTOR and ROLE to reuse code
-
-      // the attributes that are optional in the opt should be checked by the parent to avoid calling
-      // with null because polymorphism can't find the right method. Also if the constraint is null,
-      // anything matches.
-      def a_details = o.getAttr('details')
-      if (a_details)
-      {
-         if (p.details)
-         {
-            if (checkAllowedType(a_details, p.details, report)) // only continue if the type is allowed
-            {
-               p.details.dataPath = p.dataPath +'/details'
-               report.append(validate(p.details, a_details))
-            }
-         }
-         // parent validates the existence if the attribute is null: should validate existence 0 of the attr
-         else if (!a_details.existence.has(0))
-         {
-            report.addError(p.dataPath +'/details', "attribute is not present but is required")
-         }
-      }
-
-      // NOTE: identities is 1..* in the RM
-      def a_identities = o.getAttr('identities')
-      if (a_identities)
-      {
-         if (p.identities != null)
-         {
-            p.identities.dataPath = p.dataPath +'/identities'
-            report.append(validate(p.identities, a_identities)) // validate container
-         }
-         // parent validates the existence if the attribute is null: should validate existence 0 of the attr
-         else if (!a_identities.existence.has(0))
-         {
-            report.addError(p.dataPath +'/identities', "attribute is not present but is required")
-         }
-      }
-
-      def a_contacts = o.getAttr('contacts')
-      if (a_contacts)
-      {
-         if (p.contacts != null)
-         {
-            p.contacts.dataPath = p.dataPath +'/contacts'
-            report.append(validate(p.contacts, a_contacts)) // validate container
-         }
-         // parent validates the existence if the attribute is null: should validate existence 0 of the attr
-         else if (!a_contacts.existence.has(0))
-         {
-            report.addError(p.dataPath + '/contacts', "attribute is not present but is required")
-         }
-      }
+      report.append(_validate_party(role, o))
 
       // TODO: time_validity
       // TODO: performer
@@ -528,32 +422,7 @@ class RmValidator2 {
 
       report.append(_validate_locatable(pi, o)) // validates name
 
-      // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (pi ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            report.addError(pi.dataPath, "Node doesn't match occurrences")
-         }
-      }
-
-      def a_details = o.getAttr('details') // item structure
-      if (a_details) // if the attribute node is null, all objects validate
-      {
-         if (pi.details)
-         {
-            if (checkAllowedType(a_details, pi.details, report)) // only continue if the type is allowed
-            {
-               pi.details.dataPath = pi.dataPath +'/details'
-               report.append(validate(pi.details, a_details))
-            }
-         }
-         else if (!a_details.existence.has(0))
-         {
-            report.addError(pi.dataPath +'/details', "/details is not present but is required")
-         }
-      }
+      validate_single_attribute(pi, o, 'details', report)
 
       return report
    }
@@ -566,36 +435,9 @@ class RmValidator2 {
 
       report.append(validate(c, c.category, o.getAttr('category'), "/category"))
 
-      // the attributes that are optional in the opt should be checked by the parent to avoid calling
-      // with null because polymorphism can't find the right method. Also if the constraint is null,
-      // anything matches.
-      def a_context = o.getAttr('context')
-      if (a_context)
-      {
-         if (c.context)
-         {
-            c.context.dataPath = '/context'
-            report.append(validate(c.context, a_context))
-         }
-         // parent validates the existence if the attribute is null: should validate existence 0 of the attr
-         else if (!a_context.existence.has(0))
-         {
-            report.addError("/context", "attribute is not present but is required")
-         }
-      }
+      validate_single_attribute(c, o, 'context', report)
 
-      def a_content = o.getAttr('content')
-      if (a_content)
-      {
-         if (c.content != null)
-         {
-            report.append(validate(c, c.content, a_content)) // validate container
-         }
-         else if (!a_content.existence.has(0))
-         {
-            report.addError("/content", "attribute is not present but is required")
-         }
-      }
+      validate_multiple_attribute(c, o, 'content', report)
 
       return report
    }
@@ -606,41 +448,9 @@ class RmValidator2 {
 
       report.append(_validate_locatable(f, o)) // validates name
 
-      def a_items = o.getAttr('items')
-      if (a_items)
-      {
-         if (f.items)
-         {
-            if (checkAllowedType(a_items, f.items, report)) // only continue if the type is allowed
-            {
-               report.append(validate(f, f.items, a_items))
-            }
-         }
-         else if (!a_items.existence.has(0))
-         {
-            report.addError(f.dataPath + "/items", "attribute is not present but is required")
-         }
-      }
+      validate_multiple_attribute(f, o, 'items', report)
 
-      def a_folders = o.getAttr('folders')
-      if (a_folders)
-      {
-         if (f.folders)
-         {
-            // FIXME: folders can only contain FOLDER so this check is unneded
-            if (checkAllowedType(a_folders, f.folders, report)) // only continue if the type is allowed
-            {
-               // NOTE: not sure if a subfolder could comply with a totally different OPT (so the validator
-               // might not be correct here) or if the main OPT should contain all possible archetypes for subfolders.
-               // This is validating like the second option.
-               report.append(validate(f, f.folders, a_folders))
-            }
-         }
-         else if (!a_folders.existence.has(0))
-         {
-            report.addError(f.dataPath + "/folders", "attribute is not present but is required")
-         }
-      }
+      validate_multiple_attribute(f, o, 'folders', report)
 
       return report
    }
@@ -651,19 +461,7 @@ class RmValidator2 {
 
       report.append(_validate_locatable(s, o)) // validates name
 
-      def a_content = o.getAttr('items')
-      if (a_content)
-      {
-         if (s.items != null)
-         {
-            report.append(validate(s, s.items, a_content)) // validate container
-         }
-         // parent validates the existence if the attribute is null: should validate existence 0 of the attr
-         else if (!a_content.existence.has(0))
-         {
-            report.addError(s.dataPath +'/items', "attribute is not present but is required")
-         }
-      }
+      validate_multiple_attribute(s, o, 'items', report)
 
       return report
    }
@@ -690,41 +488,11 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-
       report.append(_validate_care_entry(ob, o)) // validates protocol, name
 
+      validate_single_attribute(ob, o, 'data', report)
 
-      def a_data = o.getAttr('data') // history
-
-      if (a_data) // if the attribute node is null, all objects validate
-      {
-         if (ob.data) // this is mandatory by the RM
-         {
-            ob.data.dataPath = ob.dataPath +'/data'
-            report.append(validate(ob.data, a_data))
-         }
-         else if (!a_data.existence.has(0))
-         {
-            report.addError(ob.dataPath +'/data', "/data is not present but is required")
-         }
-      }
-
-
-      def a_state = o.getAttr('state') // history
-
-      if (a_state) // if the attribute node is null, all objects validate
-      {
-         if (ob.state) // this is mandatory by the RM
-         {
-            ob.state.dataPath = ob.dataPath +'/state'
-            report.append(validate(ob.state, a_state))
-         }
-         else if (!a_state.existence.has(0))
-         {
-            report.addError(ob.dataPath +'/state', "/state is not present but is required")
-         }
-      }
-
+      validate_single_attribute(ob, o, 'state', report)
 
       return report
    }
@@ -773,26 +541,9 @@ class RmValidator2 {
 
       report.append(_validate_locatable(h, o)) // validates name
 
-      // TODO: not validating occurrences?
+      validate_multiple_attribute(h, o, 'events', report)
 
-      def a_events = o.getAttr('events')
-      if (a_events)
-      {
-         if (h.events != null)
-         {
-            report.append(validate(h, h.events, a_events)) // validate container
-         }
-         else
-         {
-            // if the container attribute is null the existence is validated in the parent object
-            if (!a_events.existence.has(0))
-            {
-               report.addError(h.dataPath + "/events", "is not present but is required")
-            }
-         }
-      }
-
-      // TODO: summary
+      validate_single_attribute(h, o, 'summary', report)
 
       return report
    }
@@ -903,31 +654,13 @@ class RmValidator2 {
       return report
    }
 
-
-
-
    private RmValidationReport validate(Instruction ins, ObjectNode o)
    {
       RmValidationReport report = new RmValidationReport()
 
-
       report.append(_validate_care_entry(ins, o)) // validates protocol, name
 
-
-      def a_activities = o.getAttr('activities') // List<Activity>
-      if (a_activities)
-      {
-         if (ins.activities != null)
-         {
-            report.append(validate(ins, ins.activities, a_activities)) // validate container
-         }
-         // if the container attribute is null the existence is validated in the parent object
-         else if (!a_activities.existence.has(0))
-         {
-            report.addError(ins.dataPath + "/activities", "is not present but is required")
-         }
-      }
-
+      validate_multiple_attribute(ins, o, 'activities', report)
 
       return report
    }
@@ -1073,18 +806,7 @@ class RmValidator2 {
 
       report.append(_validate_locatable(is, o)) // validates name
 
-      def a_items = o.getAttr('items')
-      if (a_items)
-      {
-         if (is.items != null)
-         {
-            report.append(validate(is, is.items, a_items)) // validate container
-         }
-         else if (!a_items.existence.has(0))
-         {
-            report.addError(is.dataPath + "/items", "is not present but is required")
-         }
-      }
+      validate_multiple_attribute(is, o, 'items', report)
 
       return report
    }
@@ -1121,21 +843,23 @@ class RmValidator2 {
 
       report.append(_validate_locatable(is, o)) // validates name
 
-      def a_items = o.getAttr('items')
-      if (a_items)
-      {
-         if (is.items != null)
-         {
-            report.append(validate(is, is.items, a_items)) // validate container
-         }
-         else
-         {
-            if (!a_items.existence.has(0))
-            {
-               report.addError(is.dataPath + "/items", "attribute not present but is required")
-            }
-         }
-      }
+      // def a_items = o.getAttr('items')
+      // if (a_items)
+      // {
+      //    if (is.items != null)
+      //    {
+      //       report.append(validate(is, is.items, a_items)) // validate container
+      //    }
+      //    else
+      //    {
+      //       if (!a_items.existence.has(0))
+      //       {
+      //          report.addError(is.dataPath + "/items", "attribute not present but is required")
+      //       }
+      //    }
+      // }
+      // validates existens and continues recursion
+      validate_multiple_attribute(is, o, 'items', report)
 
       return report
    }
@@ -1182,18 +906,7 @@ class RmValidator2 {
 
       report.append(_validate_locatable(is, o)) // validates name
 
-      def a_rows = o.getAttr('rows')
-      if (a_rows)
-      {
-         if (is.rows != null)
-         {
-            report.append(validate(is, is.rows, a_rows)) // validate container
-         }
-         else if (!a_rows.existence.has(0))
-         {
-            report.addError(is.dataPath + "/rows", "is not present but is required")
-         }
-      }
+      validate_multiple_attribute(is, o, 'rows', report)
 
       return report
    }
@@ -1298,17 +1011,6 @@ class RmValidator2 {
    private RmValidationReport validate(Element e, AttributeNode a)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // existence
-      if (a.existence)
-      {
-         def existence = (e ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
 
       report.append(validate_alternatives(e, a.children))
 
@@ -1429,25 +1131,49 @@ class RmValidator2 {
 
       // FIXME: this is trying to access the attr name directly from the parent locatable but since it's a structured DV
       //        the value should be taken from the DV not from the LOCATABLE
-      validate_single_attribute_dv(parent, ct, dv_path +'/defining_code', o, 'defining_code', report)
+      validate_single_attribute_dv(parent, ct, dv_path, o, 'defining_code', report)
 
-      // def a_defining_code = o.getAttr('defining_code')
-      // if (a_defining_code)
-      // {
-      //    if (ct.defining_code)
-      //    {
-      //       report.append(validate(parent, ct.defining_code, a_defining_code, dv_path + "/defining_code"))
-      //    }
-      //    else if (!a_defining_code.existence.has(0))
-      //    {
-      //       report.addError(parent.dataPath + dv_path + "/defining_code", "is not present but is required")
-      //    }
-      // }
+      // custom cross-field validation for the coded text:
+      // if the terminology is 'local' => the name should the the text of the at code
+      // in defininig_code.code_string from the OPT
+      if (ct.defining_code.terminology_id.value == 'local')
+      {
+         def valid_coded_value = o.owner.getTerm(findRootRecursive(o).archetypeId, ct.defining_code.code_string)
+
+         if (valid_coded_value != ct.value)
+         {
+            report.addError(parent.dataPath + dv_path +'/value', "Value '${ct.value}' doesn't match value from template '${valid_coded_value}'")
+         }
+      }
 
       // TODO: mappings
 
       return report
    }
+
+
+   // ========================================================
+   // TEST: find root up
+   // TODO: these operations should be part of ObjectNode
+
+   private ObjectNode findRootRecursive(ObjectNode obj)
+   {
+      if (obj.path == '/' || obj.type == 'C_ARCHETYPE_ROOT')
+      {
+         return obj
+      }
+
+      findRootRecursive(obj.parent)
+   }
+
+   private ObjectNode findRootRecursive(AttributeNode attr)
+   {
+      findRootRecursive(attr.parent)
+   }
+   // ========================================================
+
+
+
 
    private RmValidationReport validate(Pathable parent, CodePhrase cp, AttributeNode a, String dv_path)
    {
@@ -1491,6 +1217,12 @@ class RmValidator2 {
    private RmValidationReport validate(Pathable parent, CodePhrase cp, CCodePhrase o, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
+
+
+      // TODO:
+      // custom validation if the terminology is 'openehr', verify the code against
+      // the openehr terminology files
+
 
       // specific type constraint validation
       ValidationResult valid = o.isValid(cp)
@@ -2918,6 +2650,42 @@ class RmValidator2 {
       return report
    }
 
+   private RmValidationReport _validate_party(Party party, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      report.append(_validate_locatable(party, o)) // validates name
+
+      validate_single_attribute(party, o, 'details', report)
+
+      validate_multiple_attribute(party, o, 'identities', report)
+
+      validate_multiple_attribute(party, o, 'contacts', report)
+
+      validate_multiple_attribute(party, o, 'relationships', report)
+
+      return report
+   }
+
+   private void validate_multiple_attribute(Locatable object, ObjectNode o, String attribute_name, RmValidationReport report)
+   {
+      def c_attr = o.getAttr(attribute_name)
+      if (c_attr)
+      {
+         if (object."$attribute_name" != null)
+         {
+            report.append(validate(object, object."$attribute_name", c_attr)) // validate container
+         }
+         else
+         {
+            if (!c_attr.existence.has(0))
+            {
+               report.addError(object.dataPath + '/'+ attribute_name, "attribute not present but is required")
+            }
+         }
+      }
+   }
+
    // This refactors common code of many validators into a generic function
    private void validate_single_attribute(Locatable object, ObjectNode o, String attribute_name, RmValidationReport report)
    {
@@ -2933,10 +2701,13 @@ class RmValidator2 {
             if (checkAllowedType(c_attr, object."$attribute_name", report))
             {
                // =============================================================================================
-               // FIXME: if object."$attribute_name" is not locatable, it should call to a DV validation method
-               // =============================================================================================
+               // if object."$attribute_name" is not locatable, it should call to a DV validation method
+               // NOTE: CODE_PHRASE is not a DV!
+               // 1. or we allow DV and CODE_PHRASE here,
+               // 2. or we let coded text to valdiate CODE_PHRASE internally
+               // 3. or we create a method specifically for CODE_PHRASE
                // validate(Pathable parent, DV dv, AttributeNode a, String dv_path)
-               if (object."$attribute_name" instanceof DataValue) // NOTE: CODE_PHRASE is not a DV!
+               if (object."$attribute_name" instanceof DataValue)
                {
                   report.append(validate(object, object."$attribute_name", c_attr, '/'+ attribute_name))
                }
