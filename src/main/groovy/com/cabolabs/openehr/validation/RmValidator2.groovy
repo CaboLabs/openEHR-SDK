@@ -156,7 +156,11 @@ class RmValidator2 {
 
       if (allowed_types.contains(rm_type)) return true
 
-      report.addError(rm_object.dataPath +'/'+ cattr.rmAttributeName, "type '${rm_type}' is not allowed here, it should be in ${allowed_types}")
+      report.addError(
+         rm_object.dataPath +'/'+ cattr.rmAttributeName,
+         cattr.templatePath,
+         "type '${rm_type}' is not allowed here, it should be in ${allowed_types}"
+      )
       return false
    }
 
@@ -174,7 +178,10 @@ class RmValidator2 {
 
       if (allowed_types.contains(rm_type)) return true
 
-      report.addError(cattr.templateDataPath, "type '${rm_type}' is not allowed here, it should be in ${allowed_types}")
+      report.addError(
+         '', // FIXME: this method needs the parent locatable to obtain the dataPath
+         cattr.templatePath,
+         "type '${rm_type}' is not allowed here, it should be in ${allowed_types}")
       return false
    }
 
@@ -189,7 +196,11 @@ class RmValidator2 {
       // checking mandatory fields that are not archetyped
       if (!status.subject)
       {
-         report.addError("/subject", "attribute is not present but is required")
+         report.addError(
+            "/subject",
+            o.templatePath,
+            "attribute is not present but is required"
+         )
       }
 
       // checking archetyped fields
@@ -210,7 +221,11 @@ class RmValidator2 {
          // parent validates the existence if the attribute is null: should validate existence 0 of the attr
          else if (!a_other_details.existence.has(0))
          {
-            report.addError("/other_details", "attribute is not present but is required")
+            report.addError(
+               "/other_details",
+               o.templatePath,
+               "attribute is not present but is required"
+            )
          }
       }
 
@@ -238,7 +253,11 @@ class RmValidator2 {
 
       if (!cma.cardinality.interval.has(container.size()))
       {
-         report.addError(parent.dataPath +'/'+ cma.rmAttributeName, "Number of objects in container (${container.size()}) violates the cardinality constraint "+ cma.cardinality.interval.toString())
+         report.addError(
+            parent.dataPath +'/'+ cma.rmAttributeName,
+            cma.templatePath,
+            "Number of objects in container (${container.size()}) violates the cardinality constraint "+ cma.cardinality.interval.toString()
+         )
       }
 
 
@@ -259,7 +278,13 @@ class RmValidator2 {
 
          if (!c_object.occurrences?.has(sibling_count))
          {
-            report.addError(parent.dataPath +'/'+ cma.rmAttributeName, "Children with archetype_node_id=${c_object.nodeId} occurs ${sibling_count} times, violates occurrences constraint ${c_object.occurrences.toString()}")
+            // println c_object.templatePath
+            // println c_object.templateDataPath
+            report.addError(
+               parent.dataPath +'/'+ cma.rmAttributeName,
+               c_object.templatePath,
+               "Children with archetype_node_id=${c_object.nodeId} occurs ${sibling_count} times, violates occurrences constraint ${c_object.occurrences.toString()}"
+            )
          }
       }
 
@@ -297,7 +322,10 @@ class RmValidator2 {
          // there is an object in the data that is not defined in the template
          if (!alternative_cobjs)
          {
-            report.addError(item.dataPath, "No c_object found with archetype_node_id ${item.archetype_node_id}, the RM object contains an item that is not defined in the template")
+            report.addError(
+               item.dataPath,
+               "No c_object found with archetype_node_id ${item.archetype_node_id}, the RM object contains an item that is not defined in the template"
+            )
          }
 
 
@@ -356,7 +384,10 @@ class RmValidator2 {
             if (!cobj)
             {
                //println cma.templateDataPath
-               report.addError(cma.templateDataPath, "Multiple alternative constraint objects found for archetype_node_id '${item.archetype_node_id}' at ${item.dataPath}, none matches the constraints for the name or the current node text '${item.name.value}' in the OPT")
+               report.addError(
+                  cma.templateDataPath,
+                  "Multiple alternative constraint objects found for archetype_node_id '${item.archetype_node_id}' at ${item.dataPath}, none matches the constraints for the name or the current node text '${item.name.value}' in the OPT"
+               )
             }
 
             //println ""
@@ -500,18 +531,6 @@ class RmValidator2 {
    private RmValidationReport validate(History h, AttributeNode a)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // existence
-      if (a.existence)
-      {
-         def existence = (h ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
 
       report.append(validate_alternatives(h, a.children))
 
@@ -843,21 +862,6 @@ class RmValidator2 {
 
       report.append(_validate_locatable(is, o)) // validates name
 
-      // def a_items = o.getAttr('items')
-      // if (a_items)
-      // {
-      //    if (is.items != null)
-      //    {
-      //       report.append(validate(is, is.items, a_items)) // validate container
-      //    }
-      //    else
-      //    {
-      //       if (!a_items.existence.has(0))
-      //       {
-      //          report.addError(is.dataPath + "/items", "attribute not present but is required")
-      //       }
-      //    }
-      // }
       // validates existens and continues recursion
       validate_multiple_attribute(is, o, 'items', report)
 
@@ -867,16 +871,6 @@ class RmValidator2 {
    private RmValidationReport validate(ItemTable is, AttributeNode a)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // existence
-      if (a.existence)
-      {
-         def existence = (is ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            report.addError(is.dataPath, "Node doesn't match existence")
-         }
-      }
 
       report.append(validate_alternatives(is, a.children))
 
@@ -914,16 +908,6 @@ class RmValidator2 {
    private RmValidationReport validate(ItemSingle is, AttributeNode a)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // existence
-      if (a.existence)
-      {
-         def existence = (is ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            report.addError(is.dataPath, "Node doesn't match existence")
-         }
-      }
 
       report.append(validate_alternatives(is, a.children))
 
@@ -982,28 +966,7 @@ class RmValidator2 {
 
       report.append(_validate_locatable(cl, o)) // validates name
 
-      // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (cl ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
-         }
-      }
-
-      def a_items = o.getAttr('items')
-      if (a_items)
-      {
-         if (cl.items != null)
-         {
-            report.append(validate(cl, cl.items, a_items)) // validate container
-         }
-         else if (!a_items.existence.has(0))
-         {
-            report.addError(cl.dataPath + "/items", "Attribute is not present but it's required")
-         }
-      }
+      validate_multiple_attribute(cl, o, 'items', report)
 
       return report
    }
@@ -1046,44 +1009,6 @@ class RmValidator2 {
       RmValidationReport report = new RmValidationReport()
 
       report.append(_validate_locatable(e, o)) // validates name
-
-
-      /*
-      def a_value = o.getAttr('value')
-      if (a_value)
-      {
-         if (e.value)
-         {
-            if (checkAllowedType(a_value, e.value, report)) // only continue if the type is allowed
-            {
-               report.append(validate(e, e.value, a_value, "/value"))
-            }
-         }
-         else if (!a_value.existence.has(0))
-         {
-            report.addError(e.dataPath + "/value", "is not present but is required")
-         }
-      }
-
-      def a_null_flavour = o.getAttr('null_flavour')
-      if (a_null_flavour)
-      {
-         if (e.null_flavour)
-         {
-            report.append(validate(e, e.null_flavour, a_null_flavour, "/null_flavour"))
-         }
-         else
-         {
-            // FIXME: existence is null for this attribute, check the OPTs and the parser,
-            // since existence should be mandatory or have a default value from the RM
-            // added the check for existence
-            if (a_null_flavour.existence && !a_null_flavour.existence.has(0))
-            {
-               report.addError(e.dataPath + "/null_flavour", "is not present but is required")
-            }
-         }
-      }
-      */
 
       //validate_single_attribute_dv(e, e.value, '/value', o, 'value', report)
       validate_single_attribute(e, o, 'value', report)
@@ -1147,7 +1072,11 @@ class RmValidator2 {
 
          if (valid_coded_value != ct.value)
          {
-            report.addError(parent.dataPath + dv_path +'/value', "Value '${ct.value}' doesn't match value from template '${valid_coded_value}'")
+            report.addError(
+               parent.dataPath + dv_path +'/value',
+               o.templatePath,
+               "Value '${ct.value}' doesn't match value from template '${valid_coded_value}'"
+            )
          }
       }
 
@@ -1160,7 +1089,7 @@ class RmValidator2 {
    // ========================================================
    // TEST: find root up
    // TODO: these operations should be part of ObjectNode
-
+   // Search for archetype root traversing the nodes up
    private ObjectNode findRootRecursive(ObjectNode obj)
    {
       if (obj.path == '/' || obj.type == 'C_ARCHETYPE_ROOT')
@@ -1221,7 +1150,11 @@ class RmValidator2 {
 
       if (!valid)
       {
-         report.addError(parent.dataPath + dv_path, valid.message)
+         report.addError(
+            parent.dataPath + dv_path,
+            o.templatePath,
+            valid.message
+         )
       }
 
       return report
@@ -1230,18 +1163,6 @@ class RmValidator2 {
    private RmValidationReport validate(Pathable parent, DvText te, AttributeNode a, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // existence
-      // if (a.existence)
-      // {
-      //    def existence = (te ? 1 : 0)
-      //    if (!a.existence.has(existence))
-      //    {
-      //       // existence error
-      //       // TODO: not sure if this dv_path is the right one, I guess should be calculated from the instance...
-      //       report.addError(a.templateDataPath, "Node doesn't match existence")
-      //    }
-      // }
 
       report.append(validate_alternatives(parent, te, a.children, dv_path))
 
@@ -1286,18 +1207,6 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      // existence
-      // if (a.existence)
-      // {
-      //    def existence = (d ? 1 : 0)
-      //    if (!a.existence.has(existence))
-      //    {
-      //       // existence error
-      //       // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-      //       report.addError(a.templateDataPath, "Node doesn't match existence")
-      //    }
-      // }
-
       report.append(validate_alternatives(parent, d, a.children, dv_path))
 
       return report
@@ -1336,18 +1245,6 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      // existence
-      if (a.existence)
-      {
-         def existence = (d ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
-
       report.append(validate_alternatives(parent, d, a.children, dv_path))
 
       return report
@@ -1382,7 +1279,11 @@ class RmValidator2 {
       ValidationResult valid = o.isValid(d)
       if (!valid)
       {
-         report.addError(parent.dataPath + dv_path, valid.message)
+         report.addError(
+            parent.dataPath + dv_path,
+            o.templatePath,
+            valid.message
+         )
       }
 
       return report
@@ -1392,18 +1293,6 @@ class RmValidator2 {
    private RmValidationReport validate(Pathable parent, DvCount d, AttributeNode a, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // existence
-      if (a.existence)
-      {
-         def existence = (d ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
 
       report.append(validate_alternatives(parent, d, a.children, dv_path))
 
@@ -1433,20 +1322,6 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      // validate magnitude
-      // def a_magnitude = o.getAttr('magnitude')
-      // if (a_magnitude)
-      // {
-      //    if (d.magnitude != null) // compare to null to avoid 0 as false
-      //    {
-      //       report.append(validate(parent, d.magnitude, a_magnitude, dv_path +'/magnitude'))
-      //    }
-      //    else if (!a_magnitude.existence.has(0))
-      //    {
-      //       report.addError(parent.dataPath + dv_path +'/magnitude', '/magnitude is not present but is required')
-      //    }
-      // }
-
       validate_single_attribute_dv(parent, d, dv_path +'/magnitude', o, 'magnitude', report)
 
       return report
@@ -1455,18 +1330,6 @@ class RmValidator2 {
    private RmValidationReport validate(Pathable parent, Integer d, AttributeNode a, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // existence
-      if (a.existence)
-      {
-         def existence = (d != null ? 1 : 0) // != null is used to avpod the falsy 0
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
 
       report.append(validate_alternatives(parent, d, a.children, dv_path))
 
@@ -1498,7 +1361,11 @@ class RmValidator2 {
 
       if (!valid)
       {
-         report.addError(parent.dataPath + dv_path, valid.message)
+         report.addError(
+            parent.dataPath + dv_path,
+            o.templatePath,
+            valid.message
+         )
       }
 
       return report
@@ -1509,18 +1376,6 @@ class RmValidator2 {
    private RmValidationReport validate(Pathable parent, DvDateTime d, AttributeNode a, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // existence
-      if (a.existence)
-      {
-         def existence = (d ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
 
       report.append(validate_alternatives(parent, d, a.children, dv_path))
 
@@ -1550,30 +1405,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (d ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
-         }
-      }
-
-      def a_value = o.getAttr('value')
-      if (a_value)
-      {
-         if (d.value != null) // compare to null to avoid 0 as false
-         {
-            report.append(validate(parent, d.value, a_value, dv_path +'/value'))
-         }
-         else if (!a_value.existence.has(0))
-         {
-            report.addError(parent.dataPath + dv_path +'/value', '/value is not present but is required')
-         }
-      }
+      validate_single_attribute_dv(parent, d, dv_path, o, 'value', report)
 
       return report
    }
@@ -1582,18 +1414,6 @@ class RmValidator2 {
    private RmValidationReport validate(Pathable parent, DvDate d, AttributeNode a, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // existence
-      if (a.existence)
-      {
-         def existence = (d ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
 
       report.append(validate_alternatives(parent, d, a.children, dv_path))
 
@@ -1623,33 +1443,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (d ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
-         }
-      }
-
-      def a_value = o.getAttr('value')
-      if (a_value)
-      {
-         if (d.value != null) // compare to null to avoid 0 as false
-         {
-            report.append(validate(parent, d.value, a_value, dv_path +'/value'))
-         }
-         else
-         {
-            if (!a_value.existence.has(0))
-            {
-               report.addError("'${o.templateDataPath}' /value is not present but is required")
-            }
-         }
-      }
+      validate_single_attribute_dv(parent, d, dv_path, o, 'value', report)
 
       return report
    }
@@ -1658,18 +1452,6 @@ class RmValidator2 {
    private RmValidationReport validate(Pathable parent, DvTime d, AttributeNode a, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // existence
-      if (a.existence)
-      {
-         def existence = (d ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
 
       report.append(validate_alternatives(parent, d, a.children, dv_path))
 
@@ -1699,33 +1481,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (d ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
-         }
-      }
-
-      def a_value = o.getAttr('value')
-      if (a_value)
-      {
-         if (d.value != null) // compare to null to avoid 0 as false
-         {
-            report.append(validate(parent, d.value, a_value, dv_path +'/value'))
-         }
-         else
-         {
-            if (!a_value.existence.has(0))
-            {
-               report.addError("'${o.templateDataPath}' /value is not present but is required")
-            }
-         }
-      }
+      validate_single_attribute_dv(parent, d, dv_path, o, 'value', report)
 
       return report
    }
@@ -1734,18 +1490,6 @@ class RmValidator2 {
    private RmValidationReport validate(Pathable parent, String d, AttributeNode a, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // existence
-      if (a.existence)
-      {
-         def existence = (d ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
 
       report.append(validate_alternatives(parent, d, a.children, dv_path))
 
@@ -1777,7 +1521,11 @@ class RmValidator2 {
 
       if (!valid)
       {
-         report.addError(parent.dataPath + dv_path, valid.message)
+         report.addError(
+            parent.dataPath + dv_path,
+            o.templatePath,
+            valid.message
+         )
       }
 
       return report
@@ -1787,18 +1535,6 @@ class RmValidator2 {
    private RmValidationReport validate(Pathable parent, DvOrdinal d, AttributeNode a, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // existence
-      if (a.existence)
-      {
-         def existence = (d ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
 
       report.append(validate_alternatives(parent, d, a.children, dv_path))
 
@@ -1828,38 +1564,14 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (d ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
-         }
-      }
-
-      // def a_value = o.getAttr('value')
-      // if (a_value)
-      // {
-      //    if (d.value != null) // compare to null to avoid 0 as false
-      //    {
-      //       report.append(validate(parent, d.value, a_value, dv_path +'/value'))
-      //    }
-      //    else
-      //    {
-      //       if (!a_value.existence.has(0))
-      //       {
-      //          report.addError("'${o.templateDataPath}' /value is not present but is required")
-      //       }
-      //    }
-      // }
-
       ValidationResult valid = o.isValid(d)
       if (!valid)
       {
-         report.addError(parent.dataPath + dv_path, valid.message)
+         report.addError(
+            parent.dataPath + dv_path,
+            o.templatePath,
+            valid.message
+         )
       }
 
       return report
@@ -1869,18 +1581,6 @@ class RmValidator2 {
    private RmValidationReport validate(Pathable parent, DvBoolean d, AttributeNode a, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // existence
-      if (a.existence)
-      {
-         def existence = (d ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
 
       report.append(validate_alternatives(parent, d, a.children, dv_path))
 
@@ -1910,33 +1610,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (d ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
-         }
-      }
-
-      def a_value = o.getAttr('value')
-      if (a_value)
-      {
-         if (d.value != null) // compare to null to avoid 0 as false
-         {
-            report.append(validate(parent, d.value, a_value, dv_path +'/value'))
-         }
-         else
-         {
-            if (!a_value.existence.has(0))
-            {
-               report.addError("'${o.templateDataPath}' /value is not present but is required")
-            }
-         }
-      }
+      validate_single_attribute_dv(parent, d, dv_path, o, 'value', report)
 
       return report
    }
@@ -1945,18 +1619,6 @@ class RmValidator2 {
    private RmValidationReport validate(Pathable parent, Boolean d, AttributeNode a, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // existence
-      if (a.existence)
-      {
-         def existence = (d != null ? 1 : 0) // != null is used to differentiate from the valid false value
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
 
       report.append(validate_alternatives(parent, d, a.children, dv_path))
 
@@ -1988,7 +1650,11 @@ class RmValidator2 {
 
       if (!valid)
       {
-         report.addError(parent.dataPath + dv_path, valid.message)
+         report.addError(
+            parent.dataPath + dv_path,
+            o.templatePath,
+            valid.message
+         )
       }
 
       return report
@@ -1998,18 +1664,6 @@ class RmValidator2 {
    private RmValidationReport validate(Pathable parent, DvDuration d, AttributeNode a, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // existence
-      if (a.existence)
-      {
-         def existence = (d ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
 
       report.append(validate_alternatives(parent, d, a.children, dv_path))
 
@@ -2039,33 +1693,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (d ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
-         }
-      }
-
-      def a_value = o.getAttr('value')
-      if (a_value)
-      {
-         if (d.value != null) // compare to null to avoid 0 as false
-         {
-            report.append(validate(parent, d.value, a_value, dv_path +'/value'))
-         }
-         else
-         {
-            if (!a_value.existence.has(0))
-            {
-               report.addError("'${o.templateDataPath}' /value is not present but is required")
-            }
-         }
-      }
+      validate_single_attribute_dv(parent, d, dv_path, o, 'value', report)
 
       return report
    }
@@ -2074,18 +1702,6 @@ class RmValidator2 {
    private RmValidationReport validate(Pathable parent, DvInterval d, AttributeNode a, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // existence
-      if (a.existence)
-      {
-         def existence = (d ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
 
       report.append(validate_alternatives(parent, d, a.children, dv_path))
 
@@ -2115,18 +1731,6 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (d ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
-         }
-      }
-
       // in the OPT the interval definition is a C_COMPLEX_OBJECT
       // it contains C_COMPLEX_OBJECT for the upper and lower constraints
       // each constraint could be a range for the magnitude, so we could have:
@@ -2135,37 +1739,8 @@ class RmValidator2 {
       // so we know a1 should be in a..b
       // and b2 should be in c..d
 
-      def a_lower = o.getAttr('lower')
-      if (a_lower)
-      {
-         if (d.lower != null) // compare to null to avoid 0 as false
-         {
-            report.append(validate(parent, d.lower, a_lower, dv_path +'/lower'))
-         }
-         else
-         {
-            if (!a_lower.existence.has(0))
-            {
-               report.addError("'${o.templateDataPath}' /lower is not present but is required")
-            }
-         }
-      }
-
-      def a_upper = o.getAttr('upper')
-      if (a_upper)
-      {
-         if (d.upper != null) // compare to null to avoid 0 as false
-         {
-            report.append(validate(parent, d.upper, a_upper, dv_path +'/upper'))
-         }
-         else
-         {
-            if (!a_upper.existence.has(0))
-            {
-               report.addError("'${o.templateDataPath}' /upper is not present but is required")
-            }
-         }
-      }
+      validate_single_attribute_dv(parent, d, dv_path, o, 'lower', report)
+      validate_single_attribute_dv(parent, d, dv_path, o, 'upper', report)
 
       return report
    }
@@ -2174,18 +1749,6 @@ class RmValidator2 {
    private RmValidationReport validate(Pathable parent, DvMultimedia d, AttributeNode a, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // existence
-      if (a.existence)
-      {
-         def existence = (d ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
 
       report.append(validate_alternatives(parent, d, a.children, dv_path))
 
@@ -2215,59 +1778,28 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (d ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            report.addError(parent.dataPath, "Node doesn't match occurrences")
-         }
-      }
-
       // media_type is mandatory by the RM
       if (!d.media_type)
       {
-         report.addError(parent.dataPath + dv_path + "/media_type", "is not present but is required")
+         report.addError(
+            parent.dataPath + dv_path + "/media_type",
+            o.templatePath,
+            "is not present but is required"
+         )
       }
 
       // size is mandatory by the RM
       if (!d.size)
       {
-         report.addError(parent.dataPath + dv_path + "/size", "is not present but is required")
+         report.addError(
+            parent.dataPath + dv_path + "/size",
+            o.templatePath,
+            "is not present but is required"
+         )
       }
 
-      def a_charset = o.getAttr('charset')
-      if (a_charset)
-      {
-         if (d.charset)
-         {
-            report.append(validate(parent, d.charset, a_charset, dv_path +'/charset'))
-         }
-         else
-         {
-            if (!a_charset.existence.has(0))
-            {
-               report.addError(parent.dataPath + dv_path +"/charset", "is not present but is required")
-            }
-         }
-      }
-
-      def a_language = o.getAttr('language')
-      if (a_language)
-      {
-         if (d.language)
-         {
-            report.append(validate(parent, d.language, a_language, dv_path +'/language'))
-         }
-         else
-         {
-            if (!a_language.existence.has(0))
-            {
-               report.addError(parent.dataPath + dv_path +"/language", "is not present but is required")
-            }
-         }
-      }
+      validate_single_attribute_dv(parent, d, dv_path, o, 'charset', report)
+      validate_single_attribute_dv(parent, d, dv_path, o, 'language', report)
 
       return report
    }
@@ -2276,18 +1808,6 @@ class RmValidator2 {
    private RmValidationReport validate(Pathable parent, DvParsable d, AttributeNode a, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // existence
-      if (a.existence)
-      {
-         def existence = (d ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
 
       report.append(validate_alternatives(parent, d, a.children, dv_path))
 
@@ -2317,59 +1837,28 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (d ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            report.addError(parent.dataPath, "Node doesn't match occurrences")
-         }
-      }
-
       // value is mandatory by the RM
       if (!d.value)
       {
-         report.addError(parent.dataPath + dv_path + "/value", "is not present but is required")
+         report.addError(
+            parent.dataPath + dv_path + "/value",
+            o.templatePath,
+            "is not present but is required"
+         )
       }
 
       // formalism is mandatory by the RM
       if (!d.formalism)
       {
-         report.addError(parent.dataPath + dv_path + "/formalism", "is not present but is required")
+         report.addError(
+            parent.dataPath + dv_path + "/formalism",
+            o.templatePath,
+            "is not present but is required"
+         )
       }
 
-      def a_charset = o.getAttr('charset')
-      if (a_charset)
-      {
-         if (d.charset)
-         {
-            report.append(validate(parent, d.charset, a_charset, dv_path +'/charset'))
-         }
-         else
-         {
-            if (!a_charset.existence.has(0))
-            {
-               report.addError(parent.dataPath + dv_path +"/charset", "is not present but is required")
-            }
-         }
-      }
-
-      def a_language = o.getAttr('language')
-      if (a_language)
-      {
-         if (d.language)
-         {
-            report.append(validate(parent, d.language, a_language, dv_path +'/language'))
-         }
-         else
-         {
-            if (!a_language.existence.has(0))
-            {
-               report.addError(parent.dataPath + dv_path +"/language", "is not present but is required")
-            }
-         }
-      }
+      validate_single_attribute_dv(parent, d, dv_path, o, 'charset', report)
+      validate_single_attribute_dv(parent, d, dv_path, o, 'language', report)
 
       return report
    }
@@ -2379,18 +1868,6 @@ class RmValidator2 {
    private RmValidationReport validate(Pathable parent, DvUri d, AttributeNode a, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // existence
-      if (a.existence)
-      {
-         def existence = (d ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
 
       report.append(validate_alternatives(parent, d, a.children, dv_path))
 
@@ -2420,33 +1897,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (d ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
-         }
-      }
-
-      def a_value = o.getAttr('value')
-      if (a_value)
-      {
-         if (d.value != null) // compare to null to avoid 0 as false
-         {
-            report.append(validate(parent, d.value, a_value, dv_path +'/value'))
-         }
-         else
-         {
-            if (!a_value.existence.has(0))
-            {
-               report.addError("'${o.templateDataPath}' /value is not present but is required")
-            }
-         }
-      }
+      validate_single_attribute_dv(parent, d, dv_path, o, 'value', report)
 
       return report
    }
@@ -2455,18 +1906,6 @@ class RmValidator2 {
    private RmValidationReport validate(Pathable parent, DvIdentifier d, AttributeNode a, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
-
-      // existence
-      if (a.existence)
-      {
-         def existence = (d ? 1 : 0)
-         if (!a.existence.has(existence))
-         {
-            // existence error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(a.templateDataPath, "Node doesn't match existence")
-         }
-      }
 
       report.append(validate_alternatives(parent, d, a.children, dv_path))
 
@@ -2496,65 +1935,10 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      // occurrences
-      if (o.occurrences)
-      {
-         def occurrences = (d ? 1 : 0)
-         if (!o.occurrences.has(occurrences))
-         {
-            // occurrences error
-            // TODO: not sure if this path is the right one, I guess should be calculated from the instance...
-            report.addError(o.templateDataPath, "Node doesn't match occurrences")
-         }
-      }
-
-      def a_issuer = o.getAttr('issuer')
-      if (a_issuer)
-      {
-         if (d.issuer != null) // compare to null to avoid 0 as false
-         {
-            report.append(validate(parent, d.issuer, a_issuer, dv_path + '/issuer'))
-         }
-         else
-         {
-            if (!a_issuer.existence.has(0))
-            {
-               report.addError("'${o.templateDataPath}' /issuer is not present but is required")
-            }
-         }
-      }
-
-      def a_type = o.getAttr('type')
-      if (a_type)
-      {
-         if (d.type != null) // compare to null to avoid 0 as false
-         {
-            report.append(validate(parent, d.type, a_type, dv_path +'/type'))
-         }
-         else
-         {
-            if (!a_type.existence.has(0))
-            {
-               report.addError("'${o.templateDataPath}' /type is not present but is required")
-            }
-         }
-      }
-
-      def a_assigned = o.getAttr('assigner')
-      if (a_assigned)
-      {
-         if (d.assigner != null) // compare to null to avoid 0 as false
-         {
-            report.append(validate(parent, d.assigner, a_assigned, dv_path +'/assigned'))
-         }
-         else
-         {
-            if (!a_assigned.existence.has(0))
-            {
-               report.addError("'${o.templateDataPath}' /assigner is not present but is required")
-            }
-         }
-      }
+      validate_single_attribute_dv(parent, d, dv_path, o, 'issuer', report)
+      validate_single_attribute_dv(parent, d, dv_path, o, 'type', report)
+      validate_single_attribute_dv(parent, d, dv_path, o, 'assigner', report)
+      validate_single_attribute_dv(parent, d, dv_path, o, 'id', report)
 
       return report
    }
@@ -2581,7 +1965,7 @@ class RmValidator2 {
             // no checks on the name because it's mandatory in the MR
             report.addError(
                locatable.dataPath == '/' ? "/name" : locatable.dataPath + "/name",
-               o.templateDataPath == '/' ? "/name" : o.templateDataPath + "/name",
+               o.templatePath == '/' ? "/name" : o.templatePath + "/name",
                "attribute is not present but is required"
             )
          }
@@ -2592,7 +1976,7 @@ class RmValidator2 {
          {
             report.addError(
                locatable.dataPath == '/' ? "/name" : locatable.dataPath + "/name",
-               o.templateDataPath == '/' ? "/name" : o.templateDataPath + "/name",
+               o.templatePath == '/' ? "/name" : o.templatePath + "/name",
                "expected name is '${o.text}' and actual name is '${locatable.name.value}'"
             )
          }
@@ -2605,28 +1989,9 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-
       report.append(_validate_entry(ce, o))
 
-
-      def a_protocol = o.getAttr('protocol') // item structure
-
-      if (a_protocol) // if the attribute node is null, all objects validate
-      {
-         if (ce.protocol)
-         {
-            if (checkAllowedType(a_protocol, ce.protocol, report)) // only continue if the type is allowed
-            {
-               ce.protocol.dataPath = ce.dataPath +'/protocol'
-               report.append(validate(ce.protocol, a_protocol))
-            }
-         }
-         else if (!a_protocol.existence.has(0))
-         {
-            report.addError(ce.dataPath +'/protocol', "/protocol is not present but is required")
-         }
-      }
-
+      validate_single_attribute(ce, o, 'protocol', report)
 
       return report
    }
@@ -2672,7 +2037,11 @@ class RmValidator2 {
          {
             if (!c_attr.existence.has(0))
             {
-               report.addError(object.dataPath + '/'+ attribute_name, "attribute not present but is required")
+               report.addError(
+                  object.dataPath +'/'+ attribute_name,
+                  o.templatePath,
+                  "attribute not present but is required"
+               )
             }
          }
       }
@@ -2727,7 +2096,11 @@ class RmValidator2 {
             // it's checked only if the value is null
             if (!c_attr.existence.has(0))
             {
-               report.addError(object.dataPath +'/'+ attribute_name, "/$attribute_name is not present but is required by the existence constraint")
+               report.addError(
+                  object.dataPath +'/'+ attribute_name,
+                  o.templatePath,
+                  "/$attribute_name is not present but is required by the existence constraint"
+               )
             }
 
             // occurrences
@@ -2738,7 +2111,11 @@ class RmValidator2 {
             if (c_attr.children().size() == 1 && !c_attr.children[0].occurrences.has(0))
             {
                // here we need the parent for the dataPath since the data is nul
-               report.addError(object.dataPath +'/'+ attribute_name, "Node doesn't match occurrences")
+               report.addError(
+                  object.dataPath +'/'+ attribute_name,
+                  o.templatePath,
+                  "Node doesn't match occurrences"
+               )
             }
             // for multiple alternatives, a null value will always validate since all occurrences.lower == 0,
             // when there are multiple alternatives for a single attribute, since lower == 1 would make that
