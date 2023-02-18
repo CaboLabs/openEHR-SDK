@@ -12,12 +12,12 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvCodedText
  *
  */
 class Composition extends Locatable {
-   
+
    CodePhrase language
    CodePhrase territory
    DvCodedText category
    PartyProxy composer
-   List<ContentItem> content = []
+   List<ContentItem> content
    EventContext context
 
    @Override

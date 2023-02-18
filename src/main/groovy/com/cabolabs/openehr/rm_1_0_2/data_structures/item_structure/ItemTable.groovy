@@ -4,8 +4,8 @@ import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Cluster
 
 class ItemTable extends ItemStructure {
-   
-   List<Cluster> rows = []
+
+   List<Cluster> rows
 
    @Override
    void fillPathable(Pathable parent, String parentAttribute)

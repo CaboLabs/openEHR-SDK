@@ -115,7 +115,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String path = PS +"canonical_json"+ PS +"subfolders_in_directory_with_details_items.json"
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
-      def parser = new OpenEhrJsonParser(true) // true validates against JSON Schema
+      def parser = new OpenEhrJsonParserQuick(true) // true validates against JSON Schema
       Folder f = (Folder)parser.parseJson(json)
 
       assert f
@@ -182,7 +182,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
          }
       /$
 
-      def parser = new OpenEhrJsonParser()
+      def parser = new OpenEhrJsonParserQuick()
       Folder folder = parser.parseJson(json)
 
 
@@ -234,7 +234,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
          }
       /$
 
-      def parser = new OpenEhrJsonParser(true)
+      def parser = new OpenEhrJsonParserQuick(true)
       Ehr ehr = parser.parseEhr(json_ehr)
 
       assert ehr
@@ -262,7 +262,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
          }
       /$
 
-      def parser = new OpenEhrJsonParser(true)
+      def parser = new OpenEhrJsonParserQuick(true)
 
       Ehr ehr = parser.parseEhr(json_ehr)
 
@@ -311,7 +311,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
          }
       /$
 
-      def parser = new OpenEhrJsonParser()
+      def parser = new OpenEhrJsonParserQuick()
       EhrStatus status = parser.parseJson(json_ehr_status)
 
       assert status.archetype_node_id == "openEHR-EHR-EHR_STATUS.generic.v1"
@@ -363,7 +363,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
          }
       /$
 
-      def parser = new OpenEhrJsonParser(true)
+      def parser = new OpenEhrJsonParserQuick(true)
       EhrStatus status = parser.parseJson(json_ehr_status)
 
       assert !status
@@ -386,7 +386,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String path = PS +"canonical_json"+ PS +"lab_order.json"
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
-      def parser = new OpenEhrJsonParser()
+      def parser = new OpenEhrJsonParserQuick()
       Composition c = (Composition)parser.parseJson(json)
 
 
@@ -401,7 +401,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String path = PS +"canonical_json"+ PS +"lab_results.json"
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
-      def parser = new OpenEhrJsonParser()
+      def parser = new OpenEhrJsonParserQuick()
       Composition c = (Composition)parser.parseJson(json)
 
       // TODO assert paths
@@ -416,7 +416,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String path = PS +"canonical_json"+ PS +"composition_missing_name_type.json"
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
-      def parser = new OpenEhrJsonParser()
+      def parser = new OpenEhrJsonParserQuick()
       Composition c = (Composition)parser.parseJson(json)
 
       assert c != null
@@ -431,9 +431,12 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String path = PS +"canonical_json"+ PS +"referral.json"
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
-      def parser = new OpenEhrJsonParser()
+      def parser = new OpenEhrJsonParserQuick()
       Composition c = (Composition)parser.parseJson(json)
 
+      assert c != null
+
+      /* NOTE: the new parser doesn't calculate the paths
       assert c.path     == '/'
       assert c.dataPath == '/'
 
@@ -459,6 +462,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 
       assert c.content[0].activities[0].description.items[0].path     == '/content[archetype_id=openEHR-EHR-INSTRUCTION.request-referral.v1]/activities[at0001]/description[at0009]/items[at0121]'
       assert c.content[0].activities[0].description.items[0].dataPath == '/content(0)/activities(0)/description/items(0)'
+      */
 
       // there are more items in the description
 
@@ -471,14 +475,17 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String path = PS +"canonical_json"+ PS +"admin.json"
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
-      def parser = new OpenEhrJsonParser()
+      def parser = new OpenEhrJsonParserQuick()
       Composition c = (Composition)parser.parseJson(json)
+
+      assert c != null
 
       // This doesn't handle loops created by the parent references of PATHABLE
       //def out = JsonOutput.toJson(c)
       //out = JsonOutput.prettyPrint(out)
       //println out
 
+      /* NOTE: the new parser doesn't calculate the paths
       assert c.path     == '/'
       assert c.dataPath == '/'
 
@@ -493,6 +500,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 
       assert c.content[0].data.items[0].path     == '/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.minimal.v1]/data[at0001]/items[at0002]'
       assert c.content[0].data.items[0].dataPath == '/content(0)/data/items(0)'
+      */
 
       //def out = JsonWriter.objectToJson(c, [(JsonWriter.PRETTY_PRINT): true])
       //println out
@@ -503,7 +511,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String path = PS +"canonical_json"+ PS +"version_test_all_datatypes_en.json"
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
-      def parser = new OpenEhrJsonParser()
+      def parser = new OpenEhrJsonParserQuick()
       Version v = parser.parseVersionJson(json)
       // TODO: check internals
 
@@ -515,7 +523,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String path = PS +"canonical_json"+ PS +"version_test_all_datatypes_en.json"
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
-      def parser = new OpenEhrJsonParser()
+      def parser = new OpenEhrJsonParserQuick()
 
       String message = shouldFail {
          parser.parseJson(json) // this tries to parse a pathable cant parse the provided version
@@ -529,7 +537,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String path = PS +"canonical_json"+ PS +"admin.json"
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
-      def parser = new OpenEhrJsonParser()
+      def parser = new OpenEhrJsonParserQuick()
 
       String message = shouldFail {
          parser.parseVersionJson(json) // this tries to parse a version cant parse the provided composition
@@ -544,7 +552,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String path = PS +"canonical_json"+ PS +"version_list_test_all_datatypes_en.json"
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
-      def parser = new OpenEhrJsonParser()
+      def parser = new OpenEhrJsonParserQuick()
       List<Version> vl = parser.parseVersionList(json)
 
       // TODO: check internals
@@ -564,7 +572,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String path = PS +"canonical_json"+ PS +"contribution_test_all_datatypes_en.json"
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
-      def parser = new OpenEhrJsonParser(true)
+      def parser = new OpenEhrJsonParserQuick(true)
       Contribution contribution = parser.parseContribution(json)
 
       // TODO: check internals
@@ -579,7 +587,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String path = PS +"canonical_json"+ PS +"contribution_dto_test_all_datatypes_en.json"
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
-      def parser = new OpenEhrJsonParser(true)
+      def parser = new OpenEhrJsonParserQuick(true)
       ContributionDto contribution = parser.parseContributionDto(json)
 
       if (!contribution)
@@ -662,7 +670,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String path = PS +"canonical_json"+ PS +"admin.json"
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
-      def parser = new OpenEhrJsonParser()
+      def parser = new OpenEhrJsonParserQuick()
       Composition c = (Composition)parser.parseJson(json)
 
       // serialize to XML
@@ -683,7 +691,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String path = PS +"canonical_json"+ PS +"lab_order.json"
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
-      def parser = new OpenEhrJsonParser()
+      def parser = new OpenEhrJsonParserQuick()
       Composition c = (Composition)parser.parseJson(json)
 
       // serialize to XML
@@ -704,7 +712,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String path = PS +"canonical_json"+ PS +"lab_results.json"
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
-      def parser = new OpenEhrJsonParser()
+      def parser = new OpenEhrJsonParserQuick()
       Composition c = (Composition)parser.parseJson(json)
 
       // serialize to XML
@@ -724,7 +732,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 	  String path = PS +"canonical_json"+ PS +"referral.json"
 	  File file = new File(getClass().getResource(path).toURI())
 	  String json = file.text
-	  def parser = new OpenEhrJsonParser()
+	  def parser = new OpenEhrJsonParserQuick()
 	  Composition c = (Composition)parser.parseJson(json)
 
 	  // serialize to XML
@@ -744,7 +752,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 	  String path = PS +"canonical_json"+ PS +"minimal_action.json"
 	  File file = new File(getClass().getResource(path).toURI())
 	  String json = file.text
-	  def parser = new OpenEhrJsonParser()
+	  def parser = new OpenEhrJsonParserQuick()
 	  Composition c = (Composition)parser.parseJson(json)
 
 	  // serialize to XML
@@ -765,7 +773,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 	  String path = PS +"canonical_json"+ PS +"minimal_evaluation.json"
 	  File file = new File(getClass().getResource(path).toURI())
 	  String json = file.text
-	  def parser = new OpenEhrJsonParser()
+	  def parser = new OpenEhrJsonParserQuick()
 	  Composition c = (Composition)parser.parseJson(json)
 
 	  // serialize to XML
@@ -785,7 +793,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 	  String path = PS +"canonical_json"+ PS +"nested.json"
 	  File file = new File(getClass().getResource(path).toURI())
 	  String json = file.text
-	  def parser = new OpenEhrJsonParser()
+	  def parser = new OpenEhrJsonParserQuick()
 	  Composition c = (Composition)parser.parseJson(json)
 
 	  // serialize to XML
@@ -805,7 +813,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 	  String path = PS +"canonical_json"+ PS +"oximetria_obs.json"
 	  File file = new File(getClass().getResource(path).toURI())
 	  String json = file.text
-	  def parser = new OpenEhrJsonParser()
+	  def parser = new OpenEhrJsonParserQuick()
 	  Composition c = (Composition)parser.parseJson(json)
 
 	  // serialize to XML
@@ -825,7 +833,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 	  String path = PS +"canonical_json"+ PS +"physical_activity.json"
 	  File file = new File(getClass().getResource(path).toURI())
 	  String json = file.text
-	  def parser = new OpenEhrJsonParser()
+	  def parser = new OpenEhrJsonParserQuick()
 	  Composition c = (Composition)parser.parseJson(json)
 
 	  // serialize to XML
@@ -845,7 +853,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 	  String path = PS +"canonical_json"+ PS +"prozedur.json"
 	  File file = new File(getClass().getResource(path).toURI())
 	  String json = file.text
-	  def parser = new OpenEhrJsonParser()
+	  def parser = new OpenEhrJsonParserQuick()
 	  Composition c = (Composition)parser.parseJson(json)
 
 	  // serialize to XML
@@ -865,7 +873,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      String path = PS +"canonical_json"+ PS +"amd_assessment.en.v1.json"
      File file = new File(getClass().getResource(path).toURI())
      String json = file.text
-     def parser = new OpenEhrJsonParser()
+     def parser = new OpenEhrJsonParserQuick()
      Composition c = (Composition)parser.parseJson(json)
 
      // serialize to XML
@@ -885,7 +893,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      String path = PS +"canonical_json"+ PS +"diagnose.de.v1.json"
      File file = new File(getClass().getResource(path).toURI())
      String json = file.text
-     def parser = new OpenEhrJsonParser()
+     def parser = new OpenEhrJsonParserQuick()
      Composition c = (Composition)parser.parseJson(json)
 
      // serialize to XML
@@ -905,7 +913,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      String path = PS +"canonical_json"+ PS +"experimental_respiratory_parameters_document.json"
      File file = new File(getClass().getResource(path).toURI())
      String json = file.text
-     def parser = new OpenEhrJsonParser()
+     def parser = new OpenEhrJsonParserQuick()
      OriginalVersion v = (OriginalVersion)parser.parseVersionJson(json)
 
 
@@ -931,7 +939,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
      String path = PS +"canonical_json"+ PS +"intensivmedizinisches_monitoring_korpertemperatur.json"
      File file = new File(getClass().getResource(path).toURI())
      String json = file.text
-     def parser = new OpenEhrJsonParser()
+     def parser = new OpenEhrJsonParserQuick()
      Composition c = (Composition)parser.parseJson(json)
 
      // serialize to XML
@@ -980,7 +988,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       assert errors.size() == 0
 
       // JSON PARSE
-      def parser = new OpenEhrJsonParser()
+      def parser = new OpenEhrJsonParserQuick()
       Composition compo = (Composition)parser.parseJson(json)
 
       // TODO: COMPOSITION VALIDATION AGAINST OPT

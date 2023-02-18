@@ -734,8 +734,6 @@ class OpenEhrJsonParserQuick {
          json.context, compo
       )
 
-      def content = []
-
       json.content.eachWithIndex { content_item, i ->
          type = content_item._type
          if (!type)
@@ -743,6 +741,8 @@ class OpenEhrJsonParserQuick {
             throw new JsonParseException("_type required for /content[$i]")
          }
          method = 'parse'+ type
+
+         compo.content = []
 
          compo.content.add(
             this."$method"(
@@ -1267,7 +1267,10 @@ class OpenEhrJsonParserQuick {
 
          method = 'parse'+ type
 
+         if (!section.items) section.items = []
+
          section.items.add(
+
             this."$method"(
                content_item, section
             )
@@ -1346,6 +1349,8 @@ class OpenEhrJsonParserQuick {
 
          type = event._type
          method = 'parse'+ type
+
+         if (!h.events) h.events = []
 
          h.events.add(
             this."$method"(
@@ -1493,6 +1498,8 @@ class OpenEhrJsonParserQuick {
 
       json.activities.eachWithIndex { js_activity, i ->
 
+         if (!ins.activities) ins.activities = []
+
          ins.activities.add(
             this.parseACTIVITY(
                js_activity, ins
@@ -1622,6 +1629,8 @@ class OpenEhrJsonParserQuick {
          }
          method = 'parse'+ type
 
+         if (!t.items) t.items = []
+
          t.items.add(
             this."$method"(
                item, t
@@ -1639,6 +1648,8 @@ class OpenEhrJsonParserQuick {
       this.fillLOCATABLE(l, json, parent)
 
       json.items.eachWithIndex { element, i ->
+
+         if (!l.items) l.items = []
 
          l.items.add(
             this.parseELEMENT(
@@ -1660,8 +1671,11 @@ class OpenEhrJsonParserQuick {
 
 	   // FIXME: rows are CLUSTERS, we don't need to get the dynamic method
       json.rows.each { item ->
+
          type = item._type
          method = 'parse'+ type
+
+         if (!t.rows) t.rows = []
 
          t.rows.add(
             this."$method"(
