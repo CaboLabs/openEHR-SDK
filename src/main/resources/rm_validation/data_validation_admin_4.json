@@ -1,0 +1,278 @@
+{
+    "_type": "COMPOSITION",
+    "name": {
+        "_type": "DV_TEXT",
+        "value": "Data validation"
+    },
+    "archetype_details": {
+        "archetype_id": {
+            "_type": "ARCHETYPE_ID",
+            "value": "openEHR-EHR-COMPOSITION.data_validation.v1"
+        },
+        "template_id": {
+            "_type": "TEMPLATE_ID",
+            "value": "data_validation_admin"
+        },
+        "rm_version": "1.0.2"
+    },
+    "archetype_node_id": "openEHR-EHR-COMPOSITION.data_validation.v1",
+    "language": {
+        "terminology_id": {
+            "_type": "TERMINOLOGY_ID",
+            "value": "ISO_639-1"
+        },
+        "code_string": "en"
+    },
+    "territory": {
+        "terminology_id": {
+            "_type": "TERMINOLOGY_ID",
+            "value": "ISO_3166-1"
+        },
+        "code_string": "UY"
+    },
+    "category": {
+        "value": "event",
+        "defining_code": {
+            "terminology_id": {
+                "_type": "TERMINOLOGY_ID",
+                "value": "openehr"
+            },
+            "code_string": "433"
+        }
+    },
+    "composer": {
+        "_type": "PARTY_IDENTIFIED",
+        "external_ref": {
+            "id": {
+                "_type": "HIER_OBJECT_ID",
+                "value": "13ca860a-5fa6-4769-b3da-1c8ae616920a"
+            },
+            "namespace": "DEMOGRAPHIC",
+            "type": "PERSON"
+        },
+        "name": "Dr. Yamamoto"
+    },
+    "context": {
+        "start_time": {
+            "value": "2023-02-13T12:12:28.221-03:00"
+        },
+        "setting": {
+            "value": "home",
+            "defining_code": {
+                "terminology_id": {
+                    "_type": "TERMINOLOGY_ID",
+                    "value": "openehr"
+                },
+                "code_string": "225"
+            }
+        }
+    },
+    "content": [
+        {
+            "_type": "ADMIN_ENTRY",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Data validation"
+            },
+            "archetype_details": {
+                "archetype_id": {
+                    "_type": "ARCHETYPE_ID",
+                    "value": "openEHR-EHR-ADMIN_ENTRY.data_validation.v1"
+                },
+                "template_id": {
+                    "_type": "TEMPLATE_ID",
+                    "value": "data_validation_admin"
+                },
+                "rm_version": "1.0.2"
+            },
+            "archetype_node_id": "openEHR-EHR-ADMIN_ENTRY.data_validation.v1",
+            "language": {
+                "terminology_id": {
+                    "_type": "TERMINOLOGY_ID",
+                    "value": "ISO_639-1"
+                },
+                "code_string": "en"
+            },
+            "encoding": {
+                "terminology_id": {
+                    "_type": "TERMINOLOGY_ID",
+                    "value": "IANA_character-sets"
+                },
+                "code_string": "UTF-8"
+            },
+            "subject": {
+                "_type": "PARTY_SELF"
+            },
+            "data": {
+                "_type": "ITEM_TREE",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Tree"
+                },
+                "archetype_node_id": "at0001",
+                "items": [
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "data validation cluster occur 1..3"
+                        },
+                        "archetype_node_id": "at0002",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "text occur 1..*"
+                                },
+                                "archetype_node_id": "at0005",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "IHZJxS uqJCYXVBnZYoNWFuBGlu TffAwyGMJGLtQwIrfzPoVZmwjVIYvvddnsknVFoMhEXUzkyKfNFiReyTkZukUajaF.YPYLJEhhaCc xZcGk,,xDIrYQAM.PWtnflEpCAMfkAgVXweAHoql,wnipIngOtmvojZ kKkTdZzryUBmYBTPcuHQkrMIVtRXVeENmkfmXmNrGIN MhkXuuqdbcSWBOxlP gambGEBSKiN.gjHkPxFWiCctkYXNnmFZeIMCNrPmItGhZU.FYQ.GULW,sNfUbPsRzpXhsYqTzjYo"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "text occur 1..3"
+                                },
+                                "archetype_node_id": "at0006",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "lzejjcPYXLIIruIuLwuIVAWKSIEGzmPtdssPNUJfZC C.CKtGuNTxfSzPoETWVUvdCnDtyiZyS.IGwZiQWJKqmvXcBhc,LeTa.tD,lPK,qXReR srYQnLZxNmivWEwPmzfmMSLfyXUcFrHEaFUVRELmyCfalYEFqaIZWdAmSAgonaiFPTLNPeoPmIsaVO.gvlSIs,CHxWYq bhZqrZUNoLVwUjlirRoqLXrtppWtkSDlZlKGUaHusteirSVruNBnBrDImHDNlTxeSqguiSFZnNni OTYXskOsvwZoWRQZRsS"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "data validation cluster occur 1..*"
+                        },
+                        "archetype_node_id": "at0003",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "text occur 1..3"
+                                },
+                                "archetype_node_id": "at0007",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "fOxyKAMnoIyCQDbfMEqYJDaFpAEqkdfRFqPOnR hdRzaQLUC,TwirSKuHnLlBEG,cVoR.mvGpCXueN.qPDZJld.afGuPaunQJwMyJWCWESKMawvU.ZlbcayvsYzcoDqCFMMuPTt wryDdZui,wuxmzfyRZtQRkbHQMycCOvmLdCcGVu,zpxAhMSGunbHFjLxlsvTjPxTfKGXIpHXrdhreaQkaklxbxEwExQlabstymgw,WeyCpIZzzeo f,RAsLwkwaBkKFRPHRYiVKRcaMoQUtHhnlitAyTSgYmpTPnLLgB"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "data validation cluster card 1..3"
+                        },
+                        "archetype_node_id": "at0004",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "text occur 1..5"
+                                },
+                                "archetype_node_id": "at0008",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "oXCZG.FTUBOGgdt byJwVHhOXZsPsRh.tKFYQk jz SGJcKreUxRFTmYuV,gteAmDesYX tdOLoVzemU ajUhlGBwpXHuc.oXWv  puslV.avnLFVJCYGcYIShzskxw,izxw.pWRGqScHwAVY Cs,xJSTxa.Em zuDXpBQk.FWjtuSdToSFafqfMnleomlwRddUGFDtNWX.wmoPKhrLFiiFs.pLsSNXQxfn,LLEhkbQtCJZew.LQKpGUkfwUfEHyFU.NTnZysUTQHWzqMuEWp,c EuLFtLMoAqrdRwF,qdJI"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "text occur 1..5"
+                                },
+                                "archetype_node_id": "at0008",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "oXCZG.FTUBOGgdt byJwVHhOXZsPsRh.tKFYQk jz SGJcKreUxRFTmYuV,gteAmDesYX tdOLoVzemU ajUhlGBwpXHuc.oXWv  puslV.avnLFVJCYGcYIShzskxw,izxw.pWRGqScHwAVY Cs,xJSTxa.Em zuDXpBQk.FWjtuSdToSFafqfMnleomlwRddUGFDtNWX.wmoPKhrLFiiFs.pLsSNXQxfn,LLEhkbQtCJZew.LQKpGUkfwUfEHyFU.NTnZysUTQHWzqMuEWp,c EuLFtLMoAqrdRwF,qdJI"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "text occur 1..5"
+                                },
+                                "archetype_node_id": "at0008",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "oXCZG.FTUBOGgdt byJwVHhOXZsPsRh.tKFYQk jz SGJcKreUxRFTmYuV,gteAmDesYX tdOLoVzemU ajUhlGBwpXHuc.oXWv  puslV.avnLFVJCYGcYIShzskxw,izxw.pWRGqScHwAVY Cs,xJSTxa.Em zuDXpBQk.FWjtuSdToSFafqfMnleomlwRddUGFDtNWX.wmoPKhrLFiiFs.pLsSNXQxfn,LLEhkbQtCJZew.LQKpGUkfwUfEHyFU.NTnZysUTQHWzqMuEWp,c EuLFtLMoAqrdRwF,qdJI"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "text occur 1..5"
+                                },
+                                "archetype_node_id": "at0008",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "oXCZG.FTUBOGgdt byJwVHhOXZsPsRh.tKFYQk jz SGJcKreUxRFTmYuV,gteAmDesYX tdOLoVzemU ajUhlGBwpXHuc.oXWv  puslV.avnLFVJCYGcYIShzskxw,izxw.pWRGqScHwAVY Cs,xJSTxa.Em zuDXpBQk.FWjtuSdToSFafqfMnleomlwRddUGFDtNWX.wmoPKhrLFiiFs.pLsSNXQxfn,LLEhkbQtCJZew.LQKpGUkfwUfEHyFU.NTnZysUTQHWzqMuEWp,c EuLFtLMoAqrdRwF,qdJI"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "data validation cluster no constraints"
+                        },
+                        "archetype_node_id": "at0010",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "text occurs 3..5"
+                                },
+                                "archetype_node_id": "at0011",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "value 1"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "text occurs 3..5"
+                                },
+                                "archetype_node_id": "at0011",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "value 2"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "text occurs 3..5"
+                                },
+                                "archetype_node_id": "at0011",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "value 3"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -485,6 +485,7 @@ class OperationalTemplateParser {
       }
       else
       {
+         //println "CHECK OCCURS "+ node.occurrences.text()
          // if ('CODE_PHRASE' == node.rm_type_name.text())
          // {
          //    println ">>> PARSING "+ node.rm_type_name.text() +" as ObjectNode"
@@ -503,7 +504,8 @@ class OperationalTemplateParser {
             templatePath:     templatePath,
             path:             path,
             dataPath:         dataPath,
-            templateDataPath: templateDataPath
+            templateDataPath: templateDataPath,
+            occurrences:      parseIntervalInt(node.occurrences)
             // TODO: default_values
          )
       }

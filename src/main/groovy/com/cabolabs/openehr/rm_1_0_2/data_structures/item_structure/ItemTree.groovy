@@ -5,7 +5,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representati
 
 class ItemTree extends ItemStructure {
 
-   List<Item> items = []
+   List<Item> items
 
    @Override
    void fillPathable(Pathable parent, String parentAttribute)

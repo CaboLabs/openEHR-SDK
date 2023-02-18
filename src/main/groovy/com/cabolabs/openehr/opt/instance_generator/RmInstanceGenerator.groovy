@@ -114,7 +114,7 @@ class RmInstanceGenerator {
       String time_format = "HH:mm:ss")
    {
       /* THIS CANT BE USED UNTIL Groovy 2.5.x, since Grails 3.3.10 uses 2.4.17 we keep building under that version
-         OLD javadocs by Groovy version 
+         OLD javadocs by Groovy version
       // https://mrhaki.blogspot.com/2018/06/groovy-goodness-customizing-json-output.html
       // https://docs.groovy-lang.org/latest/html/gapi/groovy/json/JsonGenerator.Options.html
       def options = new JsonGenerator.Options()
@@ -371,7 +371,7 @@ class RmInstanceGenerator {
       def oa = opt.definition.attributes.find{ it.rmAttributeName == 'content' }
 
       if (!oa && !attr_context) throw new Exception("The OPT doesn't have a structure for COMPOSITION.content or COMPOSITION.context, at least it should have one of those")
-      
+
       if (oa)
       {
          // TODO: this should be an OPT rule exception:
@@ -434,7 +434,7 @@ class RmInstanceGenerator {
       }
       else
       {
-         children = [ a.children[0] ]
+         children = [ a.children[0] ] // NOTE: if there are multiple alternatives for a single attribute we can take anyone randomly here
       }
 
       children.each { obj ->
@@ -442,6 +442,7 @@ class RmInstanceGenerator {
          // Avoid processing slots
          if (obj.type == 'ARCHETYPE_SLOT')
          {
+            // TODO: log
             //builder.mkp.comment('SLOT IN '+ obj.path +' NOT PROCESSED')
             return
          }
@@ -455,8 +456,12 @@ class RmInstanceGenerator {
          method = 'generate_'+ obj_type
          // println "method: "+ method
          attrs << "$method"(obj, parent_arch_id) // generate_OBSERVATION(a)
+
+
+         // FIXME: of the obj.occurrences.lower is more than the objects generated, clone the objects to comply with the constraint
+         // check how the serializer works if the same object is added many times to the multiple attribute
       }
-      
+
       return attrs
    }
 
@@ -632,7 +637,7 @@ class RmInstanceGenerator {
    {
       def value
       def value_constraint = o.getAttr('value')
-            
+
       // there is a constraint for the name but doesnt have a specific value
       if (!value_constraint)
       {
@@ -647,7 +652,7 @@ class RmInstanceGenerator {
             value: name_value
          )
       }
-      
+
       return value
    }
 
@@ -833,7 +838,7 @@ class RmInstanceGenerator {
          // TODO: refactor to generate_REAL
          //println attr_numerator.children[0].item // CReal
          def num_constraint = attr_numerator.children[0].item.range
-         
+
          num_lo = (num_constraint.lowerUnbounded ?    0.0f : num_constraint.lower)
          num_hi = (num_constraint.upperUnbounded ? 1000.0f : num_constraint.upper)
 
@@ -851,7 +856,7 @@ class RmInstanceGenerator {
       {
          // TODO: refactor to generate_REAL
          def den_constraint = attr_denominator.children[0].item.range
-         
+
          den_lo = (den_constraint.lowerUnbounded ?    0.0f : den_constraint.lower)
          den_hi = (den_constraint.upperUnbounded ? 1000.0f : den_constraint.upper)
 
@@ -964,7 +969,7 @@ class RmInstanceGenerator {
                value: DataGenerator.duration_value_from_pattern(c_duration.pattern)
             )
          }
-         
+
          if (c_duration.range)
          {
             return new DvDuration(
@@ -1119,7 +1124,7 @@ class RmInstanceGenerator {
             //     the first children can be a STRING constraint
             //       check if there is a list constraint and get the first value as the name
             def value_constraint = name_constraint.children[0].attributes.find { it.rmAttributeName == 'value' }
-            
+
             // there is a constraint for the name but doesnt have a specific value
             if (!value_constraint)
             {
@@ -1196,7 +1201,7 @@ class RmInstanceGenerator {
          {
             contacts = contacts.take(oa.cardinality.interval.upper)
          }
-      
+
          p.contacts = contacts
       }
 
@@ -1217,7 +1222,7 @@ class RmInstanceGenerator {
             throw new Exception("The multiple attribute at ${oa.templateDataPath} has a lower cardinality constraint of ${oa.cardinality.interval.lower} but there are no children objects defined in the template, so the instance generator can't generate any more. If some content is required in a container, then at least one content object should be defined in the OPT.")
          }
 
-         def identities = processAttributeChildren(oa, opt.definition.archetypeId) 
+         def identities = processAttributeChildren(oa, opt.definition.archetypeId)
 
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
          // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
@@ -1225,7 +1230,7 @@ class RmInstanceGenerator {
          {
             identities = identities.take(oa.cardinality.interval.upper)
          }
-      
+
          p.identities = identities
       }
 
@@ -1357,7 +1362,7 @@ class RmInstanceGenerator {
    private Role generateRole()
    {
       def role = new Role()
-      
+
       add_PARTY_elements(opt.definition, role, opt.definition.archetypeId)
 
       def oa = opt.definition.attributes.find{ it.rmAttributeName == 'capabilities' }
@@ -1390,7 +1395,7 @@ class RmInstanceGenerator {
          {
             // TODO: if the minimal amount of content objects is not met, more objects sould be generated
          }
-      
+
          role.capabilities = capabilities
       }
 
@@ -1453,7 +1458,7 @@ class RmInstanceGenerator {
          }
 
          def items = processAttributeChildren(oa, parent_arch_id)
-         
+
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
          // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
          if (oa.cardinality && oa.cardinality.interval.upper)
@@ -1465,7 +1470,7 @@ class RmInstanceGenerator {
          {
             // TODO: if the minimal amount of content objects is not met, more objects sould be generated
          }
-         
+
          section.items = items
       }
 
@@ -1482,7 +1487,7 @@ class RmInstanceGenerator {
       add_ENTRY_elements(o, obs, parent_arch_id) // adds LOCATABLE fields
 
       AttributeNode a = o.parent
-      
+
       def oa = o.attributes.find { it.rmAttributeName == 'data' }
       if (oa)
       {
@@ -1536,7 +1541,7 @@ class RmInstanceGenerator {
          def protocol = processAttributeChildren(oa, parent_arch_id)
          eval.protocol = protocol[0]
       }
-      
+
       return eval
    }
 
@@ -1548,7 +1553,7 @@ class RmInstanceGenerator {
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
       add_ENTRY_elements(o, admin, parent_arch_id) // adds LOCATABLE fields
-      
+
       def oa = o.attributes.find { it.rmAttributeName == 'data' }
       if (oa)
       {
@@ -1595,7 +1600,7 @@ class RmInstanceGenerator {
 
          // this is a list, and activities is also a list, we use the full list
          def activities = processAttributeChildren(oa, parent_arch_id)
-         
+
          if (oa.cardinality && oa.cardinality.interval.upper)
          {
             activities = activities.take(oa.cardinality.interval.upper)
@@ -1658,7 +1663,7 @@ class RmInstanceGenerator {
       {
          act.action_archetype_id = 'openEHR-EHR-ACTION\\.sample_action\\.v1'
       }
-      
+
       return act
    }
 
@@ -1745,7 +1750,7 @@ class RmInstanceGenerator {
             defining_code: generate_attr_CODE_PHRASE(code_phrase.terminologyId, code_phrase.codeList[0])
          )
       )
-      
+
       return action
    }
 
@@ -1793,7 +1798,7 @@ class RmInstanceGenerator {
          history.events = mattrs
       }
 
-     
+
       oa = o.attributes.find { it.rmAttributeName == 'summary' }
       if (oa)
       {
@@ -1838,7 +1843,7 @@ class RmInstanceGenerator {
             ev."${oa.rmAttributeName}" = mattrs[0]
          }
       }
-      
+
       return ev
    }
 
@@ -1850,7 +1855,7 @@ class RmInstanceGenerator {
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
       AttributeNode a = o.parent
-      
+
       add_LOCATABLE_elements(o, ev, parent_arch_id)
 
       // IM attribute not present in the OPT
@@ -1919,10 +1924,10 @@ class RmInstanceGenerator {
    private ItemSingle generate_ITEM_SINGLE(ObjectNode o, String parent_arch_id)
    {
       def struc = new ItemSingle()
-     
+
      // parent from now can be different than the parent if if the object has archetypeId
      parent_arch_id = o.archetypeId ?: parent_arch_id
-     
+
      add_LOCATABLE_elements(o, struc, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
      def oa_item = o.attributes.find{ it.rmAttributeName == 'item' }
@@ -1946,7 +1951,7 @@ class RmInstanceGenerator {
       //AttributeNode a = o.parent
 
       add_LOCATABLE_elements(o, struc, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
-      
+
       def mattr
       o.attributes.each { oa ->
 
@@ -1972,7 +1977,7 @@ class RmInstanceGenerator {
       //AttributeNode a = o.parent
 
       add_LOCATABLE_elements(o, struc, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
-      
+
       def mattr
       o.attributes.each { oa ->
 
@@ -1996,7 +2001,7 @@ class RmInstanceGenerator {
       //AttributeNode a = o.parent
 
       add_LOCATABLE_elements(o, struc, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
-      
+
       def mattrs
 
       def oa = o.attributes.find { it.rmAttributeName == 'items' }
@@ -2046,7 +2051,7 @@ class RmInstanceGenerator {
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
       AttributeNode a = o.parent
-      
+
       add_LOCATABLE_elements(o, cluster, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
       def mattrs
@@ -2092,7 +2097,7 @@ class RmInstanceGenerator {
          // TODO: log warning about empty cluster
          // add dummy element
          // NOTE: if a dummy element is added it will fail OPT validation! (stupid idea...)
-         
+
          // cluster.items = [
          //    new Element(
          //       archetype_node_id: 'at'+ Integer.random(9999, 1000) +'.9',
@@ -2104,7 +2109,7 @@ class RmInstanceGenerator {
          //       )
          //    )
          // ]
-         
+
       }
 
       return cluster
@@ -2293,7 +2298,7 @@ class RmInstanceGenerator {
          break
          case 'list_range':
             lower_magnitude = lower_primitive.list.sort()[0] // take the lowest value
-            
+
             if (upper_primitive.range.upper && lower_magnitude > upper_primitive.range.upper)
             {
                throw new Exception('The template defines incompatible list constraint for lower and range constraint for upper on an interval')
@@ -2338,7 +2343,7 @@ class RmInstanceGenerator {
             //
             // (upper.range.upperUnbounded ||
             //  !lower.range.upperUnbounded && lower.range.upper <= upper.range.upper)
-            // && 
+            // &&
             // (lower.range.lowerUnbounded ||
             //  !upper,range.lowerUnbounded && lower.range.lower <= upper.range.lower
             // )
@@ -2377,7 +2382,7 @@ class RmInstanceGenerator {
       interval.upper = new DvCount(
          magnitude: upper_magnitude
       )
-      
+
       return interval
    }
 
@@ -2470,7 +2475,7 @@ class RmInstanceGenerator {
             //
             // (upper.range.upperUnbounded ||
             //  !lower.range.upperUnbounded && lower.range.upper <= upper.range.upper)
-            // && 
+            // &&
             // (lower.range.lowerUnbounded ||
             //  !upper,range.lowerUnbounded && lower.range.lower <= upper.range.lower
             // )
@@ -2511,7 +2516,7 @@ class RmInstanceGenerator {
          magnitude: upper_magnitude,
          units: _units
       )
-      
+
       return interval
    }
 
@@ -2525,7 +2530,7 @@ class RmInstanceGenerator {
       )
 
       // TODO: refactor with XmlInstanceGEnerator since the code is the same
-      
+
       // get constraints for DV_COUNT limits
       def lower_attr = o.attributes.find { it.rmAttributeName == 'lower' }
       def upper_attr = o.attributes.find { it.rmAttributeName == 'upper' }

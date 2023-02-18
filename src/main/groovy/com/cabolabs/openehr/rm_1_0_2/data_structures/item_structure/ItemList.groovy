@@ -4,8 +4,8 @@ import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Element
 
 class ItemList extends ItemStructure {
-   
-   List<Element> items = []
+
+   List<Element> items
 
    @Override
    void fillPathable(Pathable parent, String parentAttribute)

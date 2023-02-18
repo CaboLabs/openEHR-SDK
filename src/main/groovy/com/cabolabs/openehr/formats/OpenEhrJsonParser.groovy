@@ -818,6 +818,8 @@ class OpenEhrJsonParser {
          }
          method = 'parse'+ type
 
+         if (!compo.content) compo.content = []
+
          compo.content.add(
             this."$method"(
                content_item, compo,
@@ -1353,6 +1355,8 @@ class OpenEhrJsonParser {
 
          method = 'parse'+ type
 
+         if (!section.items) section.items = []
+
          section.items.add(
             this."$method"(
                content_item, section,
@@ -1440,6 +1444,8 @@ class OpenEhrJsonParser {
 
          type = event._type
          method = 'parse'+ type
+
+         if (!h.events) h.events = []
 
          h.events.add(
             this."$method"(
@@ -1599,6 +1605,8 @@ class OpenEhrJsonParser {
 
       json.activities.eachWithIndex { js_activity, i ->
 
+         if (!ins.activities) ins.activities = []
+
          ins.activities.add(
             this.parseACTIVITY(
                js_activity, ins,
@@ -1742,6 +1750,8 @@ class OpenEhrJsonParser {
          }
          method = 'parse'+ type
 
+         if (!t.items) t.items = []
+
          t.items.add(
             this."$method"(
                item, t,
@@ -1761,6 +1771,8 @@ class OpenEhrJsonParser {
       this.fillLOCATABLE(l, json, parent, path, dataPath)
 
       json.items.eachWithIndex { element, i ->
+
+         if (!l.items) l.items = []
 
          l.items.add(
             this.parseELEMENT(
@@ -1786,6 +1798,8 @@ class OpenEhrJsonParser {
       json.rows.each { item ->
          type = item._type
          method = 'parse'+ type
+
+         if (!t.rows) t.rows = []
 
          t.rows.add(
             this."$method"(
@@ -1829,6 +1843,8 @@ class OpenEhrJsonParser {
             throw new JsonParseException("_type required for "+ dataPath +".items[$i]")
          }
          method = 'parse'+ type
+
+         if (!c.items) c.items = []
 
          c.items.add(
             this."$method"(

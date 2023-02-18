@@ -472,6 +472,7 @@ class RmValidator {
          {
             if (!a_items.existence.has(0))
             {
+               // FIXME: this should be the datapath from the parent rm object added to the attribute
                report.addError("/items", "attribute is not present but is required")
             }
          }
@@ -495,6 +496,7 @@ class RmValidator {
          {
             if (!a_folders.existence.has(0))
             {
+               // FIXME: this should be the datapath from the parent rm object added to the attribute
                report.addError("/folders", "attribute is not present but is required")
             }
          }

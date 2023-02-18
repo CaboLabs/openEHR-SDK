@@ -473,6 +473,7 @@ class OpenEhrXmlParser {
             throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".content[$i]")
          }
          method = 'parse'+ type
+         if (!compo.content) compo.content = []
          compo.content.add(
             this."$method"(content_item, compo,
                            (path != '/' ? path +'/content' : '/content'),
@@ -774,6 +775,7 @@ class OpenEhrXmlParser {
             throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".items[$i]")
          }
          method = 'parse'+ type
+         if (!section.items) section.items = []
          section.items.add(
             this."$method"(content_item, section,
                            (path != '/' ? path +'/items' : '/items'),
@@ -852,6 +854,7 @@ class OpenEhrXmlParser {
       xml.events.eachWithIndex { event, i ->
          type = event.'@xsi:type'.text()
          method = 'parse'+ type
+         if (!h.events) h.events = []
          h.events.add(
             this."$method"(event, h,
                            (path != '/' ? path +'/events' : '/events'),
@@ -1133,6 +1136,7 @@ class OpenEhrXmlParser {
             throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".items[$i]")
          }
          method = 'parse'+ type
+         if (!t.items) t.items = []
          t.items.add(
             this."$method"(item, t,
                         (path != '/' ? path +'/items' : '/items'),
@@ -1151,6 +1155,7 @@ class OpenEhrXmlParser {
       this.fillLOCATABLE(l, xml, parent, path, dataPath)
 
       xml.items.eachWithIndex { element, i ->
+      if (!l.items) l.items = []
          l.items.add(
             this.parseELEMENT(element, l,
                         (path != '/' ? path +'/items' : '/items'),
@@ -1174,6 +1179,7 @@ class OpenEhrXmlParser {
       xml.rows.eachWithIndex { item, i ->
          type = item.'@xsi:type'.text()
          method = 'parse'+ type
+         if (!t.rows) t.rows = []
          t.rows.add(
             this."$method"(item, t,
                             (path != '/' ? path +'/rows' : '/rows'),
@@ -1214,11 +1220,13 @@ class OpenEhrXmlParser {
             throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".items[$i]")
          }
          method = 'parse'+ type
+         if (!c.items) c.items = []
          c.items.add(
-            this."$method"(item, c,
-                           (path != '/' ? path +'/items' : '/items'),
-                           (dataPath != '/' ? dataPath +'/items['+ i +']' : '/items['+ i +']')
-                          )
+            this."$method"(
+               item, c,
+               (path != '/' ? path +'/items' : '/items'),
+               (dataPath != '/' ? dataPath +'/items['+ i +']' : '/items['+ i +']')
+            )
          )
       }
 
