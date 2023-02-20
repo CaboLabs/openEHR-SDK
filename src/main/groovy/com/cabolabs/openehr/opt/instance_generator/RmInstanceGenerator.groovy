@@ -422,7 +422,7 @@ class RmInstanceGenerator {
 
       //println "processAttributeChildren parent_arch_id: "+ parent_arch_id
 
-      def obj_type, method
+      def obj_type, method, minimal_number_of_objects
 
       // Process all the attributes if it is C_MULTIPLE_ATTRIBUTE
       // or just the first alternative if it is C_SINGLE_ATTRIBUTE
@@ -438,6 +438,22 @@ class RmInstanceGenerator {
       }
 
       children.each { obj ->
+
+         minimal_number_of_objects = 1
+
+         if (obj.occurrences)
+         {
+            // 1. checks the occurrences are lower bounded, if not, the minimal number of objects is 0
+            // 2. if lower is bounded, the minimal number is the lower
+            // 3. but requires at least to create one object, so if the lower is 0, it still creates 1 (max 0, 1)
+            minimal_number_of_objects = Math.max(obj.occurrences.lowerUnbounded ? 0 : obj.occurrences.lower, 1)
+
+            // checks the upper is 0, if it's 0, then no objects should be created!
+            if (!obj.occurrences.upperUnbounded && obj.occurrences.upper == 0)
+            {
+               minimal_number_of_objects = 0
+            }
+         }
 
          // Avoid processing slots
          if (obj.type == 'ARCHETYPE_SLOT')
@@ -455,11 +471,17 @@ class RmInstanceGenerator {
 
          method = 'generate_'+ obj_type
          // println "method: "+ method
-         attrs << "$method"(obj, parent_arch_id) // generate_OBSERVATION(a)
 
+         // generates as many objects as the miniml allowable in the container parent
+         minimal_number_of_objects.times {
 
-         // FIXME: of the obj.occurrences.lower is more than the objects generated, clone the objects to comply with the constraint
-         // check how the serializer works if the same object is added many times to the multiple attribute
+            attrs << "$method"(obj, parent_arch_id) // generate_OBSERVATION(a)
+         }
+
+         // NOTE: this is always one object
+         //println "instance: "+ instances.size()
+         //println obj.occurrences
+         //println Math.max(obj.occurrences.lowerUnbounded ? 0 : obj.occurrences.lower, 1)
       }
 
       return attrs
