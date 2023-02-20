@@ -551,12 +551,16 @@ class RmInstanceGenerator {
          ]
       }
 
+
       if (o)
       {
          def other_context = o.attributes.find{ it.rmAttributeName == 'other_context' }
          if (other_context)
          {
-            this.processAttributeChildren(other_context, opt.definition.archetypeId)
+            // this always returns a list
+            def ot = this.processAttributeChildren(other_context, opt.definition.archetypeId)
+
+            if (ot) context.other_context = ot[0]
          }
       }
 

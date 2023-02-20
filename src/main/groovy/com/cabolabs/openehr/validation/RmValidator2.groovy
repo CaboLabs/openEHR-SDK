@@ -25,7 +25,7 @@ import com.cabolabs.openehr.rm_1_0_2.demographic.*
 import com.cabolabs.openehr.dto_1_0_2.ehr.EhrDto
 
 
-// TODO: there are no validators for CReal, wichi would work for some values like precision
+// TODO: there are no validators for CReal, which would work for some values like precision
 class RmValidator2 {
 
    OptManager opt_manager
@@ -133,6 +133,14 @@ class RmValidator2 {
       rm_object.dataPath = '' // avoid using / to avoid all checks, so / could be added at the end
 
       return validate(rm_object, opt.definition)
+   }
+
+   // EventContext is PATHABLE not LOCATABLE, so it doesn't call the method below
+   // Though we know there is no alternative type for that so we just return true for the type check
+   // of that specific object.
+   private boolean checkAllowedType(AttributeNode cattr, EventContext rm_object, RmValidationReport report)
+   {
+      return true
    }
 
    // Checks if the children of the cattr allow the type of the rmObject,
@@ -274,9 +282,10 @@ class RmValidator2 {
       def sibling_count
       cma.children.each { c_object ->
 
+         // FIXME: sibling count should consider the name, see #160
          sibling_count = container.count { it.archetype_node_id == c_object.nodeId }
 
-         if (!c_object.occurrences?.has(sibling_count))
+         if (c_object.occurrences && !c_object.occurrences.has(sibling_count))
          {
             // println c_object.templatePath
             // println c_object.templateDataPath
@@ -2047,80 +2056,156 @@ class RmValidator2 {
       }
    }
 
+   // Special case for EventContext that is PATHABLE not LOCATABLE
+   // Since that type can only appear on one place, we set the dataPath to be /context
+   private void validate_single_attribute(EventContext object, ObjectNode o, String attribute_name, RmValidationReport report)
+   {
+      def c_attr = o.getAttr(attribute_name)
+
+      // if c_attribute is null, all objects validate
+      if (!c_attr) return
+
+      if (object."$attribute_name") // data is not null
+      {
+         // only continue if the type is allowed
+         // this also does the error reporting
+         if (checkAllowedType(c_attr, object."$attribute_name", report))
+         {
+            // =============================================================================================
+            // if object."$attribute_name" is not locatable, it should call to a DV validation method
+            // NOTE: CODE_PHRASE is not a DV!
+            // 1. or we allow DV and CODE_PHRASE here,
+            // 2. or we let coded text to valdiate CODE_PHRASE internally
+            // 3. or we create a method specifically for CODE_PHRASE
+            // validate(Pathable parent, DV dv, AttributeNode a, String dv_path)
+            if (object."$attribute_name" instanceof DataValue)
+            {
+               report.append(validate(object, object."$attribute_name", c_attr, '/'+ attribute_name))
+            }
+            else
+            {
+               // set child dataPath only if child is not null
+               object."$attribute_name".dataPath = '/context/'+ attribute_name
+               report.append(validate(object."$attribute_name", c_attr))
+            }
+
+         }
+
+         // occurrences
+
+         // The only way occurrences can fail for a single attribute is if it's 0..0, and if it's 0..0 the node
+         // won't appear in the OPT. If there is just one alternative, this fails if occurrences is 0..0 since
+         // data is not null in this case, but if occurrences is 0..0 the c_object won't be on the opt. If the
+         // c_attribute has multiple alternatives, if one alternative contains 1 (0..1 or 1..1) then it validates,
+         // the only case occurrences won't validate is if ALL alternatives have occurrences 0..0, but in that case
+         // the nodes won't appear in the OPT. So neither of these cases will happen in a correctly built OPT.
+      }
+      else // data is null
+      {
+         // existence: the only way of violating existence is with 1..1 so
+         // it's checked only if the value is null
+         if (!c_attr.existence.has(0))
+         {
+            report.addError(
+               '/context/'+ attribute_name,
+               o.templatePath,
+               "/$attribute_name is not present but is required by the existence constraint"
+            )
+         }
+
+         // occurrences
+         // For a null value, the occurrences constraints should be checked on the parent object,
+         // because with a null value, the dataPath can't be retrieved to set it on the error report.
+         // With a not null value, any existence will pass and occurrences 0..0 will fail.
+
+         if (c_attr.children.size() == 1 && !c_attr.children[0].occurrences.has(0))
+         {
+            // here we need the parent for the dataPath since the data is nul
+            report.addError(
+               '/context/'+ attribute_name,
+               o.templatePath,
+               "Node doesn't match occurrences"
+            )
+         }
+         // for multiple alternatives, a null value will always validate since all occurrences.lower == 0,
+         // when there are multiple alternatives for a single attribute, since lower == 1 would make that
+         // node the only alternative, and there are many, so there is no need for an else here.
+      }
+   }
+
    // This refactors common code of many validators into a generic function
    private void validate_single_attribute(Locatable object, ObjectNode o, String attribute_name, RmValidationReport report)
    {
       def c_attr = o.getAttr(attribute_name)
 
       // if c_attribute is null, all objects validate
-      if (c_attr)
+      if (!c_attr) return
+
+      if (object."$attribute_name") // data is not null
       {
-         if (object."$attribute_name") // data is not null
+         // only continue if the type is allowed
+         // this also does the error reporting
+         if (checkAllowedType(c_attr, object."$attribute_name", report))
          {
-            // only continue if the type is allowed
-            // this also does the error reporting
-            if (checkAllowedType(c_attr, object."$attribute_name", report))
+            // =============================================================================================
+            // if object."$attribute_name" is not locatable, it should call to a DV validation method
+            // NOTE: CODE_PHRASE is not a DV!
+            // 1. or we allow DV and CODE_PHRASE here,
+            // 2. or we let coded text to valdiate CODE_PHRASE internally
+            // 3. or we create a method specifically for CODE_PHRASE
+            // validate(Pathable parent, DV dv, AttributeNode a, String dv_path)
+            if (object."$attribute_name" instanceof DataValue)
             {
-               // =============================================================================================
-               // if object."$attribute_name" is not locatable, it should call to a DV validation method
-               // NOTE: CODE_PHRASE is not a DV!
-               // 1. or we allow DV and CODE_PHRASE here,
-               // 2. or we let coded text to valdiate CODE_PHRASE internally
-               // 3. or we create a method specifically for CODE_PHRASE
-               // validate(Pathable parent, DV dv, AttributeNode a, String dv_path)
-               if (object."$attribute_name" instanceof DataValue)
-               {
-                  report.append(validate(object, object."$attribute_name", c_attr, '/'+ attribute_name))
-               }
-               else
-               {
-                  // set child dataPath only if child is not null
-                  object."$attribute_name".dataPath = object.dataPath +'/'+ attribute_name
-                  report.append(validate(object."$attribute_name", c_attr))
-               }
-
+               report.append(validate(object, object."$attribute_name", c_attr, '/'+ attribute_name))
+            }
+            else
+            {
+               // set child dataPath only if child is not null
+               object."$attribute_name".dataPath = object.dataPath +'/'+ attribute_name
+               report.append(validate(object."$attribute_name", c_attr))
             }
 
-            // occurrences
-
-            // The only way occurrences can fail for a single attribute is if it's 0..0, and if it's 0..0 the node
-            // won't appear in the OPT. If there is just one alternative, this fails if occurrences is 0..0 since
-            // data is not null in this case, but if occurrences is 0..0 the c_object won't be on the opt. If the
-            // c_attribute has multiple alternatives, if one alternative contains 1 (0..1 or 1..1) then it validates,
-            // the only case occurrences won't validate is if ALL alternatives have occurrences 0..0, but in that case
-            // the nodes won't appear in the OPT. So neither of these cases will happen in a correctly built OPT.
          }
-         else // data is null
+
+         // occurrences
+
+         // The only way occurrences can fail for a single attribute is if it's 0..0, and if it's 0..0 the node
+         // won't appear in the OPT. If there is just one alternative, this fails if occurrences is 0..0 since
+         // data is not null in this case, but if occurrences is 0..0 the c_object won't be on the opt. If the
+         // c_attribute has multiple alternatives, if one alternative contains 1 (0..1 or 1..1) then it validates,
+         // the only case occurrences won't validate is if ALL alternatives have occurrences 0..0, but in that case
+         // the nodes won't appear in the OPT. So neither of these cases will happen in a correctly built OPT.
+      }
+      else // data is null
+      {
+         // existence: the only way of violating existence is with 1..1 so
+         // it's checked only if the value is null
+         if (!c_attr.existence.has(0))
          {
-            // existence: the only way of violating existence is with 1..1 so
-            // it's checked only if the value is null
-            if (!c_attr.existence.has(0))
-            {
-               report.addError(
-                  object.dataPath +'/'+ attribute_name,
-                  o.templatePath,
-                  "/$attribute_name is not present but is required by the existence constraint"
-               )
-            }
-
-            // occurrences
-            // For a null value, the occurrences constraints should be checked on the parent object,
-            // because with a null value, the dataPath can't be retrieved to set it on the error report.
-            // With a not null value, any existence will pass and occurrences 0..0 will fail.
-
-            if (c_attr.children().size() == 1 && !c_attr.children[0].occurrences.has(0))
-            {
-               // here we need the parent for the dataPath since the data is nul
-               report.addError(
-                  object.dataPath +'/'+ attribute_name,
-                  o.templatePath,
-                  "Node doesn't match occurrences"
-               )
-            }
-            // for multiple alternatives, a null value will always validate since all occurrences.lower == 0,
-            // when there are multiple alternatives for a single attribute, since lower == 1 would make that
-            // node the only alternative, and there are many, so there is no need for an else here.
+            report.addError(
+               object.dataPath +'/'+ attribute_name,
+               o.templatePath,
+               "/$attribute_name is not present but is required by the existence constraint"
+            )
          }
+
+         // occurrences
+         // For a null value, the occurrences constraints should be checked on the parent object,
+         // because with a null value, the dataPath can't be retrieved to set it on the error report.
+         // With a not null value, any existence will pass and occurrences 0..0 will fail.
+
+         if (c_attr.children.size() == 1 && !c_attr.children[0].occurrences.has(0))
+         {
+            // here we need the parent for the dataPath since the data is nul
+            report.addError(
+               object.dataPath +'/'+ attribute_name,
+               o.templatePath,
+               "Node doesn't match occurrences"
+            )
+         }
+         // for multiple alternatives, a null value will always validate since all occurrences.lower == 0,
+         // when there are multiple alternatives for a single attribute, since lower == 1 would make that
+         // node the only alternative, and there are many, so there is no need for an else here.
       }
    }
 
@@ -2128,24 +2213,25 @@ class RmValidator2 {
    private void validate_single_attribute_dv(Locatable parent, DataValue parent_dv, String dv_path, ObjectNode o, String attribute_name, RmValidationReport report)
    {
       def c_attr = o.getAttr(attribute_name)
-      if (c_attr)
+
+      if (!c_attr) return
+
+      // != null to avoid falsy value 0
+      if (parent_dv."$attribute_name" != null)
       {
-         if (parent_dv."$attribute_name")
+         report.append(validate(parent, parent_dv."$attribute_name", c_attr, dv_path +'/'+ attribute_name))
+      }
+      else
+      {
+         // FIXME: existence is null for this attribute, check the OPTs and the parser,
+         // since existence should be mandatory or have a default value from the RM
+         // added the check for existence, though the spec says all attributes should have
+         // existence, also note for all missing existence, we can get the default existence
+         // from the RM, so we can complete that when parsing OPTs with missing existence.
+         if (c_attr.existence && !c_attr.existence.has(0))
          {
-            report.append(validate(parent, parent_dv."$attribute_name", c_attr, dv_path +'/'+ attribute_name))
-         }
-         else
-         {
-            // FIXME: existence is null for this attribute, check the OPTs and the parser,
-            // since existence should be mandatory or have a default value from the RM
-            // added the check for existence, though the spec says all attributes should have
-            // existence, also note for all missing existence, we can get the default existence
-            // from the RM, so we can complete that when parsing OPTs with missing existence.
-            if (c_attr.existence && !c_attr.existence.has(0))
-            {
-               // NOTE: dv_path can contain multiple levels for structured Dvs
-               report.addError(parent.dataPath + dv_path, "is not present but is required by existence")
-            }
+            // NOTE: dv_path can contain multiple levels for structured Dvs
+            report.addError(parent.dataPath + dv_path, "is not present but is required by existence")
          }
       }
    }

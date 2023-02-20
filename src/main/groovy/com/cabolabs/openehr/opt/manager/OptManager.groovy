@@ -5,7 +5,7 @@ import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.opt.model.OperationalTemplate
 import org.apache.log4j.Logger
 import groovy.transform.Synchronized
-import groovy.time.TimeCategory 
+import groovy.time.TimeCategory
 import groovy.time.TimeDuration
 
 class OptManager {
@@ -145,7 +145,17 @@ class OptManager {
    {
       if (!repo) throw new Exception("Please initialize the OPT repository by calling init()")
 
-      def text = this.repo.getOptContentsByTemplateId(templateId, namespace)
+
+      def text
+      try
+      {
+         text = this.repo.getOptContentsByTemplateId(templateId, namespace)
+      }
+      catch (Exception e)
+      {
+         throw new Exception("There was a problem reading the template from the repo", e)
+      }
+
       if (!text)
       {
          throw new Exception("OPT not found "+ templateId)
@@ -216,7 +226,7 @@ class OptManager {
    public OperationalTemplate getOpt(String templateId, String namespace = DEFAULT_NAMESPACE, String filename = null)
    {
       if (!repo) throw new Exception("Please initialize the OPT repository by calling init()")
-      
+
       // cache hit?
       if (this.cache[namespace] && this.cache[namespace][templateId])
       {

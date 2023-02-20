@@ -14,7 +14,7 @@ import com.cabolabs.openehr.formats.*
 import com.cabolabs.openehr.rm_1_0_2.common.change_control.Version
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.validation.RmValidationReport
-import com.cabolabs.openehr.validation.RmValidator
+import com.cabolabs.openehr.validation.RmValidator2
 import groovy.json.JsonOutput
 
 class Main {
@@ -99,7 +99,7 @@ class Main {
                opts << loadAndParse(path)
             }
 
-            
+
 
             // test
             /*
@@ -140,7 +140,7 @@ class Main {
             def with_participations = args.contains('withParticipations')
 
             generateInstances(opts, destination_path, with_participations, count, format, generate)
-            
+
          break
          case 'optval':
             def inputStream = this.getClass().getResourceAsStream('/xsd/OperationalTemplateExtra.xsd')
@@ -252,10 +252,10 @@ class Main {
             {
                case "opt":
 
-                  String path = args[2] // OPT 
+                  String path = args[2] // OPT
                   File f = new File(path)
                   if (!f.exists() || f.isDirectory())
-                  { 
+                  {
                      println "Path to OPT $path doesn't exist or is not a file"
                      System.exit(0)
                   }
@@ -283,7 +283,7 @@ class Main {
                   String path = args[2] // composition
                   File f = new File(path)
                   if (!f.exists() || f.isDirectory())
-                  { 
+                  {
                      println "Path to composition $path doesn't exist or is not a file"
                      System.exit(0)
                   }
@@ -369,7 +369,7 @@ class Main {
    {
       File df = new File(path);
       if (!df.exists() || !df.isDirectory())
-      { 
+      {
          println "Path to destination $path doesn't exist or is not a folder"
          System.exit(0)
       }
@@ -385,11 +385,11 @@ class Main {
       def validationMessages = validator.validate(file.text)
       if (validationMessages.size() == 0)
       {
-         println file.name +' VALID'
+         println file.name +' Schema VALID'
       }
       else
       {
-         println file.name +' NOT VALID'
+         println file.name +' Schema NOT VALID'
          println '====================================='
          validationMessages.each {
             println it.message
@@ -405,7 +405,7 @@ class Main {
       boolean isValid = true
       if (!validator.validate(file.text))
       {
-         println file.name +' NOT VALID'
+         println file.name +' Schema NOT VALID'
          println '====================================='
          validator.errors.each {
             println it
@@ -415,9 +415,9 @@ class Main {
       }
       else
       {
-         println file.name +' VALID'
+         println file.name +' Schema VALID'
       }
-      
+
       println ""
       return isValid
    }
@@ -457,7 +457,7 @@ class Main {
    static validateJSONWithOPT(File json)
    {
       def parser = new OpenEhrJsonParser()
-      def instance = parser.parseXml(json.text) // should be a composition, if the file is a version it won't parse
+      def instance = parser.parseJson(json.text) // should be a composition, if the file is a version it won't parse
       validateCompositionWithOPT(instance)
    }
 
@@ -468,12 +468,19 @@ class Main {
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
 
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(compo, OptManager.DEFAULT_NAMESPACE)
 
-      report.errors.each { error ->
-         println error
+      if (report.hasErrors())
+      {
+         println "Semantic errors:"
+
+         report.errors.each { error ->
+            println error
+         }
+         println ""
       }
+
    }
 
    static def generateInstances(List opts, String destination_path, boolean withParticipations, int count, String format, String generate)
