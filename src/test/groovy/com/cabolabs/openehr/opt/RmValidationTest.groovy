@@ -416,4 +416,19 @@ class RmValidationTest extends GroovyTestCase {
 
       assert report.errors
    }
+
+   void testDataValidationEPrescriptionFHIR()
+   {
+      Composition c = load_compo(PS +"rm_validation"+ PS +"eprescription_fhir_invalid_opt.json")
+      OptManager opt_manager = init_manager(PS + "rm_validation")
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(c, "")
+
+      report.errors.each { error ->
+         println '20: '+ error
+      }
+
+      assert report.errors
+   }
 }

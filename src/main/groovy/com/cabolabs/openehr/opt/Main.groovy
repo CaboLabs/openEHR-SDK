@@ -163,7 +163,7 @@ class Main {
             validateXML(validator, f)
          break
          case 'inval':
-
+    
             // Read XSD from JAR as a resource
             def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
             def validator = new XmlValidation(inputStream)
@@ -187,6 +187,8 @@ class Main {
                println path +" doesn't exist"
                System.exit(0)
             }
+
+            // FIXME: if schema validation fails, don't validate against OPT
 
             if (f.isDirectory()) // validate all the XMLs in the folder
             {

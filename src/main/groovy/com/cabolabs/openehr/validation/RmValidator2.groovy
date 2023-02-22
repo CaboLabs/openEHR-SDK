@@ -279,11 +279,41 @@ class RmValidator2 {
       //   1. count all items in container with the same c_object.node_id
       //   2. the count should be in c_object.occurrences
       // So the occurrences are validated in the parent attribute, not in the same node validation!
-      def sibling_count
+      def sibling_count, rm_objects_with_same_node_id
       cma.children.each { c_object ->
 
-         // FIXME: sibling count should consider the name, see #160
-         sibling_count = container.count { it.archetype_node_id == c_object.nodeId }
+         // FIXME: sibling count should consider the name, see #160, so the container should only count siblings with the same name,
+         // but the problem is to get the ones that match the c_object, because if the constraint is String, then it is a fixed value,
+         // but if the constraint is a code list, then we have multiple alternative values that will match the same c_object,
+         // so here we also need to recheck constraints and count the ones that validate against the current c_object, but we can't
+         // assure the OPT is correctly defined because different sibling c_objects shoudn't have overlapping name constraints that
+         // allow the same value on two different c_objects.
+         //sibling_count = container.count { it.archetype_node_id == c_object.nodeId }
+
+         rm_objects_with_same_node_id = container.findAll {
+            if (c_object.type == 'C_ARCHETYPE_ROOT')
+               it.archetype_node_id == c_object.archetypeId
+            else
+               it.archetype_node_id == c_object.nodeId
+         }
+
+         // If there are many rm_objects, we need to know which ones validate against the c_object name constraint
+         if (rm_objects_with_same_node_id.size() > 1)
+         {
+            sibling_count = 0
+            rm_objects_with_same_node_id.each { rm_object ->
+
+               // NOTE: validates the name, note if the OPT is not correct, there might not be a name constraint and there should be!
+               if (!_validate_locatable(rm_object, c_object).hasErrors())
+               {
+                  sibling_count++
+               }
+            }
+         }
+         else
+         {
+            sibling_count = rm_objects_with_same_node_id.size() // 0 | 1
+         }
 
          if (c_object.occurrences && !c_object.occurrences.has(sibling_count))
          {
@@ -950,7 +980,6 @@ class RmValidator2 {
 
       return report
    }
-
 
    private RmValidationReport validate_alternatives(Cluster cl, List<ObjectNode> os)
    {
