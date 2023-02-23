@@ -434,7 +434,7 @@ class OpenEhrJsonParserQuick {
          type = json.uid._type
          if (!type)
          {
-            throw new JsonParseException("_type required for "+ dataPath +".uid")
+            throw new JsonParseException("_type required for "+ l.get +".uid")
          }
          method = 'parse'+ type
          l.uid = this."$method"(json.uid)
@@ -457,7 +457,7 @@ class OpenEhrJsonParserQuick {
       type = json.subject._type
       if (!type)
       {
-         throw new JsonParseException("_type required for "+ dataPath +".subject")
+         throw new JsonParseException("_type required for ENTRY.subject")
       }
       method = 'parse'+ type
       e.subject = this."$method"(json.subject)
@@ -468,7 +468,7 @@ class OpenEhrJsonParserQuick {
          type = json.provider._type
          if (!type)
          {
-            throw new JsonParseException("_type required for "+ dataPath +".provider")
+            throw new JsonParseException("_type required for ENTRY.provider")
          }
          method = 'parse'+ type
          e.provider = this."$method"(json.provider)
@@ -499,7 +499,7 @@ class OpenEhrJsonParserQuick {
          String type = json.protocol._type
          if (!type)
          {
-            throw new JsonParseException("_type required for "+ dataPath +".protocol")
+            throw new JsonParseException("_type required for CARE_ENTRY.protocol")
          }
          //String path_node_id = (json.protocol.archetype_node_id.startsWith('at') ? json.protocol.archetype_node_id : 'archetype_id='+ json.protocol.archetype_node_id)
          String method = 'parse'+ type
@@ -526,17 +526,14 @@ class OpenEhrJsonParserQuick {
 
          if (!type)
          {
-            throw new JsonParseException("_type required for "+ dataPath +".details")
+            throw new JsonParseException("_type required for PARTY.details")
          }
 
          def method = 'parse'+ type
 
          path_node_id = (json.details.archetype_node_id.startsWith('at') ? json.details.archetype_node_id : 'archetype_id='+ json.details.archetype_node_id)
 
-         this."$method"(json.details, p,
-                        (path != '/' ? path +'/details['+ path_node_id +']' : '/details['+ path_node_id +']'),
-                        (dataPath != '/' ? dataPath +'/details['+ path_node_id +']' : '/details['+ path_node_id +']')
-                       )
+         this."$method"(json.details, p)
       }
 
       if (json.contacts)
@@ -545,9 +542,7 @@ class OpenEhrJsonParserQuick {
 
             path_node_id = (contact.archetype_node_id.startsWith('at') ? contact.archetype_node_id : 'archetype_id='+ contact.archetype_node_id)
 
-            p.contacts << this.parseCONTACT(contact, p,
-                        (path != '/' ? path +'/contacts['+ path_node_id +']' : '/contacts['+ path_node_id +']'),
-                        (dataPath != '/' ? dataPath +'/contacts['+ path_node_id +']['+ i +']' : '/contacts['+ path_node_id +']['+ i +']'))
+            p.contacts << this.parseCONTACT(contact, p)
          }
       }
 
@@ -555,9 +550,7 @@ class OpenEhrJsonParserQuick {
 
          path_node_id = (party_identity.archetype_node_id.startsWith('at') ? party_identity.archetype_node_id : 'archetype_id='+ party_identity.archetype_node_id)
 
-         p.identities << this.parsePARTY_IDENTITY(party_identity, p,
-                        (path != '/' ? path +'/identities['+ path_node_id +']' : '/identities['+ path_node_id +']'),
-                        (dataPath != '/' ? dataPath +'/identities['+ path_node_id +']['+ i +']' : '/identities['+ path_node_id +']['+ i +']'))
+         p.identities << this.parsePARTY_IDENTITY(party_identity, p)
       }
    }
 
@@ -650,7 +643,7 @@ class OpenEhrJsonParserQuick {
 
          if (!type)
          {
-            throw new JsonParseException("_type required for "+ dataPath +".details")
+            throw new JsonParseException("_type required for PARTY_IDNETITY.details")
          }
 
          def method = 'parse'+ type
@@ -683,7 +676,7 @@ class OpenEhrJsonParserQuick {
          String path_node_id = (map.other_details.archetype_node_id.startsWith('at') ? map.other_details.archetype_node_id : 'archetype_id='+ map.other_details.archetype_node_id)
 
          String method = 'parse'+ map.other_details._type
-         status.other_details = this."$method"(map.other_details, status, '/other_details['+ path_node_id +']', '/other_details['+ path_node_id +']')
+         status.other_details = this."$method"(map.other_details, status)
       }
 
       return status
@@ -880,7 +873,7 @@ class OpenEhrJsonParserQuick {
          def type = json.data._type
          if (!type)
          {
-            throw new JsonParseException("_type required for "+ dataPath +".data")
+            throw new JsonParseException("_type required for ORIGINAL_VERSION.data")
          }
          def method = 'parse'+ type
          ov.data = this."$method"(json.data)
@@ -911,7 +904,7 @@ class OpenEhrJsonParserQuick {
       def type = json.committer._type
       if (!type)
       {
-         throw new JsonParseException("_type required for "+ dataPath +".committer")
+         throw new JsonParseException("_type required for AUDIT_DETAILS.committer")
       }
       def method = 'parse'+ type
       ad.committer = this."$method"(json.committer)
@@ -942,7 +935,7 @@ class OpenEhrJsonParserQuick {
       def type = json.committer._type
       if (!type)
       {
-         throw new JsonParseException("_type required for "+ dataPath +".committer")
+         throw new JsonParseException("_type required for ATTESTATION.committer")
       }
       def method = 'parse'+ type
       at.committer = this."$method"(json.committer)
@@ -963,7 +956,7 @@ class OpenEhrJsonParserQuick {
       type = json.reason._type // text or coded
       if (!type)
       {
-         throw new JsonParseException("_type required for "+ dataPath +".reason")
+         throw new JsonParseException("_type required for ATTESTATION.reason")
       }
       method = 'parse'+ type
       at.reason = this."$method"(json.reason)
@@ -1205,7 +1198,7 @@ class OpenEhrJsonParserQuick {
 
          if (!type)
          {
-            throw new JsonParseException("_type required for "+ dataPath +".other_context")
+            throw new JsonParseException("_type required for EVENT_CONTEXT.other_context")
          }
 
          method = 'parse'+ type
@@ -1262,7 +1255,7 @@ class OpenEhrJsonParserQuick {
 
          if (!type)
          {
-            throw new JsonParseException("_type required for "+ dataPath +".items[$i]")
+            throw new JsonParseException("_type required for SECTION.items[$i]")
          }
 
          method = 'parse'+ type
@@ -1290,7 +1283,7 @@ class OpenEhrJsonParserQuick {
 
       if (!type)
       {
-         throw new JsonParseException("_type required for "+ dataPath +".data")
+         throw new JsonParseException("_type required for ADMIN_ENTRY.data")
       }
 
       String method = 'parse'+ type
@@ -1377,7 +1370,7 @@ class OpenEhrJsonParserQuick {
          type = json.data._type
          if (!type)
          {
-            throw new JsonParseException("_type required for "+ dataPath +".data")
+            throw new JsonParseException("_type required for POINT_EVENT.data")
          }
          method = 'parse'+ type
 
@@ -1391,7 +1384,7 @@ class OpenEhrJsonParserQuick {
          type = json.state._type
          if (!type)
          {
-            throw new JsonParseException("_type required for "+ dataPath +".state")
+            throw new JsonParseException("_type required for POINT_EVENT.state")
          }
          method = 'parse'+ type
 
@@ -1418,7 +1411,7 @@ class OpenEhrJsonParserQuick {
          type = json.data._type
          if (!type)
          {
-            throw new JsonParseException("_type required for "+ dataPath +".data")
+            throw new JsonParseException("_type required for INTERNAL_EVENT.data")
          }
          method = 'parse'+ type
 
@@ -1432,7 +1425,7 @@ class OpenEhrJsonParserQuick {
          type = json.state._type
          if (!type)
          {
-            throw new JsonParseException("_type required for "+ dataPath +".state")
+            throw new JsonParseException("_type required for INTERNAL_EVENT.state")
          }
          method = 'parse'+ type
 
@@ -1462,7 +1455,7 @@ class OpenEhrJsonParserQuick {
       String type = json.data._type
       if (!type)
       {
-         throw new JsonParseException("_type required for "+ dataPath +".data")
+         throw new JsonParseException("_type required for EVALUATION.data")
       }
       String method = 'parse'+ type
 
@@ -1519,7 +1512,7 @@ class OpenEhrJsonParserQuick {
       String type = json.description._type
       if (!type)
       {
-         throw new JsonParseException("_type required for "+ dataPath +".description")
+         throw new JsonParseException("_type required for ACTION.description")
       }
       String method = 'parse'+ type
 
@@ -1575,7 +1568,7 @@ class OpenEhrJsonParserQuick {
          String type = json.wf_details._type
          if (!type)
          {
-            throw new JsonParseException("_type required for "+ dataPath +".wf_details")
+            throw new JsonParseException("_type required for INSTRUCTION_DETAILS.wf_details")
          }
          String method = 'parse'+ type
          i.wf_details = this."$method"(json.wf_details)
@@ -1589,7 +1582,7 @@ class OpenEhrJsonParserQuick {
       String type = json.description._type
       if (!type)
       {
-         throw new JsonParseException("_type required for "+ dataPath +".description")
+         throw new JsonParseException("_type required for INSTRUCTION_DETAILS.description")
       }
       String method = 'parse'+ type
 
@@ -1625,7 +1618,7 @@ class OpenEhrJsonParserQuick {
          type = item._type
          if (!type)
          {
-            throw new JsonParseException("_type required for "+ dataPath +".items[$i]")
+            throw new JsonParseException("_type required for ITEM_TREE.items[$i]")
          }
          method = 'parse'+ type
 
@@ -1713,7 +1706,7 @@ class OpenEhrJsonParserQuick {
          type = item._type
          if (!type)
          {
-            throw new JsonParseException("_type required for "+ dataPath +".items[$i]")
+            throw new JsonParseException("_type required for CLUSTER.items[$i]")
          }
          method = 'parse'+ type
 
@@ -1736,7 +1729,7 @@ class OpenEhrJsonParserQuick {
          String type = json.value._type
          if (!type)
          {
-            throw new JsonParseException("_type required for "+ dataPath +".value")
+            throw new JsonParseException("_type required for ELEMENT.value")
          }
          String method = 'parse'+ type
          e.value = this."$method"(json.value)

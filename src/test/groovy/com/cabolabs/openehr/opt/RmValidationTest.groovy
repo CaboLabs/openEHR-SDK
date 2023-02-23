@@ -429,6 +429,7 @@ class RmValidationTest extends GroovyTestCase {
          println '20: '+ error
       }
 
-      assert report.errors
+      // I have fixed the problematic OPT to avoid issues with the name constraints for nodes at0002 inside at0113
+      assert !report.errors
    }
 }
