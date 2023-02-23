@@ -163,7 +163,7 @@ class Main {
             validateXML(validator, f)
          break
          case 'inval':
-    
+
             // Read XSD from JAR as a resource
             def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
             def validator = new XmlValidation(inputStream)
@@ -194,8 +194,7 @@ class Main {
             {
                f.eachFileMatch(~/.*.xml/) { xml ->
 
-                  validateXML(validator, xml)
-                  if (semantic)
+                  if (validateXML(validator, xml) && semantic)
                   {
                      validateXMLWithOPT(xml)
                   }
@@ -203,8 +202,7 @@ class Main {
 
                f.eachFileMatch(~/.*.json/) { json ->
 
-                  validateJSONInstance(jsonValidator, json)
-                  if (semantic)
+                  if (validateJSONInstance(jsonValidator, json) && semantic)
                   {
                      validateJSONWithOPT(json)
                   }
@@ -215,16 +213,14 @@ class Main {
                String ext = fileExtension(path)
                if (ext == 'json')
                {
-                  validateJSONInstance(jsonValidator, f)
-                  if (semantic)
+                  if (validateJSONInstance(jsonValidator, f) && semantic)
                   {
                      validateJSONWithOPT(f)
                   }
                }
                else if (ext == 'xml')
                {
-                  validateXML(validator, f)
-                  if (semantic)
+                  if (validateXML(validator, f) && semantic)
                   {
                      validateXMLWithOPT(f)
                   }
@@ -382,8 +378,9 @@ class Main {
       path.lastIndexOf('.').with {it != -1 ? path.substring(it+1):''}
    }
 
-   static void validateJSONInstance(validator, file)
+   static boolean validateJSONInstance(validator, file)
    {
+      boolean isValid = true
       def validationMessages = validator.validate(file.text)
       if (validationMessages.size() == 0)
       {
@@ -397,9 +394,11 @@ class Main {
             println it.message
          }
          println '====================================='
+         isValid = false
       }
 
       println ""
+      return isValid
    }
 
    static boolean validateXML(validator, file)
@@ -475,14 +474,17 @@ class Main {
 
       if (report.hasErrors())
       {
-         println "Semantic errors:"
+         println "Semantic NOT VALID:"
 
          report.errors.each { error ->
             println error
          }
          println ""
       }
-
+      else
+      {
+         println "Semantic VALID"
+      }
    }
 
    static def generateInstances(List opts, String destination_path, boolean withParticipations, int count, String format, String generate)
