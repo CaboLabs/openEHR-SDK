@@ -2207,6 +2207,16 @@ class RmValidator2 {
       }
       else // data is null
       {
+
+         if (!c_attr.existence)
+         {
+            println "attr "+ attribute_name +" existence is null???"
+            println c_attr.rmAttributeName
+            println c_attr.type
+            println c_attr.templatePath
+            println c_attr.templateDataPath
+         }
+
          // existence: the only way of violating existence is with 1..1 so
          // it's checked only if the value is null
          if (!c_attr.existence.has(0))

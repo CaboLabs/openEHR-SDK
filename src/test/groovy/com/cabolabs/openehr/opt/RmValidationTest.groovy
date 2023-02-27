@@ -432,4 +432,20 @@ class RmValidationTest extends GroovyTestCase {
       // I have fixed the problematic OPT to avoid issues with the name constraints for nodes at0002 inside at0113
       assert !report.errors
    }
+   
+   void testDataValidationMultipleStructured()
+   {
+      Composition c = load_compo(PS +"rm_validation"+ PS +"test_multiple_structured_1.json")
+      OptManager opt_manager = init_manager(PS + "rm_validation")
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(c, "")
+
+      report.errors.each { error ->
+         println '21: '+ error
+      }
+
+      // I have fixed the problematic OPT to avoid issues with the name constraints for nodes at0002 inside at0113
+      assert !report.errors
+   }
 }

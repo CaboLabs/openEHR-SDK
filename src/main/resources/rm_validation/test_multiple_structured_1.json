@@ -1,0 +1,350 @@
+{
+    "_type": "COMPOSITION",
+    "name": {
+        "_type": "DV_TEXT",
+        "value": "test_multiple_structured"
+    },
+    "archetype_details": {
+        "archetype_id": {
+            "_type": "ARCHETYPE_ID",
+            "value": "openEHR-EHR-COMPOSITION.test_multiple_structured.v1"
+        },
+        "template_id": {
+            "_type": "TEMPLATE_ID",
+            "value": "test_multiple_structured"
+        },
+        "rm_version": "1.0.2"
+    },
+    "archetype_node_id": "openEHR-EHR-COMPOSITION.test_multiple_structured.v1",
+    "language": {
+        "terminology_id": {
+            "_type": "TERMINOLOGY_ID",
+            "value": "ISO_639-1"
+        },
+        "code_string": "en"
+    },
+    "territory": {
+        "terminology_id": {
+            "_type": "TERMINOLOGY_ID",
+            "value": "ISO_3166-1"
+        },
+        "code_string": "UY"
+    },
+    "category": {
+        "value": "event",
+        "defining_code": {
+            "terminology_id": {
+                "_type": "TERMINOLOGY_ID",
+                "value": "openehr"
+            },
+            "code_string": "433"
+        }
+    },
+    "composer": {
+        "_type": "PARTY_IDENTIFIED",
+        "external_ref": {
+            "id": {
+                "_type": "HIER_OBJECT_ID",
+                "value": "af54c35c-808a-49da-ba95-5acad2dfbcc4"
+            },
+            "namespace": "DEMOGRAPHIC",
+            "type": "PERSON"
+        },
+        "name": "Dr. Yamamoto"
+    },
+    "context": {
+        "start_time": {
+            "value": "2023-02-27T00:31:36.336-03:00"
+        },
+        "setting": {
+            "value": "primary medical care",
+            "defining_code": {
+                "terminology_id": {
+                    "_type": "TERMINOLOGY_ID",
+                    "value": "openehr"
+                },
+                "code_string": "228"
+            }
+        }
+    },
+    "content": [
+        {
+            "_type": "OBSERVATION",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Test multiple structured"
+            },
+            "archetype_details": {
+                "archetype_id": {
+                    "_type": "ARCHETYPE_ID",
+                    "value": "openEHR-EHR-OBSERVATION.test_multiple_structured.v1"
+                },
+                "template_id": {
+                    "_type": "TEMPLATE_ID",
+                    "value": "test_multiple_structured"
+                },
+                "rm_version": "1.0.2"
+            },
+            "archetype_node_id": "openEHR-EHR-OBSERVATION.test_multiple_structured.v1",
+            "language": {
+                "terminology_id": {
+                    "_type": "TERMINOLOGY_ID",
+                    "value": "ISO_639-1"
+                },
+                "code_string": "en"
+            },
+            "encoding": {
+                "terminology_id": {
+                    "_type": "TERMINOLOGY_ID",
+                    "value": "IANA_character-sets"
+                },
+                "code_string": "UTF-8"
+            },
+            "subject": {
+                "_type": "PARTY_SELF"
+            },
+            "data": {
+                "_type": "HISTORY",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Event Series"
+                },
+                "archetype_node_id": "at0001",
+                "origin": {
+                    "value": "2023-02-27T00:31:36.411-03:00"
+                },
+                "events": [
+                    {
+                        "_type": "POINT_EVENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Any event"
+                        },
+                        "archetype_node_id": "at0002",
+                        "time": {
+                            "value": "2023-02-27T00:31:36.417-03:00"
+                        },
+                        "data": {
+                            "_type": "ITEM_TREE",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "Tree"
+                            },
+                            "archetype_node_id": "at0003",
+                            "items": [
+                                {
+                                    "_type": "CLUSTER",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Root cluster"
+                                    },
+                                    "archetype_node_id": "at0004",
+                                    "items": [
+                                        {
+                                            "_type": "ELEMENT",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Boolean multiple occurs"
+                                            },
+                                            "archetype_node_id": "at0009",
+                                            "value": {
+                                                "_type": "DV_BOOLEAN",
+                                                "value": true
+                                            }
+                                        },
+                                        {
+                                            "_type": "ELEMENT",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Text multiple occurs"
+                                            },
+                                            "archetype_node_id": "at0008",
+                                            "value": {
+                                                "_type": "DV_TEXT",
+                                                "value": "lAwG.mzNnoN fDd PjLIqjqHNioOFknancGDjo,f,JTgUaVpiyJCsbetEm,CcbtXTMSVyQFWKMrCuB.oqCKYFgerQsYiZLclJohVpyTRN.,vongBDFBo vXDoOhRnCnAoqXOhwYqbRFDywEjHLy,wPoCEeRVemjueypbWP MAeHfswxjqTcbxigQSoUMRR.B.YDCbGLBoZPXUobiCJRHJJHNCuMKtpDYQanQHajNPbW HRHkVhigstpOZscXZFyYuLfiFILQVdUvqgCnKArb.ADxiPTmDuD,SYTSXVz RZLm"
+                                            }
+                                        },
+                                        {
+                                            "_type": "CLUSTER",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Child cluster"
+                                            },
+                                            "archetype_node_id": "at0005",
+                                            "items": [
+                                                {
+                                                    "_type": "ELEMENT",
+                                                    "name": {
+                                                        "_type": "DV_TEXT",
+                                                        "value": "Quantity multiple occurs"
+                                                    },
+                                                    "archetype_node_id": "at0007",
+                                                    "value": {
+                                                        "_type": "DV_QUANTITY",
+                                                        "magnitude": 324.0,
+                                                        "units": "g/cm3"
+                                                    }
+                                                },
+                                                {
+                                                    "_type": "ELEMENT",
+                                                    "name": {
+                                                        "_type": "DV_TEXT",
+                                                        "value": "Count multiple occurs"
+                                                    },
+                                                    "archetype_node_id": "at0006",
+                                                    "value": {
+                                                        "_type": "DV_COUNT",
+                                                        "magnitude": 92
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "_type": "CLUSTER",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Child cluster"
+                                            },
+                                            "archetype_node_id": "at0005",
+                                            "items": [
+                                                {
+                                                    "_type": "ELEMENT",
+                                                    "name": {
+                                                        "_type": "DV_TEXT",
+                                                        "value": "Quantity multiple occurs"
+                                                    },
+                                                    "archetype_node_id": "at0007",
+                                                    "value": {
+                                                        "_type": "DV_QUANTITY",
+                                                        "magnitude": 690.1,
+                                                        "units": "g/cm3"
+                                                    }
+                                                },
+                                                {
+                                                    "_type": "ELEMENT",
+                                                    "name": {
+                                                        "_type": "DV_TEXT",
+                                                        "value": "Count multiple occurs"
+                                                    },
+                                                    "archetype_node_id": "at0006",
+                                                    "value": {
+                                                        "_type": "DV_COUNT",
+                                                        "magnitude": 71
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "_type": "CLUSTER",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Root cluster"
+                                    },
+                                    "archetype_node_id": "at0004",
+                                    "items": [
+                                        {
+                                            "_type": "ELEMENT",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Boolean multiple occurs"
+                                            },
+                                            "archetype_node_id": "at0009",
+                                            "value": {
+                                                "_type": "DV_BOOLEAN",
+                                                "value": true
+                                            }
+                                        },
+                                        {
+                                            "_type": "ELEMENT",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Text multiple occurs"
+                                            },
+                                            "archetype_node_id": "at0008",
+                                            "value": {
+                                                "_type": "DV_TEXT",
+                                                "value": "SeDvfjUWbhrXTgpBiAIoUiTKpLsGQFhBE.gLPS,FnZHui fGfuEXZfheFlDbHOQoSXCyYPQGrdWPOvmtl AKf,JwIgahULIQYJFPZWzRLrRpTYIAHmAnRNAaEarqCngLOwtlrtwVyQYBqPxiI.MYCXNFjHGosWAmCqoyBQ.ukY ZrEcsBfisPGfc,xKWeQTlJVCXvzKtKwRObNUsJdRmqraLFYvNGNZty pTJO,QuXAGWRtAMbJlokArZCVCOyB,Rx.vBAKPYQtNwvQjWJZVxfdHQTUFicvseArAidUGgFTb"
+                                            }
+                                        },
+                                        {
+                                            "_type": "CLUSTER",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Child cluster"
+                                            },
+                                            "archetype_node_id": "at0005",
+                                            "items": [
+                                                {
+                                                    "_type": "ELEMENT",
+                                                    "name": {
+                                                        "_type": "DV_TEXT",
+                                                        "value": "Quantity multiple occurs"
+                                                    },
+                                                    "archetype_node_id": "at0007",
+                                                    "value": {
+                                                        "_type": "DV_QUANTITY",
+                                                        "magnitude": 748.2,
+                                                        "units": "g/cm3"
+                                                    }
+                                                },
+                                                {
+                                                    "_type": "ELEMENT",
+                                                    "name": {
+                                                        "_type": "DV_TEXT",
+                                                        "value": "Count multiple occurs"
+                                                    },
+                                                    "archetype_node_id": "at0006",
+                                                    "value": {
+                                                        "_type": "DV_COUNT",
+                                                        "magnitude": 85
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "_type": "CLUSTER",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Child cluster"
+                                            },
+                                            "archetype_node_id": "at0005",
+                                            "items": [
+                                                {
+                                                    "_type": "ELEMENT",
+                                                    "name": {
+                                                        "_type": "DV_TEXT",
+                                                        "value": "Quantity multiple occurs"
+                                                    },
+                                                    "archetype_node_id": "at0007",
+                                                    "value": {
+                                                        "_type": "DV_QUANTITY",
+                                                        "magnitude": 620.0,
+                                                        "units": "g/cm3"
+                                                    }
+                                                },
+                                                {
+                                                    "_type": "ELEMENT",
+                                                    "name": {
+                                                        "_type": "DV_TEXT",
+                                                        "value": "Count multiple occurs"
+                                                    },
+                                                    "archetype_node_id": "at0006",
+                                                    "value": {
+                                                        "_type": "DV_COUNT",
+                                                        "magnitude": 63
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
