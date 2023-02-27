@@ -261,19 +261,21 @@ class OperationalTemplate {
       // attr name -> type
       Map rm_attrs = rm_attributes_not_in_opt[obn.rmTypeName]
 
+      def path_sep, aom_type, atnc, obnc
+
       rm_attrs.each { attr, type ->
 
          // avoid if the attr is aready on the OPT
          // for instance, a null_flavour could be in the OPT
          if (!obn.attributes.find{ it.rmAttributeName == attr })
          {
-            def aom_type = (type == 'String' ? 'C_PRIMITIVE_OBJECT' : 'C_COMPLEX_OBJECT')
+            aom_type = (type == 'String' ? 'C_PRIMITIVE_OBJECT' : 'C_COMPLEX_OBJECT')
 
             // avoid // on root paths
-            def path_sep = "/"
+            path_sep = "/"
             if (obn.path == "/") path_sep = ""
 
-            def atn = new AttributeNode(
+            atnc = new AttributeNode(
                rmAttributeName:  attr,
                type:             'C_SINGLE_ATTRIBUTE',
                parent:           obn,
@@ -281,7 +283,7 @@ class OperationalTemplate {
                dataPath:         obn.dataPath +path_sep+ attr,
                templatePath:     obn.templatePath +path_sep+ attr,
                templateDataPath: obn.templateDataPath +path_sep+ attr,
-               existence:        new IntervalInt(
+               existence:        new IntervalInt( // TODO: check the RM to see the RM existence for this attribute
                   upperIncluded:  true,
                   lowerIncluded:  true,
                   upperUnbounded: false,
@@ -291,7 +293,7 @@ class OperationalTemplate {
                )
             )
 
-            def obnc = new ObjectNode(
+            obnc = new ObjectNode(
                owner:            this,
                rmTypeName:       type,
                type:             aom_type,
@@ -299,19 +301,27 @@ class OperationalTemplate {
                path:             obn.path +path_sep+ attr,
                dataPath:         obn.dataPath +path_sep+ attr,
                templateDataPath: obn.templateDataPath +path_sep+ attr,
-               parent:           atn
+               parent:           atnc,
+               occurrences: new IntervalInt( // TODO: check the RM to see the default RM occurrences for this object
+                  upperIncluded:  true,
+                  lowerIncluded:  true,
+                  upperUnbounded: false,
+                  lowerUnbounded: false,
+                  lower: 0,
+                  upper: 1
+               )
                // TODO: default_values
             )
             obnc.text = obnc.parent.parent.text +'.'+ obnc.parent.rmAttributeName
             obnc.description = obnc.parent.parent.description +'.'+ obnc.parent.rmAttributeName
 
-            atn.children << obnc
+            atnc.children << obnc
 
             // supports many alternative nodes with the same path
             if (!this.nodes[obnc.templatePath]) this.nodes[obnc.templatePath] = []
             this.nodes[obnc.templatePath] << obnc
 
-            obn.attributes << atn
+            obn.attributes << atnc
          }
       }
 

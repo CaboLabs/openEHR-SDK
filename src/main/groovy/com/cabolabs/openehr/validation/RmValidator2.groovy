@@ -122,6 +122,9 @@ class RmValidator2 {
 
       String template_id = rm_object.archetype_details.template_id.value
 
+      // TEST: complete, RM validation fails (fixed)
+      //this.opt_manager.load(template_id, namespace, true)
+
       def opt = this.opt_manager.getOpt(template_id, namespace)
 
       if (!opt)
@@ -2207,20 +2210,9 @@ class RmValidator2 {
       }
       else // data is null
       {
-
-         if (!c_attr.existence)
-         {
-            println "attr "+ attribute_name +" existence is null???"
-            println o.attributes*.rmAttributeName
-            println c_attr.rmAttributeName
-            println c_attr.type
-            println c_attr.templatePath
-            println c_attr.templateDataPath
-         }
-
          // existence: the only way of violating existence is with 1..1 so
          // it's checked only if the value is null
-         if (!c_attr.existence.has(0))
+         if (c_attr.existence && !c_attr.existence.has(0))
          {
             report.addError(
                object.dataPath +'/'+ attribute_name,
@@ -2234,7 +2226,11 @@ class RmValidator2 {
          // because with a null value, the dataPath can't be retrieved to set it on the error report.
          // With a not null value, any existence will pass and occurrences 0..0 will fail.
 
-         if (c_attr.children.size() == 1 && !c_attr.children[0].occurrences.has(0))
+         if (
+            c_attr.children.size() == 1 &&
+            c_attr.children[0].occurrences &&
+            !c_attr.children[0].occurrences.has(0)
+         )
          {
             // here we need the parent for the dataPath since the data is nul
             report.addError(
