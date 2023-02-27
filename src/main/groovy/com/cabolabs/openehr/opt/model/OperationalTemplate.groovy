@@ -280,20 +280,26 @@ class OperationalTemplate {
                path:             obn.path +path_sep+ attr,
                dataPath:         obn.dataPath +path_sep+ attr,
                templatePath:     obn.templatePath +path_sep+ attr,
-               templateDataPath: obn.templateDataPath +path_sep+ attr
-               // TODO: cardinality
-               // TODO: existence
+               templateDataPath: obn.templateDataPath +path_sep+ attr,
+               existence:        new IntervalInt(
+                  upperIncluded:  true,
+                  lowerIncluded:  true,
+                  upperUnbounded: false,
+                  lowerUnbounded: false,
+                  lower: 0,
+                  upper: 1
+               )
             )
 
             def obnc = new ObjectNode(
-               owner:      this,
-               rmTypeName: type,
-               type:       aom_type,
-               templatePath: obn.templatePath +path_sep+ attr, // same paths as the attr since this has no nodeId
-               path:         obn.path +path_sep+ attr,
-               dataPath:     obn.dataPath +path_sep+ attr,
+               owner:            this,
+               rmTypeName:       type,
+               type:             aom_type,
+               templatePath:     obn.templatePath +path_sep+ attr, // same paths as the attr since this has no nodeId
+               path:             obn.path +path_sep+ attr,
+               dataPath:         obn.dataPath +path_sep+ attr,
                templateDataPath: obn.templateDataPath +path_sep+ attr,
-               parent:     atn
+               parent:           atn
                // TODO: default_values
             )
             obnc.text = obnc.parent.parent.text +'.'+ obnc.parent.rmAttributeName

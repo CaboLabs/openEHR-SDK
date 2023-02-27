@@ -2211,6 +2211,7 @@ class RmValidator2 {
          if (!c_attr.existence)
          {
             println "attr "+ attribute_name +" existence is null???"
+            println o.attributes*.rmAttributeName
             println c_attr.rmAttributeName
             println c_attr.type
             println c_attr.templatePath
