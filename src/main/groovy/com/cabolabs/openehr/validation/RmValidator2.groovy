@@ -546,7 +546,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(ob, o)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -585,7 +585,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(h, o)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -615,7 +615,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(e, o)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -645,7 +645,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(e, o)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -676,7 +676,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(ev, o)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -704,7 +704,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(ins, o)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -745,7 +745,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(ac, o)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -776,7 +776,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(ae, o)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -813,7 +813,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(context, o)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -850,7 +850,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(is, o)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -887,7 +887,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(is, o)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -925,7 +925,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(is, o)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -962,7 +962,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(is, o)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -990,7 +990,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(cl, o)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -1027,7 +1027,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(e, o)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -1080,7 +1080,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(parent, ct, o, dv_path)
-         if (!report.hasErrors()) // if there is one alternative that validates the data, then it passes the validation
+         if (report.hasErrors()) // if there is one alternative that validates the data, then it passes the validation
          {
             return report
          }
@@ -1165,7 +1165,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(parent, cp, o, dv_path)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -1218,7 +1218,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(parent, te, o, dv_path)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -1261,7 +1261,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(parent, d, o, dv_path)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -1301,7 +1301,7 @@ class RmValidator2 {
          //println o.type +" "+ o.rmTypeName
 
          report = validate(parent, d, o, dv_path)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -1348,7 +1348,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(parent, d, o, dv_path)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -1383,7 +1383,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(parent, d, o, dv_path)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -1431,7 +1431,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(parent, d, o, dv_path)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -1469,7 +1469,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(parent, d, o, dv_path)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -1507,7 +1507,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(parent, d, o, dv_path)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -1543,7 +1543,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(parent, d, o, dv_path)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -1590,7 +1590,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(parent, d, o, dv_path)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -1636,7 +1636,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(parent, d, o, dv_path)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -1672,7 +1672,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(parent, d, o, dv_path)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -1719,7 +1719,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(parent, d, o, dv_path)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -1757,7 +1757,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(parent, d, o, dv_path)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -1804,7 +1804,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(parent, d, o, dv_path)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -1863,7 +1863,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(parent, d, o, dv_path)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -1923,7 +1923,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(parent, d, o, dv_path)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
@@ -1961,7 +1961,7 @@ class RmValidator2 {
       for (o in os)
       {
          report = validate(parent, d, o, dv_path)
-         if (!report.hasErrors())
+         if (report.hasErrors())
          {
             return report
          }
