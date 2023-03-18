@@ -2655,7 +2655,7 @@
                 "roles": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/PARTY_REF"
+                        "$ref": "#/definitions/ROLE"
                     },
                     "minItems": 1
                 },
@@ -5557,9 +5557,7 @@
             "required": [
                 "archetype_node_id",
                 "archetype_details",
-                "name",
-                "identities",
-                "performer"
+                "name"
             ],
             "properties": {
                 "uid": {
@@ -5772,9 +5770,6 @@
                         "$ref": "#/definitions/LOCATABLE_REF"
                     },
                     "minItems": 1
-                },
-                "performer": {
-                    "$ref": "#/definitions/PARTY_REF"
                 },
                 "capabilities": {
                     "type": "array",

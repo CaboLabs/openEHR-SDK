@@ -1,0 +1,32 @@
+{
+   "_type": "PERSON",
+   "name": {
+      "_type": "DV_TEXT",
+      "value": "Pablo Pazos"
+   },
+   "archetype_node_id": "openEHR-DEMOGRAPHIC-PERSON.generic.v1",
+   "archetype_details": {
+      "archetype_id": {
+         "value": "openEHR-DEMOGRAPHIC-PERSON.generic.v1"
+      },
+      "template_id": {
+         "value": "generic_person"
+      },
+      "rm_version": "1.0.2"
+   },
+   "identities": [
+
+   ],
+   "contacts": [
+
+   ],
+   "roles": [
+      {
+         "name": {
+            "_type": "DV_TEXT",
+            "value": "Patient"
+         },
+         "archetype_node_id": "openEHR-DEMOGRAPHIC-ROLE.generic.v1"
+      }
+   ]
+}

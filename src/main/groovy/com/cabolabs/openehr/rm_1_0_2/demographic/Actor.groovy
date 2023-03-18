@@ -5,13 +5,12 @@ import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 import com.cabolabs.openehr.rm_1_0_2.support.identification.PartyRef
 
-
 /**
  * @author pablo.pazos@cabolabs.com
  *
  */
 abstract class Actor extends Party {
-   
+
    Set roles = [] // PartyRef
    List languages = [] // DvText
 

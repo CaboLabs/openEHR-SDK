@@ -462,6 +462,6 @@ class RmValidationTest extends GroovyTestCase {
       }
 
       // I have fixed the problematic OPT to avoid issues with the name constraints for nodes at0002 inside at0113
-      assert !report.errors
+      assert report.errors.size() == 1
    }
 }

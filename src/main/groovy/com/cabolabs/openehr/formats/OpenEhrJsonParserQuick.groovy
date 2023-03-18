@@ -31,6 +31,7 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 import com.cabolabs.openehr.rm_1_0_2.demographic.*
 import com.cabolabs.openehr.dto_1_0_2.ehr.EhrDto
 import com.cabolabs.openehr.dto_1_0_2.common.change_control.ContributionDto
+import com.cabolabs.openehr.dto_1_0_2.demographic.*
 import com.cabolabs.openehr.opt.instance_validation.JsonInstanceValidation
 import org.apache.log4j.Logger
 
@@ -554,7 +555,6 @@ class OpenEhrJsonParserQuick {
       }
    }
 
-
    private void fillACTOR(Actor a, Map json, Pathable parent)
    {
       this.fillPARTY(a, json, parent)
@@ -582,13 +582,101 @@ class OpenEhrJsonParserQuick {
       }
    }
 
+   private void fillPartyDto(PartyDto p, Map json, Pathable parent)
+   {
+      this.fillLOCATABLE(p, json, parent)
+
+      if (json.details)
+      {
+         def type = json.details._type
+
+         if (!type)
+         {
+            throw new JsonParseException("_type required for "+ dataPath +".details")
+         }
+
+         def method = 'parse'+ type
+
+         this."$method"(json.details, p)
+      }
+
+      if (json.contacts)
+      {
+         json.contacts.eachWithIndex { contact, i ->
+
+            p.contacts << this.parseCONTACT(contact, p)
+         }
+      }
+
+      json.identities.eachWithIndex { party_identity, i ->
+
+         p.identities << this.parsePARTY_IDENTITY(party_identity, p)
+      }
+   }
+
+   private void fillActorDto(ActorDto a, Map json, Pathable parent)
+   {
+      this.fillPartyDto(a, json, parent)
+
+      def type, method
+
+      if (json.languages)
+      {
+         json.languages.each { dvtext ->
+
+            type = dvtext._type
+            if (!type) type = 'DV_TEXT'
+            method = 'parse'+ type
+
+            a.languages << this."$method"(json.name)
+         }
+      }
+
+      // NOTE: this ACTOR DTO, the ROLEs are included directly not via PARTY_REF
+      if (json.roles)
+      {
+         json.roles.each { role ->
+
+            a.roles << this.parseROLE(role)
+         }
+      }
+   }
+
    // ========= PARSE METHODS =========
+
+   public PersonDto parsePersonDto(String json)
+   {
+      def slurper = new JsonSlurper()
+      def map = slurper.parseText(json)
+
+      // FIXME: EHR is not LOCATABLE and doesn't have info about the rm_version!
+      // For the API EHR we could access the EHR_STATUS.archetype_details.rm_version, but for RM EHRs, ehr_status is an OBJECT_REF that should be resolved.
+      if (this.schemaValidate)
+      {
+         // independently from schemaFlavor, this will always be "api" since it is asking to parse an API EhrDto
+         // for an "rm" Ehr the parseEhr() method should be used
+         this.jsonValidator = new JsonInstanceValidation("api") // FIXME: this uses the default 1.0.2 version schema!
+
+         def errors = jsonValidator.validate(json)
+         if (errors)
+         {
+            this.jsonValidationErrors = errors
+            return
+         }
+      }
+
+      def person = new PersonDto()
+
+      this.fillActorDto(person, map, null)
+
+      return person
+   }
 
    private Person parsePERSON(Map map)
    {
       def person = new Person()
 
-      this.fillACTOR(person, map, null, '/', '/')
+      this.fillACTOR(person, map, null)
 
       return person
    }
@@ -597,7 +685,7 @@ class OpenEhrJsonParserQuick {
    {
       def agent = new Agent()
 
-      this.fillACTOR(agent, map, null, '/', '/')
+      this.fillACTOR(agent, map, null)
 
       return agent
    }
@@ -606,7 +694,7 @@ class OpenEhrJsonParserQuick {
    {
       def group = new Group()
 
-      this.fillACTOR(group, map, null, '/', '/')
+      this.fillACTOR(group, map, null)
 
       return group
    }
@@ -615,7 +703,7 @@ class OpenEhrJsonParserQuick {
    {
       def organization = new Organization()
 
-      this.fillACTOR(organization, map, null, '/', '/')
+      this.fillACTOR(organization, map, null)
 
       return organization
    }
@@ -624,7 +712,7 @@ class OpenEhrJsonParserQuick {
    {
       def role = new Role()
 
-      this.fillPARTY(role, map, null, '/', '/')
+      this.fillPARTY(role, map, null)
 
       return role
    }

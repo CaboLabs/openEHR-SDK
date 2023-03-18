@@ -4,6 +4,7 @@ import groovy.util.GroovyTestCase
 import com.cabolabs.testing.TestUtils
 import static com.cabolabs.testing.TestUtils.PS as PS
 import com.cabolabs.openehr.formats.OpenEhrJsonParser
+import com.cabolabs.openehr.formats.OpenEhrJsonParserQuick
 import com.cabolabs.openehr.validation.*
 import com.cabolabs.openehr.opt.manager.*
 import com.cabolabs.openehr.rm_1_0_2.ehr.Ehr
@@ -16,8 +17,10 @@ import com.cabolabs.openehr.rm_1_0_2.demographic.Role
 import com.cabolabs.openehr.rm_1_0_2.demographic.Group
 import com.cabolabs.openehr.rm_1_0_2.demographic.Agent
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
-import com.cabolabs.openehr.dto_1_0_2.ehr.*
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
+
+import com.cabolabs.openehr.dto_1_0_2.ehr.*
+import com.cabolabs.openehr.dto_1_0_2.demographic.PersonDto
 
 import com.cabolabs.openehr.opt.serializer.*
 
@@ -958,7 +961,7 @@ class ValidationFlowTest extends GroovyTestCase {
    void test_person_valid()
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
-      String path = PS +"canonical_json"+ PS +"generic_person.json"
+      String path = PS +"canonical_json"+ PS +"demographic"+ PS +"generic_person.json"
 	   File file = new File(getClass().getResource(path).toURI())
       def json_person = file.text
 
@@ -987,7 +990,7 @@ class ValidationFlowTest extends GroovyTestCase {
    void test_organization_valid()
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
-      String path = PS +"canonical_json"+ PS +"generic_organization.json"
+      String path = PS +"canonical_json"+ PS +"demographic"+ PS +"generic_organization.json"
 	   File file = new File(getClass().getResource(path).toURI())
       def json_organization = file.text
 
@@ -1019,7 +1022,7 @@ class ValidationFlowTest extends GroovyTestCase {
    void test_group_valid()
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
-      String path = PS +"canonical_json"+ PS +"generic_group.json"
+      String path = PS +"canonical_json"+ PS +"demographic"+ PS +"generic_group.json"
 	   File file = new File(getClass().getResource(path).toURI())
       def json_group = file.text
 
@@ -1051,7 +1054,7 @@ class ValidationFlowTest extends GroovyTestCase {
    void test_agent_valid()
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
-      String path = PS +"canonical_json"+ PS +"generic_agent.json"
+      String path = PS +"canonical_json"+ PS +"demographic"+ PS +"generic_agent.json"
 	   File file = new File(getClass().getResource(path).toURI())
       def json_agent = file.text
 
@@ -1080,7 +1083,7 @@ class ValidationFlowTest extends GroovyTestCase {
    void test_role_valid()
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
-      String path = PS +"canonical_json"+ PS +"generic_role.json"
+      String path = PS +"canonical_json"+ PS +"demographic"+ PS +"generic_role.json"
 	   File file = new File(getClass().getResource(path).toURI())
       def json_role = file.text
 
@@ -1106,5 +1109,87 @@ class ValidationFlowTest extends GroovyTestCase {
       //println report.errors
 
       assert !report.errors
+   }
+
+   void test_person_api_valid()
+   {
+      def json_person_dto = $/
+         {
+            "_type": "PERSON",
+            "name": {
+               "_type": "DV_TEXT",
+               "value": "Pablo Pazos"
+            },
+            "archetype_node_id": "openEHR-DEMOGRAPHIC-PERSON.generic.v1",
+            "archetype_details": {
+               "archetype_id": {
+                  "value": "openEHR-DEMOGRAPHIC-PERSON.generic.v1"
+               },
+               "template_id": {
+                  "value": "generic_person"
+               },
+               "rm_version": "1.0.2"
+            },
+            "roles": [
+               {
+                  "name": {
+                     "_type": "DV_TEXT",
+                     "value": "Patient"
+                  },
+                  "archetype_details": {
+                     "archetype_id": {
+                        "_type": "ARCHETYPE_ID",
+                        "value": "openEHR-DEMOGRAPHIC-ROLE.generic_role.v1"
+                     },
+                     "template_id": {
+                        "_type": "TEMPLATE_ID",
+                        "value": "generic_role"
+                     },
+                     "rm_version": "1.0.2"
+                  },
+                  "archetype_node_id": "openEHR-DEMOGRAPHIC-ROLE.generic.v1"
+               }
+            ],
+            "identities": [
+               {
+                  "_type": "PARTY_IDENTITY",
+                  "name": {
+                     "_type": "DV_TEXT",
+                     "value": "identity"
+                  },
+                  "archetype_node_id": "at0004",
+                  "details": {
+                     "_type": "ITEM_TREE",
+                     "name": {
+                        "_type": "DV_TEXT",
+                        "value": "tree"
+                     },
+                     "archetype_node_id": "at0005",
+                     "items": [
+                        {
+                           "_type": "ELEMENT",
+                           "name": {
+                              "_type": "DV_TEXT",
+                              "value": "name"
+                           },
+                           "archetype_node_id": "at0006",
+                           "value": {
+                              "_type": "DV_TEXT",
+                              "value": "PiV.POWOXMcONGEMaWuJOkdsW.WLvJOia hLPIyhIIk DA mQAtKBfxJUFWrjVIYtNuJnneQCsxEgCXzQfI KjvGHOfPWaZvvtaCdIQOPtOYKEmES BgWSbYfBFQazoHXgujVFcd.GcirgvNtUdlKThXI VIjlBzxYbtJY.Nfg,DqVGRmfJbLeOiJAyBuDHV.tPFK,XbsAesIqRUTnulF XoASDnVwMMptttPjGXxmrNPvbAHSwqwyyArtrfUIQXXvdduhACRVhjD,aRBidoM,SzNmphdpwyIDdpUt,dDRMR"
+                           }
+                        }
+                     ]
+                  }
+               }
+            ]
+         }
+      /$
+
+      def parser = new OpenEhrJsonParserQuick(true) // does RM schema validation
+      PersonDto person = parser.parsePersonDto(json_person_dto)
+
+      assert person
+      assert person.roles.size() == 1
+      assert person.roles[0].name.value == 'Patient'
    }
 }

@@ -31,6 +31,7 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 import com.cabolabs.openehr.rm_1_0_2.demographic.*
 import com.cabolabs.openehr.dto_1_0_2.ehr.EhrDto
 import com.cabolabs.openehr.dto_1_0_2.common.change_control.ContributionDto
+import com.cabolabs.openehr.dto_1_0_2.demographic.*
 import com.cabolabs.openehr.opt.instance_validation.JsonInstanceValidation
 import org.apache.log4j.Logger
 
@@ -630,7 +631,6 @@ class OpenEhrJsonParser {
       }
    }
 
-
    private void fillACTOR(Actor a, Map json, Pathable parent, String path, String dataPath)
    {
       this.fillPARTY(a, json, parent, path, dataPath)
@@ -649,6 +649,7 @@ class OpenEhrJsonParser {
          }
       }
 
+      // NOTE: if this is an ACTOR DTO, the ROLEs will be included directly not via PARTY_REF
       if (json.roles)
       {
          json.roles.each { party_ref ->
@@ -658,7 +659,90 @@ class OpenEhrJsonParser {
       }
    }
 
+   private void fillPartyDto(PartyDto p, Map json, Pathable parent, String path, String dataPath)
+   {
+      this.fillLOCATABLE(p, json, parent, path, dataPath)
+
+      String path_node_id
+
+      if (json.details)
+      {
+         def type = json.details._type
+
+         if (!type)
+         {
+            throw new JsonParseException("_type required for "+ dataPath +".details")
+         }
+
+         def method = 'parse'+ type
+
+         path_node_id = (json.details.archetype_node_id.startsWith('at') ? json.details.archetype_node_id : 'archetype_id='+ json.details.archetype_node_id)
+
+         this."$method"(json.details, p,
+                        (path != '/' ? path +'/details['+ path_node_id +']' : '/details['+ path_node_id +']'),
+                        (dataPath != '/' ? dataPath +'/details['+ path_node_id +']' : '/details['+ path_node_id +']')
+                       )
+      }
+
+      if (json.contacts)
+      {
+         json.contacts.eachWithIndex { contact, i ->
+
+            path_node_id = (contact.archetype_node_id.startsWith('at') ? contact.archetype_node_id : 'archetype_id='+ contact.archetype_node_id)
+
+            p.contacts << this.parseCONTACT(contact, p,
+                        (path != '/' ? path +'/contacts['+ path_node_id +']' : '/contacts['+ path_node_id +']'),
+                        (dataPath != '/' ? dataPath +'/contacts['+ path_node_id +']['+ i +']' : '/contacts['+ path_node_id +']['+ i +']'))
+         }
+      }
+
+      json.identities.eachWithIndex { party_identity, i ->
+
+         path_node_id = (party_identity.archetype_node_id.startsWith('at') ? party_identity.archetype_node_id : 'archetype_id='+ party_identity.archetype_node_id)
+
+         p.identities << this.parsePARTY_IDENTITY(party_identity, p,
+                        (path != '/' ? path +'/identities['+ path_node_id +']' : '/identities['+ path_node_id +']'),
+                        (dataPath != '/' ? dataPath +'/identities['+ path_node_id +']['+ i +']' : '/identities['+ path_node_id +']['+ i +']'))
+      }
+   }
+
+   private void fillActorDto(ActorDto a, Map json, Pathable parent, String path, String dataPath)
+   {
+      this.fillPartyDto(a, json, parent, path, dataPath)
+
+      def type, method
+
+      if (json.languages)
+      {
+         json.languages.each { dvtext ->
+
+            type = dvtext._type
+            if (!type) type = 'DV_TEXT'
+            method = 'parse'+ type
+
+            a.languages << this."$method"(json.name)
+         }
+      }
+
+      // NOTE: this ACTOR DTO, the ROLEs are included directly not via PARTY_REF
+      if (json.roles)
+      {
+         json.roles.each { role ->
+
+            a.roles << this.parseROLE(role)
+         }
+      }
+   }
+
    // ========= PARSE METHODS =========
+   private PersonDto parsePersonDto(Map map)
+   {
+      def person = new PersonDto()
+
+      this.fillActorDto(person, map, null, '/', '/')
+
+      return person
+   }
 
    private Person parsePERSON(Map map)
    {

@@ -239,14 +239,15 @@ class OPTParserTest extends GroovyTestCase {
    void testActionPaths()
    {
       println "====== testActionPaths ======"
-      def path = PS +"opts"+ PS + 'test_ism_paths' + PS +"test_ism_paths.opt"
+      //def path = PS +"opts"+ PS +'test_ism_paths'+ PS +"test_ism_paths.opt"
+      def path = "opts/test_ism_paths/test_ism_paths.opt"
       def opt = TestUtils.loadTemplate(path)
 
       opt.nodes.values().sort{ it.path }.each { n ->
 
          println n.getClass().getSimpleName() +' p: '+ n.path +', dp: '+ n.dataPath
 
-         
+
          // o.attributes.each { a ->
          //    println "  - " + a.rmAttributeName
          //    a.children.each { o2 ->
@@ -382,7 +383,7 @@ class OPTParserTest extends GroovyTestCase {
 
       assert  c instanceof PrimitiveObjectNode
       assert  c.item instanceof CDateTime
- 
+
       assert  c.item.pattern == 'yyyy-mm-ddTHH:MM:SS'
       assert  c.item.isValid('1981-10-24T09:59:56')
       assert  c.item.isValid('1981-10-24T09:59:56Z')
@@ -390,7 +391,7 @@ class OPTParserTest extends GroovyTestCase {
       assert  c.item.isValid('1981-10-24T09:59:56.666')
       assert !c.item.isValid('1981-10-24T09:59')
 
-      
+
       // opt.nodes.each {
 
       //    if (it.value instanceof PrimitiveObjectNode)
@@ -415,7 +416,7 @@ class OPTParserTest extends GroovyTestCase {
       def c = opt.getNodes('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value/value')[0]
 
       assert  c instanceof PrimitiveObjectNode
- 
+
       assert  c.item instanceof CDuration
       assert  c.item.range.lower.value == 'PT0H'
       assert  c.item.range.upper.value == 'PT5H'
@@ -640,7 +641,7 @@ class OPTParserTest extends GroovyTestCase {
    }
 
 
-   
+
    void testParseNodesCCodePhrase()
    {
       println "====== testParseNodesCCodePhrase ======"
@@ -666,10 +667,10 @@ class OPTParserTest extends GroovyTestCase {
          }
       }
    }
-   
 
 
-   
+
+
    void testXMLGenerator()
    {
       def path = PS +"opts"+ PS + OptManager.DEFAULT_NAMESPACE + PS +"referral.opt"
@@ -767,13 +768,13 @@ class OPTParserTest extends GroovyTestCase {
            println xml.name +' VALIDA'
       }
    }
-   
+
 
 
    void testTerminologyParser()
    {
       def tm = TerminologyParser.getInstance()
-       
+
       def terms = tm.parseTerms(new File(getClass().getResource(PS +"terminology"+ PS +"openehr_terminology_en.xml").toURI()))
       //println terms
       assert tm.getRubric('en', '433') == 'event'
@@ -781,7 +782,7 @@ class OPTParserTest extends GroovyTestCase {
    }
 
 
-   
+
    void testParser()
    {
       log.info(  new File('').getCanonicalPath() )
@@ -845,8 +846,8 @@ class OPTParserTest extends GroovyTestCase {
       def collection_attr_nodes = [], // collection attribute nodes in the current OPT
           found_object_nodes,
           collect_found_object_nodes = []
-         
-      collection_attrs.each { clazz, attrs -> 
+
+      collection_attrs.each { clazz, attrs ->
 
          attrs.each { attr ->
 
@@ -857,13 +858,13 @@ class OPTParserTest extends GroovyTestCase {
                //println "matching ${object_nodes.rmTypeName}"
 
                found_object_nodes = object_nodes.findAll { it.rmTypeName == clazz }
-               
+
                if (found_object_nodes)
                {
                   collect_found_object_nodes.addAll(found_object_nodes)
                }
             }
-            
+
             collect_found_object_nodes.each { object_node ->
                collection_attr_nodes.addAll(
                   object_node.attributes.find{ an -> an.rmAttributeName == attr }
@@ -876,7 +877,7 @@ class OPTParserTest extends GroovyTestCase {
 
       // all the collection attribute will have cardinality constraint
       collection_attr_nodes.each { attr_node ->
-      
+
          assert attr_node.cardinality != null
       }
 
