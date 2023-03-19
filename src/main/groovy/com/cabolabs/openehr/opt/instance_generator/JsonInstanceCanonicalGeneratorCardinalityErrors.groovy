@@ -55,7 +55,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
    def JsonInstanceCanonicalGeneratorCardinalityErrors(String datetime_format = "yyyyMMdd'T'HHmmss,SSSZ")
    {
       /* THIS CANT BE USED UNTIL Groovy 2.5.x, since Grails 3.3.10 uses 2.4.17 we keep building under that version
-         OLD javadocs by Groovy version 
+         OLD javadocs by Groovy version
       // https://mrhaki.blogspot.com/2018/06/groovy-goodness-customizing-json-output.html
       // https://docs.groovy-lang.org/latest/html/gapi/groovy/json/JsonGenerator.Options.html
       def options = new JsonGenerator.Options()
@@ -130,9 +130,9 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
 
       terminology = TerminologyParser.getInstance()
 
-      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_en.xml")) // this works to load the resource from the jar
-      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_es.xml"))
-      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_pt.xml"))
+      terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_en.xml")) // this works to load the resource from the jar
+      terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_es.xml"))
+      terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_pt.xml"))
    }
 
    /**
@@ -274,13 +274,13 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
          throw new Exception("Error: COMPOSITION is persistent but contains context.")
       }
 
-      
+
       if (category_code == '433') // event
       {
          def setting_entry
          if (!composition_settings[this.opt.langCode]) setting_entry = composition_settings['en'].pick()
          else setting_entry = composition_settings[this.opt.langCode].pick()
-         
+
          compo.context = [
             start_time: [
                value: formatter.format(new Date())
@@ -353,7 +353,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
 
       if (!oa) throw new Exception("The OPT doesn't have a structure for COMPOSITION.content")
 
-      def content = processAttributeChildren(oa, opt.definition.archetypeId) 
+      def content = processAttributeChildren(oa, opt.definition.archetypeId)
 
       // it is possible the cardinality upper is lower than the items generated because there are more alternatives
       // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
@@ -363,7 +363,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
          content = content.take(oa.cardinality.interval.upper)
       }
       */
-   
+
       compo.content = content
 
       return compo
@@ -404,7 +404,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
       }
       else
       {
-         children = [ a.children[0] ] 
+         children = [ a.children[0] ]
       }
 
       // NOTE: this will generate validations errors for cardinality
@@ -446,7 +446,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
             attrs << processAttributeChildrenForObject(obj, parent_arch_id)
          }
       }
-      
+
       return attrs
    }
 
@@ -761,7 +761,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
       }
       */
 
-      def inputStream = getClass().getResourceAsStream(PS +"images"+ PS +"cabolabs_logo.png")
+      def inputStream = getClass().getResourceAsStream("/images/cabolabs_logo.png")
       def bytes = inputStream.bytes
       def _datab64 = bytes.encodeBase64().toString()
 
@@ -813,7 +813,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
          // TODO: refactor to generate_REAL
          //println attr_numerator.children[0].item // CReal
          def num_constraint = attr_numerator.children[0].item.range
-         
+
          num_lo = (num_constraint.lowerUnbounded ?    0.0f : num_constraint.lower)
          num_hi = (num_constraint.upperUnbounded ? 1000.0f : num_constraint.upper)
 
@@ -831,7 +831,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
       {
          // TODO: refactor to generate_REAL
          def den_constraint = attr_denominator.children[0].item.range
-         
+
          den_lo = (den_constraint.lowerUnbounded ?    0.0f : den_constraint.lower)
          den_hi = (den_constraint.upperUnbounded ? 1000.0f : den_constraint.upper)
 
@@ -954,7 +954,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
                value: DataGenerator.duration_value_from_pattern(c_duration.pattern)
             ]
          }
-         
+
          if (c_duration.range)
          {
             return [
@@ -1119,7 +1119,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
             //     the first children can be a STRING constraint
             //       check if there is a list constraint and get the first value as the name
             def value_constraint = name_constraint.children[0].attributes.find { it.rmAttributeName == 'value' }
-            
+
             // there is a constraint for the name but doesnt have a specific value
             if (!value_constraint)
             {
@@ -1169,9 +1169,9 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
 
       // archetype_node_id
       def arch_node_id = (o.archetypeId ?: o.nodeId)
-      
+
       locatable.archetype_node_id = arch_node_id
-      
+
       return locatable
    }
 
@@ -1229,7 +1229,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
       if (oa)
       {
          def items = processAttributeChildren(oa, parent_arch_id)
-         
+
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
          // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
          /*
@@ -1238,7 +1238,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
             items = items.take(oa.cardinality.interval.upper)
          }
          */
-         
+
          mobj.items = items
       }
 
@@ -1253,7 +1253,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
       def mobj = add_ENTRY_elements(o, parent_arch_id) // adds LOCATABLE fields
 
       AttributeNode a = o.parent
-      
+
       def oa = o.attributes.find { it.rmAttributeName == 'data' }
       if (oa)
       {
@@ -1282,7 +1282,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
          def data = processAttributeChildren(oa, parent_arch_id)
          mobj.data = data[0]
       }
-      
+
       return mobj
    }
 
@@ -1292,7 +1292,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
       def mobj = add_ENTRY_elements(o, parent_arch_id) // adds LOCATABLE fields
-      
+
       def oa = o.attributes.find { it.rmAttributeName == 'data' }
       if (oa)
       {
@@ -1366,7 +1366,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
       {
          mobj.action_archetype_id = 'openEHR-EHR-ACTION\\.sample_action\\.v1'
       }
-      
+
       return mobj
    }
 
@@ -1446,7 +1446,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
             ]
          ]
       ]
-      
+
       return mobj
    }
 
@@ -1482,7 +1482,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
 
          mobj.events = events
       }
-      
+
       return mobj
    }
 
@@ -1504,7 +1504,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
 
          mobj[oa.rmAttributeName] = mattrs[0]
       }
-      
+
       return mobj
    }
 
@@ -1514,7 +1514,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
       AttributeNode a = o.parent
-      
+
       def mobj = add_LOCATABLE_elements(o, parent_arch_id) + // _type, name, archetype_node_id
                  generate_attr_DV_DATE_TIME('time') // IM attribute not present in the OPT
 
@@ -1563,10 +1563,10 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
    private generate_ITEM_SINGLE(ObjectNode o, String parent_arch_id)
    {
      // generate_ITEM_TREE(o, parent_arch_id)
-     
+
      // parent from now can be different than the parent if if the object has archetypeId
      parent_arch_id = o.archetypeId ?: parent_arch_id
-     
+
      def mobj = add_LOCATABLE_elements(o, parent_arch_id) // _type, name, archetype_node_id
 
      def oa_item = o.attributes.find{ it.rmAttributeName == 'item' }
@@ -1594,7 +1594,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
       //AttributeNode a = o.parent
 
       def mobj = add_LOCATABLE_elements(o, parent_arch_id) // _type, name, archetype_node_id
-      
+
       def mattr
       o.attributes.each { oa ->
 
@@ -1614,7 +1614,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
       AttributeNode a = o.parent
-      
+
       def mobj = add_LOCATABLE_elements(o, parent_arch_id) // _type, name, archetype_node_id
 
       def mattr
@@ -1805,7 +1805,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
          break
          case 'list_range':
             lower_magnitude = lower_primitive.list.sort()[0] // take the lowest value
-            
+
             if (upper_primitive.range.upper && lower_magnitude > upper_primitive.range.upper)
             {
                throw new Exception('The template defines incompatible list constraint for lower and range constraint for upper on an interval')
@@ -1850,7 +1850,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
             //
             // (upper.range.upperUnbounded ||
             //  !lower.range.upperUnbounded && lower.range.upper <= upper.range.upper)
-            // && 
+            // &&
             // (lower.range.lowerUnbounded ||
             //  !upper,range.lowerUnbounded && lower.range.lower <= upper.range.lower
             // )
@@ -1891,7 +1891,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
          _type: 'DV_COUNT',
          magnitude: upper_magnitude
       ]
-      
+
       return mobj
    }
 
@@ -1900,7 +1900,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
       def mobj = [
          _type: 'DV_INTERVAL' // removed <DV_QUANTITY> generics because of https://discourse.openehr.org/t/correct-use-of-generic-types-in-xml-and-json/1504/16
       ]
-      
+
       // default included limits
       mobj.lower_included = true
       mobj.upper_included = true
@@ -1961,7 +1961,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
          }
          mobj.upper_unbounded = upperUnbounded
       }
-      
+
       return mobj
    }
 

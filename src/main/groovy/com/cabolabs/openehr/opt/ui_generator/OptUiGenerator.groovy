@@ -18,16 +18,14 @@ class OptUiGenerator {
       'DV_ORDINAL', 'DV_DATE', 'DV_DATE_TIME', 'DV_PROPORTION',
       'DV_DURATION']
 
-   static String PS = File.separator
-
    String generate(OperationalTemplate opt)
    {
       this.opt = opt
       this.terminology = TerminologyParser.getInstance()
 
-      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_en.xml")) // this works to load the resource from the jar
-      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_es.xml"))
-      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_pt.xml"))
+      terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_en.xml")) // this works to load the resource from the jar
+      terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_es.xml"))
+      terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_pt.xml"))
 
 
       def writer = new StringWriter()
@@ -116,8 +114,8 @@ class OptUiGenerator {
 
          // label for intermediate nodes
          def term = opt.getTerm(parent_arch_id, o.nodeId)
-         
-         if (term) 
+
+         if (term)
            label(term)
 
          //println o.path
@@ -288,7 +286,7 @@ class OptUiGenerator {
             builder.input(type: 'file', name: node.path, class: node.rmTypeName)
          break
          case 'DV_PARSABLE':
-            builder.textarea(class: node.rmTypeName +' form-control', name:node.path, '') 
+            builder.textarea(class: node.rmTypeName +' form-control', name:node.path, '')
          break
          case 'DV_URI':
             builder.input(type: 'text', class: node.rmTypeName +' form-control', name:node.path)

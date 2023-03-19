@@ -188,9 +188,9 @@ class RmInstanceGenerator {
       terminology = TerminologyParser.getInstance()
 
       // TODO: integrate german terminology
-      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_en.xml")) // this works to load the resource from the jar
-      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_es.xml"))
-      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_pt.xml"))
+      terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_en.xml")) // this works to load the resource from the jar
+      terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_es.xml"))
+      terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_pt.xml"))
    }
 
    /**
@@ -813,7 +813,7 @@ class RmInstanceGenerator {
       }
       */
 
-      def inputStream = getClass().getResourceAsStream(PS +"images"+ PS +"cabolabs_logo.png")
+      def inputStream = getClass().getResourceAsStream("/images/cabolabs_logo.png")
       def bytes = inputStream.bytes
       def _datab64 = bytes.encodeBase64().toString()
 

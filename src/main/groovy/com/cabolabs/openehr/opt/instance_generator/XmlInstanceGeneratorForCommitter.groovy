@@ -12,8 +12,6 @@ import java.text.SimpleDateFormat
  */
 class XmlInstanceGeneratorForCommitter {
 
-   static String PS = File.separator
-
    def opt
    def writer
    def builder
@@ -103,9 +101,9 @@ class XmlInstanceGeneratorForCommitter {
       // ---------------------------------------------------------------------------------
 
       terminology = TerminologyParser.getInstance()
-      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_en.xml")) // this works to load the resource from the jar
-      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_es.xml"))
-      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_pt.xml"))
+      terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_en.xml")) // this works to load the resource from the jar
+      terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_es.xml"))
+      terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_pt.xml"))
    }
 
    /**
@@ -291,10 +289,10 @@ class XmlInstanceGeneratorForCommitter {
          def setting_entry
          if (!composition_settings[this.opt.langCode]) setting_entry = composition_settings['en'].pick()
          else setting_entry = composition_settings[this.opt.langCode].pick()
-         
+
          def m = builder.mkp
-         
-            
+
+
          builder.context() {
             start_time() {
                value('[[COMPOSITION_DATE:::DATETIME:::NOW]]')
@@ -553,7 +551,7 @@ class XmlInstanceGeneratorForCommitter {
          value('[['+ label +':::DATETIME:::NOW]]')
       }
    }
-   
+
    private generate_DV_TIME(ObjectNode o, String parent_arch_id)
    {
       /*
@@ -650,7 +648,7 @@ class XmlInstanceGeneratorForCommitter {
        </value>
       */
 
-      def _dataf = getClass().getResourceAsStream(PS +"images"+ PS +"cabolabs_logo.png").getBytes()
+      def _dataf = getClass().getResourceAsStream("/images/cabolabs_logo.png").getBytes()
       def _datab64 = _dataf.encodeBase64().toString()
 
       AttributeNode a = o.parent

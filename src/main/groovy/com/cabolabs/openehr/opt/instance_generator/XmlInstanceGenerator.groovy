@@ -157,9 +157,9 @@ class XmlInstanceGenerator {
          terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_pt.xml"))
       }
       */
-      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_en.xml")) // this works to load the resource from the jar
-      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_es.xml"))
-      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_pt.xml"))
+      terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_en.xml")) // this works to load the resource from the jar
+      terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_es.xml"))
+      terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_pt.xml"))
    }
 
    /**
@@ -344,7 +344,7 @@ class XmlInstanceGenerator {
          def setting_entry
          if (!composition_settings[this.opt.langCode]) setting_entry = composition_settings['en'].pick()
          else setting_entry = composition_settings[this.opt.langCode].pick()
-         
+
          builder.context() {
             start_time() {
                value( new Date().toOpenEHRDateTime() )
@@ -407,7 +407,7 @@ class XmlInstanceGenerator {
       }
    }
 
-   
+
    /**
     * /DATATYPES -----------------------------------------------------------------------------------------------
     */
@@ -905,7 +905,7 @@ class XmlInstanceGenerator {
          // TODO: refactor to generate_REAL
          //println attr_numerator.children[0].item // CReal
          def num_constraint = attr_numerator.children[0].item.range
-         
+
          num_lo = (num_constraint.lowerUnbounded ?    0.0f : num_constraint.lower)
          num_hi = (num_constraint.upperUnbounded ? 1000.0f : num_constraint.upper)
 
@@ -923,7 +923,7 @@ class XmlInstanceGenerator {
       {
          // TODO: refactor to generate_REAL
          def den_constraint = attr_denominator.children[0].item.range
-         
+
          den_lo = (den_constraint.lowerUnbounded ?    0.0f : den_constraint.lower)
          den_hi = (den_constraint.upperUnbounded ? 1000.0f : den_constraint.upper)
 
@@ -1241,7 +1241,7 @@ class XmlInstanceGenerator {
       def arch_node_id = (o.archetypeId ?: o.nodeId)
 
       builder."${a.rmAttributeName}"('xsi:type': o.rmTypeName, archetype_node_id: arch_node_id) {
-         
+
          add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
          oa = o.attributes.find { it.rmAttributeName == 'items' }
@@ -1655,7 +1655,7 @@ class XmlInstanceGenerator {
       // is it arcehtyped or not?
       def arch_node_id = (o.archetypeId ?: o.nodeId)
 
-      
+
       int nodes = 0
 
       builder."${a.rmAttributeName}"('xsi:type': o.rmTypeName, archetype_node_id:arch_node_id) {
@@ -1779,7 +1779,7 @@ class XmlInstanceGenerator {
       // generate valid values simultaneously to be valid and lower <= upper
       // all the checks for existence of every constraint at each level is needed because most are
       // optional, and each 'else' would be a 'no_constraint' case.
-      
+
       // get constraints for DV_COUNT limits
       def lower_attr = o.attributes.find { it.rmAttributeName == 'lower' }
       def upper_attr = o.attributes.find { it.rmAttributeName == 'upper' }
@@ -1875,7 +1875,7 @@ class XmlInstanceGenerator {
          break
          case 'list_range':
             lower_magnitude = lower_primitive.list.sort()[0] // take the lowest value
-            
+
             if (upper_primitive.range.upper && lower_magnitude > upper_primitive.range.upper)
             {
                throw new Exception('The template defines incompatible list constraint for lower and range constraint for upper on an interval')
@@ -1920,7 +1920,7 @@ class XmlInstanceGenerator {
             //
             // (upper.range.upperUnbounded ||
             //  !lower.range.upperUnbounded && lower.range.upper <= upper.range.upper)
-            // && 
+            // &&
             // (lower.range.lowerUnbounded ||
             //  !upper,range.lowerUnbounded && lower.range.lower <= upper.range.lower
             // )
@@ -2080,7 +2080,7 @@ class XmlInstanceGenerator {
             //
             // (upper.range.upperUnbounded ||
             //  !lower.range.upperUnbounded && lower.range.upper <= upper.range.upper)
-            // && 
+            // &&
             // (lower.range.lowerUnbounded ||
             //  !upper,range.lowerUnbounded && lower.range.lower <= upper.range.lower
             // )
@@ -2125,7 +2125,7 @@ class XmlInstanceGenerator {
             magnitude(upper_magnitude)
             units(_units)
          }
-        
+
          def _lower_included = true,
              _upper_included = true,
              _lower_unbounded = false,
@@ -2154,11 +2154,11 @@ class XmlInstanceGenerator {
          <upper_unbounded>false</upper_unbounded>
       </value>
       */
-      
+
       // generate valid values simultaneously to be valid and lower <= upper
       // all the checks for existence of every constraint at each level is needed because most are
       // optional, and each 'else' would be a 'no_constraint' case.
-      
+
       // get constraints for DV_COUNT limits
       def lower_attr = o.attributes.find { it.rmAttributeName == 'lower' }
       def upper_attr = o.attributes.find { it.rmAttributeName == 'upper' }

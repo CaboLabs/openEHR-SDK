@@ -158,13 +158,13 @@ class ValidationFlowTest extends GroovyTestCase {
       //println groovy.json.JsonOutput.toJson(ehr.ehr_status)
 
       // SETUP OPT REPO
-      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
 
 
       // SETUP RM VALIDATOR (EHR_STATUS only)
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(ehr.ehr_status, 'com.cabolabs.openehr_opt.namespaces.default')
 
       assert !report.errors
@@ -282,7 +282,7 @@ class ValidationFlowTest extends GroovyTestCase {
          )
       )
 
-      RmValidator validator = new RmValidator()
+      RmValidator2 validator = new RmValidator2()
       RmValidationReport report = validator.dovalidate(ehr)
 
       assert report.errors.find{ it.path == '/ehr_id' }.error == 'attribute is not present but is required'
@@ -301,7 +301,7 @@ class ValidationFlowTest extends GroovyTestCase {
          )
       )
 
-      RmValidator validator = new RmValidator()
+      RmValidator2 validator = new RmValidator2()
       RmValidationReport report = validator.dovalidate(ehr)
 
       assert report.errors.find{ it.path == '/ehr_id' }.error == 'attribute is not present but is required'
@@ -317,7 +317,7 @@ class ValidationFlowTest extends GroovyTestCase {
    void test_ehr_status_any_valid()
    {
       // LOAD OPT
-      // def path = PS +"opts"+ PS + 'com.cabolabs.openehr_opt.namespaces.default' + PS +"ehr_status_any_en_v1.opt"
+      // def path = "opts"+ PS + 'com.cabolabs.openehr_opt.namespaces.default' + PS +"ehr_status_any_en_v1.opt"
       // def opt = TestUtils.loadTemplate(path)
       // opt.complete()
 
@@ -362,13 +362,13 @@ class ValidationFlowTest extends GroovyTestCase {
 
 
       // SETUP OPT REPO
-      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
 
 
       // SETUP RM VALIDATOR
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(status, 'com.cabolabs.openehr_opt.namespaces.default')
 
       assert !report.errors
@@ -426,13 +426,13 @@ class ValidationFlowTest extends GroovyTestCase {
 
 
       // SETUP OPT REPO
-      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
 
 
       // SETUP RM VALIDATOR
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(status, 'com.cabolabs.openehr_opt.namespaces.default')
 
       //println report.errors
@@ -493,13 +493,13 @@ class ValidationFlowTest extends GroovyTestCase {
 
 
       // SETUP OPT REPO
-      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
 
 
       // SETUP RM VALIDATOR
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(status, 'com.cabolabs.openehr_opt.namespaces.default')
 
       //println report.errors
@@ -542,7 +542,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
 
       // SETUP OPT REPO
-      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
 
@@ -626,7 +626,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
 
       // SETUP OPT REPO
-      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
 
@@ -742,7 +742,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
 
       // SETUP OPT REPO
-      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
 
@@ -792,7 +792,7 @@ class ValidationFlowTest extends GroovyTestCase {
       )
 
       // SETUP OPT REPO
-      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
 
@@ -810,7 +810,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
    void test_compo_validation_missing_node()
    {
-      String path = PS +"opts"+ PS +"test_validation_missing_node"+ PS +"composition.json"
+      String path = "/opts/test_validation_missing_node/composition.json"
 	   File file = new File(getClass().getResource(path).toURI())
       def json_compo = file.text
 
@@ -820,7 +820,7 @@ class ValidationFlowTest extends GroovyTestCase {
       assert compo
 
       // SETUP OPT REPO
-      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
 
@@ -856,7 +856,7 @@ class ValidationFlowTest extends GroovyTestCase {
    void test_compo_minimal_action_valid()
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
-      String path = PS +"canonical_json"+ PS +"minimal_action.json"
+      String path = "/canonical_json/minimal_action.json"
 	   File file = new File(getClass().getResource(path).toURI())
       def json_compo = file.text
 
@@ -867,7 +867,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
 
       // SETUP OPT REPO
-      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
 
@@ -882,7 +882,7 @@ class ValidationFlowTest extends GroovyTestCase {
    void test_compo_test_all_datatypes_en_valid()
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
-      String path = PS +"canonical_json"+ PS +"test_all_datatypes_en.json"
+      String path = "/canonical_json/test_all_datatypes_en.json"
 	   File file = new File(getClass().getResource(path).toURI())
       def json_compo = file.text
 
@@ -893,7 +893,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
 
       // SETUP OPT REPO
-      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
 
@@ -908,7 +908,7 @@ class ValidationFlowTest extends GroovyTestCase {
    void test_compo_test_all_datatypes_en_invalid()
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
-      String path = PS +"canonical_json"+ PS +"test_all_datatypes_en_constraints_violated.json"
+      String path = "/canonical_json/test_all_datatypes_en_constraints_violated.json"
 	   File file = new File(getClass().getResource(path).toURI())
       def json_compo = file.text
 
@@ -919,7 +919,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
 
       // SETUP OPT REPO
-      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
 
@@ -961,7 +961,7 @@ class ValidationFlowTest extends GroovyTestCase {
    void test_person_valid()
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
-      String path = PS +"canonical_json"+ PS +"demographic"+ PS +"generic_person.json"
+      String path = "/canonical_json/demographic/generic_person.json"
 	   File file = new File(getClass().getResource(path).toURI())
       def json_person = file.text
 
@@ -973,7 +973,7 @@ class ValidationFlowTest extends GroovyTestCase {
       assert person
 
       // SETUP OPT REPO
-      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
 
@@ -990,7 +990,7 @@ class ValidationFlowTest extends GroovyTestCase {
    void test_organization_valid()
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
-      String path = PS +"canonical_json"+ PS +"demographic"+ PS +"generic_organization.json"
+      String path = "/canonical_json/demographic/generic_organization.json"
 	   File file = new File(getClass().getResource(path).toURI())
       def json_organization = file.text
 
@@ -1005,13 +1005,13 @@ class ValidationFlowTest extends GroovyTestCase {
       assert organization
 
       // SETUP OPT REPO
-      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
 
 
       // SETUP RM VALIDATOR
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(organization, 'com.cabolabs.openehr_opt.namespaces.default')
 
       //println report.errors
@@ -1022,7 +1022,7 @@ class ValidationFlowTest extends GroovyTestCase {
    void test_group_valid()
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
-      String path = PS +"canonical_json"+ PS +"demographic"+ PS +"generic_group.json"
+      String path = "/canonical_json/demographic/generic_group.json"
 	   File file = new File(getClass().getResource(path).toURI())
       def json_group = file.text
 
@@ -1037,13 +1037,13 @@ class ValidationFlowTest extends GroovyTestCase {
 
 
       // SETUP OPT REPO
-      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
 
 
       // SETUP RM VALIDATOR
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(group, 'com.cabolabs.openehr_opt.namespaces.default')
 
       //println report.errors
@@ -1054,7 +1054,7 @@ class ValidationFlowTest extends GroovyTestCase {
    void test_agent_valid()
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
-      String path = PS +"canonical_json"+ PS +"demographic"+ PS +"generic_agent.json"
+      String path = "/canonical_json/demographic/generic_agent.json"
 	   File file = new File(getClass().getResource(path).toURI())
       def json_agent = file.text
 
@@ -1068,13 +1068,13 @@ class ValidationFlowTest extends GroovyTestCase {
       assert agent
 
       // SETUP OPT REPO
-      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
 
 
       // SETUP RM VALIDATOR
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(agent, 'com.cabolabs.openehr_opt.namespaces.default')
 
       assert !report.errors
@@ -1083,7 +1083,7 @@ class ValidationFlowTest extends GroovyTestCase {
    void test_role_valid()
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
-      String path = PS +"canonical_json"+ PS +"demographic"+ PS +"generic_role.json"
+      String path = "/canonical_json/demographic/generic_role.json"
 	   File file = new File(getClass().getResource(path).toURI())
       def json_role = file.text
 
@@ -1097,13 +1097,13 @@ class ValidationFlowTest extends GroovyTestCase {
       assert role
 
       // SETUP OPT REPO
-      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(PS + "opts").toURI())
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
 
 
       // SETUP RM VALIDATOR
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(role, 'com.cabolabs.openehr_opt.namespaces.default')
 
       //println report.errors

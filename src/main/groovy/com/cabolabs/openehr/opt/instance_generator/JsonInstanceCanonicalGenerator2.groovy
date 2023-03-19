@@ -52,7 +52,7 @@ class JsonInstanceCanonicalGenerator2 {
       String time_format = "HH:mm:ss")
    {
       /* THIS CANT BE USED UNTIL Groovy 2.5.x, since Grails 3.3.10 uses 2.4.17 we keep building under that version
-         OLD javadocs by Groovy version 
+         OLD javadocs by Groovy version
       // https://mrhaki.blogspot.com/2018/06/groovy-goodness-customizing-json-output.html
       // https://docs.groovy-lang.org/latest/html/gapi/groovy/json/JsonGenerator.Options.html
       def options = new JsonGenerator.Options()
@@ -286,13 +286,13 @@ class JsonInstanceCanonicalGenerator2 {
          throw new Exception("Error: COMPOSITION is persistent but contains context.")
       }
 
-      
+
       if (category_code == '433') // event
       {
          def setting_entry
          if (!composition_settings[this.opt.langCode]) setting_entry = composition_settings['en'].pick()
          else setting_entry = composition_settings[this.opt.langCode].pick()
-         
+
          compo.context = [
             start_time: [
                value: new Date().toOpenEHRDateTime()
@@ -367,7 +367,7 @@ class JsonInstanceCanonicalGenerator2 {
 
       if (oa)
       {
-         def content = processAttributeChildren(oa, opt.definition.archetypeId) 
+         def content = processAttributeChildren(oa, opt.definition.archetypeId)
 
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
          // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
@@ -375,7 +375,7 @@ class JsonInstanceCanonicalGenerator2 {
          {
             content = content.take(oa.cardinality.interval.upper)
          }
-      
+
          compo.content = content
       }
 
@@ -428,7 +428,7 @@ class JsonInstanceCanonicalGenerator2 {
          {
             capabilities = capabilities.take(oa.cardinality.interval.upper)
          }
-      
+
          mobj.capabilities = capabilities
       }
 
@@ -454,7 +454,7 @@ class JsonInstanceCanonicalGenerator2 {
 
       if (oa)
       {
-         def contacts = processAttributeChildren(oa, opt.definition.archetypeId) 
+         def contacts = processAttributeChildren(oa, opt.definition.archetypeId)
 
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
          // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
@@ -462,7 +462,7 @@ class JsonInstanceCanonicalGenerator2 {
          {
             contacts = contacts.take(oa.cardinality.interval.upper)
          }
-      
+
          mobj.contacts = contacts
       }
 
@@ -470,7 +470,7 @@ class JsonInstanceCanonicalGenerator2 {
 
       if (oa)
       {
-         def identities = processAttributeChildren(oa, opt.definition.archetypeId) 
+         def identities = processAttributeChildren(oa, opt.definition.archetypeId)
 
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
          // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
@@ -478,7 +478,7 @@ class JsonInstanceCanonicalGenerator2 {
          {
             identities = identities.take(oa.cardinality.interval.upper)
          }
-      
+
          mobj.identities = identities
       }
 
@@ -500,7 +500,7 @@ class JsonInstanceCanonicalGenerator2 {
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
       def mobj = add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
-      
+
       def oa = o.attributes.find{ it.rmAttributeName == 'addresses' }
 
       if (oa)
@@ -513,7 +513,7 @@ class JsonInstanceCanonicalGenerator2 {
          {
             addresses = addresses.take(oa.cardinality.interval.upper)
          }
-      
+
          mobj.addresses = addresses
       }
       // TODO: if there is no constraint, there should be a list with one item generated since it's [1..*] in the RM
@@ -637,7 +637,7 @@ class JsonInstanceCanonicalGenerator2 {
 
          attrs << "$method"(obj, parent_arch_id) // generate_OBSERVATION(a)
       }
-      
+
       return attrs
    }
 
@@ -940,7 +940,7 @@ class JsonInstanceCanonicalGenerator2 {
       }
       */
 
-      def inputStream = getClass().getResourceAsStream(PS +"images"+ PS +"cabolabs_logo.png")
+      def inputStream = getClass().getResourceAsStream("/images/cabolabs_logo.png")
       def bytes = inputStream.bytes
       def _datab64 = bytes.encodeBase64().toString()
 
@@ -963,7 +963,7 @@ class JsonInstanceCanonicalGenerator2 {
       </value>
       */
       AttributeNode a = o.parent
- 
+
       def out = [
          _type: 'DV_PARSABLE',
          // TODO: the value should depend on the formalism, we need to have generators to common formalisms
@@ -1003,7 +1003,7 @@ class JsonInstanceCanonicalGenerator2 {
          // TODO: refactor to generate_REAL
          //println attr_numerator.children[0].item // CReal
          def num_constraint = attr_numerator.children[0].item.range
-         
+
          num_lo = (num_constraint.lowerUnbounded ?    0.0f : num_constraint.lower)
          num_hi = (num_constraint.upperUnbounded ? 1000.0f : num_constraint.upper)
 
@@ -1021,7 +1021,7 @@ class JsonInstanceCanonicalGenerator2 {
       {
          // TODO: refactor to generate_REAL
          def den_constraint = attr_denominator.children[0].item.range
-         
+
          den_lo = (den_constraint.lowerUnbounded ?    0.0f : den_constraint.lower)
          den_hi = (den_constraint.upperUnbounded ? 1000.0f : den_constraint.upper)
 
@@ -1144,7 +1144,7 @@ class JsonInstanceCanonicalGenerator2 {
                value: DataGenerator.duration_value_from_pattern(c_duration.pattern)
             ]
          }
-         
+
          if (c_duration.range)
          {
             return [
@@ -1309,7 +1309,7 @@ class JsonInstanceCanonicalGenerator2 {
             //     the first children can be a STRING constraint
             //       check if there is a list constraint and get the first value as the name
             def value_constraint = name_constraint.children[0].attributes.find { it.rmAttributeName == 'value' }
-            
+
             // there is a constraint for the name but doesnt have a specific value
             if (!value_constraint)
             {
@@ -1359,9 +1359,9 @@ class JsonInstanceCanonicalGenerator2 {
 
       // archetype_node_id
       def arch_node_id = (o.archetypeId ?: o.nodeId)
-      
+
       locatable.archetype_node_id = arch_node_id
-      
+
       return locatable
    }
 
@@ -1419,14 +1419,14 @@ class JsonInstanceCanonicalGenerator2 {
       if (oa)
       {
          def items = processAttributeChildren(oa, parent_arch_id)
-         
+
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
          // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
          if (oa.cardinality && oa.cardinality.interval.upper)
          {
             items = items.take(oa.cardinality.interval.upper)
          }
-         
+
          mobj.items = items
       }
 
@@ -1441,7 +1441,7 @@ class JsonInstanceCanonicalGenerator2 {
       def mobj = add_ENTRY_elements(o, parent_arch_id) // adds LOCATABLE fields
 
       AttributeNode a = o.parent
-      
+
       def oa = o.attributes.find { it.rmAttributeName == 'data' }
       if (oa)
       {
@@ -1470,7 +1470,7 @@ class JsonInstanceCanonicalGenerator2 {
          def data = processAttributeChildren(oa, parent_arch_id)
          mobj.data = data[0]
       }
-      
+
       return mobj
    }
 
@@ -1480,7 +1480,7 @@ class JsonInstanceCanonicalGenerator2 {
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
       def mobj = add_ENTRY_elements(o, parent_arch_id) // adds LOCATABLE fields
-      
+
       def oa = o.attributes.find { it.rmAttributeName == 'data' }
       if (oa)
       {
@@ -1554,7 +1554,7 @@ class JsonInstanceCanonicalGenerator2 {
       {
          mobj.action_archetype_id = 'openEHR-EHR-ACTION\\.sample_action\\.v1'
       }
-      
+
       return mobj
    }
 
@@ -1634,7 +1634,7 @@ class JsonInstanceCanonicalGenerator2 {
             ]
          ]
       ]
-      
+
       return mobj
    }
 
@@ -1668,7 +1668,7 @@ class JsonInstanceCanonicalGenerator2 {
 
          mobj.events = events
       }
-      
+
       return mobj
    }
 
@@ -1690,7 +1690,7 @@ class JsonInstanceCanonicalGenerator2 {
 
          mobj[oa.rmAttributeName] = mattrs[0]
       }
-      
+
       return mobj
    }
 
@@ -1700,7 +1700,7 @@ class JsonInstanceCanonicalGenerator2 {
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
       AttributeNode a = o.parent
-      
+
       def mobj = add_LOCATABLE_elements(o, parent_arch_id) +
                  generate_attr_DV_DATE_TIME('time') // IM attribute not present in the OPT
 
@@ -1749,10 +1749,10 @@ class JsonInstanceCanonicalGenerator2 {
    private generate_ITEM_SINGLE(ObjectNode o, String parent_arch_id)
    {
      // generate_ITEM_TREE(o, parent_arch_id)
-     
+
      // parent from now can be different than the parent if if the object has archetypeId
      parent_arch_id = o.archetypeId ?: parent_arch_id
-     
+
      def mobj = add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
      def oa_item = o.attributes.find{ it.rmAttributeName == 'item' }
@@ -1778,7 +1778,7 @@ class JsonInstanceCanonicalGenerator2 {
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
       def mobj = add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
-      
+
       def mattr
       o.attributes.each { oa ->
 
@@ -1798,7 +1798,7 @@ class JsonInstanceCanonicalGenerator2 {
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
       AttributeNode a = o.parent
-      
+
       def mobj = add_LOCATABLE_elements(o, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
       def mattr
@@ -2041,7 +2041,7 @@ class JsonInstanceCanonicalGenerator2 {
          break
          case 'list_range':
             lower_magnitude = lower_primitive.list.sort()[0] // take the lowest value
-            
+
             if (upper_primitive.range.upper && lower_magnitude > upper_primitive.range.upper)
             {
                throw new Exception('The template defines incompatible list constraint for lower and range constraint for upper on an interval')
@@ -2086,7 +2086,7 @@ class JsonInstanceCanonicalGenerator2 {
             //
             // (upper.range.upperUnbounded ||
             //  !lower.range.upperUnbounded && lower.range.upper <= upper.range.upper)
-            // && 
+            // &&
             // (lower.range.lowerUnbounded ||
             //  !upper,range.lowerUnbounded && lower.range.lower <= upper.range.lower
             // )
@@ -2127,7 +2127,7 @@ class JsonInstanceCanonicalGenerator2 {
          _type: 'DV_COUNT',
          magnitude: upper_magnitude
       ]
-      
+
       return mobj
    }
 
@@ -2221,7 +2221,7 @@ class JsonInstanceCanonicalGenerator2 {
             //
             // (upper.range.upperUnbounded ||
             //  !lower.range.upperUnbounded && lower.range.upper <= upper.range.upper)
-            // && 
+            // &&
             // (lower.range.lowerUnbounded ||
             //  !upper,range.lowerUnbounded && lower.range.lower <= upper.range.lower
             // )
@@ -2264,7 +2264,7 @@ class JsonInstanceCanonicalGenerator2 {
          magnitude: upper_magnitude,
          units: _units
       ]
-      
+
       return mobj
    }
 
@@ -2279,7 +2279,7 @@ class JsonInstanceCanonicalGenerator2 {
       ]
 
       // TODO: refactor with XmlInstanceGEnerator since the code is the same
-      
+
       // get constraints for DV_COUNT limits
       def lower_attr = o.attributes.find { it.rmAttributeName == 'lower' }
       def upper_attr = o.attributes.find { it.rmAttributeName == 'upper' }

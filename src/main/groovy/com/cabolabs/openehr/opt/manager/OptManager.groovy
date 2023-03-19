@@ -19,8 +19,6 @@ class OptManager {
    // most OS have a file name limit of 255, so that should be the limit of the ns size
    public static String DEFAULT_NAMESPACE = 'com.cabolabs.openehr_opt.namespaces.default'
 
-//   private String baseOptRepoPath = "opts"+ PS
-
    // [namespace -> [optid -> OPT]]
    private static Map<String, Map<String, OperationalTemplate>> cache = [:]
 

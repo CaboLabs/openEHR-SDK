@@ -15,14 +15,14 @@ class RmValidationTest extends GroovyTestCase {
 
    void testValidationFromXmlComposition()
    {
-      String path = PS +"canonical_xml"+ PS +"test_all_datatypes.composition.en.xml"
+      String path = "/canonical_xml/test_all_datatypes.composition.en.xml"
       File file = new File(getClass().getResource(path).toURI())
       String xml = file.text
       def parser = new OpenEhrXmlParser()
       Composition c = (Composition)parser.parseXml(xml)
 
       // TODO: add support for S3 repo
-      String opt_repo_path = PS + "opts"
+      String opt_repo_path = "/opts"
       OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(opt_repo_path).toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
@@ -38,14 +38,14 @@ class RmValidationTest extends GroovyTestCase {
 
    void testValidationFromXmlComposition2()
    {
-      String path = PS +"canonical_xml"+ PS +"test_all_datatypes.composition.en.xml"
+      String path = "/canonical_xml/test_all_datatypes.composition.en.xml"
       File file = new File(getClass().getResource(path).toURI())
       String xml = file.text
       def parser = new OpenEhrXmlParser() // TODO: create a quick parser that doesn't calculate paths
       Composition c = (Composition)parser.parseXml(xml)
 
       // TODO: add support for S3 repo
-      String opt_repo_path = PS + "opts"
+      String opt_repo_path = "/opts"
       OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(opt_repo_path).toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
@@ -62,14 +62,14 @@ class RmValidationTest extends GroovyTestCase {
 
    void testValidationFromJsonComposition()
    {
-      String path = PS +"canonical_json"+ PS +"minimal_action.json"
+      String path = "/canonical_json/minimal_action.json"
 	   File file = new File(getClass().getResource(path).toURI())
 	   String json = file.text
 	   def parser = new OpenEhrJsonParserQuick()
 	   Composition c = (Composition)parser.parseJson(json)
 
       // TODO: add support for S3 repo
-      String opt_repo_path = PS + "opts"
+      String opt_repo_path = "/opts"
       OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(opt_repo_path).toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
@@ -85,14 +85,14 @@ class RmValidationTest extends GroovyTestCase {
 
     void testValidationFromJsonComposition2()
    {
-      String path = PS +"canonical_json"+ PS +"minimal_action.json"
+      String path = "/canonical_json/minimal_action.json"
 	   File file = new File(getClass().getResource(path).toURI())
 	   String json = file.text
 	   def parser = new OpenEhrJsonParserQuick()
 	   Composition c = (Composition)parser.parseJson(json)
 
       // TODO: add support for S3 repo
-      String opt_repo_path = PS + "opts"
+      String opt_repo_path = "/opts"
       OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(opt_repo_path).toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
@@ -108,14 +108,14 @@ class RmValidationTest extends GroovyTestCase {
 
    void testValidationFromJsonCompositionAllDatatypes()
    {
-      String path = PS +"canonical_json"+ PS +"test_all_datatypes_en.json"
+      String path = "/canonical_json/test_all_datatypes_en.json"
 	   File file = new File(getClass().getResource(path).toURI())
 	   String json = file.text
 	   def parser = new OpenEhrJsonParserQuick()
 	   Composition c = (Composition)parser.parseJson(json)
 
       // TODO: add support for S3 repo
-      String opt_repo_path = PS + "opts"
+      String opt_repo_path = "/opts"
       OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(opt_repo_path).toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
@@ -131,14 +131,14 @@ class RmValidationTest extends GroovyTestCase {
 
    void testValidationFromJsonCompositionAllDatatypes2()
    {
-      String path = PS +"canonical_json"+ PS +"test_all_datatypes_en.json"
+      String path = "/canonical_json/test_all_datatypes_en.json"
 	   File file = new File(getClass().getResource(path).toURI())
 	   String json = file.text
 	   def parser = new OpenEhrJsonParserQuick()
 	   Composition c = (Composition)parser.parseJson(json)
 
       // TODO: add support for S3 repo
-      String opt_repo_path = PS + "opts"
+      String opt_repo_path = "/opts"
       OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(opt_repo_path).toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
@@ -154,14 +154,14 @@ class RmValidationTest extends GroovyTestCase {
 
    void testValidationFromJsonCompositionInvalidCardinalitiesA()
    {
-      String path = PS +"rm_validation"+ PS +"0_alternative_types.en.v1_000052_1.json"
+      String path = "/rm_validation/0_alternative_types.en.v1_000052_1.json"
 	   File file = new File(getClass().getResource(path).toURI())
 	   String json = file.text
 	   def parser = new OpenEhrJsonParserQuick()
 	   Composition c = (Composition)parser.parseJson(json)
 
       // TODO: add support for S3 repo
-      String opt_repo_path = PS + "rm_validation"
+      String opt_repo_path = "/rm_validation"
       OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(opt_repo_path).toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
@@ -177,14 +177,14 @@ class RmValidationTest extends GroovyTestCase {
 
    void testValidationFromJsonCompositionInvalidCardinalitiesA2()
    {
-      String path = PS +"rm_validation"+ PS +"0_alternative_types.en.v1_000052_1.json"
+      String path = "/rm_validation/0_alternative_types.en.v1_000052_1.json"
 	   File file = new File(getClass().getResource(path).toURI())
 	   String json = file.text
 	   def parser = new OpenEhrJsonParserQuick()
 	   Composition c = (Composition)parser.parseJson(json)
 
       // TODO: add support for S3 repo
-      String opt_repo_path = PS + "rm_validation"
+      String opt_repo_path = "/rm_validation"
       OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(opt_repo_path).toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
@@ -200,14 +200,14 @@ class RmValidationTest extends GroovyTestCase {
 
    void testValidationFromJsonCompositionInvalidCardinalitiesB()
    {
-      String path = PS +"rm_validation"+ PS +"10_alternative_types.en.v1_000010_1.json"
+      String path = "/rm_validation/10_alternative_types.en.v1_000010_1.json"
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
       def parser = new OpenEhrJsonParserQuick()
       Composition c = (Composition)parser.parseJson(json)
 
       // TODO: add support for S3 repo
-      String opt_repo_path = PS + "rm_validation"
+      String opt_repo_path = "/rm_validation"
       OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(opt_repo_path).toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
@@ -224,14 +224,14 @@ class RmValidationTest extends GroovyTestCase {
 
    void testValidationFromJsonCompositionInvalidCardinalitiesB2()
    {
-      String path = PS +"rm_validation"+ PS +"10_alternative_types.en.v1_000010_1.json"
+      String path = "/rm_validation/10_alternative_types.en.v1_000010_1.json"
       File file = new File(getClass().getResource(path).toURI())
       String json = file.text
       def parser = new OpenEhrJsonParserQuick()
       Composition c = (Composition)parser.parseJson(json)
 
       // TODO: add support for S3 repo
-      String opt_repo_path = PS + "rm_validation"
+      String opt_repo_path = "/rm_validation"
       OptRepository repo = new OptRepositoryFSImpl(getClass().getResource(opt_repo_path).toURI())
       OptManager opt_manager = OptManager.getInstance()
       opt_manager.init(repo)
@@ -264,8 +264,8 @@ class RmValidationTest extends GroovyTestCase {
 
    void testDataValidationAdmin1()
    {
-      Composition c = load_compo(PS +"rm_validation"+ PS +"data_validation_admin_1.json")
-      OptManager opt_manager = init_manager(PS + "rm_validation")
+      Composition c = load_compo("/rm_validation/data_validation_admin_1.json")
+      OptManager opt_manager = init_manager("/rm_validation")
 
       RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(c, "")
@@ -292,8 +292,8 @@ class RmValidationTest extends GroovyTestCase {
 
    void testDataValidationAdmin2()
    {
-      Composition c = load_compo(PS +"rm_validation"+ PS +"data_validation_admin_2.json")
-      OptManager opt_manager = init_manager(PS + "rm_validation")
+      Composition c = load_compo("/rm_validation/data_validation_admin_2.json")
+      OptManager opt_manager = init_manager("/rm_validation")
 
       RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(c, "")
@@ -307,8 +307,8 @@ class RmValidationTest extends GroovyTestCase {
 
    void testDataValidationAdmin3()
    {
-      Composition c = load_compo(PS +"rm_validation"+ PS +"data_validation_admin_3.json")
-      OptManager opt_manager = init_manager(PS + "rm_validation")
+      Composition c = load_compo("/rm_validation/data_validation_admin_3.json")
+      OptManager opt_manager = init_manager("/rm_validation")
 
       RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(c, "")
@@ -322,8 +322,8 @@ class RmValidationTest extends GroovyTestCase {
 
    void testDataValidationAdmin4()
    {
-      Composition c = load_compo(PS +"rm_validation"+ PS +"data_validation_admin_4.json")
-      OptManager opt_manager = init_manager(PS + "rm_validation")
+      Composition c = load_compo("/rm_validation/data_validation_admin_4.json")
+      OptManager opt_manager = init_manager("/rm_validation")
 
       RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(c, "")
@@ -338,8 +338,8 @@ class RmValidationTest extends GroovyTestCase {
 
    void testDataValidationAdmin5()
    {
-      Composition c = load_compo(PS +"rm_validation"+ PS +"data_validation_admin_5.json")
-      OptManager opt_manager = init_manager(PS + "rm_validation")
+      Composition c = load_compo("/rm_validation/data_validation_admin_5.json")
+      OptManager opt_manager = init_manager("/rm_validation")
 
       RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(c, "")
@@ -353,8 +353,8 @@ class RmValidationTest extends GroovyTestCase {
 
    void testDataValidationEval1()
    {
-      Composition c = load_compo(PS +"rm_validation"+ PS +"data_validation_evaluation_1.json")
-      OptManager opt_manager = init_manager(PS + "rm_validation")
+      Composition c = load_compo("/rm_validation/data_validation_evaluation_1.json")
+      OptManager opt_manager = init_manager("/rm_validation")
 
       RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(c, "")
@@ -368,8 +368,8 @@ class RmValidationTest extends GroovyTestCase {
 
    void testDataValidationEval2()
    {
-      Composition c = load_compo(PS +"rm_validation"+ PS +"data_validation_evaluation_2.json")
-      OptManager opt_manager = init_manager(PS + "rm_validation")
+      Composition c = load_compo("/rm_validation/data_validation_evaluation_2.json")
+      OptManager opt_manager = init_manager("/rm_validation")
 
       RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(c, "")
@@ -387,8 +387,8 @@ class RmValidationTest extends GroovyTestCase {
    //        in the OPT.
    void testDataValidationEval3()
    {
-      Composition c = load_compo(PS +"rm_validation"+ PS +"data_validation_evaluation_3.json")
-      OptManager opt_manager = init_manager(PS + "rm_validation")
+      Composition c = load_compo("/rm_validation/data_validation_evaluation_3.json")
+      OptManager opt_manager = init_manager("/rm_validation")
 
       RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(c, "")
@@ -404,8 +404,8 @@ class RmValidationTest extends GroovyTestCase {
    //        beign the code valid.
    void testDataValidationEval4()
    {
-      Composition c = load_compo(PS +"rm_validation"+ PS +"data_validation_evaluation_4.json")
-      OptManager opt_manager = init_manager(PS + "rm_validation")
+      Composition c = load_compo("/rm_validation/data_validation_evaluation_4.json")
+      OptManager opt_manager = init_manager("/rm_validation")
 
       RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(c, "")
@@ -419,8 +419,8 @@ class RmValidationTest extends GroovyTestCase {
 
    void testDataValidationEPrescriptionFHIR()
    {
-      Composition c = load_compo(PS +"rm_validation"+ PS +"eprescription_fhir_invalid_opt.json")
-      OptManager opt_manager = init_manager(PS + "rm_validation")
+      Composition c = load_compo("/rm_validation/eprescription_fhir_invalid_opt.json")
+      OptManager opt_manager = init_manager("/rm_validation")
 
       RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(c, "")
@@ -435,8 +435,8 @@ class RmValidationTest extends GroovyTestCase {
 
    void testDataValidationMultipleStructured()
    {
-      Composition c = load_compo(PS +"rm_validation"+ PS +"test_multiple_structured_1.json")
-      OptManager opt_manager = init_manager(PS + "rm_validation")
+      Composition c = load_compo("/rm_validation/test_multiple_structured_1.json")
+      OptManager opt_manager = init_manager("/rm_validation")
 
       RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(c, "")
@@ -451,8 +451,8 @@ class RmValidationTest extends GroovyTestCase {
 
    void testDataValidationASSECO()
    {
-      Composition c = load_compo(PS +"rm_validation"+ PS +"pulsecomposition.json")
-      OptManager opt_manager = init_manager(PS + "rm_validation")
+      Composition c = load_compo("/rm_validation/pulsecomposition.json")
+      OptManager opt_manager = init_manager("/rm_validation")
 
       RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(c, "")

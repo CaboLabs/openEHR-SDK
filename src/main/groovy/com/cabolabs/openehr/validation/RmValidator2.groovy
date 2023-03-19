@@ -1299,8 +1299,21 @@ class RmValidator2 {
       for (o in os)
       {
          //println o.type +" "+ o.rmTypeName
+         try
+         {
 
          report = validate(parent, d, o, dv_path)
+         }
+         catch (Exception e)
+         {
+            println e.message
+            println parent
+            println d
+            println o // This should be a CDvQuantity and it's ObjectNode, so the validate method is not found. TODO: check OPT
+            println o.getClass()
+            println o.list
+            println  dv_path
+         }
          if (report.hasErrors())
          {
             return report
