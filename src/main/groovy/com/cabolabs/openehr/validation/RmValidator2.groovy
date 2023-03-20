@@ -542,8 +542,9 @@ class RmValidator2 {
 
    private RmValidationReport validate_alternatives(Observation ob, List<ObjectNode> os)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'OBSERVATION' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(ob, o)
          if (report.hasErrors())
@@ -581,8 +582,9 @@ class RmValidator2 {
 
    private RmValidationReport validate_alternatives(History h, List<ObjectNode> os)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'HISTORY' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(h, o)
          if (report.hasErrors())
@@ -611,8 +613,9 @@ class RmValidator2 {
 
    private RmValidationReport validate_alternatives(PointEvent e, List<ObjectNode> os)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'POINT_EVENT' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(e, o)
          if (report.hasErrors())
@@ -641,8 +644,9 @@ class RmValidator2 {
 
    private RmValidationReport validate_alternatives(IntervalEvent e, List<ObjectNode> os)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'INTERVAL_EVENT' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(e, o)
          if (report.hasErrors())
@@ -672,8 +676,9 @@ class RmValidator2 {
 
    private RmValidationReport validate_alternatives(Evaluation ev, List<ObjectNode> os)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'EVALUATION' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(ev, o)
          if (report.hasErrors())
@@ -700,8 +705,9 @@ class RmValidator2 {
 
    private RmValidationReport validate_alternatives(Instruction ins, List<ObjectNode> os)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'INSTRUCTION' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(ins, o)
          if (report.hasErrors())
@@ -741,8 +747,9 @@ class RmValidator2 {
 
    private RmValidationReport validate_alternatives(Action ac, List<ObjectNode> os)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'ACTION' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(ac, o)
          if (report.hasErrors())
@@ -772,8 +779,9 @@ class RmValidator2 {
    //       method: validate(Locatable parent, List container, AttributeNode cma)
    private RmValidationReport validate_alternatives(AdminEntry ae, List<ObjectNode> os)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'ADMIN_ENTRY' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(ae, o)
          if (report.hasErrors())
@@ -809,8 +817,9 @@ class RmValidator2 {
 
    private RmValidationReport validate_alternatives(EventContext context, List<ObjectNode> os)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'EVENT_CONTEXT' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(context, o)
          if (report.hasErrors())
@@ -846,8 +855,9 @@ class RmValidator2 {
 
    private RmValidationReport validate_alternatives(ItemTree is, List<ObjectNode> os)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'ITEM_TREE' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(is, o)
          if (report.hasErrors())
@@ -883,8 +893,9 @@ class RmValidator2 {
 
    private RmValidationReport validate_alternatives(ItemList is, List<ObjectNode> os)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'ITEM_LIST' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(is, o)
          if (report.hasErrors())
@@ -921,8 +932,9 @@ class RmValidator2 {
 
    private RmValidationReport validate_alternatives(ItemTable is, List<ObjectNode> os)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'ITEM_TABLE' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(is, o)
          if (report.hasErrors())
@@ -958,8 +970,9 @@ class RmValidator2 {
 
    private RmValidationReport validate_alternatives(ItemSingle is, List<ObjectNode> os)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'ITEM_SINGLE' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(is, o)
          if (report.hasErrors())
@@ -986,8 +999,9 @@ class RmValidator2 {
 
    private RmValidationReport validate_alternatives(Cluster cl, List<ObjectNode> os)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'CLUSTER' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(cl, o)
          if (report.hasErrors())
@@ -1023,8 +1037,9 @@ class RmValidator2 {
 
    private RmValidationReport validate_alternatives(Element e, List<ObjectNode> os)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'ELEMENT' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(e, o)
          if (report.hasErrors())
@@ -1076,8 +1091,9 @@ class RmValidator2 {
    // should check all the constraints and if one validates, the whole thing validates
    private RmValidationReport validate_alternatives(Pathable parent, DvCodedText ct, List<ObjectNode> os, String dv_path)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_CODED_TEXT' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(parent, ct, o, dv_path)
          if (report.hasErrors()) // if there is one alternative that validates the data, then it passes the validation
@@ -1161,8 +1177,9 @@ class RmValidator2 {
 
    private RmValidationReport validate_alternatives(Pathable parent, CodePhrase cp, List<CCodePhrase> os, String dv_path)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'CODE_PHRASE' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(parent, cp, o, dv_path)
          if (report.hasErrors())
@@ -1214,8 +1231,9 @@ class RmValidator2 {
    // should check all the constraints and if one validates, the whole thing validates
    private RmValidationReport validate_alternatives(Pathable parent, DvText te, List<ObjectNode> os, String dv_path)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_TEXT' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(parent, te, o, dv_path)
          if (report.hasErrors())
@@ -1257,8 +1275,9 @@ class RmValidator2 {
    // should check all the constraints and if one validates, the whole thing validates
    private RmValidationReport validate_alternatives(Pathable parent, DvProportion d, List<ObjectNode> os, String dv_path)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_PROPORTION' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1295,25 +1314,20 @@ class RmValidator2 {
    // should check all the constraints and if one validates, the whole thing validates
    private RmValidationReport validate_alternatives(Pathable parent, DvQuantity d, List<ObjectNode> os, String dv_path)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+
+      // the current datatype d should validate against a constraint alternative defined for that type,
+      // if there are constraint alternatives that are for different types (alternative types are defined
+      // at the same node path), then if the data has one of those types, that data point shouldn't validate
+      // against other alternatives for other types.
+
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_QUANTITY' }
+
+      for (o in alternatives_for_same_type)
       {
          //println o.type +" "+ o.rmTypeName
-         try
-         {
-
          report = validate(parent, d, o, dv_path)
-         }
-         catch (Exception e)
-         {
-            println e.message
-            println parent
-            println d
-            println o // This should be a CDvQuantity and it's ObjectNode, so the validate method is not found. TODO: check OPT
-            println o.getClass()
-            println o.list
-            println  dv_path
-         }
+
          if (report.hasErrors())
          {
             return report
@@ -1322,7 +1336,7 @@ class RmValidator2 {
 
       // this will return the last failed validation
       // we can also add an error saying the data doesn't validates against any alternative
-      return new RmValidationReport() //report
+      return report
    }
 
    private RmValidationReport validate(Pathable parent, DvQuantity d, CDvQuantity o, String dv_path)
@@ -1357,8 +1371,9 @@ class RmValidator2 {
    // should check all the constraints and if one validates, the whole thing validates
    private RmValidationReport validate_alternatives(Pathable parent, DvCount d, List<ObjectNode> os, String dv_path)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_COUNT' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1392,8 +1407,9 @@ class RmValidator2 {
 
    private RmValidationReport validate_alternatives(Pathable parent, Integer d, List<ObjectNode> os, String dv_path)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'INTEGER' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1440,8 +1456,9 @@ class RmValidator2 {
    // should check all the constraints and if one validates, the whole thing validates
    private RmValidationReport validate_alternatives(Pathable parent, DvDateTime d, List<ObjectNode> os, String dv_path)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_DATE_TIME' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1478,8 +1495,9 @@ class RmValidator2 {
    // should check all the constraints and if one validates, the whole thing validates
    private RmValidationReport validate_alternatives(Pathable parent, DvDate d, List<ObjectNode> os, String dv_path)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_DATE' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1516,8 +1534,9 @@ class RmValidator2 {
    // should check all the constraints and if one validates, the whole thing validates
    private RmValidationReport validate_alternatives(Pathable parent, DvTime d, List<ObjectNode> os, String dv_path)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_TIME' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1552,8 +1571,9 @@ class RmValidator2 {
 
    private RmValidationReport validate_alternatives(Pathable parent, String d, List<ObjectNode> os, String dv_path)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'STRING' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1599,8 +1619,9 @@ class RmValidator2 {
    // should check all the constraints and if one validates, the whole thing validates
    private RmValidationReport validate_alternatives(Pathable parent, DvOrdinal d, List<ObjectNode> os, String dv_path)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_ORDINAL' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1645,8 +1666,9 @@ class RmValidator2 {
    // should check all the constraints and if one validates, the whole thing validates
    private RmValidationReport validate_alternatives(Pathable parent, DvBoolean d, List<ObjectNode> os, String dv_path)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_BOOLEAN' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1681,8 +1703,9 @@ class RmValidator2 {
 
    private RmValidationReport validate_alternatives(Pathable parent, Boolean d, List<ObjectNode> os, String dv_path)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'BOOLEAN' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1728,8 +1751,9 @@ class RmValidator2 {
    // should check all the constraints and if one validates, the whole thing validates
    private RmValidationReport validate_alternatives(Pathable parent, DvDuration d, List<ObjectNode> os, String dv_path)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_DURATION' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1766,8 +1790,9 @@ class RmValidator2 {
    // should check all the constraints and if one validates, the whole thing validates
    private RmValidationReport validate_alternatives(Pathable parent, DvInterval d, List<ObjectNode> os, String dv_path)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_INTERVAL' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1813,8 +1838,9 @@ class RmValidator2 {
    // should check all the constraints and if one validates, the whole thing validates
    private RmValidationReport validate_alternatives(Pathable parent, DvMultimedia d, List<ObjectNode> os, String dv_path)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_MULTIMEDIA' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1872,8 +1898,9 @@ class RmValidator2 {
    // should check all the constraints and if one validates, the whole thing validates
    private RmValidationReport validate_alternatives(Pathable parent, DvParsable d, List<ObjectNode> os, String dv_path)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_PARSABLE' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1932,8 +1959,9 @@ class RmValidator2 {
    // should check all the constraints and if one validates, the whole thing validates
    private RmValidationReport validate_alternatives(Pathable parent, DvUri d, List<ObjectNode> os, String dv_path)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_URI' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1970,8 +1998,9 @@ class RmValidator2 {
    // should check all the constraints and if one validates, the whole thing validates
    private RmValidationReport validate_alternatives(Pathable parent, DvIdentifier d, List<ObjectNode> os, String dv_path)
    {
-      RmValidationReport report
-      for (o in os)
+      RmValidationReport report = new RmValidationReport()
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_IDENTIFIER' }
+      for (o in alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
