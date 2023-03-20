@@ -143,7 +143,7 @@ class Main {
 
          break
          case 'optval':
-            def inputStream = this.getClass().getResourceAsStream('/xsd/OperationalTemplateExtra.xsd')
+            def inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream('xsd/OperationalTemplateExtra.xsd')
             def validator = new XmlValidation(inputStream)
 
             if (args.size() < 2)
@@ -165,7 +165,7 @@ class Main {
          case 'inval':
 
             // Read XSD from JAR as a resource
-            def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
+            def inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream('xsd/Version.xsd')
             def validator = new XmlValidation(inputStream)
 
             // JSON Schema validation, loads the schema internally
@@ -429,7 +429,7 @@ class Main {
 
       if (!optFile.exists()) throw new java.io.FileNotFoundException(path)
 
-      def inputStream = this.getClass().getResourceAsStream('/xsd/OperationalTemplateExtra.xsd')
+      def inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream('xsd/OperationalTemplateExtra.xsd')
       def validator = new XmlValidation(inputStream)
 
       if (!validateXML(validator, optFile))

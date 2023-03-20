@@ -79,9 +79,9 @@ class XmlInstanceGeneratorTagged {
       // ---------------------------------------------------------------------------------
 
       terminology = TerminologyParser.getInstance()
-      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_en.xml")) // this works to load the resource from the jar
-      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_es.xml"))
-      terminology.parseTerms(getClass().getResourceAsStream(PS +"terminology"+ PS +"openehr_terminology_pt.xml"))
+      terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_en.xml")) // this works to load the resource from the jar
+      terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_es.xml"))
+      terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_pt.xml"))
    }
 
    /**
@@ -469,7 +469,7 @@ class XmlInstanceGeneratorTagged {
          value('[['+ label +':::DATETIME]]')
       }
    }
-   
+
    private generate_DV_TIME(ObjectNode o, String parent_arch_id)
    {
       /*
