@@ -20,7 +20,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 
 import com.cabolabs.openehr.dto_1_0_2.ehr.*
-import com.cabolabs.openehr.dto_1_0_2.demographic.PersonDto
+import com.cabolabs.openehr.dto_1_0_2.demographic.*
 
 import com.cabolabs.openehr.opt.serializer.*
 
@@ -1191,5 +1191,197 @@ class ValidationFlowTest extends GroovyTestCase {
       assert person
       assert person.roles.size() == 1
       assert person.roles[0].name.value == 'Patient'
+   }
+
+   // parses using the generic actor parser
+   void test_generic_person_api_valid()
+   {
+      def json_person_dto = $/
+         {
+            "_type": "PERSON",
+            "name": {
+               "_type": "DV_TEXT",
+               "value": "Pablo Pazos"
+            },
+            "archetype_node_id": "openEHR-DEMOGRAPHIC-PERSON.generic.v1",
+            "archetype_details": {
+               "archetype_id": {
+                  "value": "openEHR-DEMOGRAPHIC-PERSON.generic.v1"
+               },
+               "template_id": {
+                  "value": "generic_person"
+               },
+               "rm_version": "1.0.2"
+            },
+            "roles": [
+               {
+                  "name": {
+                     "_type": "DV_TEXT",
+                     "value": "Patient"
+                  },
+                  "archetype_details": {
+                     "archetype_id": {
+                        "_type": "ARCHETYPE_ID",
+                        "value": "openEHR-DEMOGRAPHIC-ROLE.generic_role.v1"
+                     },
+                     "template_id": {
+                        "_type": "TEMPLATE_ID",
+                        "value": "generic_role"
+                     },
+                     "rm_version": "1.0.2"
+                  },
+                  "archetype_node_id": "openEHR-DEMOGRAPHIC-ROLE.generic.v1"
+               }
+            ],
+            "identities": [
+               {
+                  "_type": "PARTY_IDENTITY",
+                  "name": {
+                     "_type": "DV_TEXT",
+                     "value": "identity"
+                  },
+                  "archetype_node_id": "at0004",
+                  "details": {
+                     "_type": "ITEM_TREE",
+                     "name": {
+                        "_type": "DV_TEXT",
+                        "value": "tree"
+                     },
+                     "archetype_node_id": "at0005",
+                     "items": [
+                        {
+                           "_type": "ELEMENT",
+                           "name": {
+                              "_type": "DV_TEXT",
+                              "value": "name"
+                           },
+                           "archetype_node_id": "at0006",
+                           "value": {
+                              "_type": "DV_TEXT",
+                              "value": "PiV.POWOXMcONGEMaWuJOkdsW.WLvJOia hLPIyhIIk DA mQAtKBfxJUFWrjVIYtNuJnneQCsxEgCXzQfI KjvGHOfPWaZvvtaCdIQOPtOYKEmES BgWSbYfBFQazoHXgujVFcd.GcirgvNtUdlKThXI VIjlBzxYbtJY.Nfg,DqVGRmfJbLeOiJAyBuDHV.tPFK,XbsAesIqRUTnulF XoASDnVwMMptttPjGXxmrNPvbAHSwqwyyArtrfUIQXXvdduhACRVhjD,aRBidoM,SzNmphdpwyIDdpUt,dDRMR"
+                           }
+                        }
+                     ]
+                  }
+               }
+            ]
+         }
+      /$
+
+      def parser = new OpenEhrJsonParserQuick(true) // does RM schema validation
+      PersonDto person = parser.parseActorDto(json_person_dto)
+
+      assert person
+      assert person.roles.size() == 1
+      assert person.roles[0].name.value == 'Patient'
+   }
+
+   void test_generic_group_api_valid()
+   {
+      def json_dto = $/
+         {
+            "_type": "GROUP",
+            "name": {
+               "_type": "DV_TEXT",
+               "value": "generic group"
+            },
+            "archetype_details": {
+               "archetype_id": {
+                  "_type": "ARCHETYPE_ID",
+                  "value": "openEHR-DEMOGRAPHIC-GROUP.generic_group.v1"
+               },
+               "template_id": {
+                  "_type": "TEMPLATE_ID",
+                  "value": "generic_group"
+               },
+               "rm_version": "1.0.2"
+            },
+            "archetype_node_id": "openEHR-DEMOGRAPHIC-GROUP.generic_group.v1",
+            "details": {
+               "_type": "ITEM_TREE",
+               "name": {
+                  "_type": "DV_TEXT",
+                  "value": "tree"
+               },
+               "archetype_node_id": "at0001",
+               "items": [
+                  {
+                     "_type": "ELEMENT",
+                     "name": {
+                        "_type": "DV_TEXT",
+                        "value": "identifier"
+                     },
+                     "archetype_node_id": "at0002",
+                     "value": {
+                        "_type": "DV_IDENTIFIER",
+                        "issuer": "Hospital de Clinicas",
+                        "assigner": "Hospital de Clinicas",
+                        "id": "12345",
+                        "type": "NHID"
+                     }
+                  }
+               ]
+            },
+            "identities": [
+               {
+                  "_type": "PARTY_IDENTITY",
+                  "name": {
+                     "_type": "DV_TEXT",
+                     "value": "identity"
+                  },
+                  "archetype_node_id": "at0004",
+                  "details": {
+                     "_type": "ITEM_TREE",
+                     "name": {
+                        "_type": "DV_TEXT",
+                        "value": "tree"
+                     },
+                     "archetype_node_id": "at0005",
+                     "items": [
+                        {
+                              "_type": "ELEMENT",
+                              "name": {
+                                 "_type": "DV_TEXT",
+                                 "value": "name"
+                              },
+                              "archetype_node_id": "at0006",
+                              "value": {
+                                 "_type": "DV_TEXT",
+                                 "value": "YdD,l dALfXOGOXCntaZjAYoRNLzOTxAkDKmLAd.hDsqqHZZ.QEqzNTnpCYvvKtkpN.LgmmksJGTEeyyKLVwKoi,QEMwpuvzGsbNdwSworMqjPxaSbSRnEhdEUzllqYQlQuVsYRUZzSxGJqhUnwGs.XmYMRdSApBBcP,mMHNNewtMlveJFFiVrMB gpgpImNY,KqiFyuiKbNSpmlddrx.oEqLx.yYFoXEZiuXdGKJhtrYmcB.LKMkzqxNOazQCP dFBJhXpnl,KTmiRykpt,pucglAmVLn hsCwPhNFBwMtR"
+                              }
+                        }
+                     ]
+                  }
+               }
+            ],
+            "roles": [
+               {
+                  "name": {
+                     "_type": "DV_TEXT",
+                     "value": "Dr. James Kernel's Surgical Team"
+                  },
+                  "archetype_details": {
+                     "archetype_id": {
+                        "_type": "ARCHETYPE_ID",
+                        "value": "openEHR-DEMOGRAPHIC-ROLE.generic_role.v1"
+                     },
+                     "template_id": {
+                        "_type": "TEMPLATE_ID",
+                        "value": "generic_role"
+                     },
+                     "rm_version": "1.0.2"
+                  },
+                  "archetype_node_id": "openEHR-DEMOGRAPHIC-ROLE.generic.v1"
+               }
+            ]
+         }
+      /$
+
+      def parser = new OpenEhrJsonParserQuick(true) // does RM schema validation
+      GroupDto group = parser.parseActorDto(json_dto)
+
+      assert group
+      assert group.roles.size() == 1
+      assert group.roles[0].name.value == "Dr. James Kernel's Surgical Team"
    }
 }

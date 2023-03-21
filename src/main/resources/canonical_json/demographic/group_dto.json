@@ -1,9 +1,5 @@
 {
     "_type": "GROUP",
-    "uid": {
-       "_type": "OBJECT_VERSION_ID",
-       "value": "b913b111-24b1-46f7-82c0-5c33e0768e96::com.cabolabs.demographic::1"
-     },
     "name": {
         "_type": "DV_TEXT",
         "value": "generic group"
@@ -79,12 +75,22 @@
     ],
     "roles": [
         {
-            "id": {
-                "_type": "HIER_OBJECT_ID",
-                "value": "7244df36-98c2-4867-939d-599d1e583e4c"
+            "name": {
+               "_type": "DV_TEXT",
+               "value": "Dr. James Kernel's Surgical Team"
             },
-            "namespace": "com.cabolabs.demographic",
-            "type": "ROLE"
-        }
+            "archetype_details": {
+               "archetype_id": {
+                  "_type": "ARCHETYPE_ID",
+                  "value": "openEHR-DEMOGRAPHIC-ROLE.generic_role.v1"
+               },
+               "template_id": {
+                  "_type": "TEMPLATE_ID",
+                  "value": "generic_role"
+               },
+               "rm_version": "1.0.2"
+            },
+            "archetype_node_id": "openEHR-DEMOGRAPHIC-ROLE.generic.v1"
+         }
     ]
 }

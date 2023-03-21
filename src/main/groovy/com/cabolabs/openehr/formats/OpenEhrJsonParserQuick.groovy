@@ -502,7 +502,7 @@ class OpenEhrJsonParserQuick {
          {
             throw new JsonParseException("_type required for CARE_ENTRY.protocol")
          }
-         //String path_node_id = (json.protocol.archetype_node_id.startsWith('at') ? json.protocol.archetype_node_id : 'archetype_id='+ json.protocol.archetype_node_id)
+
          String method = 'parse'+ type
          c.protocol = this."$method"(json.protocol, parent)
       }
@@ -519,8 +519,6 @@ class OpenEhrJsonParserQuick {
    {
       this.fillLOCATABLE(p, json, parent)
 
-      String path_node_id
-
       if (json.details)
       {
          def type = json.details._type
@@ -531,9 +529,6 @@ class OpenEhrJsonParserQuick {
          }
 
          def method = 'parse'+ type
-
-         path_node_id = (json.details.archetype_node_id.startsWith('at') ? json.details.archetype_node_id : 'archetype_id='+ json.details.archetype_node_id)
-
          this."$method"(json.details, p)
       }
 
@@ -541,15 +536,11 @@ class OpenEhrJsonParserQuick {
       {
          json.contacts.eachWithIndex { contact, i ->
 
-            path_node_id = (contact.archetype_node_id.startsWith('at') ? contact.archetype_node_id : 'archetype_id='+ contact.archetype_node_id)
-
             p.contacts << this.parseCONTACT(contact, p)
          }
       }
 
       json.identities.eachWithIndex { party_identity, i ->
-
-         path_node_id = (party_identity.archetype_node_id.startsWith('at') ? party_identity.archetype_node_id : 'archetype_id='+ party_identity.archetype_node_id)
 
          p.identities << this.parsePARTY_IDENTITY(party_identity, p)
       }
@@ -644,6 +635,77 @@ class OpenEhrJsonParserQuick {
 
    // ========= PARSE METHODS =========
 
+   // Generic parse for any actor subclass (Person, Organization, ...)
+   public ActorDto parseActorDto(String json)
+   {
+      def slurper = new JsonSlurper()
+      def map = slurper.parseText(json)
+
+      // FIXME: EHR is not LOCATABLE and doesn't have info about the rm_version!
+      // For the API EHR we could access the EHR_STATUS.archetype_details.rm_version, but for RM EHRs, ehr_status is an OBJECT_REF that should be resolved.
+      if (this.schemaValidate)
+      {
+         // independently from schemaFlavor, this will always be "api" since it is asking to parse an API EhrDto
+         // for an "rm" Ehr the parseEhr() method should be used
+         this.jsonValidator = new JsonInstanceValidation("api") // FIXME: this uses the default 1.0.2 version schema!
+
+         def errors = jsonValidator.validate(json)
+         if (errors)
+         {
+            this.jsonValidationErrors = errors
+            return
+         }
+      }
+
+      String type = map._type
+
+      if (!type)
+      {
+         throw new JsonParseException("_type required for to parse an ACTOR")
+      }
+
+      def method = 'parse'+ type +'Dto'
+      this."$method"(map)
+   }
+
+   private PersonDto parsePERSONDto(Map map)
+   {
+      def actor = new PersonDto()
+
+      this.fillActorDto(actor, map, null)
+
+      return actor
+   }
+
+   private GroupDto parseGROUPDto(Map map)
+   {
+      def actor = new GroupDto()
+
+      this.fillActorDto(actor, map, null)
+
+      return actor
+   }
+
+   // NOTE: OrganiZation vs. OrganiSation
+   private OrganizationDto parseORGANISATIONDto(Map map)
+   {
+      def actor = new OrganizationDto()
+
+      this.fillActorDto(actor, map, null)
+
+      return actor
+   }
+
+   private AgentDto parseAGENTDto(Map map)
+   {
+      def actor = new AgentDto()
+
+      this.fillActorDto(actor, map, null)
+
+      return actor
+   }
+
+   // These methods are used when the type is known beforhand
    public PersonDto parsePersonDto(String json)
    {
       def slurper = new JsonSlurper()
@@ -665,12 +727,87 @@ class OpenEhrJsonParserQuick {
          }
       }
 
-      def person = new PersonDto()
-
-      this.fillActorDto(person, map, null)
-
-      return person
+      return this.parsePERSONDto(map)
    }
+
+   public OrganizationDto parseOrganizationDto(String json)
+   {
+      def slurper = new JsonSlurper()
+      def map = slurper.parseText(json)
+
+      // FIXME: EHR is not LOCATABLE and doesn't have info about the rm_version!
+      // For the API EHR we could access the EHR_STATUS.archetype_details.rm_version, but for RM EHRs, ehr_status is an OBJECT_REF that should be resolved.
+      if (this.schemaValidate)
+      {
+         // independently from schemaFlavor, this will always be "api" since it is asking to parse an API EhrDto
+         // for an "rm" Ehr the parseEhr() method should be used
+         this.jsonValidator = new JsonInstanceValidation("api") // FIXME: this uses the default 1.0.2 version schema!
+
+         def errors = jsonValidator.validate(json)
+         if (errors)
+         {
+            this.jsonValidationErrors = errors
+            return
+         }
+      }
+
+      return this.parseORGANISATIONDto(map)
+   }
+
+   public GroupDto parseGroupDto(String json)
+   {
+      def slurper = new JsonSlurper()
+      def map = slurper.parseText(json)
+
+      // FIXME: EHR is not LOCATABLE and doesn't have info about the rm_version!
+      // For the API EHR we could access the EHR_STATUS.archetype_details.rm_version, but for RM EHRs, ehr_status is an OBJECT_REF that should be resolved.
+      if (this.schemaValidate)
+      {
+         // independently from schemaFlavor, this will always be "api" since it is asking to parse an API EhrDto
+         // for an "rm" Ehr the parseEhr() method should be used
+         this.jsonValidator = new JsonInstanceValidation("api") // FIXME: this uses the default 1.0.2 version schema!
+
+         def errors = jsonValidator.validate(json)
+         if (errors)
+         {
+            this.jsonValidationErrors = errors
+            return
+         }
+      }
+
+      return this.parseGROUPDto(map)
+   }
+
+   public AgentDto parseAgentDto(String json)
+   {
+      def slurper = new JsonSlurper()
+      def map = slurper.parseText(json)
+
+      // FIXME: EHR is not LOCATABLE and doesn't have info about the rm_version!
+      // For the API EHR we could access the EHR_STATUS.archetype_details.rm_version, but for RM EHRs, ehr_status is an OBJECT_REF that should be resolved.
+      if (this.schemaValidate)
+      {
+         // independently from schemaFlavor, this will always be "api" since it is asking to parse an API EhrDto
+         // for an "rm" Ehr the parseEhr() method should be used
+         this.jsonValidator = new JsonInstanceValidation("api") // FIXME: this uses the default 1.0.2 version schema!
+
+         def errors = jsonValidator.validate(json)
+         if (errors)
+         {
+            this.jsonValidationErrors = errors
+            return
+         }
+      }
+
+      return this.parseAGENTDto(map)
+   }
+
+
+   // TODO: parse identity dto
+
+
+
+   // Methods used for LOCATABLE RM parsing (not DTO)
 
    private Person parsePERSON(Map map)
    {
@@ -723,8 +860,6 @@ class OpenEhrJsonParserQuick {
 
       this.fillLOCATABLE(pi, map, parent)
 
-      String path_node_id
-
       if (map.details)
       {
          def type = map.details._type
@@ -735,8 +870,6 @@ class OpenEhrJsonParserQuick {
          }
 
          def method = 'parse'+ type
-
-         path_node_id = (map.details.archetype_node_id.startsWith('at') ? map.details.archetype_node_id : 'archetype_id='+ map.details.archetype_node_id)
 
          this."$method"(map.details, pi)
       }
@@ -761,8 +894,6 @@ class OpenEhrJsonParserQuick {
 
       if (map.other_details)
       {
-         String path_node_id = (map.other_details.archetype_node_id.startsWith('at') ? map.other_details.archetype_node_id : 'archetype_id='+ map.other_details.archetype_node_id)
-
          String method = 'parse'+ map.other_details._type
          status.other_details = this."$method"(map.other_details, status)
       }

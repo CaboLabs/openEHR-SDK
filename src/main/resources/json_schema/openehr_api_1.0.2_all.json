@@ -6011,7 +6011,7 @@
                 "roles": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/PARTY_REF"
+                        "$ref": "#/definitions/ROLE"
                     },
                     "minItems": 1
                 },
@@ -6478,7 +6478,7 @@
                 "roles": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/PARTY_REF"
+                        "$ref": "#/definitions/ROLE"
                     },
                     "minItems": 1
                 },
@@ -10467,7 +10467,7 @@
                 "roles": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/PARTY_REF"
+                        "$ref": "#/definitions/ROLE"
                     },
                     "minItems": 1
                 },
