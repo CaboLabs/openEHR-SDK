@@ -1185,7 +1185,8 @@ class ValidationFlowTest extends GroovyTestCase {
          }
       /$
 
-      def parser = new OpenEhrJsonParserQuick(true) // does RM schema validation
+      def parser = new OpenEhrJsonParserQuick(true) // does schema validation
+      parser.setSchemaFlavorAPI()
       PersonDto person = parser.parsePersonDto(json_person_dto)
 
       assert person
@@ -1201,7 +1202,7 @@ class ValidationFlowTest extends GroovyTestCase {
             "_type": "PERSON",
             "name": {
                "_type": "DV_TEXT",
-               "value": "Pablo Pazos"
+               "value": "generic person"
             },
             "archetype_node_id": "openEHR-DEMOGRAPHIC-PERSON.generic.v1",
             "archetype_details": {
@@ -1230,7 +1231,32 @@ class ValidationFlowTest extends GroovyTestCase {
                      },
                      "rm_version": "1.0.2"
                   },
-                  "archetype_node_id": "openEHR-DEMOGRAPHIC-ROLE.generic.v1"
+                  "archetype_node_id": "openEHR-DEMOGRAPHIC-ROLE.generic.v1",
+                  "details": {
+                     "_type": "ITEM_TREE",
+                     "name": {
+                        "_type": "DV_TEXT",
+                        "value": "tree"
+                     },
+                     "archetype_node_id": "at0001",
+                     "items": [
+                        {
+                           "_type": "ELEMENT",
+                           "name": {
+                              "_type": "DV_TEXT",
+                              "value": "name"
+                           },
+                           "archetype_node_id": "at0002",
+                           "value": {
+                              "_type": "DV_IDENTIFIER",
+                              "issuer": "issuerA",
+                              "assigner": "Hospital de Clinicas",
+                              "id": "assignerC",
+                              "type": "typeB"
+                           }
+                        }
+                     ]
+                  }
                }
             ],
             "identities": [
@@ -1268,12 +1294,25 @@ class ValidationFlowTest extends GroovyTestCase {
          }
       /$
 
-      def parser = new OpenEhrJsonParserQuick(true) // does RM schema validation
+      def parser = new OpenEhrJsonParserQuick(true) // does schema validation
+      parser.setSchemaFlavorAPI()
       PersonDto person = parser.parseActorDto(json_person_dto)
 
       assert person
       assert person.roles.size() == 1
       assert person.roles[0].name.value == 'Patient'
+
+      // SETUP OPT REPO
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+
+      // SETUP RM VALIDATOR (EHR_STATUS only)
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(person, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert !report.errors
    }
 
    void test_generic_group_api_valid()

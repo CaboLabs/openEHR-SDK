@@ -23,6 +23,7 @@ import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 import com.cabolabs.openehr.rm_1_0_2.common.directory.Folder
 import com.cabolabs.openehr.rm_1_0_2.demographic.*
 import com.cabolabs.openehr.dto_1_0_2.ehr.EhrDto
+import com.cabolabs.openehr.dto_1_0_2.demographic.*
 
 
 // TODO: there are no validators for CReal, which would work for some values like precision
@@ -463,6 +464,34 @@ class RmValidator2 {
       return report
    }
 
+   // ==================================================================
+   // DEMOGARPHICS
+
+   // Demographic DTO validation
+   private RmValidationReport validate(ActorDto p, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      report.append(_validate_party(p, o))
+
+      // the ActorDto has ROLEs directly associated (no PARTY_REF)
+      // TODO: for the ROLE we need to manage the alternative objects that chould be in the template
+      // p.roles.each { role ->
+      //    report.append(validate(role, ...))
+      // }
+
+
+      // FIXME: note the roles can be defined in their own OPT,
+      //        if a ROLE node_id is an archetype and has archetype_details,
+      //        then this process should open a new top-level validation process
+      //        for that ROLE. If the node_id is an at code it should be validated
+      //        in the current process.
+      //validate_multiple_attribute(p, o, 'roles', report)
+
+      // TODO: languages
+
+      return report
+   }
 
    // Person, Org, Group, Agent validator
    private RmValidationReport validate(Actor p, ObjectNode o)
@@ -2091,6 +2120,24 @@ class RmValidator2 {
    }
 
    private RmValidationReport _validate_party(Party party, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      report.append(_validate_locatable(party, o)) // validates name
+
+      validate_single_attribute(party, o, 'details', report)
+
+      validate_multiple_attribute(party, o, 'identities', report)
+
+      validate_multiple_attribute(party, o, 'contacts', report)
+
+      validate_multiple_attribute(party, o, 'relationships', report)
+
+      return report
+   }
+
+   // Same as above for DTO
+   private RmValidationReport _validate_party(PartyDto party, ObjectNode o)
    {
       RmValidationReport report = new RmValidationReport()
 

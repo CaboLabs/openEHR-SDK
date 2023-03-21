@@ -153,7 +153,8 @@
                     </occurrences>
                     <node_id />
                     <item xsi:type="C_STRING">
-                      <list />
+                      <list>test1</list>
+                      <list>test2</list>
                     </item>
                   </children>
                 </attributes>
@@ -358,4 +359,3 @@
     </term_definitions>
   </definition>
 </template>
-
