@@ -190,9 +190,22 @@ class OpenEhrJsonSerializer {
          out.roles = []
          a.roles.each { role ->
 
-            out.roles << this.serializeRole(role)
+            out.roles << this.serializeRoleDto(role)
          }
       }
+   }
+
+   private Map serializeRoleDto(Role r)
+   {
+      def out = [:]
+
+      out._type = 'ROLE'
+
+      this.fillParty(r, out)
+
+      //out.performer = this.serializePartyRef(r.performer)
+
+      return out
    }
 
    private void fillActor(Actor a, Map out)

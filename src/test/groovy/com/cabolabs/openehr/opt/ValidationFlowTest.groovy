@@ -3,8 +3,7 @@ package com.cabolabs.openehr.opt
 import groovy.util.GroovyTestCase
 import com.cabolabs.testing.TestUtils
 import static com.cabolabs.testing.TestUtils.PS as PS
-import com.cabolabs.openehr.formats.OpenEhrJsonParser
-import com.cabolabs.openehr.formats.OpenEhrJsonParserQuick
+import com.cabolabs.openehr.formats.*
 import com.cabolabs.openehr.validation.*
 import com.cabolabs.openehr.opt.manager.*
 import com.cabolabs.openehr.rm_1_0_2.ehr.Ehr
@@ -18,7 +17,6 @@ import com.cabolabs.openehr.rm_1_0_2.demographic.Group
 import com.cabolabs.openehr.rm_1_0_2.demographic.Agent
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
-
 import com.cabolabs.openehr.dto_1_0_2.ehr.*
 import com.cabolabs.openehr.dto_1_0_2.demographic.*
 
@@ -1147,7 +1145,39 @@ class ValidationFlowTest extends GroovyTestCase {
                      },
                      "rm_version": "1.0.2"
                   },
-                  "archetype_node_id": "openEHR-DEMOGRAPHIC-ROLE.generic.v1"
+                  "archetype_node_id": "openEHR-DEMOGRAPHIC-ROLE.generic.v1",
+                  "identities": [
+                     {
+                        "_type": "PARTY_IDENTITY",
+                        "name": {
+                           "_type": "DV_TEXT",
+                           "value": "identity"
+                        },
+                        "archetype_node_id": "at0004",
+                        "details": {
+                           "_type": "ITEM_TREE",
+                           "name": {
+                              "_type": "DV_TEXT",
+                              "value": "tree"
+                           },
+                           "archetype_node_id": "at0005",
+                           "items": [
+                              {
+                                 "_type": "ELEMENT",
+                                 "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "name"
+                                 },
+                                 "archetype_node_id": "at0006",
+                                 "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "patient"
+                                 }
+                              }
+                           ]
+                        }
+                     }
+                  ]
                }
             ],
             "identities": [
@@ -1256,7 +1286,39 @@ class ValidationFlowTest extends GroovyTestCase {
                            }
                         }
                      ]
-                  }
+                  },
+                  "identities": [
+                     {
+                        "_type": "PARTY_IDENTITY",
+                        "name": {
+                           "_type": "DV_TEXT",
+                           "value": "identity"
+                        },
+                        "archetype_node_id": "at0004",
+                        "details": {
+                           "_type": "ITEM_TREE",
+                           "name": {
+                              "_type": "DV_TEXT",
+                              "value": "tree"
+                           },
+                           "archetype_node_id": "at0005",
+                           "items": [
+                              {
+                                 "_type": "ELEMENT",
+                                 "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "name"
+                                 },
+                                 "archetype_node_id": "at0006",
+                                 "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "patient"
+                                 }
+                              }
+                           ]
+                        }
+                     }
+                  ]
                }
             ],
             "identities": [
@@ -1313,6 +1375,9 @@ class ValidationFlowTest extends GroovyTestCase {
       RmValidationReport report = validator.dovalidate(person, 'com.cabolabs.openehr_opt.namespaces.default')
 
       assert !report.errors
+
+      def serializer = new OpenEhrJsonSerializer()
+      println serializer.serialize(person)
    }
 
    void test_generic_group_api_valid()
@@ -1410,7 +1475,39 @@ class ValidationFlowTest extends GroovyTestCase {
                      },
                      "rm_version": "1.0.2"
                   },
-                  "archetype_node_id": "openEHR-DEMOGRAPHIC-ROLE.generic.v1"
+                  "archetype_node_id": "openEHR-DEMOGRAPHIC-ROLE.generic.v1",
+                  "identities": [
+                     {
+                        "_type": "PARTY_IDENTITY",
+                        "name": {
+                           "_type": "DV_TEXT",
+                           "value": "identity"
+                        },
+                        "archetype_node_id": "at0004",
+                        "details": {
+                           "_type": "ITEM_TREE",
+                           "name": {
+                              "_type": "DV_TEXT",
+                              "value": "tree"
+                           },
+                           "archetype_node_id": "at0005",
+                           "items": [
+                              {
+                                 "_type": "ELEMENT",
+                                 "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "name"
+                                 },
+                                 "archetype_node_id": "at0006",
+                                 "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "patient"
+                                 }
+                              }
+                           ]
+                        }
+                     }
+                  ]
                }
             ]
          }

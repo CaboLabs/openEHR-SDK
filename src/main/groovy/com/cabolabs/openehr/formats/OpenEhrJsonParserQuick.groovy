@@ -665,7 +665,7 @@ class OpenEhrJsonParserQuick {
       }
 
       def method = 'parse'+ type +'Dto'
-      this."$method"(map)
+      return this."$method"(map)
    }
 
    private PersonDto parsePERSONDto(Map map)
@@ -866,12 +866,11 @@ class OpenEhrJsonParserQuick {
 
          if (!type)
          {
-            throw new JsonParseException("_type required for PARTY_IDNETITY.details")
+            throw new JsonParseException("_type required for PARTY_IDENTITY.details")
          }
 
          def method = 'parse'+ type
-
-         this."$method"(map.details, pi)
+         pi.details = this."$method"(map.details, pi)
       }
 
       return pi
