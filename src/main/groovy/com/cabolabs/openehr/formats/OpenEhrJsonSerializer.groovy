@@ -394,7 +394,7 @@ class OpenEhrJsonSerializer {
 
       out._type = 'PERSON'
 
-      this.fillActor(p, out)
+      this.fillActorDto(p, out)
 
       return out
    }
