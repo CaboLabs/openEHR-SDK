@@ -37,6 +37,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvEhrUri
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 import com.cabolabs.openehr.rm_1_0_2.demographic.*
 import com.cabolabs.openehr.dto_1_0_2.ehr.EhrDto
+import com.cabolabs.openehr.dto_1_0_2.demographic.*
 
 class OpenEhrJsonSerializer {
 
@@ -137,6 +138,61 @@ class OpenEhrJsonSerializer {
       }
 
       // TODO: feeder audit
+   }
+
+   private void fillPartyDto(PartyDto p, Map out)
+   {
+      this.fillLocatable(p, out)
+
+      // optional
+      if (p.details)
+      {
+         def method = this.method(p.details)
+         out.details = this."$method"(p.details)
+      }
+
+      // optional
+      if (p.contacts)
+      {
+         out.contacts = []
+         p.contacts.each { contact ->
+
+            out.contacts << this.serializeContact(contact)
+         }
+      }
+
+      // mandatory, at least 1 object
+      out.identities = []
+      p.identities.each { identity ->
+
+         out.identities << this.serializePartyIdentity(identity)
+      }
+   }
+
+   private void fillActorDto(ActorDto a, Map out)
+   {
+      this.fillPartyDto(a, out)
+
+      // optional
+      if (a.languages)
+      {
+         out.languages = []
+         a.languages.each { dvtext ->
+
+            method = this.method(dvtext)
+            out.langauges << this."$method"(dvtext)
+         }
+      }
+
+      // optional
+      if (a.roles)
+      {
+         out.roles = []
+         a.roles.each { role ->
+
+            out.roles << this.serializeRole(role)
+         }
+      }
    }
 
    private void fillActor(Actor a, Map out)
@@ -328,6 +384,17 @@ class OpenEhrJsonSerializer {
          method = this.method(content_item)
          out.content << this."$method"(content_item)
       }
+
+      return out
+   }
+
+   private Map serializePersonDto(PersonDto p)
+   {
+      def out = [:]
+
+      out._type = 'PERSON'
+
+      this.fillActor(p, out)
 
       return out
    }
