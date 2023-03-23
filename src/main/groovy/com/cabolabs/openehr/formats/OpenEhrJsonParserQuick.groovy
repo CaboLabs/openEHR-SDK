@@ -945,6 +945,7 @@ class OpenEhrJsonParserQuick {
          json.context, compo
       )
 
+      compo.content = []
       json.content.eachWithIndex { content_item, i ->
          type = content_item._type
          if (!type)
@@ -952,8 +953,6 @@ class OpenEhrJsonParserQuick {
             throw new JsonParseException("_type required for /content[$i]")
          }
          method = 'parse'+ type
-
-         compo.content = []
 
          compo.content.add(
             this."$method"(
@@ -1467,6 +1466,7 @@ class OpenEhrJsonParserQuick {
 
       String type, method
 
+      section.items = []
       json.items.eachWithIndex { content_item, i ->
 
          type = content_item._type
@@ -1478,10 +1478,7 @@ class OpenEhrJsonParserQuick {
 
          method = 'parse'+ type
 
-         if (!section.items) section.items = []
-
          section.items.add(
-
             this."$method"(
                content_item, section
             )
@@ -1556,12 +1553,11 @@ class OpenEhrJsonParserQuick {
 
       String type, method
 
+      h.events = []
       json.events.eachWithIndex { event, i ->
 
          type = event._type
          method = 'parse'+ type
-
-         if (!h.events) h.events = []
 
          h.events.add(
             this."$method"(
@@ -1707,9 +1703,8 @@ class OpenEhrJsonParserQuick {
          ins.wf_definition = this.parseDV_PARSABLE(json.wf_definition)
 
 
+      ins.activities = []
       json.activities.eachWithIndex { js_activity, i ->
-
-         if (!ins.activities) ins.activities = []
 
          ins.activities.add(
             this.parseACTIVITY(
@@ -1831,6 +1826,7 @@ class OpenEhrJsonParserQuick {
 
       String type, method
 
+      t.items = []
       json.items.eachWithIndex { item, i ->
 
          type = item._type
@@ -1839,8 +1835,6 @@ class OpenEhrJsonParserQuick {
             throw new JsonParseException("_type required for ITEM_TREE.items[$i]")
          }
          method = 'parse'+ type
-
-         if (!t.items) t.items = []
 
          t.items.add(
             this."$method"(
@@ -1858,9 +1852,8 @@ class OpenEhrJsonParserQuick {
 
       this.fillLOCATABLE(l, json, parent)
 
+      l.items = []
       json.items.eachWithIndex { element, i ->
-
-         if (!l.items) l.items = []
 
          l.items.add(
             this.parseELEMENT(
@@ -1880,13 +1873,12 @@ class OpenEhrJsonParserQuick {
 
       String type, method
 
-	   // FIXME: rows are CLUSTERS, we don't need to get the dynamic method
+      t.rows = []
       json.rows.each { item ->
 
+	      // FIXME: rows are CLUSTERS, we don't need to get the dynamic method
          type = item._type
          method = 'parse'+ type
-
-         if (!t.rows) t.rows = []
 
          t.rows.add(
             this."$method"(
@@ -1919,6 +1911,7 @@ class OpenEhrJsonParserQuick {
 
       String type, method
 
+      c.items = []
       json.items.eachWithIndex { item, i ->
 
          type = item._type
@@ -1927,8 +1920,6 @@ class OpenEhrJsonParserQuick {
             throw new JsonParseException("_type required for CLUSTER.items[$i]")
          }
          method = 'parse'+ type
-
-         if (!c.items) c.items = []
 
          c.items.add(this."$method"(item, c))
       }

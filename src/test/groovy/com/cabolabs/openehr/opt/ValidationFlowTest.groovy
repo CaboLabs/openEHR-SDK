@@ -952,6 +952,37 @@ class ValidationFlowTest extends GroovyTestCase {
    }
 
 
+
+   void test_compo_vital_signs_monitoring()
+   {
+      String path = "/canonical_json/vital_signs_monitoring.json"
+	   File file = new File(getClass().getResource(path).toURI())
+      def json_compo = file.text
+
+      def parser = new OpenEhrJsonParserQuick(true) // does RM schema validation not API
+      Composition compo = parser.parseJson(json_compo)
+
+      assert compo
+
+      assert compo.content.size() == 5
+
+      // SETUP OPT REPO
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      // SETUP RM VALIDATOR
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(compo, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert report.errors.size() == 0
+
+      def locatable_string = new OpenEhrJsonSerializer().serialize(compo, true)
+
+      println locatable_string
+   }
+
+
    // ===================================================
    // DEMOGRAPHIC
 
