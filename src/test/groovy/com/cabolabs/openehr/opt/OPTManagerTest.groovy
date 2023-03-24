@@ -36,9 +36,9 @@ class OPTManagerTest extends GroovyTestCase {
    {
       super.setUp()
       println "setup"
- 
+
       // this is the default repo, each test could change it
-      def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts').toURI())
+      def repo = new OptRepositoryFSImpl(getClass().getResource('/opts').toURI())
       this.man = OptManager.getInstance()
       this.man.init(repo, 2)
       //this.man.unloadAll()
@@ -76,7 +76,7 @@ class OPTManagerTest extends GroovyTestCase {
             }
          }
       }
-      
+
       println man.getNodes('openEHR-EHR-OBSERVATION.test_all_datatypes.v1', '/', namespace)
 
       println man.cache
@@ -109,7 +109,7 @@ class OPTManagerTest extends GroovyTestCase {
          //println templatePath
 
          nodes.each { node ->
-         
+
             if (!dataPaths[templatePath])
             {
                dataPaths[templatePath] = 1
@@ -130,7 +130,7 @@ class OPTManagerTest extends GroovyTestCase {
 
       //println dataPaths.findAll{ it.value > 1 }
    }
-   
+
    void testTemplateDataPaths()
    {
       println "====== testTemplateDataPaths ======"
@@ -169,7 +169,7 @@ class OPTManagerTest extends GroovyTestCase {
 
       def nodes
       templateDataPaths.each { tdp ->
-      
+
          nodes = opt.getNodesByTemplateDataPath(tdp)
 
          assert nodes
@@ -191,7 +191,7 @@ class OPTManagerTest extends GroovyTestCase {
 
       man.reset()
    }
-   
+
    void testDataPaths()
    {
       println "====== testDataPaths ======"
@@ -206,7 +206,7 @@ class OPTManagerTest extends GroovyTestCase {
       man.loadAll(namespace)
 
       println man.status()
-      
+
       assert man.getLoadedOpts(namespace).size() == 1
 
       def archs = man.getAllReferencedArchetypes(namespace) // List<ObjectNode>
@@ -239,9 +239,9 @@ class OPTManagerTest extends GroovyTestCase {
    void testOptManagerLanguages()
    {
       println "====== testOptManagerLanguages ======"
-      
+
       // this tests uses a different opt repo than the default one
-      def repo = new OptRepositoryFSImpl(getClass().getResource(PS +'opts'+ PS + 'test_languages').toURI())
+      def repo = new OptRepositoryFSImpl(getClass().getResource('/opts/test_languages').toURI())
       this.man = OptManager.getInstance()
       this.man.init(repo)
 
@@ -296,5 +296,15 @@ class OPTManagerTest extends GroovyTestCase {
       man.cleanCache() // should clean the opt from the cache
 
       assert man.getLoadedOpts(namespace).size() == 0
+   }
+
+   void testGetArchetypesInTemplate()
+   {
+      def optMan = OptManager.getInstance()
+      def opt = optMan.getOpt('generic_agent', OptManager.DEFAULT_NAMESPACE)
+      //List tree = []
+      //getReferencedArchetypesRecursive(opt.definition, tree)
+
+      println opt.getReferencedArchetypes()
    }
 }

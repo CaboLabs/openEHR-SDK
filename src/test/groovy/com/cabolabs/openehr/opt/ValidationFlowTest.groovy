@@ -1551,4 +1551,293 @@ class ValidationFlowTest extends GroovyTestCase {
       assert group.roles.size() == 1
       assert group.roles[0].name.value == "Dr. James Kernel's Surgical Team"
    }
+
+
+
+   void test_generic_organization_api_valid()
+   {
+      def json_dto = $/
+         {
+            "_type": "ORGANISATION",
+            "name": {
+               "_type": "DV_TEXT",
+               "value": "generic organization"
+            },
+            "archetype_details": {
+               "archetype_id": {
+                     "_type": "ARCHETYPE_ID",
+                     "value": "openEHR-DEMOGRAPHIC-ORGANISATION.generic_organization.v1"
+               },
+               "template_id": {
+                     "_type": "TEMPLATE_ID",
+                     "value": "generic_organization"
+               },
+               "rm_version": "1.0.2"
+            },
+            "archetype_node_id": "openEHR-DEMOGRAPHIC-ORGANISATION.generic_organization.v1",
+            "details": {
+               "_type": "ITEM_TREE",
+               "name": {
+                     "_type": "DV_TEXT",
+                     "value": "tree"
+               },
+               "archetype_node_id": "at0001",
+               "items": [
+                     {
+                        "_type": "ELEMENT",
+                        "name": {
+                           "_type": "DV_TEXT",
+                           "value": "identifier"
+                        },
+                        "archetype_node_id": "at0002",
+                        "value": {
+                           "_type": "DV_IDENTIFIER",
+                           "issuer": "",
+                           "assigner": "Hospital de Clinicas",
+                           "id": "",
+                           "type": ""
+                        }
+                     }
+               ]
+            },
+            "identities": [
+               {
+                     "_type": "PARTY_IDENTITY",
+                     "name": {
+                        "_type": "DV_TEXT",
+                        "value": "identity"
+                     },
+                     "archetype_node_id": "at0004",
+                     "details": {
+                        "_type": "ITEM_TREE",
+                        "name": {
+                           "_type": "DV_TEXT",
+                           "value": "tree"
+                        },
+                        "archetype_node_id": "at0005",
+                        "items": [
+                           {
+                                 "_type": "ELEMENT",
+                                 "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "name"
+                                 },
+                                 "archetype_node_id": "at0006",
+                                 "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": ".brRUdYXmPKNaDjC.DRJrA,gZbsQswslWX.UVJURhS.haBCyTbYPzNoatIcQUgC HjBOpfWUe OFpzHkNiTpQYNwEkatQMKWhYWXGoHkHwFRsMzTGwiXzkQJteFOCPqJ.CyNEJFHsLsAwhTQySS aYWlKzNn,rEMAGqKHPjqjWtX.rNeChEWtTRxSlD,llO.,ibAvDmPaQXZzVYZeWduufoVRMhZNkLZFRzhrdNyKS,WlqOZlXPKxOvunozcZz,YhoK,,UrQDiLZQevXVTgwFPP.F JNTtCZcgUnrAFhoEeS"
+                                 }
+                           }
+                        ]
+                     }
+               }
+            ],
+            "roles": [
+               {
+                  "name": {
+                     "_type": "DV_TEXT",
+                     "value": "People's Hospital"
+                  },
+                  "archetype_details": {
+                     "archetype_id": {
+                        "_type": "ARCHETYPE_ID",
+                        "value": "openEHR-DEMOGRAPHIC-ROLE.generic_role.v1"
+                     },
+                     "template_id": {
+                        "_type": "TEMPLATE_ID",
+                        "value": "generic_role"
+                     },
+                     "rm_version": "1.0.2"
+                  },
+                  "archetype_node_id": "openEHR-DEMOGRAPHIC-ROLE.generic.v1",
+                  "identities": [
+                     {
+                        "_type": "PARTY_IDENTITY",
+                        "name": {
+                           "_type": "DV_TEXT",
+                           "value": "identity"
+                        },
+                        "archetype_node_id": "at0004",
+                        "details": {
+                           "_type": "ITEM_TREE",
+                           "name": {
+                              "_type": "DV_TEXT",
+                              "value": "tree"
+                           },
+                           "archetype_node_id": "at0005",
+                           "items": [
+                              {
+                                 "_type": "ELEMENT",
+                                 "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "name"
+                                 },
+                                 "archetype_node_id": "at0006",
+                                 "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "organization_provider"
+                                 }
+                              }
+                           ]
+                        }
+                     }
+                  ]
+               }
+            ]
+         }
+      /$
+
+      def parser = new OpenEhrJsonParserQuick(true) // does RM schema validation
+      OrganizationDto org = parser.parseActorDto(json_dto)
+
+      assert org
+      assert org.roles.size() == 1
+      assert org.roles[0].name.value == "People's Hospital"
+   }
+
+
+   void test_generic_agent_api_valid()
+   {
+      def json_dto = $/
+         {
+            "_type": "AGENT",
+            "uid": {
+               "_type": "OBJECT_VERSION_ID",
+               "value": "54475504-beac-45cc-b866-314510e20520::com.cabolabs.demographic::1"
+            },
+            "name": {
+               "_type": "DV_TEXT",
+               "value": "generic agent"
+            },
+            "archetype_details": {
+               "archetype_id": {
+                     "_type": "ARCHETYPE_ID",
+                     "value": "openEHR-DEMOGRAPHIC-AGENT.generic_agent.v1"
+               },
+               "template_id": {
+                     "_type": "TEMPLATE_ID",
+                     "value": "generic_agent"
+               },
+               "rm_version": "1.0.2"
+            },
+            "archetype_node_id": "openEHR-DEMOGRAPHIC-AGENT.generic_agent.v1",
+            "details": {
+               "_type": "ITEM_TREE",
+               "name": {
+                     "_type": "DV_TEXT",
+                     "value": "tree"
+               },
+               "archetype_node_id": "at0001",
+               "items": [
+                     {
+                        "_type": "ELEMENT",
+                        "name": {
+                           "_type": "DV_TEXT",
+                           "value": "identifier"
+                        },
+                        "archetype_node_id": "at0002",
+                        "value": {
+                           "_type": "DV_IDENTIFIER",
+                           "issuer": "",
+                           "assigner": "Hospital de Clinicas",
+                           "id": "",
+                           "type": ""
+                        }
+                     }
+               ]
+            },
+            "identities": [
+               {
+                     "_type": "PARTY_IDENTITY",
+                     "name": {
+                        "_type": "DV_TEXT",
+                        "value": "identity"
+                     },
+                     "archetype_node_id": "at0004",
+                     "details": {
+                        "_type": "ITEM_TREE",
+                        "name": {
+                           "_type": "DV_TEXT",
+                           "value": "tree"
+                        },
+                        "archetype_node_id": "at0005",
+                        "items": [
+                           {
+                                 "_type": "ELEMENT",
+                                 "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "name"
+                                 },
+                                 "archetype_node_id": "at0006",
+                                 "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": ".jkmvPRollKXTqonAzFPmhBnNhy.xqV,kZUKIkBxswTYHThtaH.A.jzbemVK NqpRBvJsdfuoIbXTfBzlqwqnL,bLJufaoFEpENcQv kMeIMPsqioC.SBNFqU,jNCeu,sJTOPSvUiXXnYGrjKgkqYufwcSXklAb,.sblKKznECTVwTbiocTuVNFCzRVYeiIVmNxIxsCQlgYiChNBsdrTggHsHwYlvlwlmjyUNbtLTTrbnYbNRYuCbzQGZ g.MQmMiSbWR pbmLbefuWKnZPCRmSQijZxIHiituSrQUAZPWHg"
+                                 }
+                           }
+                        ]
+                     }
+               }
+            ],
+            "roles": [
+               {
+                  "name": {
+                     "_type": "DV_TEXT",
+                     "value": "Agent Role"
+                  },
+                  "archetype_details": {
+                     "archetype_id": {
+                        "_type": "ARCHETYPE_ID",
+                        "value": "openEHR-DEMOGRAPHIC-ROLE.generic_role.v1"
+                     },
+                     "template_id": {
+                        "_type": "TEMPLATE_ID",
+                        "value": "generic_role"
+                     },
+                     "rm_version": "1.0.2"
+                  },
+                  "archetype_node_id": "openEHR-DEMOGRAPHIC-ROLE.generic.v1",
+                  "identities": [
+                     {
+                        "_type": "PARTY_IDENTITY",
+                        "name": {
+                           "_type": "DV_TEXT",
+                           "value": "identity"
+                        },
+                        "archetype_node_id": "at0004",
+                        "details": {
+                           "_type": "ITEM_TREE",
+                           "name": {
+                              "_type": "DV_TEXT",
+                              "value": "tree"
+                           },
+                           "archetype_node_id": "at0005",
+                           "items": [
+                              {
+                                 "_type": "ELEMENT",
+                                 "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "name"
+                                 },
+                                 "archetype_node_id": "at0006",
+                                 "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "agent_x"
+                                 }
+                              }
+                           ]
+                        }
+                     }
+                  ]
+               }
+            ]
+         }
+      /$
+
+      def parser = new OpenEhrJsonParserQuick(true) // does RM schema validation
+      AgentDto agent = parser.parseActorDto(json_dto)
+
+      assert agent
+      assert agent.roles.size() == 1
+      assert agent.roles[0].name.value == "Agent Role"
+   }
 }

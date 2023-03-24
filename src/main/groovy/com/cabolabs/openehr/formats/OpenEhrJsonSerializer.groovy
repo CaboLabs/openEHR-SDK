@@ -50,6 +50,7 @@ class OpenEhrJsonSerializer {
    {
       String clazz = o.getClass().getSimpleName()
       if (clazz == "Organization") clazz = "Organisation" // alias of UK based RM!
+      else if (clazz == "OrganizationDto") clazz = "Organisation" // alias of UK based RM!
       clazz.replaceAll("[A-Z]", '_$0').toUpperCase().replaceAll( /^_/, '') - '_DTO' // if the type is XXX_DTO, removes _DTO
    }
 
