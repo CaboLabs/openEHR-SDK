@@ -412,6 +412,39 @@ class OpenEhrJsonSerializer {
       return out
    }
 
+   private Map serializeOrganizationDto(OrganizationDto p)
+   {
+      def out = [:]
+
+      out._type = 'ORGANISATION'
+
+      this.fillActorDto(p, out)
+
+      return out
+   }
+
+   private Map serializeGroupDto(GroupDto p)
+   {
+      def out = [:]
+
+      out._type = 'GROUP'
+
+      this.fillActorDto(p, out)
+
+      return out
+   }
+
+   private Map serializeAgentDto(AgentDto p)
+   {
+      def out = [:]
+
+      out._type = 'AGENT'
+
+      this.fillActorDto(p, out)
+
+      return out
+   }
+
    private Map serializePerson(Person p)
    {
       def out = [:]
@@ -434,17 +467,6 @@ class OpenEhrJsonSerializer {
       return out
    }
 
-   private Map serializeAgent(Agent a)
-   {
-      def out = [:]
-
-      out._type = 'AGENT'
-
-      this.fillActor(a, out)
-
-      return out
-   }
-
    private Map serializeGroup(Group g)
    {
       def out = [:]
@@ -452,6 +474,17 @@ class OpenEhrJsonSerializer {
       out._type = 'GROUP'
 
       this.fillActor(g, out)
+
+      return out
+   }
+
+   private Map serializeAgent(Agent a)
+   {
+      def out = [:]
+
+      out._type = 'AGENT'
+
+      this.fillActor(a, out)
 
       return out
    }
