@@ -1009,4 +1009,187 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 
       assert errors.size() == 0
    }
+
+
+
+
+   void testJsonParsePerson()
+   {
+       def json = $/
+         {
+            "_type": "ORIGINAL_VERSION",
+            "uid": {
+               "_type": "OBJECT_VERSION_ID",
+               "value": "a4a78047-9aff-4b67-bd20-3379ef7239b3::ATOMIK::1"
+            },
+            "contribution": {
+               "id": {
+                     "_type": "HIER_OBJECT_ID",
+                     "value": "65688e8d-f0f2-49ea-9380-927b5c80af25"
+               }
+            },
+            "commit_audit": {
+               "system_id": "ATOMIK",
+               "committer": {
+                     "_type": "PARTY_IDENTIFIED",
+                     "name": "John Doe",
+                     "external_ref": {
+                        "id": {
+                           "_type": "HIER_OBJECT_ID",
+                           "value": "BC8132EA-8F4A-11E7-BB31-BE2E44B06B34"
+                        },
+                        "namespace": "demographic",
+                        "type": "PERSON"
+                     }
+               },
+               "time_committed": {
+                     "value": "2023-03-26T23:25:00+0000"
+               },
+               "change_type": {
+                     "value": "creation",
+                     "defining_code": {
+                        "terminology_id": {
+                           "value": "openehr"
+                        },
+                        "code_string": "249"
+                     }
+               }
+            },
+            "data": {
+               "_type": "PERSON",
+               "name": {
+                     "_type": "DV_TEXT",
+                     "value": "generic person"
+               },
+               "uid": {
+                     "_type": "OBJECT_VERSION_ID",
+                     "value": "a4a78047-9aff-4b67-bd20-3379ef7239b3::ATOMIK::1"
+               },
+               "archetype_details": {
+                     "archetype_id": {
+                        "_type": "ARCHETYPE_ID",
+                        "value": "openEHR-DEMOGRAPHIC-PERSON.generic_person.v1"
+                     },
+                     "template_id": {
+                        "_type": "TEMPLATE_ID",
+                        "value": "generic_person"
+                     },
+                     "rm_version": "1.0.2"
+               },
+               "archetype_node_id": "openEHR-DEMOGRAPHIC-PERSON.generic.v1",
+               "identities": [
+                     {
+                        "_type": "PARTY_IDENTITY",
+                        "name": {
+                           "_type": "DV_TEXT",
+                           "value": "identity"
+                        },
+                        "archetype_node_id": "at0004",
+                        "details": {
+                           "_type": "ITEM_TREE",
+                           "name": {
+                                 "_type": "DV_TEXT",
+                                 "value": "tree"
+                           },
+                           "archetype_node_id": "at0005",
+                           "items": [
+                                 {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                       "_type": "DV_TEXT",
+                                       "value": "name"
+                                    },
+                                    "archetype_node_id": "at0006",
+                                    "value": {
+                                       "_type": "DV_TEXT",
+                                       "value": "Pablo Pazos"
+                                    }
+                                 }
+                           ]
+                        }
+                     }
+               ],
+               "roles": [
+                     {
+                        "_type": "ROLE",
+                        "name": {
+                           "_type": "DV_TEXT",
+                           "value": "Patient"
+                        },
+                        "archetype_details": {
+                           "archetype_id": {
+                                 "_type": "ARCHETYPE_ID",
+                                 "value": "openEHR-DEMOGRAPHIC-ROLE.generic_role.v1"
+                           },
+                           "template_id": {
+                                 "_type": "TEMPLATE_ID",
+                                 "value": "generic_role"
+                           },
+                           "rm_version": "1.0.2"
+                        },
+                        "archetype_node_id": "openEHR-DEMOGRAPHIC-ROLE.generic.v1",
+                        "identities": [
+                           {
+                                 "_type": "PARTY_IDENTITY",
+                                 "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "identity"
+                                 },
+                                 "archetype_node_id": "at0004",
+                                 "details": {
+                                    "_type": "ITEM_TREE",
+                                    "name": {
+                                       "_type": "DV_TEXT",
+                                       "value": "tree"
+                                    },
+                                    "archetype_node_id": "at0005",
+                                    "items": [
+                                       {
+                                             "_type": "ELEMENT",
+                                             "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "name"
+                                             },
+                                             "archetype_node_id": "at0006",
+                                             "value": {
+                                                "_type": "DV_TEXT",
+                                                "value": "patient"
+                                             }
+                                       }
+                                    ]
+                                 }
+                           }
+                        ]
+                     }
+               ]
+            },
+            "lifecycle_state": {
+               "value": "complete",
+               "defining_code": {
+                     "terminology_id": {
+                        "value": "openehr"
+                     },
+                     "code_string": "532"
+               }
+            }
+         }
+      /$
+
+      def parser = new OpenEhrJsonParserQuick(true)
+      Version version = parser.parseVersionJson(json)
+
+      // assert !status
+
+      // // Set<ValitaionMessage>
+      // // https://javadoc.io/doc/com.networknt/json-schema-validator/1.0.51/com/networknt/schema/ValidationMessage.html
+      // def errors = parser.getJsonValidationErrors()
+
+      // def err_name = errors.find{ it.message == "\$.name: is missing but it is required" }
+
+      // assert err_name
+      // assert err_name.type == "required"
+
+      // TODO
+      //[$.name: is missing but it is required, $.is_queryable: is missing but it is required, $.is_modifiable: is missing but it is required]
+   }
 }

@@ -219,12 +219,12 @@ class OpenEhrJsonParserQuick {
 
       if (this.schemaValidate)
       {
-         if (!map.archetype_details || !map.archetype_details.rm_version) // rm version aware
+         if (!map.data.archetype_details || !map.data.archetype_details.rm_version) // rm version aware
          {
-            throw new Exception("archetype_details.rm_version is required for the root of any archetypable class")
+            throw new Exception("data.archetype_details.rm_version is required for the root of any archetypable class")
          }
 
-         this.jsonValidator = new JsonInstanceValidation(this.schemaFlavor, map.archetype_details.rm_version)
+         this.jsonValidator = new JsonInstanceValidation(this.schemaFlavor, map.data.archetype_details.rm_version)
 
          def errors = jsonValidator.validate(json)
          if (errors)
@@ -320,13 +320,10 @@ class OpenEhrJsonParserQuick {
 
       if (this.schemaValidate)
       {
-         // if (!map.archetype_details || !map.archetype_details.rm_version) // rm version aware
-         // {
-         //    throw new Exception("archetype_details.rm_version is required for the root of any archetypable class")
-         // }
+         // TODO: can't get the rm_version from a contribution
 
          // NOTE: since this is DTO, the schema flavor will always be api
-         this.jsonValidator = new JsonInstanceValidation('api', '1.0.2') // FIXME: hardcoded rm_version
+         this.jsonValidator = new JsonInstanceValidation('api', '1.0.2') // FIXME: hardcoded rm_version, should be a parameter
 
          def errors = jsonValidator.validate(json)
          if (errors)
