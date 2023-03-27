@@ -241,15 +241,24 @@ class OpenEhrJsonParserQuick {
          throw new JsonParseException("Can't parse JSON if root node doesn't have a value for _type")
       }
 
+      if (!['ORIGINAL_VERSION', 'IMPORTED_VERSION'].contains(type))
+      {
+         throw new JsonParseException("Can't parse JSON: type ${type} should be either ORIGINAL_VERSION or IMPORTED_VERSION")
+      }
+
       def method = 'parse'+ type
       Version out
       try
       {
          out = this."$method"(map)
       }
+      catch (MissingMethodException e)
+      {
+         throw new JsonParseException("Parsing type ${type} is not supported. If you tried to parse a LOCATABLE, use the parseJson method", e)
+      }
       catch (Exception e)
       {
-         throw new JsonParseException("Can't parse JSON, check ${type} is a VERSION type. If you tried to parse a LOCATABLE, use the parseJson method", e)
+         throw new JsonParseException("There was a problem parsing the version", e)
       }
       return out
    }
@@ -286,6 +295,11 @@ class OpenEhrJsonParserQuick {
          if (!type)
          {
             throw new JsonParseException("Can't parse JSON if root node doesn't have a value for _type")
+         }
+
+         if (!['ORIGINAL_VERSION', 'IMPORTED_VERSION'].contains(type))
+         {
+            throw new JsonParseException("Can't parse JSON: type ${type} should be either ORIGINAL_VERSION or IMPORTED_VERSION")
          }
 
          method = 'parse'+ type
@@ -1089,6 +1103,20 @@ class OpenEhrJsonParserQuick {
          {
             throw new JsonParseException("_type required for ORIGINAL_VERSION.data")
          }
+
+         // For demographic classes that have refs in the RM flavour and the objects in the API flaour,
+         // we need to if it's demographic and the API flavour is used, then the DTO parser should be used.
+         if (
+            ['PERSON', 'ORGANISATION', 'GROUP', 'AGENT'].contains(type) &&
+            this.schemaFlavor == 'api'
+         )
+         {
+            type += 'Dto'
+         }
+
+         println "type $type"
+
+
          def method = 'parse'+ type
          ov.data = this."$method"(json.data)
       }

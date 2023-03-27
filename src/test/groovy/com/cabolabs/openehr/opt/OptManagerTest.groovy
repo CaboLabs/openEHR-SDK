@@ -10,14 +10,15 @@ import com.cabolabs.openehr.opt.instance_generator.*
 import com.cabolabs.openehr.terminology.TerminologyParser
 import com.cabolabs.openehr.opt.instance_validation.XmlValidation
 
-class OPTManagerTest extends GroovyTestCase {
+class OptManagerTest extends GroovyTestCase {
 
    private static String PS = System.getProperty("file.separator") // File.separator
 
    private man
    private used_namespaces = [
       'test_ism_paths',
-      'test_ref_archs_namespace'
+      'test_ref_archs_namespace',
+      OptManager.DEFAULT_NAMESPACE
    ]
 
 /*
