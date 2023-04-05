@@ -493,6 +493,20 @@ class RmValidator2 {
       return report
    }
 
+   private RmValidationReport validate(PartyRelationship p, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      validate_single_attribute(p, o, 'details', report)
+
+      // time_validity
+
+      validate_single_attribute(p, o, 'source', report)
+      validate_single_attribute(p, o, 'target', report)
+
+      return report
+   }
+
    // Person, Org, Group, Agent validator
    private RmValidationReport validate(Actor p, ObjectNode o)
    {

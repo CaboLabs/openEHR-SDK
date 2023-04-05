@@ -274,6 +274,29 @@ class OpenEhrJsonSerializer {
       }
    }
 
+   private Map serializePartyRelationship(PartyRelationship p)
+   {
+      def out = [:]
+
+      out._type = 'PARTY_RELATIONSHIP'
+
+      this.fillLocatable(p, out)
+
+      // optional
+      if (p.details)
+      {
+         def method = this.method(p.details)
+         out.details = this."$method"(p.details)
+      }
+
+      // TODO: time_validity
+
+      out.source = this.serializePartyRef(p.source)
+      out.target = this.serializePartyRef(p.target)
+
+      return out
+   }
+
    private Map serializeOriginalVersion(OriginalVersion o)
    {
       def out = [:]

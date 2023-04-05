@@ -540,14 +540,14 @@ class OpenEhrJsonParserQuick {
          }
 
          def method = 'parse'+ type
-         this."$method"(json.details, p)
+         p.details = this."$method"(json.details, p)
       }
 
       if (json.contacts)
       {
          json.contacts.eachWithIndex { contact, i ->
 
-            p.contacts << this.parseCONTACT(contact, p)
+            p.contacts << this.parseCONTACT(contact, p) // FIXME: this doesn't exist
          }
       }
 
@@ -599,14 +599,14 @@ class OpenEhrJsonParserQuick {
 
          def method = 'parse'+ type
 
-         this."$method"(json.details, p)
+         p.details = this."$method"(json.details, p)
       }
 
       if (json.contacts)
       {
          json.contacts.eachWithIndex { contact, i ->
 
-            p.contacts << this.parseCONTACT(contact, p)
+            p.contacts << this.parseCONTACT(contact, p) // FIXME: this doesn't exist
          }
       }
 
@@ -819,6 +819,37 @@ class OpenEhrJsonParserQuick {
 
 
    // Methods used for LOCATABLE RM parsing (not DTO)
+
+   private PartyRelationship parsePARTY_RELATIONSHIP(Map map)
+   {
+      def rel = new PartyRelationship()
+
+      this.fillLOCATABLE(rel, map, null)
+
+      if (map.details)
+      {
+         def type = map.details._type
+
+         if (!type)
+         {
+            throw new JsonParseException("_type required for PARTY_RELATIONSHIP.details")
+         }
+
+         def method = 'parse'+ type
+         rel.details = this."$method"(map.details, rel)
+      }
+
+      rel.source = this.parsePARTY_REF(map.source)
+
+      rel.target = this.parsePARTY_REF(map.target)
+
+      if (map.time_validity)
+      {
+         rel.time_validity = this.parseDV_INTERVAL(map.time_validity)
+      }
+
+      return rel
+   }
 
    private Person parsePERSON(Map map)
    {

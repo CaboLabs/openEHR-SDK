@@ -15,6 +15,7 @@ import com.cabolabs.openehr.rm_1_0_2.demographic.Organization
 import com.cabolabs.openehr.rm_1_0_2.demographic.Role
 import com.cabolabs.openehr.rm_1_0_2.demographic.Group
 import com.cabolabs.openehr.rm_1_0_2.demographic.Agent
+import com.cabolabs.openehr.rm_1_0_2.demographic.PartyRelationship
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 import com.cabolabs.openehr.dto_1_0_2.ehr.*
@@ -986,7 +987,6 @@ class ValidationFlowTest extends GroovyTestCase {
    // ===================================================
    // DEMOGRAPHIC
 
-
    void test_person_valid()
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
@@ -1552,6 +1552,100 @@ class ValidationFlowTest extends GroovyTestCase {
       assert group.roles[0].name.value == "Dr. James Kernel's Surgical Team"
    }
 
+
+   void test_generic_relationship_api_valid()
+   {
+      def json = $/
+         {
+            "_type": "PARTY_RELATIONSHIP",
+            "name": {
+               "_type": "DV_TEXT",
+               "value": "generic relationship"
+            },
+            "archetype_details": {
+               "archetype_id": {
+                  "_type": "ARCHETYPE_ID",
+                  "value": "openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.generic_relationship.v1"
+               },
+               "template_id": {
+                  "_type": "TEMPLATE_ID",
+                  "value": "generic_relationship"
+               },
+               "rm_version": "1.0.2"
+            },
+            "archetype_node_id": "openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.generic_relationship.v1",
+            "details": {
+               "_type": "ITEM_TREE",
+               "name": {
+                  "_type": "DV_TEXT",
+                  "value": "tree"
+               },
+               "archetype_node_id": "at0001",
+               "items": [
+                  {
+                  "_type": "ELEMENT",
+                  "name": {
+                     "_type": "DV_TEXT",
+                     "value": "relationship type"
+                  },
+                  "archetype_node_id": "at0002",
+                  "value": {
+                     "_type": "DV_CODED_TEXT",
+                     "value": "Natural child",
+                     "defining_code": {
+                        "terminology_id": {
+                        "value": "SNOMED-CT"
+                        },
+                        "code_string": "75226009"
+                     }
+                  }
+                  }
+               ]
+            },
+            "source": {
+               "id": {
+                  "_type": "OBJECT_VERSION_ID",
+                  "value": "cf9c8328-8e43-407a-bcb1-90bd88fd52f3::ATOMIK_CDR::1"
+               },
+               "namespace": "demographic",
+               "type": "PERSON"
+            },
+            "target": {
+               "id": {
+                  "_type": "OBJECT_VERSION_ID",
+                  "value": "a7118145-43e3-4810-bdab-3753d9714aa3::ATOMIK_CDR::1"
+               },
+               "namespace": "demographic",
+               "type": "PERSON"
+            }
+            }
+      /$
+
+      def parser = new OpenEhrJsonParserQuick(true) // does schema validation
+      parser.setSchemaFlavorAPI()
+      PartyRelationship relationship = parser.parseJson(json)
+
+      assert relationship
+      assert relationship.source
+      assert relationship.source.id.value == "cf9c8328-8e43-407a-bcb1-90bd88fd52f3::ATOMIK_CDR::1"
+      assert relationship.target
+      assert relationship.target.id.value == "a7118145-43e3-4810-bdab-3753d9714aa3::ATOMIK_CDR::1"
+
+      // SETUP OPT REPO
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+
+      // SETUP RM VALIDATOR (EHR_STATUS only)
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(relationship, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert !report.errors
+
+      def serializer = new OpenEhrJsonSerializer()
+      println serializer.serialize(relationship)
+   }
 
 
    void test_generic_organization_api_valid()
