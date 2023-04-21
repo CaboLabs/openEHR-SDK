@@ -826,10 +826,11 @@ class OpenEhrJsonParser {
 
       this.fillLOCATABLE(status, map, null, '/', '/')
 
-      if (map.subject)
-      {
+      // subject is mandatory, is the ref inside that might be optional
+      // if (map.subject)
+      // {
          status.subject = this.parsePARTY_SELF(map.subject)
-      }
+      // }
 
       status.is_modifiable = map.is_modifiable
       status.is_queryable = map.is_queryable
@@ -844,6 +845,38 @@ class OpenEhrJsonParser {
 
       return status
    }
+
+
+   // this is not used anymore
+   // private EhrStatus parseEHR_STATUS(Map json, Pathable parent, String path, String dataPath)
+   // {
+   //    def status = new EhrStatus()
+
+   //    this.fillLOCATABLE(status, json, parent, path, dataPath)
+
+   //    if (json.subject)
+   //    {
+   //       status.subject = this.parsePARTY_SELF(json.subject)
+   //    }
+
+   //    status.is_modifiable = json.is_modifiable
+   //    status.is_queryable = json.is_queryable
+
+   //    if (json.other_details)
+   //    {
+   //       String method = 'parse'+ json.other_details._type
+
+   //       status.other_details = this."$method"(
+   //          json.other_details, status,
+   //          this.attr_archetype_path(json, 'other_details', '/'),
+   //          this.attr_path(json, 'other_details', '/')
+   //       )
+   //    }
+
+   //    return status
+   // }
+
+
 
    /**
     * This method is here for completeness, most implementations don't even have support for EHR_ACCESS internally.
@@ -976,34 +1009,6 @@ class OpenEhrJsonParser {
       }
 
       return folder
-   }
-
-   private EhrStatus parseEHR_STATUS(Map json, Pathable parent, String path, String dataPath)
-   {
-      def status = new EhrStatus()
-
-      this.fillLOCATABLE(status, json, parent, path, dataPath)
-
-      if (json.subject)
-      {
-         status.subject = this.parsePARTY_SELF(json.subject)
-      }
-
-      status.is_modifiable = json.is_modifiable
-      status.is_queryable = json.is_queryable
-
-      if (json.other_details)
-      {
-         String method = 'parse'+ json.other_details._type
-
-         status.other_details = this."$method"(
-            json.other_details, status,
-            this.attr_archetype_path(json, 'other_details', '/'),
-            this.attr_path(json, 'other_details', '/')
-         )
-      }
-
-      return status
    }
 
    // NOTE: uid is mandatory for RM but optional for API, so this parser doesn't require the uid to be able to parse for API too
