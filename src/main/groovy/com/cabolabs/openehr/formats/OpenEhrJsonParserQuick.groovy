@@ -925,10 +925,11 @@ class OpenEhrJsonParserQuick {
 
       this.fillLOCATABLE(status, map, null)
 
-      if (map.subject)
-      {
+      // subject is mandatory, is the ref inside that might be optional
+      //if (map.subject)
+      //{
          status.subject = this.parsePARTY_SELF(map.subject)
-      }
+      //}
 
       status.is_modifiable = map.is_modifiable
       status.is_queryable = map.is_queryable
@@ -941,6 +942,33 @@ class OpenEhrJsonParserQuick {
 
       return status
    }
+
+   // this is not used anymore
+   // private EhrStatus parseEHR_STATUS(Map json, Pathable parent)
+   // {
+   //    def status = new EhrStatus()
+
+   //    this.fillLOCATABLE(status, json, parent)
+
+   //    if (json.subject)
+   //    {
+   //       status.subject = this.parsePARTY_SELF(json.subject)
+   //    }
+
+   //    status.is_modifiable = json.is_modifiable
+   //    status.is_queryable = json.is_queryable
+
+   //    if (json.other_details)
+   //    {
+   //       String method = 'parse'+ json.other_details._type
+
+   //       status.other_details = this."$method"(
+   //          json.other_details, status
+   //       )
+   //    }
+
+   //    return status
+   // }
 
    /**
     * This method is here for completeness, most implementations don't even have support for EHR_ACCESS internally.
@@ -1064,31 +1092,6 @@ class OpenEhrJsonParserQuick {
       return folder
    }
 
-   private EhrStatus parseEHR_STATUS(Map json, Pathable parent)
-   {
-      def status = new EhrStatus()
-
-      this.fillLOCATABLE(status, json, parent)
-
-      if (json.subject)
-      {
-         status.subject = this.parsePARTY_SELF(json.subject)
-      }
-
-      status.is_modifiable = json.is_modifiable
-      status.is_queryable = json.is_queryable
-
-      if (json.other_details)
-      {
-         String method = 'parse'+ json.other_details._type
-
-         status.other_details = this."$method"(
-            json.other_details, status
-         )
-      }
-
-      return status
-   }
 
    // NOTE: uid is mandatory for RM but optional for API, so this parser doesn't require the uid to be able to parse for API too
    private OriginalVersion parseORIGINAL_VERSION(Map json)
