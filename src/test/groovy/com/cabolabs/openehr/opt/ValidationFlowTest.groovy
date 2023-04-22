@@ -507,7 +507,53 @@ class ValidationFlowTest extends GroovyTestCase {
       assert report.errors[0].error == "type 'ITEM_LIST' is not allowed here, it should be in [ITEM_TREE]"
    }
 
+   void test_ehr_status_empty_subject()
+   {
+      // PARSE JSON WITH RM SCHEMA VALIDATION
+      def json_ehr_status = $/
+         {
+            "_type": "EHR_STATUS",
+            "archetype_node_id": "openEHR-EHR-EHR_STATUS.generic.v1",
+            "archetype_details": {
+               "archetype_id": {
+                  "value": "openEHR-EHR-EHR_STATUS.any.v1"
+               },
+               "template_id": {
+                  "value": "ehr_status_any_en_v1"
+               },
+               "rm_version": "1.0.2"
+            },
+            "name": {
+               "_type": "DV_TEXT",
+               "value": "Health summary"
+            },
+            "subject": {
+            },
+            "is_modifiable": true,
+            "is_queryable": true
+         }
+      /$
 
+      def parser = new OpenEhrJsonParserQuick(true) // does RM schema validation not API
+      EhrStatus status = parser.parseJson(json_ehr_status)
+
+      assert status
+      assert status.subject
+
+
+      // SETUP OPT REPO
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+
+      // SETUP RM VALIDATOR
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(status, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert !report.errors
+   }
+   
    // ===================================================
    // FOLDERs
 
