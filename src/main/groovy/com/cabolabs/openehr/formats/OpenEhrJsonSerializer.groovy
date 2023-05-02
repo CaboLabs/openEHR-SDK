@@ -289,7 +289,7 @@ class OpenEhrJsonSerializer {
          out.details = this."$method"(p.details)
       }
 
-      if (c.time_validity)
+      if (p.time_validity)
       {
          out.time_validity = this.serializeDvInterval(p.time_validity)
       }
