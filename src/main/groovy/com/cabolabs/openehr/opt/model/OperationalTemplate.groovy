@@ -82,6 +82,13 @@ class OperationalTemplate {
       ],
       'PARTY_RELATIONSHIP': [
          'source': 'PARTY_REF' // need to support queries over the relationship.source to find all the relationships of an actor
+      ],
+      'PARTY_REF': [
+         'id': 'String' // need to query by the PARTY_REF.id by a string criteria
+      ],
+      'LOCATABLE_REF': [ // to allow to query by locatable_ref id and path, used in INSTRUCTION_DETAILS.instruction_id
+         'id': 'String',
+         'path': 'String'
       ]
    ]
 
