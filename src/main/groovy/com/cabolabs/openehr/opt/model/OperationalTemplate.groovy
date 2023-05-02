@@ -79,6 +79,9 @@ class OperationalTemplate {
       ],
       'ELEMENT': [
          'null_flavour': 'DV_CODED_TEXT' // this could be in the opt constraining the possible codes
+      ],
+      'PARTY_RELATIONSHIP': [
+         'source': 'PARTY_REF' // need to support queries over the relationship.source to find all the relationships of an actor
       ]
    ]
 

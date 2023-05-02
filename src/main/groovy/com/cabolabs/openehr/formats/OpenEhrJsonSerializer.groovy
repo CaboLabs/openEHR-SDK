@@ -289,7 +289,10 @@ class OpenEhrJsonSerializer {
          out.details = this."$method"(p.details)
       }
 
-      // TODO: time_validity
+      if (c.time_validity)
+      {
+         out.time_validity = this.serializeDvInterval(p.time_validity)
+      }
 
       out.source = this.serializePartyRef(p.source)
       out.target = this.serializePartyRef(p.target)
