@@ -5,7 +5,9 @@ import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.opt.model.domain.*
 import com.cabolabs.openehr.opt.model.primitive.*
 import com.cabolabs.openehr.opt.model.validation.*
-import com.cabolabs.openehr.rm_1_0_2.ehr.*
+import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
+import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
+import com.cabolabs.openehr.rm_1_0_2.common.directory.Folder
 import com.cabolabs.openehr.rm_1_0_2.composition.*
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.*
 import com.cabolabs.openehr.rm_1_0_2.composition.content.navigation.Section
@@ -18,10 +20,9 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.basic.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.*
-import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
-import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
-import com.cabolabs.openehr.rm_1_0_2.common.directory.Folder
 import com.cabolabs.openehr.rm_1_0_2.demographic.*
+import com.cabolabs.openehr.rm_1_0_2.ehr.*
+import com.cabolabs.openehr.rm_1_0_2.support.identification.ObjectRef
 import com.cabolabs.openehr.dto_1_0_2.ehr.EhrDto
 import com.cabolabs.openehr.dto_1_0_2.demographic.*
 
@@ -143,6 +144,12 @@ class RmValidator2 {
    // Though we know there is no alternative type for that so we just return true for the type check
    // of that specific object.
    private boolean checkAllowedType(AttributeNode cattr, EventContext rm_object, RmValidationReport report)
+   {
+      return true
+   }
+
+   // Same as the method above, when processing OBJECT_REFs the method needs to exist and jsut pass
+   private boolean checkAllowedType(AttributeNode cattr, ObjectRef rm_object, RmValidationReport report)
    {
       return true
    }
