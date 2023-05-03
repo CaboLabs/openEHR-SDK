@@ -2293,12 +2293,20 @@ class RmValidator2 {
             // if object."$attribute_name" is not locatable, it should call to a DV validation method
             // NOTE: CODE_PHRASE is not a DV!
             // 1. or we allow DV and CODE_PHRASE here,
-            // 2. or we let coded text to valdiate CODE_PHRASE internally
+            // 2. or we let coded text to validate CODE_PHRASE internally
             // 3. or we create a method specifically for CODE_PHRASE
             // validate(Pathable parent, DV dv, AttributeNode a, String dv_path)
             if (object."$attribute_name" instanceof DataValue)
             {
                report.append(validate(object, object."$attribute_name", c_attr, '/'+ attribute_name))
+            }
+            else if (object."$attribute_name" instanceof ObjectRef)
+            {
+               // TODO: no validation ob ObjectRef yet, since it's not archetyped the only thing we could validate
+               //       is the format of the id and other attributes and the required fields, because even if the
+               //       required are validated by the schema, we don't know if the data instance is parsed of is
+               //       created manually in code and then validated.
+               //report.append(validate(object, object."$attribute_name", c_attr, '/'+ attribute_name))
             }
             else
             {
@@ -2306,7 +2314,6 @@ class RmValidator2 {
                object."$attribute_name".dataPath = object.dataPath +'/'+ attribute_name
                report.append(validate(object."$attribute_name", c_attr))
             }
-
          }
 
          // occurrences
