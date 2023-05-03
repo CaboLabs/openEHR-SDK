@@ -84,10 +84,13 @@ class OperationalTemplate {
          'source': 'PARTY_REF' // need to support queries over the relationship.source to find all the relationships of an actor
       ],
       'PARTY_REF': [
-         'id': 'String' // need to query by the PARTY_REF.id by a string criteria
+         'id': 'OBJECT_VERSION_ID' // NOTE: this is OBJECT_ID but our implementation only allows OBJECT_VERSION_ID here, this should be part of the conformance statement!
+      ],
+      'OBJECT_VERSION_ID': [
+         'value': 'String' // need to query by the PARTY_REF.id by a string criteria
       ],
       'LOCATABLE_REF': [ // to allow to query by locatable_ref id and path, used in INSTRUCTION_DETAILS.instruction_id
-         'id': 'String',
+         'id': 'OBJECT_VERSION_ID',
          'path': 'String'
       ]
    ]
