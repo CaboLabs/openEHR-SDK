@@ -14,3 +14,4 @@ build
 /.vscode
 /.settings
 /.idea
+.classpath
