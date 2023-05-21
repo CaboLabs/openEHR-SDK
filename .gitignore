@@ -11,3 +11,6 @@ build
 
 /html
 /documents
+/.vscode
+/.settings
+/.idea
