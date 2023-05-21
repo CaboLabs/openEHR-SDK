@@ -5772,6 +5772,9 @@
                     },
                     "minItems": 1
                 },
+                "performer": {
+                    "$ref": "#/definitions/PARTY_REF"
+                },
                 "capabilities": {
                     "type": "array",
                     "items": {

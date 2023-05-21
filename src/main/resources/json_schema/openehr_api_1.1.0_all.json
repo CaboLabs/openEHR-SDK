@@ -5800,8 +5800,7 @@
                 "uid",
                 "archetype_node_id",
                 "name",
-                "identities",
-                "performer"
+                "identities"
             ],
             "properties": {
                 "uid": {

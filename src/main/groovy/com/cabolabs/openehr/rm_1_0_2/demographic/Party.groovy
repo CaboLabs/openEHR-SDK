@@ -15,6 +15,7 @@ abstract class Party extends Locatable {
    ItemStructure details
    List contacts = [] // Contact
    List identities = [] // PartyIdentity
+   List relationships = [] // PartyRelationship
 
    @Override
    void fillPathable(Pathable parent, String parentAttribute)

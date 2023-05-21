@@ -198,15 +198,8 @@ class OpenEhrJsonSerializer {
 
    private Map serializeRoleDto(Role r)
    {
-      def out = [:]
-
-      out._type = 'ROLE'
-
-      this.fillParty(r, out)
-
-      //out.performer = this.serializePartyRef(r.performer)
-
-      return out
+      // for now this is the same as Role
+      return this.serializeRole(r)
    }
 
    private void fillActor(Actor a, Map out)
@@ -524,12 +517,33 @@ class OpenEhrJsonSerializer {
 
       this.fillParty(r, out)
 
+      if (r.time_validity)
+         out.time_validity = this.serializeDvInterval(r.time_validity)
+
       out.performer = this.serializePartyRef(r.performer)
+
+      out.capabilities = []
+      r.capabilities.each { capability ->
+         out.capabilities << serializeCapability(capability)
+      }
 
       return out
    }
 
-   // TODO: capability
+   private Map serializeCapability(Capability c)
+   {
+      def out = [:]
+
+      this.fillLocatable(c, out)
+
+      String method = this.method(c.credentials) // ITEM_STRUCTURE
+      out.credentials = this."$method"(c.credentials)
+
+      if (c.time_validity)
+         out.time_validity = this.serializeDvInterval(c.time_validity)
+
+      return out
+   }
 
    private Map serializeContact(Contact c)
    {

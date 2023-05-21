@@ -16,6 +16,11 @@ import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemTree
 import com.cabolabs.openehr.rm_1_0_2.common.generic.PartySelf
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.*
+import com.cabolabs.openehr.rm_1_0_2.demographic.*
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.*
+import com.cabolabs.openehr.rm_1_0_2.data_types.basic.*
+
 import groovy.json.JsonSlurper
 import com.cabolabs.openehr.opt.instance_validation.JsonInstanceValidation
 
@@ -87,4 +92,134 @@ class OpenEhrJsonSerializerTest extends GroovyTestCase {
       assert !errors
    }
 
+   void testRoleSerialization()
+   {
+      def role = new Role(
+         name: new DvText(
+            value: 'generic role'
+         ),
+         uid: new HierObjectId(
+            value: '40329c20-39a8-4c10-8282-6d9b66c372fd'
+         ),
+         archetype_node_id: 'openEHR-DEMOGRAPHIC-ROLE.generic_role_with_capabilities.v1',
+         archetype_details: new Archetyped(
+            archetype_id: new ArchetypeId(
+               value: 'openEHR-DEMOGRAPHIC-ROLE.generic_role_with_capabilities.v1'
+            ),
+            template_id: new TemplateId(
+               value: 'generic.en.v1'
+            ),
+            rm_version: '1.0.2'
+         ),
+         time_validity: new DvInterval(
+            lower: new DvDate(
+               value: '2020-01-01'
+            ),
+            lower_included: true,
+            lower_unbounded: false,
+            upper_included: false,
+            upper_unbounded: true
+         ),
+         performer: new PartyRef(
+            namespace: 'demographic',
+            type: 'PERSON',
+            id: new HierObjectId(
+               value: '0884624d-a748-4510-a342-c93f98afd853'
+            )
+         ),
+         details: new ItemTree(
+            name: new DvText(
+               value: 'tree'
+            ),
+            archetype_node_id: 'at0001', // << FIXME: change structure to comply with archetype
+            items: [
+               new Element(
+                  name: new DvText(
+                     value: 'element'
+                  ),
+                  archetype_node_id: 'at0002',
+                  value: new DvIdentifier(
+                     id: 'A123',
+                     issuer: 'Hospital X',
+                     type: 'IDL',
+                     assigner: 'Hospital X'
+                  )
+               )
+            ]
+         ),
+         identities: [
+            new PartyIdentity(
+               name: new DvText(
+                  value: 'identity'
+               ),
+               archetype_node_id: 'at0004',
+               details: new ItemTree(
+                  name: new DvText(
+                     value: 'tree'
+                  ),
+                  archetype_node_id: 'at0005', // << change structure to comply with archetype
+                  items: [
+                     new Element(
+                        name: new DvText(
+                           value: 'element'
+                        ),
+                        archetype_node_id: 'at0006',
+                        value: new DvText(
+                           value: 'patient'
+                        )
+                     )
+                  ]
+               )
+            )
+         ],
+         capabilities: [
+            new Capability(
+               name: new DvText(
+                  value: 'capability'
+               ),
+               archetype_node_id: 'at0008',
+               time_validity: new DvInterval(
+                  lower: new DvDate(
+                     value: '2020-01-01'
+                  ),
+                  lower_included: true,
+                  lower_unbounded: false,
+                  upper_included: false,
+                  upper_unbounded: true
+               ),
+               credentials: new ItemTree(
+                  name: new DvText(
+                     value: 'tree'
+                  ),
+                  archetype_node_id: 'at0009',
+                  items: [
+                     new Element(
+                        name: new DvText(
+                           value: 'element'
+                        ),
+                        archetype_node_id: 'at0010',
+                        value: new DvText(
+                           value: "doctor"
+                        )
+                     )
+                  ]
+               )
+            )
+         ]
+      )
+
+      def serializer = new OpenEhrJsonSerializer()
+      def string = serializer.serialize(role)
+      println string
+
+      def slurper = new JsonSlurper()
+      def json_map = slurper.parseText(string)
+
+      def validator = new JsonInstanceValidation('api', '1.0.2')
+      def errors = validator.validate(json_map)
+
+      println errors
+
+      assert !errors
+   }
 }
