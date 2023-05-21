@@ -893,7 +893,53 @@ class OpenEhrJsonParserQuick {
 
       this.fillPARTY(role, map, null)
 
+      if (map.time_validity)
+      {
+         role.time_validity = this.parseDV_INTERVAL(map.time_validity)
+      }
+
+      // For API the performer is optional since it's committed embedded in
+      // an Actor so the performer is the Actor containing the Role
+      if (map.performer)
+      {
+         role.performer = this.parsePARTY_REF(map.performer)
+      }
+
+      if (map.capabilities)
+      {
+         role.capabilities = []
+         map.capabilities.each { capability ->
+            role.capabilities << this.parseCAPABILITY(capability, role)
+         }
+      }
+
       return role
+   }
+
+   private Capability parseCAPABILITY(Map map, Pathable parent)
+   {
+      def capability = new Capability()
+
+      this.fillLOCATABLE(capability, map, parent)
+
+
+      def type = map.credentials._type
+
+      if (!type)
+      {
+         throw new JsonParseException("_type required for CAPABILITY.credentials")
+      }
+
+      def method = 'parse'+ type
+      capability.credentials = this."$method"(map.credentials, capability)
+
+
+      if (map.time_validity)
+      {
+         capability.time_validity = this.parseDV_INTERVAL(map.time_validity)
+      }
+
+      return capability
    }
 
    private PartyIdentity parsePARTY_IDENTITY(Map map, Pathable parent)

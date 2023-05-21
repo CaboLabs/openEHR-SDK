@@ -786,7 +786,31 @@ class OpenEhrJsonParser {
 
       this.fillPARTY(role, map, null, '/', '/')
 
+      if (map.time_validity)
+      {
+         role.time_validity = this.parseDV_INTERVAL(map.time_validity)
+      }
+
+      role.performer = this.parsePARTY_REF(map.performer)
+
+      if (map.capabilities)
+      {
+         role.capabilities = []
+         map.capabilities.eachWithIndex { capability, i ->
+            role.capabilities << this.parseCAPABILITY(capability, role, '/capabilities', "/capabilities($i)")
+         }
+      }
+
       return role
+   }
+
+   private Capability parseCAPABILITY(Map map, Pathable parent, String path, String dataPath)
+   {
+      def capability = new Capability()
+
+      this.fillLOCATABLE(capability, map, parent, path, dataPath)
+
+      return capability
    }
 
    private PartyIdentity parsePARTY_IDENTITY(Map map, Pathable parent, String path, String dataPath)

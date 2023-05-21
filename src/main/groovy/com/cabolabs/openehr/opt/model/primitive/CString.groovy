@@ -24,7 +24,7 @@ class CString extends CPrimitive {
          }
       }
 
-      if (list)
+      if (list != null && list.size() > 0)
       {
          if (!list.contains(value))
          {

@@ -1,16 +1,15 @@
 package com.cabolabs.openehr.formats
 
 import groovy.util.GroovyTestCase
-import com.cabolabs.openehr.formats.OpenEhrJsonSerializer
 import com.cabolabs.openehr.dto_1_0_2.ehr.EhrDto
+import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
 import com.cabolabs.openehr.rm_1_0_2.support.identification.HierObjectId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.PartyRef
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvQuantity
-import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
-import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
 import com.cabolabs.openehr.rm_1_0_2.support.identification.ArchetypeId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.TemplateId
+import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvQuantity
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Element
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemTree
 import com.cabolabs.openehr.rm_1_0_2.common.generic.PartySelf
@@ -20,6 +19,10 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.*
 import com.cabolabs.openehr.rm_1_0_2.demographic.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.basic.*
+
+import com.cabolabs.openehr.validation.*
+
+import com.cabolabs.openehr.opt.manager.*
 
 import groovy.json.JsonSlurper
 import com.cabolabs.openehr.opt.instance_validation.JsonInstanceValidation
@@ -107,7 +110,7 @@ class OpenEhrJsonSerializerTest extends GroovyTestCase {
                value: 'openEHR-DEMOGRAPHIC-ROLE.generic_role_with_capabilities.v1'
             ),
             template_id: new TemplateId(
-               value: 'generic.en.v1'
+               value: 'generic_role_complete'
             ),
             rm_version: '1.0.2'
          ),
@@ -135,13 +138,13 @@ class OpenEhrJsonSerializerTest extends GroovyTestCase {
             items: [
                new Element(
                   name: new DvText(
-                     value: 'element'
+                     value: 'identifier'
                   ),
                   archetype_node_id: 'at0002',
                   value: new DvIdentifier(
                      id: 'A123',
                      issuer: 'Hospital X',
-                     type: 'IDL',
+                     type: 'test1',
                      assigner: 'Hospital X'
                   )
                )
@@ -161,7 +164,7 @@ class OpenEhrJsonSerializerTest extends GroovyTestCase {
                   items: [
                      new Element(
                         name: new DvText(
-                           value: 'element'
+                           value: 'name'
                         ),
                         archetype_node_id: 'at0006',
                         value: new DvText(
@@ -221,5 +224,22 @@ class OpenEhrJsonSerializerTest extends GroovyTestCase {
       println errors
 
       assert !errors
+
+      def parser = new OpenEhrJsonParserQuick(true) // true validates against JSON Schema
+      parser.setSchemaFlavorAPI()
+      def role_out = parser.parseJson(string)
+
+
+      // SETUP OPT REPO
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+
+      // SETUP RM VALIDATOR (EHR_STATUS only)
+      RmValidator2 rm_validator = new RmValidator2(opt_manager)
+      RmValidationReport report = rm_validator.dovalidate(role_out, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert !report.errors
    }
 }

@@ -474,7 +474,12 @@ class OperationalTemplateParser {
             else
             {
                primitive.list.each {
-                  obn.item.list << it.text()
+                  // there are OPTs with empty elements this avoids to load them as items on the list
+                  // <item xsi:type="C_STRING">
+                  //    <list />
+                  //  </item>
+                  if (it.text())
+                     obn.item.list << it.text()
                }
             }
          }

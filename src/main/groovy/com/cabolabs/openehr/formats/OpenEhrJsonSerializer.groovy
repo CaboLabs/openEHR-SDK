@@ -520,7 +520,12 @@ class OpenEhrJsonSerializer {
       if (r.time_validity)
          out.time_validity = this.serializeDvInterval(r.time_validity)
 
-      out.performer = this.serializePartyRef(r.performer)
+      // For API the role doesn't have performer, it's the Actor that contains
+      // the Role
+      if (r.performer)
+      {
+         out.performer = this.serializePartyRef(r.performer)
+      }
 
       out.capabilities = []
       r.capabilities.each { capability ->
