@@ -6,7 +6,7 @@ package com.cabolabs.openehr.rm_1_0_2
  */
 class Model {
 
-   private static Map rm_attributes_not_in_opt = [
+   public static Map rm_attributes_not_in_opt = [
       'EHR_STATUS': [
          'subject': 'PARTY_SELF',
          'is_queryable': 'Boolean',
@@ -54,6 +54,33 @@ class Model {
       ],
       'ELEMENT': [
          'null_flavour': 'DV_CODED_TEXT' // this could be in the opt constraining the possible codes
+      ],
+
+      // DEMOGRAPHIC
+      'PARTY_RELATIONSHIP': [
+         'source': 'PARTY_REF', // need to support queries over the relationship.source to find all the relationships of an actor
+         'time_validity': 'DV_INTERVAL'
+      ],
+      'ROLE': [
+         'time_validity': 'DV_INTERVAL'
+      ],
+      'CAPABILITY': [
+         'time_validity': 'DV_INTERVAL'
+      ],
+      'CONTACT': [
+         'time_validity': 'DV_INTERVAL'
+      ],
+
+      // REF and ID
+      'PARTY_REF': [
+         'id': 'OBJECT_VERSION_ID' // NOTE: this is OBJECT_ID but our implementation only allows OBJECT_VERSION_ID here, this should be part of the conformance statement!
+      ],
+      'OBJECT_VERSION_ID': [
+         'value': 'String' // need to query by the PARTY_REF.id by a string criteria
+      ],
+      'LOCATABLE_REF': [ // to allow to query by locatable_ref id and path, used in INSTRUCTION_DETAILS.instruction_id
+         'id': 'OBJECT_VERSION_ID',
+         'path': 'String'
       ]
    ]
 

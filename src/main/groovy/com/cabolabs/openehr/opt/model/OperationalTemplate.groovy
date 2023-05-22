@@ -1,5 +1,8 @@
 package com.cabolabs.openehr.opt.model
 
+// to use the rm_attributes_not_in_opt
+import com.cabolabs.openehr.rm_1_0_2.Model
+
 @groovy.util.logging.Log4j
 class OperationalTemplate {
 
@@ -31,6 +34,7 @@ class OperationalTemplate {
    // TODO: this should be RM Version dependent! maybe as external metadata files
    // RM attributes that are not in the OPT but also need to be indexed for querying.
    // This is like a schema, but is not including the attrs that are on OPTs.
+   /*
    def rm_attributes_not_in_opt = [
       'EHR_STATUS': [
          'subject': 'PARTY_SELF',
@@ -80,9 +84,23 @@ class OperationalTemplate {
       'ELEMENT': [
          'null_flavour': 'DV_CODED_TEXT' // this could be in the opt constraining the possible codes
       ],
+
+      // DEMOGRAPHIC
       'PARTY_RELATIONSHIP': [
-         'source': 'PARTY_REF' // need to support queries over the relationship.source to find all the relationships of an actor
+         'source': 'PARTY_REF', // need to support queries over the relationship.source to find all the relationships of an actor
+         'time_validity': 'DV_INTERVAL'
       ],
+      'ROLE': [
+         'time_validity': 'DV_INTERVAL'
+      ],
+      'CAPABILITY': [
+         'time_validity': 'DV_INTERVAL'
+      ],
+      'CONTACT': [
+         'time_validity': 'DV_INTERVAL'
+      ],
+
+      // REF and ID
       'PARTY_REF': [
          'id': 'OBJECT_VERSION_ID' // NOTE: this is OBJECT_ID but our implementation only allows OBJECT_VERSION_ID here, this should be part of the conformance statement!
       ],
@@ -94,6 +112,7 @@ class OperationalTemplate {
          'path': 'String'
       ]
    ]
+   */
 
    /*
     * gets a node by template path
@@ -272,7 +291,8 @@ class OperationalTemplate {
    private completeRecursive(ObjectNode obn)
    {
       // attr name -> type
-      Map rm_attrs = rm_attributes_not_in_opt[obn.rmTypeName]
+      //Map rm_attrs = rm_attributes_not_in_opt[obn.rmTypeName]
+      Map rm_attrs = Model.rm_attributes_not_in_opt[obn.rmTypeName]
 
       def path_sep, aom_type, atnc, obnc
 
