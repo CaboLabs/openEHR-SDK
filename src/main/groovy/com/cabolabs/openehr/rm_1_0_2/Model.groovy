@@ -59,16 +59,16 @@ class Model {
       // DEMOGRAPHIC
       'PARTY_RELATIONSHIP': [
          'source': 'PARTY_REF', // need to support queries over the relationship.source to find all the relationships of an actor
-         'time_validity': 'DV_INTERVAL'
+         'time_validity': 'DV_INTERVAL<DV_DATE>'
       ],
       'ROLE': [
-         'time_validity': 'DV_INTERVAL'
+         'time_validity': 'DV_INTERVAL<DV_DATE>'
       ],
       'CAPABILITY': [
-         'time_validity': 'DV_INTERVAL'
+         'time_validity': 'DV_INTERVAL<DV_DATE>'
       ],
       'CONTACT': [
-         'time_validity': 'DV_INTERVAL'
+         'time_validity': 'DV_INTERVAL<DV_DATE>'
       ],
 
       // REF and ID
@@ -81,7 +81,27 @@ class Model {
       'LOCATABLE_REF': [ // to allow to query by locatable_ref id and path, used in INSTRUCTION_DETAILS.instruction_id
          'id': 'OBJECT_VERSION_ID',
          'path': 'String'
+      ],
+
+      // DVs: this is for the DV_INTERVAL types here, to complete it's internal structs
+      // NOTE: need to match specific type of DV_INTERVAL
+      'DV_INTERVAL<DV_DATE>': [
+         'lower': 'DV_DATE',
+         'upper': 'DV_DATE'
+      ],
+      'DV_INTERVAL<DV_DATE_TIME>': [
+         'lower': 'DV_DATE_TIME',
+         'upper': 'DV_DATE_TIME'
+      ],
+      'DV_INTERVAL<DV_COUNT>': [
+         'lower': 'DV_COUNT',
+         'upper': 'DV_COUNT'
+      ],
+      'DV_INTERVAL<DV_QUANTITY>': [
+         'lower': 'DV_QUANTITY',
+         'upper': 'DV_QUANTITY'
       ]
+
    ]
 
    private static Map collection_attrs = [

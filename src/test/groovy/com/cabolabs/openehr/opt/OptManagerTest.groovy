@@ -9,6 +9,8 @@ import com.cabolabs.openehr.opt.manager.*
 import com.cabolabs.openehr.opt.instance_generator.*
 import com.cabolabs.openehr.terminology.TerminologyParser
 import com.cabolabs.openehr.opt.instance_validation.XmlValidation
+import com.cabolabs.openehr.opt.serializer.JsonSerializer
+
 
 class OptManagerTest extends GroovyTestCase {
 
@@ -331,5 +333,12 @@ class OptManagerTest extends GroovyTestCase {
 
       assert obj.nodes['/time_validity']
       assert obj.nodes['/source']
+
+
+      def toJson = new JsonSerializer()
+      toJson.serialize(obj)
+      def json = toJson.get()
+      println json
+
    }
 }
