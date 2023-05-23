@@ -308,4 +308,28 @@ class OptManagerTest extends GroovyTestCase {
 
       println opt.getReferencedArchetypes()
    }
+
+   void testAttributesNotInOpt()
+   {
+      def opt = man.getOpt('generic_relationship', OptManager.DEFAULT_NAMESPACE)
+      def obj = opt.findRoot('openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.generic_relationship.v1')
+
+      // obj.nodes.sort{it.key}.each {
+      //    println it
+      // }
+
+      assert !obj.nodes['/time_validity']
+      assert !obj.nodes['/source']
+
+      opt.complete()
+
+      obj = opt.findRoot('openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.generic_relationship.v1')
+
+      // obj.nodes.sort{it.key}.each {
+      //    println it
+      // }
+
+      assert obj.nodes['/time_validity']
+      assert obj.nodes['/source']
+   }
 }

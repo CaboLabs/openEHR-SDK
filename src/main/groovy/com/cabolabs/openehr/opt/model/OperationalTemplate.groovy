@@ -298,7 +298,7 @@ class OperationalTemplate {
 
       rm_attrs.each { attr, type ->
 
-         // avoid if the attr is aready on the OPT
+         // avoid if the attr is already on the OPT
          // for instance, a null_flavour could be in the OPT
          if (!obn.attributes.find{ it.rmAttributeName == attr })
          {
@@ -345,16 +345,23 @@ class OperationalTemplate {
                )
                // TODO: default_values
             )
+            
+            // Add dummy text and description for the new nodes
             obnc.text = obnc.parent.parent.text +'.'+ obnc.parent.rmAttributeName
             obnc.description = obnc.parent.parent.description +'.'+ obnc.parent.rmAttributeName
 
             atnc.children << obnc
 
+            // Add nodes to the OPT
             // supports many alternative nodes with the same path
             if (!this.nodes[obnc.templatePath]) this.nodes[obnc.templatePath] = []
             this.nodes[obnc.templatePath] << obnc
 
             obn.attributes << atnc
+            
+            // Add nodes to the current ObjectNode
+            if (!obn.nodes[obnc.templatePath]) obn.nodes[obnc.templatePath] = []
+            obn.nodes[obnc.templatePath] << obnc
          }
       }
 
