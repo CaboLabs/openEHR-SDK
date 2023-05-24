@@ -319,7 +319,6 @@
         </interval>
       </cardinality>
     </attributes>
-
     <attributes xsi:type="C_MULTIPLE_ATTRIBUTE">
       <rm_attribute_name>capabilities</rm_attribute_name>
       <existence>
@@ -439,7 +438,6 @@
         </interval>
       </cardinality>
     </attributes>
-
     <archetype_id>
       <value>openEHR-DEMOGRAPHIC-ROLE.generic_role.v1</value>
     </archetype_id>
@@ -458,10 +456,6 @@
       <items id="description" />
       <items id="text">identifier</items>
     </term_definitions>
-    <term_definitions code="at0003">
-      <items id="description" />
-      <items id="text">identifier value</items>
-    </term_definitions>
     <term_definitions code="at0004">
       <items id="description" />
       <items id="text">identity</items>
@@ -474,9 +468,17 @@
       <items id="description" />
       <items id="text">name</items>
     </term_definitions>
-    <term_definitions code="at0007">
+    <term_definitions code="at0008">
       <items id="description" />
-      <items id="text">name value</items>
+      <items id="text">capability</items>
+    </term_definitions>
+    <term_definitions code="at0009">
+      <items id="description" />
+      <items id="text">tree</items>
+    </term_definitions>
+    <term_definitions code="at0010">
+      <items id="description" />
+      <items id="text">capability name</items>
     </term_definitions>
   </definition>
 </template>

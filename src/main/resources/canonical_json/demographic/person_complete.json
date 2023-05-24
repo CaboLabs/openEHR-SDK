@@ -1,0 +1,453 @@
+{
+	"_type": "PERSON",
+	"name": {
+		"_type": "DV_TEXT",
+		"value": "person_complete"
+	},
+	"archetype_node_id": "openEHR-DEMOGRAPHIC-PERSON.generic_person.v1",
+	"archetype_details": {
+		"archetype_id": {
+			"value": "openEHR-DEMOGRAPHIC-PERSON.generic_person.v1"
+		},
+		"template_id": {
+			"value": "person_complete"
+		},
+		"rm_version": "1.0.2"
+	},
+	"details": {
+		"_type": "ITEM_TREE",
+		"archetype_node_id": "at0037",
+		"name": {
+			"_type": "DV_TEXT",
+			"value": "Tree"
+		},
+		"items": [
+			{
+				"_type": "CLUSTER",
+				"name": {
+					"_type": "DV_TEXT",
+					"value": "Identifiers"
+				},
+				"archetype_node_id": "at0010",
+				"items": [
+					{
+						"_type": "ELEMENT",
+						"name": {
+							"_type": "DV_TEXT",
+							"value": "Identifier"
+						},
+						"archetype_node_id": "at0011",
+						"value": {
+							"_type": "DV_IDENTIFIER",
+							"id": "__PERSON_ID__",
+							"type": "National ID"
+						}
+					}
+				]
+			}
+		]
+	},
+	"identities": [
+		{
+			"name": {
+				"_type": "DV_TEXT",
+				"value": "Identity"
+			},
+			"archetype_node_id": "at0003",
+			"details": {
+				"_type": "ITEM_TREE",
+				"archetype_node_id": "at0038",
+				"name": {
+					"_type": "DV_TEXT",
+					"value": "Tree"
+				},
+				"items": [
+					{
+						"_type": "ELEMENT",
+						"name": {
+							"_type": "DV_TEXT",
+							"value": "Full name"
+						},
+						"archetype_node_id": "at0007",
+						"value": {
+							"_type": "DV_TEXT",
+							"value": "__FULL_NAME__"
+						}
+					},
+					{
+						"_type": "ELEMENT",
+						"name": {
+							"_type": "DV_TEXT",
+							"value": "Date of birth"
+						},
+						"archetype_node_id": "at0008",
+						"value": {
+							"_type": "DV_DATE",
+							"value": "__DOB__"
+						}
+					},
+					{
+						"_type": "ELEMENT",
+						"name": {
+							"_type": "DV_TEXT",
+							"value": "Sex"
+						},
+						"archetype_node_id": "at0009",
+						"value": {
+							"_type": "DV_CODED_TEXT",
+							"value": "Masculine",
+							"defining_code": {
+								"terminology_id": {
+									"_type": "TERMINOLOGY_ID",
+									"value": "local"
+								},
+								"code_string": "at0033"
+							}
+						}
+					}
+				]
+			}
+		}
+	],
+	"contacts": [
+		{
+			"name": {
+				"_type": "DV_TEXT",
+				"value": "Contact means"
+			},
+			"archetype_node_id": "at0004",
+			"addresses": [
+				{
+					"name": {
+						"_type": "DV_TEXT",
+						"value": "Home address"
+					},
+					"archetype_node_id": "at0005",
+					"details": {
+						"_type": "ITEM_TREE",
+						"archetype_node_id": "at0039",
+						"name": {
+							"_type": "DV_TEXT",
+							"value": "Tree"
+						},
+						"items": [
+							{
+								"_type": "ELEMENT",
+								"name": {
+									"_type": "DV_TEXT",
+									"value": "Street address"
+								},
+								"archetype_node_id": "at0006",
+								"value": {
+									"_type": "DV_TEXT",
+									"value": "Miguel Barreiro 3285"
+								}
+							},
+							{
+								"_type": "ELEMENT",
+								"name": {
+									"_type": "DV_TEXT",
+									"value": "City"
+								},
+								"archetype_node_id": "at0015",
+								"value": {
+									"_type": "DV_TEXT",
+									"value": "Montevideo"
+								}
+							},
+							{
+								"_type": "ELEMENT",
+								"name": {
+									"_type": "DV_TEXT",
+									"value": "State / province / department"
+								},
+								"archetype_node_id": "at0016",
+								"value": {
+									"_type": "DV_TEXT",
+									"value": "Montevideo"
+								}
+							},
+							{
+								"_type": "ELEMENT",
+								"name": {
+									"_type": "DV_TEXT",
+									"value": "Postal code"
+								},
+								"archetype_node_id": "at0017",
+								"value": {
+									"_type": "DV_TEXT",
+									"value": "11300"
+								}
+							},
+							{
+								"_type": "ELEMENT",
+								"name": {
+									"_type": "DV_TEXT",
+									"value": "Country"
+								},
+								"archetype_node_id": "at0018",
+								"value": {
+									"_type": "DV_TEXT",
+									"value": "Uruguay"
+								}
+							}
+						]
+					}
+				},
+				{
+					"name": {
+						"_type": "DV_TEXT",
+						"value": "Work address"
+					},
+					"archetype_node_id": "at0022",
+					"details": {
+						"_type": "ITEM_TREE",
+						"archetype_node_id": "at0040",
+						"name": {
+							"_type": "DV_TEXT",
+							"value": "Tree"
+						},
+						"items": [
+							{
+								"_type": "ELEMENT",
+								"name": {
+									"_type": "DV_TEXT",
+									"value": "Street address"
+								},
+								"archetype_node_id": "at0023",
+								"value": {
+									"_type": "DV_TEXT",
+									"value": "Juan Paullier 995 apt 703"
+								}
+							},
+							{
+								"_type": "ELEMENT",
+								"name": {
+									"_type": "DV_TEXT",
+									"value": "City"
+								},
+								"archetype_node_id": "at0024",
+								"value": {
+									"_type": "DV_TEXT",
+									"value": "Montevideo"
+								}
+							},
+							{
+								"_type": "ELEMENT",
+								"name": {
+									"_type": "DV_TEXT",
+									"value": "State / province / department"
+								},
+								"archetype_node_id": "at0025",
+								"value": {
+									"_type": "DV_TEXT",
+									"value": "Montevideo"
+								}
+							},
+							{
+								"_type": "ELEMENT",
+								"name": {
+									"_type": "DV_TEXT",
+									"value": "Postal code"
+								},
+								"archetype_node_id": "at0026",
+								"value": {
+									"_type": "DV_TEXT",
+									"value": "11200"
+								}
+							},
+							{
+								"_type": "ELEMENT",
+								"name": {
+									"_type": "DV_TEXT",
+									"value": "Country"
+								},
+								"archetype_node_id": "at0027",
+								"value": {
+									"_type": "DV_TEXT",
+									"value": "Uruguay"
+								}
+							}
+						]
+					}
+				},
+				{
+					"name": {
+						"_type": "DV_TEXT",
+						"value": "Phone number"
+					},
+					"archetype_node_id": "at0028",
+					"details": {
+						"_type": "ITEM_TREE",
+						"archetype_node_id": "at0041",
+						"name": {
+							"_type": "DV_TEXT",
+							"value": "Tree"
+						},
+						"items": [
+							{
+								"_type": "ELEMENT",
+								"name": {
+									"_type": "DV_TEXT",
+									"value": "Number"
+								},
+								"archetype_node_id": "at0029",
+								"value": {
+									"_type": "DV_TEXT",
+									"value": "+598 99 555 555"
+								}
+							},
+							{
+								"_type": "ELEMENT",
+								"name": {
+									"_type": "DV_TEXT",
+									"value": "Country code"
+								},
+								"archetype_node_id": "at0030",
+								"value": {
+									"_type": "DV_TEXT",
+									"value": "598"
+								}
+							}
+						]
+					}
+				},
+				{
+					"name": {
+						"_type": "DV_TEXT",
+						"value": "Email"
+					},
+					"archetype_node_id": "at0031",
+					"details": {
+						"_type": "ITEM_TREE",
+						"archetype_node_id": "at0042",
+						"name": {
+							"_type": "DV_TEXT",
+							"value": "Tree"
+						},
+						"items": [
+							{
+								"_type": "ELEMENT",
+								"name": {
+									"_type": "DV_TEXT",
+									"value": "Email address"
+								},
+								"archetype_node_id": "at0032",
+								"value": {
+									"_type": "DV_TEXT",
+									"value": "email@email.com"
+								}
+							}
+						]
+					}
+				}
+			]
+		}
+
+	],
+	"roles": [
+		{
+			"name": {
+				"_type": "DV_TEXT",
+				"value": "Patient"
+			},
+			"archetype_details": {
+				"archetype_id": {
+					"_type": "ARCHETYPE_ID",
+					"value": "openEHR-DEMOGRAPHIC-ROLE.generic_role.v1"
+				},
+				"template_id": {
+					"_type": "TEMPLATE_ID",
+					"value": "generic_role_complete"
+				},
+				"rm_version": "1.0.2"
+			},
+			"archetype_node_id": "openEHR-DEMOGRAPHIC-ROLE.generic.v1",
+			"details": {
+				"_type": "ITEM_TREE",
+				"archetype_node_id": "at0001",
+				"name": {
+					"_type": "DV_TEXT",
+					"value": "tree"
+				},
+				"items": [
+					{
+						"_type": "ELEMENT",
+						"name": {
+							"_type": "DV_TEXT",
+							"value": "identifier"
+						},
+						"archetype_node_id": "at0002",
+						"value": {
+							"_type": "DV_IDENTIFIER",
+							"id": "12345",
+							"type": "test1"
+						}
+					}
+				]
+			},
+			"identities": [
+				{
+					"name": {
+						"_type": "DV_TEXT",
+						"value": "identity"
+					},
+					"archetype_node_id": "at0004",
+					"details": {
+						"_type": "ITEM_TREE",
+						"archetype_node_id": "at0005",
+						"name": {
+							"_type": "DV_TEXT",
+							"value": "tree"
+						},
+						"items": [
+							{
+								"_type": "ELEMENT",
+								"name": {
+									"_type": "DV_TEXT",
+									"value": "name"
+								},
+								"archetype_node_id": "at0006",
+								"value": {
+									"_type": "DV_TEXT",
+									"value": "patient"
+								}
+							}
+						]
+					}
+				}
+			],
+			"capabilities": [
+				{
+					"name": {
+						"_type": "DV_TEXT",
+						"value": "identity"
+					},
+					"archetype_node_id": "at0008",
+					"credentials": {
+						"_type": "ITEM_TREE",
+						"archetype_node_id": "at0009",
+						"name": {
+							"_type": "DV_TEXT",
+							"value": "tree"
+						},
+						"items": [
+							{
+								"_type": "ELEMENT",
+								"name": {
+									"_type": "DV_TEXT",
+									"value": "capability name"
+								},
+								"archetype_node_id": "at0010",
+								"value": {
+									"_type": "DV_TEXT",
+									"value": "patient"
+								}
+							}
+						]
+					}
+				}
+			]
+		}
+	]
+}
