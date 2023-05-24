@@ -5780,7 +5780,7 @@
                     "items": {
                         "$ref": "#/definitions/CAPABILITY"
                     },
-                    "minItems": 1
+                    "minItems": 0
                 },
                 "time_validity": {
                     "$ref": "#/definitions/DV_INTERVAL"

@@ -106,29 +106,29 @@
                                 </occurrences>
                                 <node_id />
                                 <attributes xsi:type="C_SINGLE_ATTRIBUTE">
-                                <rm_attribute_name>defining_code</rm_attribute_name>
-                                <existence>
-                                    <lower_included>true</lower_included>
-                                    <upper_included>true</upper_included>
-                                    <lower_unbounded>false</lower_unbounded>
-                                    <upper_unbounded>false</upper_unbounded>
-                                    <lower>1</lower>
-                                    <upper>1</upper>
-                                </existence>
-                                <children xsi:type="C_CODE_PHRASE">
-                                    <rm_type_name>CODE_PHRASE</rm_type_name>
-                                    <occurrences>
+                                    <rm_attribute_name>defining_code</rm_attribute_name>
+                                    <existence>
                                         <lower_included>true</lower_included>
                                         <upper_included>true</upper_included>
                                         <lower_unbounded>false</lower_unbounded>
                                         <upper_unbounded>false</upper_unbounded>
                                         <lower>1</lower>
                                         <upper>1</upper>
-                                    </occurrences>
-                                    <node_id />
-                                    <!-- NOTE: the subset is url encoded, it's a snomed expression for descedants of 'person in the family' concept -->
-                                    <referenceSetUri>terminology:SNOMED-CT?subset=%3C%3C%20303071001%20%7C%20Person%20in%20the%20family%20%28person%29%20%7C</referenceSetUri>
-                                </children>
+                                    </existence>
+                                    <children xsi:type="C_CODE_REFERENCE">
+                                        <rm_type_name>CODE_PHRASE</rm_type_name>
+                                        <occurrences>
+                                            <lower_included>true</lower_included>
+                                            <upper_included>true</upper_included>
+                                            <lower_unbounded>false</lower_unbounded>
+                                            <upper_unbounded>false</upper_unbounded>
+                                            <lower>1</lower>
+                                            <upper>1</upper>
+                                        </occurrences>
+                                        <node_id />
+                                        <!-- NOTE: the sbuset is url encoded, it's a snomed expression for descedants of 'person in the family' concept -->
+                                        <referenceSetUri>terminology:SNOMED-CT?subset=%3C%3C%20303071001%20%7C%20Person%20in%20the%20family%20%28person%29%20%7C</referenceSetUri>
+                                    </children>
                                 </attributes>
                             </children>
                         </attributes>
