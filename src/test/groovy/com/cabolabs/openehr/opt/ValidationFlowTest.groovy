@@ -553,7 +553,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
       assert !report.errors
    }
-   
+
    // ===================================================
    // FOLDERs
 
@@ -1040,7 +1040,7 @@ class ValidationFlowTest extends GroovyTestCase {
 	   File file = new File(getClass().getResource(path).toURI())
       def json_person = file.text
 
-      def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
+      def parser = new OpenEhrJsonParserQuick(true) // does RM schema validation not API
       Person person = parser.parseJson(json_person)
 
       //println parser.getJsonValidationErrors()
@@ -1054,10 +1054,40 @@ class ValidationFlowTest extends GroovyTestCase {
 
 
       // SETUP RM VALIDATOR
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(person, 'com.cabolabs.openehr_opt.namespaces.default')
 
       //println report.errors
+
+      assert !report.errors
+   }
+
+   void test_person_complete_valid()
+   {
+      // PARSE JSON WITH RM SCHEMA VALIDATION
+      String path = "/canonical_json/demographic/person_complete.json"
+	   File file = new File(getClass().getResource(path).toURI())
+      def json_person = file.text
+
+      def parser = new OpenEhrJsonParserQuick(true)
+      parser.setSchemaFlavorAPI()
+      PersonDto person = parser.parsePersonDto(json_person)
+
+      println parser.getJsonValidationErrors()
+
+      assert person
+
+      // SETUP OPT REPO
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+
+      // SETUP RM VALIDATOR
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(person, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      println report.errors
 
       assert !report.errors
    }
@@ -1069,7 +1099,7 @@ class ValidationFlowTest extends GroovyTestCase {
 	   File file = new File(getClass().getResource(path).toURI())
       def json_organization = file.text
 
-      def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
+      def parser = new OpenEhrJsonParserQuick(true) // does RM schema validation not API
       parser.setSchemaFlavorAPI() // testing if schema flavor is API
       Organization organization = parser.parseJson(json_organization)
 
@@ -1101,7 +1131,7 @@ class ValidationFlowTest extends GroovyTestCase {
 	   File file = new File(getClass().getResource(path).toURI())
       def json_group = file.text
 
-      def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
+      def parser = new OpenEhrJsonParserQuick(true) // does RM schema validation not API
       Group group = parser.parseJson(json_group)
 
       //println person
@@ -1133,7 +1163,7 @@ class ValidationFlowTest extends GroovyTestCase {
 	   File file = new File(getClass().getResource(path).toURI())
       def json_agent = file.text
 
-      def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
+      def parser = new OpenEhrJsonParserQuick(true) // does RM schema validation not API
       Agent agent = parser.parseJson(json_agent)
 
       // FIXME: this should fail because the uid is mandatory and it's not in the JSON

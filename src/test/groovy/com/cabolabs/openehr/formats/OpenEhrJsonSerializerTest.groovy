@@ -198,7 +198,7 @@ class OpenEhrJsonSerializerTest extends GroovyTestCase {
                   items: [
                      new Element(
                         name: new DvText(
-                           value: 'element'
+                           value: 'capability name'
                         ),
                         archetype_node_id: 'at0010',
                         value: new DvText(
