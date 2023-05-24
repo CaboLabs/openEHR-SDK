@@ -260,10 +260,13 @@ class RmValidator2 {
    // all container attributes will get here
    private RmValidationReport validate(Locatable parent, List container, AttributeNode cma)
    {
-      //println "validate container attribute: "+ cma.rmAttributeName
-      //println cma.templatePath
-      //println cma.templateDataPath
-      //println cma.dataPath
+      // println "validate container attribute: "+ cma.rmAttributeName
+
+      // println cma.templatePath
+      // println cma.templateDataPath
+      // println cma.dataPath
+      // println "multiple attr children nodes :"+ cma.children.nodeId
+      // println "container: "+ container
 
       RmValidationReport report = new RmValidationReport()
 
@@ -347,6 +350,8 @@ class RmValidator2 {
       def alternative_cobjs, cobj, error_report, name_constraint
       container.eachWithIndex { item, i ->
 
+         // println "item: "+ item
+
          item.dataPath = parent.dataPath +'/'+ cma.rmAttributeName +'('+ i +')'
 
          // println "item "+ item.archetype_node_id
@@ -379,7 +384,7 @@ class RmValidator2 {
          }
 
 
-         // println "item "+ item.archetype_node_id
+         // println "item archetype_node_id "+ item.archetype_node_id
          // println "alternative_cobjs "+ alternative_cobjs
          // println "alternative node_ids "+ alternative_cobjs*.nodeId
 
@@ -436,7 +441,7 @@ class RmValidator2 {
                //println cma.templateDataPath
                report.addError(
                   cma.templateDataPath,
-                  "Multiple alternative constraint objects found for archetype_node_id '${item.archetype_node_id}' at ${item.dataPath}, none matches the constraints for the name or the current node text '${item.name.value}' in the OPT"
+                  "Multiple alternative constraint objects found for archetype_node_id '${item.archetype_node_id}' at ${item.dataPath}, none matches the constraints for the name or the current node text '${item.name?.value}' in the OPT"
                )
             }
 
@@ -535,6 +540,41 @@ class RmValidator2 {
 
       // TODO: time_validity
       // TODO: performer
+
+      validate_multiple_attribute(role, o, 'capabilities', report)
+
+      return report
+   }
+
+   private RmValidationReport validate(Contact contact, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      report.append(_validate_locatable(contact, o))
+
+      validate_multiple_attribute(contact, o, 'addresses', report)
+
+      return report
+   }
+
+   private RmValidationReport validate(Address address, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      report.append(_validate_locatable(address, o))
+
+      validate_single_attribute(address, o, 'details', report)
+
+      return report
+   }
+
+   private RmValidationReport validate(Capability capability, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      report.append(_validate_locatable(capability, o))
+
+      validate_single_attribute(capability, o, 'credentials', report)
 
       return report
    }
