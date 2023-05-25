@@ -1392,10 +1392,10 @@ class OpenEhrJsonSerializer {
    {
       def out = [:]
 
-      out.issuer = o.issuer
-      out.assigner = o.assigner
       out.id = o.id
-      out.type = o.type
+      if (o.issuer) out.issuer = o.issuer
+      if (o.assigner) out.assigner = o.assigner
+      if (o.type) out.type = o.type
 
       return out
    }

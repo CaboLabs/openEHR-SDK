@@ -1072,6 +1072,7 @@ class ValidationFlowTest extends GroovyTestCase {
       def parser = new OpenEhrJsonParserQuick(true)
       parser.setSchemaFlavorAPI()
       PersonDto person = parser.parsePersonDto(json_person)
+      //PersonDto person = parser.parseActorDto(json_person) // This also works
 
       println parser.getJsonValidationErrors()
 

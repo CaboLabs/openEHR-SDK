@@ -722,8 +722,6 @@ class OpenEhrJsonParserQuick {
       def slurper = new JsonSlurper()
       def map = slurper.parseText(json)
 
-      // FIXME: EHR is not LOCATABLE and doesn't have info about the rm_version!
-      // For the API EHR we could access the EHR_STATUS.archetype_details.rm_version, but for RM EHRs, ehr_status is an OBJECT_REF that should be resolved.
       if (this.schemaValidate)
       {
          // independently from schemaFlavor, this will always be "api" since it is asking to parse an API EhrDto
