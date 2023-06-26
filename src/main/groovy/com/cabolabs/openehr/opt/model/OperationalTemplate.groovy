@@ -10,6 +10,7 @@ class OperationalTemplate {
    String templateId
    String concept
    boolean isControlled = false
+   boolean isCompleted = false // true when complete() is called
 
    // language is CODE_PHRASE, will be coded as terminology_id::code_string
    // http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
@@ -287,6 +288,7 @@ class OperationalTemplate {
    def complete()
    {
       completeRecursive(this.definition)
+      this.isCompleted = true
    }
    private completeRecursive(ObjectNode obn)
    {
@@ -345,7 +347,7 @@ class OperationalTemplate {
                )
                // TODO: default_values
             )
-            
+
             // Add dummy text and description for the new nodes
             obnc.text = obnc.parent.parent.text +'.'+ obnc.parent.rmAttributeName
             obnc.description = obnc.parent.parent.description +'.'+ obnc.parent.rmAttributeName
@@ -358,10 +360,13 @@ class OperationalTemplate {
             this.nodes[obnc.templatePath] << obnc
 
             obn.attributes << atnc
-            
+
             // Add nodes to the current ObjectNode
             if (!obn.nodes[obnc.templatePath]) obn.nodes[obnc.templatePath] = []
             obn.nodes[obnc.templatePath] << obnc
+
+            // TODO: info log
+            //println "adding new node ${obnc.templatePath} to node ${obn.templatePath}"
          }
       }
 

@@ -341,4 +341,37 @@ class OptManagerTest extends GroovyTestCase {
       println json
 
    }
+
+   void testAttributesNotInOptObservation()
+   {
+      def opt = man.getOpt('lab_results1', OptManager.DEFAULT_NAMESPACE)
+      def obj = opt.findRoot('openEHR-EHR-OBSERVATION.lab_test-blood_glucose.v1')
+
+      // obj.nodes.sort{it.key}.each {
+      //    println it
+      // }
+/*
+      assert !obj.nodes['/time_validity']
+      assert !obj.nodes['/source']
+*/
+      opt.complete()
+
+      obj = opt.findRoot('openEHR-EHR-OBSERVATION.lab_test-blood_glucose.v1')
+
+println "obj path "+ obj.templatePath
+
+      obj.nodes.sort{it.key}.each {
+         println it
+      }
+/*
+      assert obj.nodes['/time_validity']
+      assert obj.nodes['/source']
+*/
+
+      def toJson = new JsonSerializer()
+      toJson.serialize(obj)
+      def json = toJson.get()
+      println json
+
+   }
 }

@@ -4,10 +4,10 @@
 		"_type": "DV_TEXT",
 		"value": "person_complete"
 	},
-	"archetype_node_id": "openEHR-DEMOGRAPHIC-PERSON.generic_person.v1",
+	"archetype_node_id": "openEHR-DEMOGRAPHIC-PERSON.person_complete.v0",
 	"archetype_details": {
 		"archetype_id": {
-			"value": "openEHR-DEMOGRAPHIC-PERSON.generic_person.v1"
+			"value": "openEHR-DEMOGRAPHIC-PERSON.person_complete.v0"
 		},
 		"template_id": {
 			"value": "person_complete"
@@ -83,7 +83,7 @@
 						"archetype_node_id": "at0008",
 						"value": {
 							"_type": "DV_DATE",
-							"value": "__DOB__"
+							"value": "1981-10-24"
 						}
 					},
 					{
@@ -362,7 +362,7 @@
 				},
 				"rm_version": "1.0.2"
 			},
-			"archetype_node_id": "openEHR-DEMOGRAPHIC-ROLE.generic.v1",
+			"archetype_node_id": "openEHR-DEMOGRAPHIC-ROLE.generic_role.v1",
 			"details": {
 				"_type": "ITEM_TREE",
 				"archetype_node_id": "at0001",

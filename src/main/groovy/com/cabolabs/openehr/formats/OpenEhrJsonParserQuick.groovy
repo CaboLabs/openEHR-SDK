@@ -1229,7 +1229,7 @@ class OpenEhrJsonParserQuick {
             type += 'Dto'
          }
 
-         println "type $type"
+         //println "type $type"
 
 
          def method = 'parse'+ type

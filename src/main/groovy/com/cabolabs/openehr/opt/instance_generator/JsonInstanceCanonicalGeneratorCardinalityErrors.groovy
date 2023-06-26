@@ -1539,6 +1539,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
       }
       else
       {
+         // TODO: warning log
          println "Interval event math function constraint not found, generating one"
          mobj.math_function = [ // coded text attribute
             value: "maximum",
