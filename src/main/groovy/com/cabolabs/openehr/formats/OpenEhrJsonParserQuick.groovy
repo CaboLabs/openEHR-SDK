@@ -48,7 +48,7 @@ class OpenEhrJsonParserQuick {
 
    def jsonValidator
 
-   def schemaValidate
+   def schemaValidate = false
    def schemaFlavor = "rm" // rm | api
 
    // https://javadoc.io/doc/com.networknt/json-schema-validator/1.0.51/com/networknt/schema/ValidationMessage.html
@@ -180,7 +180,6 @@ class OpenEhrJsonParserQuick {
             throw new Exception("archetype_details.rm_version is required for the root of any archetypable class")
          }
 
-         // TODO: the schema flavor should be a parameter: rm | api
          this.jsonValidator = new JsonInstanceValidation(this.schemaFlavor, map.archetype_details.rm_version)
 
          def errors = jsonValidator.validate(json)
@@ -241,6 +240,7 @@ class OpenEhrJsonParserQuick {
          throw new JsonParseException("Can't parse JSON if root node doesn't have a value for _type")
       }
 
+      // TODO: support IMPORTED_VERSION
       if (!['ORIGINAL_VERSION', 'IMPORTED_VERSION'].contains(type))
       {
          throw new JsonParseException("Can't parse JSON: type ${type} should be either ORIGINAL_VERSION or IMPORTED_VERSION")
@@ -400,6 +400,8 @@ class OpenEhrJsonParserQuick {
       def map = slurper.parseText(json)
       String type, method
 
+      // TODO: schema validation?
+
       def contribution = new Contribution(versions: new HashSet())
 
       // note for the RM the uid is mandatory, in the DTO the uid is optional
@@ -446,7 +448,7 @@ class OpenEhrJsonParserQuick {
          type = json.uid._type
          if (!type)
          {
-            throw new JsonParseException("_type required for "+ l.get +".uid")
+            throw new JsonParseException("_type required for LOCATABLE.uid")
          }
          method = 'parse'+ type
          l.uid = this."$method"(json.uid)
@@ -1024,33 +1026,6 @@ class OpenEhrJsonParserQuick {
       return status
    }
 
-   // this is not used anymore
-   // private EhrStatus parseEHR_STATUS(Map json, Pathable parent)
-   // {
-   //    def status = new EhrStatus()
-
-   //    this.fillLOCATABLE(status, json, parent)
-
-   //    if (json.subject)
-   //    {
-   //       status.subject = this.parsePARTY_SELF(json.subject)
-   //    }
-
-   //    status.is_modifiable = json.is_modifiable
-   //    status.is_queryable = json.is_queryable
-
-   //    if (json.other_details)
-   //    {
-   //       String method = 'parse'+ json.other_details._type
-
-   //       status.other_details = this."$method"(
-   //          json.other_details, status
-   //       )
-   //    }
-
-   //    return status
-   // }
-
    /**
     * This method is here for completeness, most implementations don't even have support for EHR_ACCESS internally.
     */
@@ -1135,9 +1110,7 @@ class OpenEhrJsonParserQuick {
          folder.folders = []
          json.folders.eachWithIndex { subfolder, i ->
 
-            folder.folders << this.parseFOLDER(
-               subfolder, folder
-            )
+            folder.folders << this.parseFOLDER(subfolder, folder)
          }
       }
 
@@ -1164,9 +1137,7 @@ class OpenEhrJsonParserQuick {
          folder.folders = []
          json.folders.eachWithIndex { subfolder, i ->
 
-            folder.folders << this.parseFOLDER(
-               subfolder, folder
-            )
+            folder.folders << this.parseFOLDER(subfolder, folder)
          }
       }
 

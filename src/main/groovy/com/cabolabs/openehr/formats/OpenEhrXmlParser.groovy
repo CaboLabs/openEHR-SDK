@@ -28,6 +28,9 @@ import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 import com.cabolabs.openehr.dto_1_0_2.common.change_control.ContributionDto
 
+import com.cabolabs.openehr.dto_1_0_2.ehr.EhrDto
+import com.cabolabs.openehr.rm_1_0_2.common.directory.Folder
+
 // Old Groovy
 import groovy.util.XmlSlurper
 import groovy.util.slurpersupport.GPathResult
@@ -36,54 +39,159 @@ import groovy.util.slurpersupport.GPathResult
 //import groovy.xml.XmlSlurper
 //import groovy.xml.slurpersupport.GPathResult
 
+@groovy.util.logging.Log4j
 class OpenEhrXmlParser {
+
+   def schemaValidate = false
+   def schemaFlavor = "rm"
+   def schemaValidator
+   def schemaValidationErrors
+
+   def OpenEhrXmlParser(boolean schemaValidate = false)
+   {
+      this.schemaValidate = schemaValidate
+   }
+
+   def setSchemaFlavorAPI()
+   {
+      this.schemaFlavor = "api"
+   }
+
+   def setSchemaFlavorRM()
+   {
+      this.schemaFlavor = "rm"
+   }
+
+   /**
+    * Returns errors from the schema validation.
+    */
+   def getValidationErrors()
+   {
+      if (!schemaValidate)
+      {
+         throw new Exception("schemaValidate wasn't set to true")
+      }
+
+      // TODO: need to check if the validation was run before calling this method.
+
+      return this.schemaValidationErrors
+   }
 
    // ========= ENTRY POINTS =========
 
    // TODO: parse folder
 
-   // TODO:
    Ehr parseEhr(String xml)
-   {
-
-   }
-
-   EhrStatus parseEhrStatus(String xml)
-   {
-
-   }
-
-   EhrStatus parseEhrStatus(GPathResult xml)
-   {
-
-   }
-
-   // used to parse compositions and other descendant from Locatable
-   Locatable parseXml(String xml)
    {
       def slurper = new XmlSlurper(false, false)
       def gpath = slurper.parseText(xml)
+
+      if (this.schemaValidate)
+      {
+         // TODO: setup validation and validate XML
+         // NOTE: favour should be 'rm'
+      }
+
+      def ehr = new Ehr()
+
+      ehr.system_id = this.parseHIER_OBJECT_ID(gpath.system_id)
+
+      ehr.ehr_id = this.parseHIER_OBJECT_ID(gpath.ehr_id)
+
+      ehr.time_created = this.parseDV_DATE_TIME(gpath.time_created)
+
+      // TODO: check it's an OBJECT_REF not a EHR_STATUS instance
+      ehr.ehr_status = this.parseOBJECT_REF(gpath.ehr_status)
+
+      return ehr
+   }
+
+   EhrDto parseEhrDto(String xml)
+   {
+      def slurper = new XmlSlurper(false, false)
+      def gpath = slurper.parseText(xml)
+
+      if (this.schemaValidate)
+      {
+         // TODO: setup validation and validate XML
+         // NOTE: favour should be 'api'
+      }
+
+      def ehr = new EhrDto()
+
+      ehr.system_id = this.parseHIER_OBJECT_ID(gpath.system_id)
+
+      ehr.ehr_id = this.parseHIER_OBJECT_ID(gpath.ehr_id)
+
+      ehr.time_created = this.parseDV_DATE_TIME(gpath.time_created)
+
+      // TODO: check this is EHR_STATUS not OBJECT_REF
+      ehr.ehr_status = this.parseEHR_STATUS(gpath.ehr_status)
+
+      if (gpath.ehr_access)
+      {
+         ehr.ehr_access = this.parseEHR_ACCESS(gpath.ehr_access)
+      }
+
+      return ehr
+   }
+
+
+   // used to parse compositions and other descendant from Locatable
+   Locatable parseLocatable(String xml)
+   {
+      def slurper = new XmlSlurper(false, false)
+      def gpath = slurper.parseText(xml)
+
+      if (this.schemaValidate)
+      {
+         if (!gpath.archetype_details || !gpath.archetype_details.rm_version) // rm version aware
+         {
+            throw new Exception("archetype_details.rm_version is required for the root of any archetypable class")
+         }
+
+         // TODO: add the xml schema validation and error reporting
+      }
+
       String type = gpath.'@xsi:type'.text()
 
       if (!type)
       {
-         throw new XmlCompositionParseException("Can't parse XML if root node doesn't have a xsi:type")
+         throw new XmlParseException("Can't parse XML if root node doesn't have a xsi:type")
       }
 
       def method = 'parse'+ type
-      return this."$method"(gpath, null, '/', '/')
+      return this."$method"(gpath)
    }
 
+
    // used to parse versions because is not Locatable
-   Version parseVersionXml(String xml)
+   Version parseVersion(String xml)
    {
       def slurper = new XmlSlurper(false, false)
       def gpath   = slurper.parseText(xml)
+
+      if (this.schemaValidate)
+      {
+         if (!gpath.archetype_details || !gpath.archetype_details.rm_version) // rm version aware
+         {
+            throw new Exception("archetype_details.rm_version is required for the root of any archetypable class")
+         }
+
+         // TODO: add the xml schema validation and error reporting
+      }
+
       String type = gpath.'@xsi:type'.text()
 
       if (!type)
       {
-         throw new XmlCompositionParseException("Can't parse XML if root node doesn't have a xsi:type")
+         throw new XmlParseException("Can't parse XML if root node doesn't have a xsi:type")
+      }
+
+      // TODO: support IMPORTED_VERSION
+      if (!['ORIGINAL_VERSION', 'IMPORTED_VERSION'].contains(type))
+      {
+         throw new XmlParseException("Can't parse JSON: type ${type} should be either ORIGINAL_VERSION or IMPORTED_VERSION")
       }
 
       def method = 'parse'+ type
@@ -94,10 +202,12 @@ class OpenEhrXmlParser {
       }
       catch (Exception e)
       {
-         throw new XmlCompositionParseException("Can't parse XML, check ${type} is a VERSION type. If you tried to parse a LOCATABLE, use the parseXml method", e)
+         println e.message
+         throw new XmlParseException("Can't parse XML, check ${type} is a VERSION type. If you tried to parse a LOCATABLE, use the parseXml method", e)
       }
       return out
    }
+
 
    // Used to parse the payload for POST /contributon of the openEHR REST API
    List<Version> parseVersionList(String xml)
@@ -126,7 +236,12 @@ class OpenEhrXmlParser {
 
          if (!type)
          {
-            throw new XmlCompositionParseException("Can't parse XML if node doesn't have a xsi:type")
+            throw new XmlParseException("Can't parse XML if node doesn't have a xsi:type")
+         }
+
+         if (!['ORIGINAL_VERSION', 'IMPORTED_VERSION'].contains(type))
+         {
+            throw new XmlParseException("Can't parse JSON: type ${type} should be either ORIGINAL_VERSION or IMPORTED_VERSION")
          }
 
          method = 'parse'+ type
@@ -140,6 +255,17 @@ class OpenEhrXmlParser {
    {
       def slurper = new XmlSlurper(false, false)
       def gpath   = slurper.parseText(xml)
+
+      if (this.schemaValidate)
+      {
+         // TODO:
+
+         // TODO: can't get the rm_version from a contribution
+
+         // NOTE: since this is DTO, the schema flavor will always be api
+         //this.schemaValidator = new JsonInstanceValidation('api', '1.0.2') // FIXME: hardcoded rm_version, should be a parameter
+      }
+
       String type, method
       Version version
 
@@ -157,7 +283,7 @@ class OpenEhrXmlParser {
 
          if (!type)
          {
-            throw new XmlCompositionParseException("Can't parse XML if node doesn't have a xsi:type")
+            throw new XmlParseException("Can't parse XML if node doesn't have a xsi:type")
          }
 
          method = 'parse'+ type
@@ -174,6 +300,8 @@ class OpenEhrXmlParser {
       def slurper = new XmlSlurper(false, false)
       def gpath   = slurper.parseText(xml)
       String type, method
+
+      // TODO: schema validation?
 
       def contribution = new Contribution(versions: new HashSet())
 
@@ -202,16 +330,10 @@ class OpenEhrXmlParser {
       return o
    }
 
+
    // ========= FIll METHODS =========
 
-   private void fillPATHABLE(Pathable p, Pathable parent, String path, String dataPath)
-   {
-      p.parent   = parent
-      p.path     = path
-      p.dataPath = dataPath
-   }
-
-   private void fillLOCATABLE(Locatable l, GPathResult xml, Pathable parent, String path, String dataPath)
+   private void fillLOCATABLE(Locatable l, GPathResult xml, Pathable parent)
    {
       // name can be text or coded
       String type = xml.name.'@xsi:type'.text()
@@ -229,7 +351,7 @@ class OpenEhrXmlParser {
          type = xml.uid.'@xsi:type'.text()
          if (!type)
          {
-            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".uid")
+            throw new XmlParseException("@xsi:type required for LOCATABLE.uid")
          }
          method = 'parse'+ type
          l.uid = this."$method"(xml.uid)
@@ -238,14 +360,14 @@ class OpenEhrXmlParser {
       if (!xml.archetype_details.isEmpty())
          l.archetype_details = this.parseARCHETYPED(xml.archetype_details)
 
-      this.fillPATHABLE(l, parent, path, dataPath)
+      //this.fillPATHABLE(l, parent)
    }
 
-   private void fillENTRY(Entry e, GPathResult xml, Pathable parent, String path, String dataPath)
+   private void fillENTRY(Entry e, GPathResult xml, Pathable parent)
    {
       String type, method
 
-      this.fillLOCATABLE(e, xml, parent, path, dataPath)
+      this.fillLOCATABLE(e, xml, parent)
 
       e.encoding = this.parseCODE_PHRASE(xml.encoding)
       e.language = this.parseCODE_PHRASE(xml.language)
@@ -254,7 +376,7 @@ class OpenEhrXmlParser {
       type = xml.subject.'@xsi:type'.text()
       if (!type)
       {
-         throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".subject")
+         throw new XmlParseException("@xsi:type required for ENTRY.subject")
       }
       method = 'parse'+ type
       e.subject = this."$method"(xml.subject)
@@ -265,7 +387,7 @@ class OpenEhrXmlParser {
          type = xml.provider.'@xsi:type'.text()
          if (!type)
          {
-            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".provider")
+            throw new XmlParseException("@xsi:type required for ENTRY.provider")
          }
          method = 'parse'+ type
          e.provider = this."$method"(xml.provider)
@@ -289,21 +411,18 @@ class OpenEhrXmlParser {
       }
    }
 
-   private void fillCARE_ENTRY(CareEntry c, GPathResult xml, Pathable parent, String path, String dataPath)
+   private void fillCARE_ENTRY(CareEntry c, GPathResult xml, Pathable parent)
    {
       if (!xml.protocol.isEmpty())
       {
          String type = xml.protocol.'@xsi:type'.text()
          if (!type)
          {
-            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".protocol")
+            throw new XmlParseException("@xsi:type required for CARE_ENTRY.protocol")
          }
          String method = 'parse'+ type
-         String path_node_id = (xml.protocol.@archetype_node_id.text().startsWith('at') ? xml.protocol.@archetype_node_id.text() : 'archetype_id='+ xml.protocol.@archetype_node_id.text())
-         c.protocol = this."$method"(xml.protocol, parent,
-                                     (path != '/' ? path +'/protocol['+ path_node_id +']' : '/protocol['+ path_node_id +']'),
-                                     (dataPath != '/' ? dataPath +'/protocol['+ path_node_id +']' : '/protocol['+ path_node_id +']')
-                                    )
+         //String path_node_id = (xml.protocol.@archetype_node_id.text().startsWith('at') ? xml.protocol.@archetype_node_id.text() : 'archetype_id='+ xml.protocol.@archetype_node_id.text())
+         c.protocol = this."$method"(xml.protocol, parent)
       }
 
       if (!xml.guideline_id.isEmpty())
@@ -311,11 +430,50 @@ class OpenEhrXmlParser {
          c.guideline_id = this.parseOBJECT_REF(xml.guideline_id)
       }
 
-      this.fillENTRY(c, xml, parent, path, dataPath)
+      this.fillENTRY(c, xml, parent)
    }
+
+   /* TODO:
+
+   - fillPARTY
+   - fillACTOR
+   - fillPartyDto
+   - fillActorDto
+
+   */
 
 
    // ========= PARSE METHODS =========
+
+   // TODO: parse demographics
+
+
+    // NOTE: parseEHR_STATUS is a top level class so it doesn't have a Pathable parent and the path is /
+   private EhrStatus parseEHR_STATUS(GPathResult xml)
+   {
+      def status = new EhrStatus()
+
+      this.fillLOCATABLE(status, xml, null)
+
+      // subject is mandatory, is the ref inside that might be optional
+      //if (map.subject)
+      //{
+         status.subject = this.parsePARTY_SELF(xml.subject)
+      //}
+
+      // TODO: test these two are parsed correctly
+      status.is_modifiable = xml.is_modifiable.text().toBoolean()
+      status.is_queryable = xml.is_queryable.text().toBoolean()
+
+      if (xml.other_details)
+      {
+         String method = 'parse'+ xml.other_details.'@xsi:type'.text()
+         status.other_details = this."$method"(xml.other_details, status)
+      }
+
+      return status
+   }
+
 
    private OriginalVersion parseORIGINAL_VERSION(GPathResult xml)
    {
@@ -355,10 +513,10 @@ class OpenEhrXmlParser {
          def type = xml.data.'@xsi:type'.text()
          if (!type)
          {
-            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".data")
+            throw new XmlParseException("@xsi:type required for ORIGINAL_VERSION.data")
          }
          def method = 'parse'+ type
-         ov.data = this."$method"(xml.data, null, '/', '/')
+         ov.data = this."$method"(xml.data)
       }
 
       return ov
@@ -380,7 +538,7 @@ class OpenEhrXmlParser {
       def type = xml.committer.'@xsi:type'.text()
       if (!type)
       {
-         throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".committer")
+         throw new XmlParseException("@xsi:type required for AUDIT_DETAILS.committer")
       }
       def method = 'parse'+ type
       ad.committer = this."$method"(xml.committer)
@@ -405,7 +563,7 @@ class OpenEhrXmlParser {
       def type = xml.committer.'@xsi:type'.text()
       if (!type)
       {
-         throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".committer")
+         throw new XmlParseException("@xsi:type required for ATTESTATION.committer")
       }
       def method = 'parse'+ type
       at.committer = this."$method"(xml.committer)
@@ -426,7 +584,7 @@ class OpenEhrXmlParser {
       type = xml.reason.'@xsi:type'.text() // text or coded
       if (!type)
       {
-         throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".reason")
+         throw new XmlParseException("@xsi:type required for ATTESTATION.reason")
       }
       method = 'parse'+ type
       at.reason = this."$method"(xml.reason)
@@ -437,12 +595,11 @@ class OpenEhrXmlParser {
       return at
    }
 
-
-   private Composition parseCOMPOSITION(GPathResult xml, Pathable parent, String path, String dataPath)
+   private Composition parseCOMPOSITION(GPathResult xml)
    {
       Composition compo = new Composition()
 
-      this.fillLOCATABLE(compo, xml, parent, path, dataPath)
+      this.fillLOCATABLE(compo, xml, null)
 
       compo.language  = this.parseCODE_PHRASE(xml.language)
       compo.territory = this.parseCODE_PHRASE(xml.territory)
@@ -453,16 +610,13 @@ class OpenEhrXmlParser {
       type = xml.composer.'@xsi:type'.text() // party proxy or descendants
       if (!type)
       {
-         throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".composer")
+         throw new XmlParseException("@xsi:type required for COMPOSITION.composer")
       }
       method = 'parse'+ type
       compo.composer = this."$method"(xml.composer)
 
       // NOTE: these paths are not using the node_id, are just attribute paths
-      compo.context = parseEVENT_CONTEXT(xml.context, compo,
-                                         (path != '/' ? path +'/context' : '/context'),
-                                         (dataPath != '/' ? dataPath +'/context' : '/context')
-                                        )
+      compo.context = parseEVENT_CONTEXT(xml.context, compo)
 
       def content = []
 
@@ -470,19 +624,55 @@ class OpenEhrXmlParser {
          type = content_item.'@xsi:type'.text()
          if (!type)
          {
-            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".content[$i]")
+            throw new XmlParseException("@xsi:type required for COMPOSITION.content[$i]")
          }
          method = 'parse'+ type
          if (!compo.content) compo.content = []
          compo.content.add(
-            this."$method"(content_item, compo,
-                           (path != '/' ? path +'/content' : '/content'),
-                           (dataPath != '/' ? dataPath +'/content['+ i +']' : '/content['+ i +']')
-                          )
+            this."$method"(content_item, compo)
          )
       }
 
       return compo
+   }
+
+   // This will parse the top level directory that doesn't have a LOCATABLE parent
+   private Folder parseFOLDER(GPathResult xml)
+   {
+      parseFolderInternal(xml, null)
+   }
+
+   // Parses subfolders of a parent folder locatable
+   // private Folder parseFOLDER(GPathResult xml, Folder parent)
+   // {
+   //    parseFolderInternal(xml, parent)
+   // }
+
+   // Reuses code for both parseFOLDER methods
+   private Folder parseFolderInternal(GPathResult xml, Folder parent)
+   {
+      def folder = new Folder()
+
+      this.fillLOCATABLE(folder, xml, parent)
+
+      if (!xml.items.isEmpty())
+      {
+         folder.items = []
+         xml.items.each { item ->
+            folder.items << this.parseOBJECT_REF(item)
+         }
+      }
+
+      if (!xml.folders.isEmpty())
+      {
+         folder.folders = []
+         xml.folders.each { subfolder ->
+
+            folder.folders << this.parseFolderInternal(subfolder, folder)
+         }
+      }
+
+      return folder
    }
 
    private ReferenceRange parseREFERENCE_RANGE(GPathResult xml)
@@ -636,7 +826,7 @@ class OpenEhrXmlParser {
       String type = xml.id.'@xsi:type'.text()
       if (!type)
       {
-         throw new XmlCompositionParseException("@xsi:type required for OBJECT_REF.id")
+         throw new XmlParseException("@xsi:type required for OBJECT_REF.id")
       }
       String method = 'parse'+ type
       o.id = this."$method"(xml.id)
@@ -654,7 +844,7 @@ class OpenEhrXmlParser {
       String type = xml.id.'@xsi:type'.text()
       if (!type)
       {
-         throw new XmlCompositionParseException("@xsi:type required for PARTY_REF.id")
+         throw new XmlParseException("@xsi:type required for PARTY_REF.id")
       }
       String method = 'parse'+ type
       p.id = this."$method"(xml.id)
@@ -675,7 +865,7 @@ class OpenEhrXmlParser {
       String type = xml.id.'@xsi:type'.text()
       if (!type)
       {
-         throw new XmlCompositionParseException("@xsi:type required for LOCATABLE_REF.id")
+         throw new XmlParseException("@xsi:type required for LOCATABLE_REF.id")
       }
       String method = 'parse'+ type
       o.id = this."$method"(xml.id)
@@ -697,11 +887,11 @@ class OpenEhrXmlParser {
    }
 
 
-   private EventContext parseEVENT_CONTEXT(GPathResult xml, Pathable parent, String path, String dataPath)
+   private EventContext parseEVENT_CONTEXT(GPathResult xml, Pathable parent)
    {
       EventContext e = new EventContext()
 
-      this.fillPATHABLE(e, parent, path, dataPath)
+      //this.fillPATHABLE(e, parent)
 
       e.start_time = this.parseDV_DATE_TIME(xml.start_time)
 
@@ -718,13 +908,10 @@ class OpenEhrXmlParser {
          type = xml.other_context.'@xsi:type'.text()
          if (!type)
          {
-            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".other_context")
+            throw new XmlParseException("@xsi:type required for EVENT_CONTEXT.other_context")
          }
          method = 'parse'+ type
-         e.other_context = this."$method"(xml.other_context, e,
-            path + (path != '/' ? '/' : '') + 'other_context',
-            dataPath + (dataPath != '/' ? '/' : '') + 'other_context'
-         )
+         e.other_context = this."$method"(xml.other_context, e)
       }
 
       // TODO: health_care_facility
@@ -752,7 +939,7 @@ class OpenEhrXmlParser {
       String type = xml.performer.'@xsi:type'.text()
       if (!type)
       {
-         throw new XmlCompositionParseException("@xsi:type required for PARTICIPATION.performer")
+         throw new XmlParseException("@xsi:type required for PARTICIPATION.performer")
       }
       String method = 'parse'+ type
       p.performer = this."$method"(xml.performer)
@@ -760,11 +947,11 @@ class OpenEhrXmlParser {
       return p
    }
 
-   private Section parseSECTION(GPathResult xml, Pathable parent, String path, String dataPath)
+   private Section parseSECTION(GPathResult xml, Pathable parent)
    {
       Section section = new Section()
 
-      this.fillLOCATABLE(section, xml, parent, path, dataPath)
+      this.fillLOCATABLE(section, xml, parent)
 
       String type, method
 
@@ -772,71 +959,59 @@ class OpenEhrXmlParser {
          type = content_item.'@xsi:type'.text()
          if (!type)
          {
-            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".items[$i]")
+            throw new XmlParseException("@xsi:type required for SECTION.items[$i]")
          }
          method = 'parse'+ type
          if (!section.items) section.items = []
          section.items.add(
-            this."$method"(content_item, section,
-                           (path != '/' ? path +'/items' : '/items'),
-                           (dataPath != '/' ? dataPath +'/items['+ i +']' : '/items['+ i +']')
-                          )
+            this."$method"(content_item, section)
          )
       }
 
       return section
    }
 
-   private AdminEntry parseADMIN_ENTRY(GPathResult xml, Pathable parent, String path, String dataPath)
+   private AdminEntry parseADMIN_ENTRY(GPathResult xml, Pathable parent)
    {
       AdminEntry a = new AdminEntry()
 
-      this.fillENTRY(a, xml, parent, path, dataPath)
+      this.fillENTRY(a, xml, parent)
 
       String type = xml.data.'@xsi:type'.text()
       if (!type)
       {
-         throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".data")
+         throw new XmlParseException("@xsi:type required for ACMIN_ENTRY.data")
       }
       String method = 'parse'+ type
-      a.data = this."$method"(xml.data, a,
-                               (path != '/' ? path +'/data' : '/data'),
-                               (dataPath != '/' ? dataPath +'/data' : '/data')
-                             )
+      a.data = this."$method"(xml.data, a)
 
       return a
    }
 
-   private Observation parseOBSERVATION(GPathResult xml, Pathable parent, String path, String dataPath)
+   private Observation parseOBSERVATION(GPathResult xml, Pathable parent)
    {
       Observation o = new Observation()
 
-      this.fillCARE_ENTRY(o, xml, parent, path, dataPath)
+      this.fillCARE_ENTRY(o, xml, parent)
 
       if (!xml.data.isEmpty())
       {
-         o.data = this.parseHISTORY(xml.data, o,
-                                     (path != '/' ? path +'/data' : '/data'),
-                                     (dataPath != '/' ? dataPath +'/data' : '/data')
-                                   )
+         o.data = this.parseHISTORY(xml.data, o)
       }
 
       if (!xml.state.isEmpty())
       {
-         o.state = this.parseHISTORY(xml.state, o,
-                                     (path != '/' ? path +'/state' : '/state'),
-                                     (dataPath != '/' ? dataPath +'/state' : '/state')
-                                    )
+         o.state = this.parseHISTORY(xml.state, o)
       }
 
       return o
    }
 
-   private History parseHISTORY(GPathResult xml, Pathable parent, String path, String dataPath)
+   private History parseHISTORY(GPathResult xml, Pathable parent)
    {
       History h = new History()
 
-      this.fillLOCATABLE(h, xml, parent, path, dataPath)
+      this.fillLOCATABLE(h, xml, parent)
 
       h.origin = this.parseDV_DATE_TIME(xml.origin)
 
@@ -856,21 +1031,18 @@ class OpenEhrXmlParser {
          method = 'parse'+ type
          if (!h.events) h.events = []
          h.events.add(
-            this."$method"(event, h,
-                           (path != '/' ? path +'/events' : '/events'),
-                           (dataPath != '/' ? dataPath +'/events['+ i +']' : '/events['+ i +']')
-                          )
+            this."$method"(event, h)
          )
       }
 
       return h
    }
 
-   private PointEvent parsePOINT_EVENT(GPathResult xml, Pathable parent, String path, String dataPath)
+   private PointEvent parsePOINT_EVENT(GPathResult xml, Pathable parent)
    {
       PointEvent e = new PointEvent()
 
-      this.fillLOCATABLE(e, xml, parent, path, dataPath)
+      this.fillLOCATABLE(e, xml, parent)
 
       e.time = this.parseDV_DATE_TIME(xml.time)
 
@@ -881,13 +1053,10 @@ class OpenEhrXmlParser {
          type = xml.data.'@xsi:type'.text()
          if (!type)
          {
-            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".data")
+            throw new XmlParseException("@xsi:type required for POINT_EVENT.data")
          }
          method = 'parse'+ type
-         e.data = this."$method"(xml.data, e,
-                                 (path != '/' ? path +'/data' : '/data'),
-                                 (dataPath != '/' ? dataPath +'/data' : '/data')
-                                )
+         e.data = this."$method"(xml.data, e)
       }
 
       if (!xml.state.isEmpty())
@@ -895,23 +1064,20 @@ class OpenEhrXmlParser {
          type = xml.state.'@xsi:type'.text()
          if (!type)
          {
-            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".state")
+            throw new XmlParseException("@xsi:type required for POINT_EVENT.state")
          }
          method = 'parse'+ type
-         e.state = this."$method"(xml.state, e,
-                                  (path != '/' ? path +'/state' : '/state'),
-                                  (dataPath != '/' ? dataPath +'/state' : '/state')
-                                 )
+         e.state = this."$method"(xml.state, e)
       }
 
       return e
    }
 
-   private IntervalEvent parseINTERVAL_EVENT(GPathResult xml, Pathable parent, String path, String dataPath)
+   private IntervalEvent parseINTERVAL_EVENT(GPathResult xml, Pathable parent)
    {
       IntervalEvent e = new IntervalEvent()
 
-      this.fillLOCATABLE(e, xml, parent, path, dataPath)
+      this.fillLOCATABLE(e, xml, parent)
 
       e.time = this.parseDV_DATE_TIME(xml.time)
 
@@ -922,13 +1088,10 @@ class OpenEhrXmlParser {
          type = xml.data.'@xsi:type'.text()
          if (!type)
          {
-            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".data")
+            throw new XmlParseException("@xsi:type required for  INTERVAL_EVENT.data")
          }
          method = 'parse'+ type
-         e.data = this."$method"(xml.data, e,
-                                 (path != '/' ? path +'/data' : '/data'),
-                                 (dataPath != '/' ? dataPath +'/data' : '/data')
-                                )
+         e.data = this."$method"(xml.data, e)
       }
 
       if (!xml.state.isEmpty())
@@ -936,13 +1099,10 @@ class OpenEhrXmlParser {
          type = xml.state.'@xsi:type'.text()
          if (!type)
          {
-            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".state")
+            throw new XmlParseException("@xsi:type required for INTERVAL_EVENT.state")
          }
          method = 'parse'+ type
-         e.state = this."$method"(xml.state, e,
-                                  (path != '/' ? path +'/state' : '/state'),
-                                  (dataPath != '/' ? dataPath +'/state' : '/state')
-                                 )
+         e.state = this."$method"(xml.state, e)
       }
 
       e.width = this.parseDV_DURATION(xml.width)
@@ -957,31 +1117,28 @@ class OpenEhrXmlParser {
       return e
    }
 
-   private Evaluation parseEVALUATION(GPathResult xml, Pathable parent, String path, String dataPath)
+   private Evaluation parseEVALUATION(GPathResult xml, Pathable parent)
    {
       Evaluation e = new Evaluation()
 
-      this.fillCARE_ENTRY(e, xml, parent, path, dataPath)
+      this.fillCARE_ENTRY(e, xml, parent)
 
       String type = xml.data.'@xsi:type'.text()
       if (!type)
       {
-         throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".data")
+         throw new XmlParseException("@xsi:type required for EVALUATION.data")
       }
       String method = 'parse'+ type
-      e.data = this."$method"(xml.data, e,
-                               (path != '/' ? path +'/data' : '/data'),
-                               (dataPath != '/' ? dataPath +'/data' : '/data')
-                             )
+      e.data = this."$method"(xml.data, e)
 
       return e
    }
 
-   private Instruction parseINSTRUCTION(GPathResult xml, Pathable parent, String path, String dataPath)
+   private Instruction parseINSTRUCTION(GPathResult xml, Pathable parent)
    {
       Instruction ins = new Instruction()
 
-      this.fillCARE_ENTRY(ins, xml, parent, path, dataPath)
+      this.fillCARE_ENTRY(ins, xml, parent)
 
       String type, method
 
@@ -1002,55 +1159,43 @@ class OpenEhrXmlParser {
       xml.activities.eachWithIndex { js_activity, i ->
 
          ins.activities.add(
-            this.parseACTIVITY(js_activity, ins,
-                        (path != '/' ? path +'/activities' : '/activities'),
-                        (dataPath != '/' ? dataPath +'/activities['+ i +']' : '/activities['+ i +']')
-                       )
+            this.parseACTIVITY(js_activity, ins)
          )
       }
 
       return ins
    }
 
-   private Action parseACTION(GPathResult xml, Pathable parent, String path, String dataPath)
+   private Action parseACTION(GPathResult xml, Pathable parent)
    {
       Action a = new Action()
 
-      this.fillCARE_ENTRY(a, xml, parent, path, dataPath)
+      this.fillCARE_ENTRY(a, xml, parent)
 
       String type = xml.description.'@xsi:type'.text()
       if (!type)
       {
-         throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".description")
+         throw new XmlParseException("@xsi:type required for ACTION.description")
       }
       String method = 'parse'+ type
 
-      a.description = this."$method"(xml.description, a,
-         (path != '/' ? path +'/description' : '/description'),
-         (dataPath != '/' ? dataPath +'/description' : '/description')
-      )
+      a.description = this."$method"(xml.description, a)
 
       a.time = this.parseDV_DATE_TIME(xml.time)
 
-      a.ism_transition = this.parseISM_TRANSITION(xml.ism_transition, a,
-                                 (path != '/' ? path +'/ism_transition' : '/ism_transition'),
-                                 (dataPath != '/' ? dataPath +'/ism_transition' : '/ism_transition')
-                              )
+      a.ism_transition = this.parseISM_TRANSITION(xml.ism_transition, a)
 
       if (!xml.instruction_details.isEmpty())
-         a.instruction_details = this.parseINSTRUCTION_DETAILS(xml.instruction_details, a,
-                                 (path != '/' ? path +'/instruction_details' : '/instruction_details'),
-                                 (dataPath != '/' ? dataPath +'/instruction_details' : '/instruction_details')
-                              )
+         a.instruction_details = this.parseINSTRUCTION_DETAILS(xml.instruction_details, a)
 
       return a
    }
 
-   private IsmTransition parseISM_TRANSITION(GPathResult xml, Pathable parent, String path, String dataPath)
+   private IsmTransition parseISM_TRANSITION(GPathResult xml, Pathable parent)
    {
       IsmTransition i = new IsmTransition()
 
-      this.fillPATHABLE(i, parent, path, dataPath)
+      //this.fillPATHABLE(i, parent)
 
       i.current_state = this.parseDV_CODED_TEXT(xml.current_state)
 
@@ -1067,11 +1212,11 @@ class OpenEhrXmlParser {
       return i
    }
 
-   private InstructionDetails parseINSTRUCTION_DETAILS(GPathResult xml, Pathable parent, String path, String dataPath)
+   private InstructionDetails parseINSTRUCTION_DETAILS(GPathResult xml, Pathable parent)
    {
       InstructionDetails i = new InstructionDetails()
 
-      this.fillPATHABLE(i, parent, path, dataPath)
+      //this.fillPATHABLE(i, parent)
 
       i.instruction_id = this.parseLOCATABLE_REF(xml.instruction_id)
 
@@ -1082,7 +1227,7 @@ class OpenEhrXmlParser {
          String type = xml.wf_details.'@xsi:type'.text()
          if (!type)
          {
-            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".wf_details")
+            throw new XmlParseException("@xsi:type required for INSTRUCTION_DETAILS.wf_details")
          }
          String method = 'parse'+ type
          i.wf_details = this."$method"(xml.wf_details)
@@ -1091,12 +1236,12 @@ class OpenEhrXmlParser {
       return i
    }
 
-   private Activity parseACTIVITY(GPathResult xml, Pathable parent, String path, String dataPath)
+   private Activity parseACTIVITY(GPathResult xml, Pathable parent)
    {
       String type = xml.description.'@xsi:type'.text()
       if (!type)
       {
-         throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".description")
+         throw new XmlParseException("@xsi:type required for ACTIVITY.description")
       }
       String method = 'parse'+ type
 
@@ -1104,28 +1249,25 @@ class OpenEhrXmlParser {
          action_archetype_id: xml.action_archetype_id
       )
 
-      a.description = this."$method"(xml.description, a,
-         (path != '/' ? path +'/description' : '/description'),
-         (dataPath != '/' ? dataPath +'/description' : '/description')
-      )
+      a.description = this."$method"(xml.description, a)
 
       if (!xml.timing.isEmpty())
       {
          a.timing = this.parseDV_PARSABLE(xml.timing)
       }
 
-      this.fillLOCATABLE(a, xml, parent, path, dataPath)
+      this.fillLOCATABLE(a, xml, parent)
 
       return a
    }
 
 
 
-   private ItemTree parseITEM_TREE(GPathResult xml, Pathable parent, String path, String dataPath)
+   private ItemTree parseITEM_TREE(GPathResult xml, Pathable parent)
    {
       ItemTree t = new ItemTree()
 
-      this.fillLOCATABLE(t, xml, parent, path, dataPath)
+      this.fillLOCATABLE(t, xml, parent)
 
       String type, method
 
@@ -1133,45 +1275,39 @@ class OpenEhrXmlParser {
          type = item.'@xsi:type'.text()
          if (!type)
          {
-            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".items[$i]")
+            throw new XmlParseException("@xsi:type required for ITEM_TREE.items[$i]")
          }
          method = 'parse'+ type
          if (!t.items) t.items = []
          t.items.add(
-            this."$method"(item, t,
-                        (path != '/' ? path +'/items' : '/items'),
-                        (dataPath != '/' ? dataPath +'/items['+ i +']' : '/items['+ i +']')
-                       )
+            this."$method"(item, t)
          )
       }
 
       return t
    }
 
-   private ItemList parseITEM_LIST(GPathResult xml, Pathable parent, String path, String dataPath)
+   private ItemList parseITEM_LIST(GPathResult xml, Pathable parent)
    {
       ItemList l = new ItemList()
 
-      this.fillLOCATABLE(l, xml, parent, path, dataPath)
+      this.fillLOCATABLE(l, xml, parent)
 
       xml.items.eachWithIndex { element, i ->
       if (!l.items) l.items = []
          l.items.add(
-            this.parseELEMENT(element, l,
-                        (path != '/' ? path +'/items' : '/items'),
-                        (dataPath != '/' ? dataPath +'/items['+ i +']' : '/items['+ i +']')
-                       )
+            this.parseELEMENT(element, l)
          )
       }
 
       return l
    }
 
-   private ItemTable parseITEM_TABLE(GPathResult xml, Pathable parent, String path, String dataPath)
+   private ItemTable parseITEM_TABLE(GPathResult xml, Pathable parent)
    {
       ItemTable t = new ItemTable()
 
-      this.fillLOCATABLE(t, xml, parent, path, dataPath)
+      this.fillLOCATABLE(t, xml, parent)
 
       String type, method
 
@@ -1181,35 +1317,29 @@ class OpenEhrXmlParser {
          method = 'parse'+ type
          if (!t.rows) t.rows = []
          t.rows.add(
-            this."$method"(item, t,
-                            (path != '/' ? path +'/rows' : '/rows'),
-                            (dataPath != '/' ? dataPath +'/rows['+ i +']' : '/rows['+ i +']')
-                          )
+            this."$method"(item, t)
          )
       }
 
       return t
    }
 
-   private ItemSingle parseITEM_SINGLE(GPathResult xml, Pathable parent, String path, String dataPath)
+   private ItemSingle parseITEM_SINGLE(GPathResult xml, Pathable parent)
    {
       ItemSingle s = new ItemSingle()
 
-      this.fillLOCATABLE(s, xml, parent, path, dataPath)
+      this.fillLOCATABLE(s, xml, parent)
 
-      s.item = this.parseELEMENT(xml.item, s,
-                                 (path != '/' ? path +'/item' : '/item'),
-                                 (dataPath != '/' ? dataPath +'/item' : '/item')
-                              )
+      s.item = this.parseELEMENT(xml.item, s)
 
       return s
    }
 
-   private Cluster parseCLUSTER(GPathResult xml, Pathable parent, String path, String dataPath)
+   private Cluster parseCLUSTER(GPathResult xml, Pathable parent)
    {
       Cluster c = new Cluster()
 
-      this.fillLOCATABLE(c, xml, parent, path, dataPath)
+      this.fillLOCATABLE(c, xml, parent)
 
       String type, method
 
@@ -1217,34 +1347,30 @@ class OpenEhrXmlParser {
          type = item.'@xsi:type'.text()
          if (!type)
          {
-            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".items[$i]")
+            throw new XmlParseException("@xsi:type required for CLUSTER.items[$i]")
          }
          method = 'parse'+ type
          if (!c.items) c.items = []
          c.items.add(
-            this."$method"(
-               item, c,
-               (path != '/' ? path +'/items' : '/items'),
-               (dataPath != '/' ? dataPath +'/items['+ i +']' : '/items['+ i +']')
-            )
+            this."$method"(item, c)
          )
       }
 
       return c
    }
 
-   private Element parseELEMENT(GPathResult xml, Pathable parent, String path, String dataPath)
+   private Element parseELEMENT(GPathResult xml, Pathable parent)
    {
       Element e = new Element()
 
-      this.fillLOCATABLE(e, xml, parent, path, dataPath)
+      this.fillLOCATABLE(e, xml, parent)
 
       if (!xml.value.isEmpty())
       {
          String type = xml.value.'@xsi:type'.text()
          if (!type)
          {
-            throw new XmlCompositionParseException("@xsi:type required for "+ dataPath +".value")
+            throw new XmlParseException("@xsi:type required for ELEMENT.value")
          }
          String method = 'parse'+ type
          e.value = this."$method"(xml.value)
@@ -1490,7 +1616,7 @@ class OpenEhrXmlParser {
    private DvBoolean parseDV_BOOLEAN(GPathResult xml)
    {
       new DvBoolean(
-         value: xml.value
+         value: xml.value.toBoolean() // TODO: test this is parsed correctly or needs .text().toBoolean()
       )
    }
 
