@@ -98,7 +98,11 @@ class OpenEhrJsonParserQuick {
       {
          // independently from schemaFlavor, this will always be "rm" since it is asking to parse an RM Ehr
          // for an "api" Ehr the parseEhrDto() method should be used
-         this.jsonValidator = new JsonInstanceValidation("rm") // FIXME: this uses the default 1.0.2 version schema!
+         // FIXME: this uses the default 1.0.2 version schema!
+         // NOTE: we can define a global configuration with the RM set for working and take that,
+         //       since a system will work with one version at a time, and if we need to test
+         //       different versions we can change the config and set it back when we are finished.
+         this.jsonValidator = new JsonInstanceValidation("rm")
 
          def errors = jsonValidator.validate(json)
          if (errors)
@@ -1093,32 +1097,11 @@ class OpenEhrJsonParserQuick {
    // This will parse the top level directory that doesn't have a LOCATABLE parent
    private Folder parseFOLDER(Map json)
    {
-      def folder = new Folder()
-
-      this.fillLOCATABLE(folder, json, null)
-
-      if (json.items)
-      {
-         folder.items = []
-         json.items.eachWithIndex { item, i ->
-            folder.items << this.parseOBJECT_REF(item)
-         }
-      }
-
-      if (json.folders)
-      {
-         folder.folders = []
-         json.folders.eachWithIndex { subfolder, i ->
-
-            folder.folders << this.parseFOLDER(subfolder, folder)
-         }
-      }
-
-      return folder
+      parseFolderInternal(json, null)
    }
 
    // This will parse subfolders with a parent Locatable folder
-   private Folder parseFOLDER(Map json, Locatable parent)
+   private Folder parseFolderInternal(Map json, Locatable parent)
    {
       def folder = new Folder()
 
@@ -1137,7 +1120,7 @@ class OpenEhrJsonParserQuick {
          folder.folders = []
          json.folders.eachWithIndex { subfolder, i ->
 
-            folder.folders << this.parseFOLDER(subfolder, folder)
+            folder.folders << this.parseFolderInternal(subfolder, folder)
          }
       }
 
@@ -1433,7 +1416,6 @@ class OpenEhrJsonParserQuick {
 
       return p
    }
-
 
    private ObjectRef parseOBJECT_REF(Map json)
    {

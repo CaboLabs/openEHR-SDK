@@ -175,7 +175,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
                      "_type": "HIER_OBJECT_ID",
                      "value": "d936409e-901f-4994-8d33-ed104d46015b"
                   },
-                  "namespace": "my.system.id",
+                  "namespace": "EHR",
                   "type": "VERSIONED_COMPOSITION"
                }
             ]
@@ -224,8 +224,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
                "value": "8849182c-82ad-4088-a07f-48ead4180515::openEHRSys.example.com::1"
              },
              "namespace": "local",
-             "type": "EHR_STATUS",
-             "path": "/ehr_status"
+             "type": "EHR_STATUS"
            },
            "time_created": {
              "value": "2015-01-20T19:30:22.765+01:00"
@@ -291,6 +290,15 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
          {
             "_type": "EHR_STATUS",
             "archetype_node_id": "openEHR-EHR-EHR_STATUS.generic.v1",
+            "archetype_details": {
+               "archetype_id": {
+                  "value": "openEHR-EHR-EHR_STATUS.generic.v1"
+               },
+               "template_id": {
+                  "value": "generic.en.v1"
+               },
+               "rm_version": "1.0.2"
+            },
             "name": {
                "_type": "DV_TEXT",
                "value": "EHR Status"
@@ -311,7 +319,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
          }
       /$
 
-      def parser = new OpenEhrJsonParserQuick()
+      def parser = new OpenEhrJsonParserQuick(true)
       EhrStatus status = parser.parseJson(json_ehr_status)
 
       assert status.archetype_node_id == "openEHR-EHR-EHR_STATUS.generic.v1"

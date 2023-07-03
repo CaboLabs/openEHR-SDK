@@ -15,6 +15,10 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.ArchetypeId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.HierObjectId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.TemplateId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.TerminologyId
+
+import com.cabolabs.openehr.rm_1_0_2.ehr.Ehr
+import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
+
 import groovy.util.GroovyTestCase
 import groovy.xml.*
 import groovy.json.JsonOutput
@@ -29,7 +33,7 @@ class OpenEhrXmlParserTest extends GroovyTestCase {
 
    void testXmlParserFolder()
    {
-      def xml = """<folder xsi:type="FOLDER" archetype_node_id="openEHR-EHR-FOLDER.generic.v1">
+      def xml = $/<folder xmlns="http://schemas.openehr.org/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="FOLDER" archetype_node_id="openEHR-EHR-FOLDER.generic.v1">
          <name xsi:type="DV_TEXT">
             <value>root</value>
          </name>
@@ -38,17 +42,29 @@ class OpenEhrXmlParserTest extends GroovyTestCase {
                <value>openEHR-EHR-FOLDER.generic.v1</value>
             </archetype_id>
             <template_id>
-               <value>alternative_types.en.v1</value>
+               <value>generic_folder</value>
             </template_id>
             <rm_version>1.0.2</rm_version>
          </archetype_details>
+         <folders archetype_node_id="openEHR-EHR-FOLDER.generic.v1">
+            <name xsi:type="DV_TEXT">
+               <value>subfolder 1</value>
+            </name>
+            <items>
+               <id xsi:type="HIER_OBJECT_ID">
+                  <value>d936409e-901f-4994-8d33-ed104d460789</value>
+               </id>
+               <namespace>EHR</namespace>
+               <type>VERSIONED_COMPOSITION</type>
+            </items>
+         </folders>
          <folders archetype_node_id="openEHR-EHR-FOLDER.generic.v1">
             <name xsi:type="DV_TEXT">
                <value>subfolder 2</value>
             </name>
             <items>
                <id xsi:type="HIER_OBJECT_ID">
-                  <value>d936409e-901f-4994-8d33-ed104d460789</value>
+                  <value>d936409e-901f-4994-8d33-ed104d460456</value>
                </id>
                <namespace>EHR</namespace>
                <type>VERSIONED_COMPOSITION</type>
@@ -61,12 +77,216 @@ class OpenEhrXmlParserTest extends GroovyTestCase {
             <namespace>EHR</namespace>
             <type>VERSIONED_COMPOSITION</type>
          </items>
-      </folder>"""
+      </folder>/$
 
       def parser = new OpenEhrXmlParser(true) // true validates against JSON Schema
       Folder f = (Folder)parser.parseLocatable(xml)
 
+      if (!f) println parser.getValidationErrors()
+
       assert f
+
+      assert f.items.size() == 1
+      assert f.folders.size() == 2
+
+      assert f.name.value == 'root'
+      assert f.folders[0].name.value == 'subfolder 1'
+      assert f.folders[1].name.value == 'subfolder 2'
+   }
+
+   void testXmlParserFolder2()
+   {
+       def xml = $/<folder xsi:type="FOLDER" archetype_node_id="openEHR-EHR-FOLDER.generic.v1">
+         <name xsi:type="DV_TEXT">
+            <value>root</value>
+         </name>
+         <archetype_details>
+            <archetype_id>
+               <value>openEHR-EHR-FOLDER.generic.v1</value>
+            </archetype_id>
+            <template_id>
+               <value>generic_folder</value>
+            </template_id>
+            <rm_version>1.0.2</rm_version>
+         </archetype_details>
+         <folders archetype_node_id="openEHR-EHR-FOLDER.generic.v1">
+            <name xsi:type="DV_TEXT">
+               <value>subfolder 1</value>
+            </name>
+         </folders>
+         <folders archetype_node_id="openEHR-EHR-FOLDER.generic.v1">
+            <name xsi:type="DV_TEXT">
+               <value>subfolder 2</value>
+            </name>
+         </folders>
+         <items>
+            <id xsi:type="HIER_OBJECT_ID">
+               <value>d936409e-901f-4994-8d33-ed104d46015b</value>
+            </id>
+            <namespace>EHR</namespace>
+            <type>VERSIONED_COMPOSITION</type>
+         </items>
+      </folder>/$
+
+      def parser = new OpenEhrXmlParser()
+      Folder folder = parser.parseLocatable(xml)
+
+      // serialize status object
+      def serializer = new OpenEhrXmlSerializer()
+      String xml2 = serializer.serialize(folder)
+
+      println xml2 // TODO: should compare this one with the xml string above without indentation
+      // Check xmluint https://stackoverflow.com/questions/16540318/compare-two-xml-strings-ignoring-element-order
+      // https://stackoverflow.com/questions/48216562/compare-two-xmls-using-xmlunit-bypassing-the-order-of-elements
+
+   }
+
+   void testXmlParserEhr()
+   {
+      def xml_ehr = $/
+         <ehr xmlns="http://schemas.openehr.org/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <system_id>
+               <value>d60e2348-b083-48ce-93b9-916cef1d3a5a</value>
+            </system_id>
+            <ehr_id>
+               <value>7d44b88c-4199-4bad-97dc-d78268e01398</value>
+            </ehr_id>
+            <time_created>
+               <value>2015-01-20T19:30:22.765+01:00</value>
+            </time_created>
+            <ehr_status>
+               <id xsi:type="OBJECT_VERSION_ID">
+                  <value>8849182c-82ad-4088-a07f-48ead4180515::openEHRSys.example.com::1</value>
+               </id>
+               <namespace>local</namespace>
+               <type>EHR_STATUS</type>
+            </ehr_status>
+         </ehr>
+      /$
+
+      def parser = new OpenEhrXmlParser(true)
+      Ehr ehr = parser.parseEhr(xml_ehr)
+
+      assert ehr
+
+      assert ehr.system_id.value == "d60e2348-b083-48ce-93b9-916cef1d3a5a"
+
+      assert ehr.ehr_status.id.value == "8849182c-82ad-4088-a07f-48ead4180515::openEHRSys.example.com::1"
+      assert ehr.ehr_status.type == "EHR_STATUS"
+   }
+
+   void testXmlParserEhrWithSchemaError()
+   {
+      def xml_ehr = $/
+         <ehr xmlns="http://schemas.openehr.org/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <system_id>
+               <value>d60e2348-b083-48ce-93b9-916cef1d3a5a</value>
+            </system_id>
+            <ehr_id>
+               <value>7d44b88c-4199-4bad-97dc-d78268e01398</value>
+            </ehr_id>
+            <time_created>
+               <value>2015-01-20T19:30:22.765+01:00</value>
+            </time_created>
+         </ehr>
+      /$
+
+      def parser = new OpenEhrXmlParser(true)
+      Ehr ehr = parser.parseEhr(xml_ehr)
+
+      assert !ehr
+
+      List<String> errors = parser.getValidationErrors()
+
+      assert errors.size() == 1
+      assert errors[0] == "ERROR cvc-complex-type.2.4.b: The content of element 'ehr' is not complete. One of '\u007B\"http://schemas.openehr.org/v1\":ehr_status\u007D' is expected.\nline #: 12\n>>> </ehr>"
+   }
+
+   void testJsonParserEhrStatus()
+   {
+       def xml_ehr_status = $/
+         <ehr_status xmlns="http://schemas.openehr.org/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" archetype_node_id="openEHR-EHR-EHR_STATUS.generic.v1" xsi:type="EHR_STATUS">
+            <name xsi:type="DV_TEXT">
+              <value>EHR Status</value>
+            </name>
+            <archetype_details>
+               <archetype_id>
+                  <value>openEHR-EHR-EHR_STATUS.generic.v1</value>
+               </archetype_id>
+               <template_id>
+                  <value>generic.en.v1</value>
+               </template_id>
+               <rm_version>1.0.2</rm_version>
+            </archetype_details>
+            <subject>
+               <external_ref>
+                  <id xsi:type="GENERIC_ID">
+                     <value>ins01</value>
+                     <scheme>id_scheme</scheme>
+                  </id>
+                  <namespace>DEMOGRAPHIC</namespace>
+                  <type>PERSON</type>
+               </external_ref>
+            </subject>
+            <is_queryable>true</is_queryable>
+            <is_modifiable>true</is_modifiable>
+         </ehr_status>
+      /$
+
+      def parser = new OpenEhrXmlParser(true)
+      EhrStatus status = parser.parseLocatable(xml_ehr_status)
+
+      //if (!status) println parser.getValidationErrors()
+
+      assert status.archetype_node_id == "openEHR-EHR-EHR_STATUS.generic.v1"
+      assert status.name.value == "EHR Status"
+      assert status.subject != null
+      assert status.subject.external_ref.id.value == "ins01"
+      assert status.subject.external_ref.namespace == "DEMOGRAPHIC"
+      assert status.other_details == null
+      assert status.is_modifiable == true
+      assert status.is_queryable == true
+   }
+
+   void testJsonParserEhrStatusWithSchemaErrors()
+   {
+       def xml_ehr_status = $/
+         <ehr_status xmlns="http://schemas.openehr.org/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" archetype_node_id="openEHR-EHR-EHR_STATUS.generic.v1" xsi:type="EHR_STATUS">
+            <name xsi:type="DV_TEXT">
+              <value>EHR Status</value>
+            </name>
+            <archetype_details>
+               <archetype_id>
+                  <value>openEHR-EHR-EHR_STATUS.generic.v1</value>
+               </archetype_id>
+               <template_id>
+                  <value>generic.en.v1</value>
+               </template_id>
+               <rm_version>1.0.2</rm_version>
+            </archetype_details>
+            <subject>
+               <external_ref>
+                  <id xsi:type="GENERIC_ID">
+                     <value>ins01</value>
+                     <scheme>id_scheme</scheme>
+                  </id>
+                  <namespace>DEMOGRAPHIC</namespace>
+                  <type>PERSON</type>
+               </external_ref>
+            </subject>
+         </ehr_status>
+      /$
+
+      def parser = new OpenEhrXmlParser(true)
+      EhrStatus status = parser.parseLocatable(xml_ehr_status)
+
+      assert !status
+
+
+      List<String> errors = parser.getValidationErrors()
+
+      assert errors.size() == 1
+      assert errors[0] == "ERROR cvc-complex-type.2.4.b: The content of element 'ehr_status' is not complete. One of '\u007B\"http://schemas.openehr.org/v1\":is_queryable\u007D' is expected.\nline #: 25\n>>> </ehr_status>"
    }
 
 

@@ -46,7 +46,7 @@
 						"_type": "HIER_OBJECT_ID",
 						"value": "d936409e-901f-4994-8d33-ed104d460456"
 					},
-					"namespace": "my.system.id",
+					"namespace": "EHR",
 					"type": "VERSIONED_COMPOSITION"
 				}
 			]

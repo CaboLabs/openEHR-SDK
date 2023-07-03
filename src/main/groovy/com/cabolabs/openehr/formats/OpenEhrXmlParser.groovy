@@ -35,6 +35,8 @@ import com.cabolabs.openehr.rm_1_0_2.common.directory.Folder
 import groovy.util.XmlSlurper
 import groovy.util.slurpersupport.GPathResult
 
+import com.cabolabs.openehr.opt.instance_validation.*
+
 // New Groovy 3.0.7+
 //import groovy.xml.XmlSlurper
 //import groovy.xml.slurpersupport.GPathResult
@@ -79,8 +81,6 @@ class OpenEhrXmlParser {
 
    // ========= ENTRY POINTS =========
 
-   // TODO: parse folder
-
    Ehr parseEhr(String xml)
    {
       def slurper = new XmlSlurper(false, false)
@@ -88,8 +88,14 @@ class OpenEhrXmlParser {
 
       if (this.schemaValidate)
       {
-         // TODO: setup validation and validate XML
          // NOTE: favour should be 'rm'
+         def inputStream = getClass().getResourceAsStream('/xsd/Version.xsd')
+         schemaValidator = new XmlValidation(inputStream)
+         if (!schemaValidator.validate(xml))
+         {
+            schemaValidationErrors = schemaValidator.getErrors()
+            return
+         }
       }
 
       def ehr = new Ehr()
@@ -145,12 +151,18 @@ class OpenEhrXmlParser {
 
       if (this.schemaValidate)
       {
-         if (!gpath.archetype_details || !gpath.archetype_details.rm_version) // rm version aware
+         if (gpath.archetype_details.isEmpty() || gpath.archetype_details.rm_version.isEmpty()) // rm version aware
          {
             throw new Exception("archetype_details.rm_version is required for the root of any archetypable class")
          }
 
-         // TODO: add the xml schema validation and error reporting
+         def inputStream = getClass().getResourceAsStream('/xsd/Version.xsd')
+         schemaValidator = new XmlValidation(inputStream)
+         if (!schemaValidator.validate(xml))
+         {
+            schemaValidationErrors = schemaValidator.getErrors()
+            return
+         }
       }
 
       String type = gpath.'@xsi:type'.text()
@@ -465,13 +477,88 @@ class OpenEhrXmlParser {
       status.is_modifiable = xml.is_modifiable.text().toBoolean()
       status.is_queryable = xml.is_queryable.text().toBoolean()
 
-      if (xml.other_details)
+      if (!xml.other_details.isEmpty())
       {
          String method = 'parse'+ xml.other_details.'@xsi:type'.text()
          status.other_details = this."$method"(xml.other_details, status)
       }
 
       return status
+   }
+
+
+   private Composition parseCOMPOSITION(GPathResult xml)
+   {
+      Composition compo = new Composition()
+
+      this.fillLOCATABLE(compo, xml, null)
+
+      compo.language  = this.parseCODE_PHRASE(xml.language)
+      compo.territory = this.parseCODE_PHRASE(xml.territory)
+      compo.category  = this.parseDV_CODED_TEXT(xml.category)
+
+      String type, method
+
+      type = xml.composer.'@xsi:type'.text() // party proxy or descendants
+      if (!type)
+      {
+         throw new XmlParseException("@xsi:type required for COMPOSITION.composer")
+      }
+      method = 'parse'+ type
+      compo.composer = this."$method"(xml.composer)
+
+      // NOTE: these paths are not using the node_id, are just attribute paths
+      compo.context = parseEVENT_CONTEXT(xml.context, compo)
+
+      def content = []
+
+      xml.content.eachWithIndex { content_item, i ->
+         type = content_item.'@xsi:type'.text()
+         if (!type)
+         {
+            throw new XmlParseException("@xsi:type required for COMPOSITION.content[$i]")
+         }
+         method = 'parse'+ type
+         if (!compo.content) compo.content = []
+         compo.content.add(
+            this."$method"(content_item, compo)
+         )
+      }
+
+      return compo
+   }
+
+   // This will parse the top level directory that doesn't have a LOCATABLE parent
+   private Folder parseFOLDER(GPathResult xml)
+   {
+      parseFolderInternal(xml, null)
+   }
+
+   // Reuses code for both parseFOLDER methods
+   private Folder parseFolderInternal(GPathResult xml, Folder parent)
+   {
+      def folder = new Folder()
+
+      this.fillLOCATABLE(folder, xml, parent)
+
+      if (!xml.items.isEmpty())
+      {
+         folder.items = []
+         xml.items.each { item ->
+            folder.items << this.parseOBJECT_REF(item)
+         }
+      }
+
+      if (!xml.folders.isEmpty())
+      {
+         folder.folders = []
+         xml.folders.each { subfolder ->
+
+            folder.folders << this.parseFolderInternal(subfolder, folder)
+         }
+      }
+
+      return folder
    }
 
 
@@ -595,86 +682,6 @@ class OpenEhrXmlParser {
       return at
    }
 
-   private Composition parseCOMPOSITION(GPathResult xml)
-   {
-      Composition compo = new Composition()
-
-      this.fillLOCATABLE(compo, xml, null)
-
-      compo.language  = this.parseCODE_PHRASE(xml.language)
-      compo.territory = this.parseCODE_PHRASE(xml.territory)
-      compo.category  = this.parseDV_CODED_TEXT(xml.category)
-
-      String type, method
-
-      type = xml.composer.'@xsi:type'.text() // party proxy or descendants
-      if (!type)
-      {
-         throw new XmlParseException("@xsi:type required for COMPOSITION.composer")
-      }
-      method = 'parse'+ type
-      compo.composer = this."$method"(xml.composer)
-
-      // NOTE: these paths are not using the node_id, are just attribute paths
-      compo.context = parseEVENT_CONTEXT(xml.context, compo)
-
-      def content = []
-
-      xml.content.eachWithIndex { content_item, i ->
-         type = content_item.'@xsi:type'.text()
-         if (!type)
-         {
-            throw new XmlParseException("@xsi:type required for COMPOSITION.content[$i]")
-         }
-         method = 'parse'+ type
-         if (!compo.content) compo.content = []
-         compo.content.add(
-            this."$method"(content_item, compo)
-         )
-      }
-
-      return compo
-   }
-
-   // This will parse the top level directory that doesn't have a LOCATABLE parent
-   private Folder parseFOLDER(GPathResult xml)
-   {
-      parseFolderInternal(xml, null)
-   }
-
-   // Parses subfolders of a parent folder locatable
-   // private Folder parseFOLDER(GPathResult xml, Folder parent)
-   // {
-   //    parseFolderInternal(xml, parent)
-   // }
-
-   // Reuses code for both parseFOLDER methods
-   private Folder parseFolderInternal(GPathResult xml, Folder parent)
-   {
-      def folder = new Folder()
-
-      this.fillLOCATABLE(folder, xml, parent)
-
-      if (!xml.items.isEmpty())
-      {
-         folder.items = []
-         xml.items.each { item ->
-            folder.items << this.parseOBJECT_REF(item)
-         }
-      }
-
-      if (!xml.folders.isEmpty())
-      {
-         folder.folders = []
-         xml.folders.each { subfolder ->
-
-            folder.folders << this.parseFolderInternal(subfolder, folder)
-         }
-      }
-
-      return folder
-   }
-
    private ReferenceRange parseREFERENCE_RANGE(GPathResult xml)
    {
       ReferenceRange rr = new ReferenceRange()
@@ -685,7 +692,6 @@ class OpenEhrXmlParser {
 
       return rr
    }
-
 
    private void fillDV_ORDERED(DvOrdered d, GPathResult xml)
    {
@@ -814,7 +820,6 @@ class OpenEhrXmlParser {
 
       return p
    }
-
 
    private ObjectRef parseOBJECT_REF(GPathResult xml)
    {

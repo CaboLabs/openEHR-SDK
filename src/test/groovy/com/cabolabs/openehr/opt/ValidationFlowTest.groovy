@@ -657,7 +657,7 @@ class ValidationFlowTest extends GroovyTestCase {
                      "_type": "HIER_OBJECT_ID",
                      "value": "replaceme"
                   },
-                  "namespace": "my.system.id",
+                  "namespace": "EHR",
                   "type": "VERSIONED_COMPOSITION"
                }
             ]
