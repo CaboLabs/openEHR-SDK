@@ -3,22 +3,17 @@ package com.cabolabs.openehr.formats
 import groovy.util.GroovyTestCase
 import com.cabolabs.openehr.dto_1_0_2.ehr.EhrDto
 import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
-import com.cabolabs.openehr.rm_1_0_2.support.identification.HierObjectId
-import com.cabolabs.openehr.rm_1_0_2.support.identification.PartyRef
-import com.cabolabs.openehr.rm_1_0_2.support.identification.ArchetypeId
-import com.cabolabs.openehr.rm_1_0_2.support.identification.TemplateId
-import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvQuantity
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
-import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Element
-import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemTree
 import com.cabolabs.openehr.rm_1_0_2.common.generic.PartySelf
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
-
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.*
-import com.cabolabs.openehr.rm_1_0_2.demographic.*
-import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.*
+import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.basic.*
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.*
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.*
+import com.cabolabs.openehr.rm_1_0_2.data_types.text.*
+import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemTree
+import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.*
+
+import com.cabolabs.openehr.rm_1_0_2.demographic.*
 
 import com.cabolabs.openehr.validation.*
 
@@ -27,6 +22,644 @@ import com.cabolabs.openehr.opt.manager.*
 class OpenEhrXmlSerializerTest extends GroovyTestCase {
 
    private static String PS = System.getProperty("file.separator")
+
+   void testPersonSerialize()
+   {
+      def person = new Person(
+         name: new DvText(
+            value: 'person_complete'
+         ),
+         archetype_details: new Archetyped(
+            archetype_id: new ArchetypeId(
+               value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+            ),
+            template_id: new TemplateId(
+               value: 'person_complete'
+            ),
+            rm_version: '1.0.2'
+         ),
+         archetype_node_id: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0',
+         roles: [
+            // TODO:
+         ],
+         languages: [
+            new DvText(value: 'es')
+         ],
+         details: new ItemTree(
+            name: new DvText(
+               value: 'Tree'
+            ),
+            archetype_details: new Archetyped(
+               archetype_id: new ArchetypeId(
+                  value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+               ),
+               template_id: new TemplateId(
+                  value: 'person_complete'
+               ),
+               rm_version: '1.0.2'
+            ),
+            archetype_node_id: 'at0037',
+            items: [
+               new Cluster(
+                  name: new DvText(
+                     value: 'Identifiers'
+                  ),
+                  archetype_details: new Archetyped(
+                     archetype_id: new ArchetypeId(
+                        value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                     ),
+                     template_id: new TemplateId(
+                        value: 'person_complete'
+                     ),
+                     rm_version: '1.0.2'
+                  ),
+                  archetype_node_id: 'at0010',
+                  items: [
+                     new Element(
+                        name: new DvText(
+                           value: 'Identifier'
+                        ),
+                        archetype_details: new Archetyped(
+                           archetype_id: new ArchetypeId(
+                              value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                           ),
+                           template_id: new TemplateId(
+                              value: 'person_complete'
+                           ),
+                           rm_version: '1.0.2'
+                        ),
+                        archetype_node_id: 'at0011',
+                        value: new DvIdentifier(
+                           // TODO:
+                        )
+                     )
+                  ]
+               )
+            ]
+         ),
+         contacts: [
+            new Contact(
+               name: new DvText(
+                  value: 'Contact means'
+               ),
+               archetype_details: new Archetyped(
+                  archetype_id: new ArchetypeId(
+                     value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                  ),
+                  template_id: new TemplateId(
+                     value: 'person_complete'
+                  ),
+                  rm_version: '1.0.2'
+               ),
+               archetype_node_id: 'at0004',
+               time_validity: new DvInterval(
+                  lower: new DvDate(
+                     value: '2023-01-01'
+                  ),
+                  upper_unbounded: true,
+                  lower_included: true
+               ),
+               addresses: [
+                  new Address(
+                     name: new DvText(
+                        value: 'Home address'
+                     ),
+                     archetype_details: new Archetyped(
+                        archetype_id: new ArchetypeId(
+                           value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                        ),
+                        template_id: new TemplateId(
+                           value: 'person_complete'
+                        ),
+                        rm_version: '1.0.2'
+                     ),
+                     archetype_node_id: 'at0005',
+                     details: new ItemTree(
+                        name: new DvText(
+                           value: 'Tree'
+                        ),
+                        archetype_details: new Archetyped(
+                           archetype_id: new ArchetypeId(
+                              value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                           ),
+                           template_id: new TemplateId(
+                              value: 'person_complete'
+                           ),
+                           rm_version: '1.0.2'
+                        ),
+                        archetype_node_id: 'at0039',
+                        items: [
+                           new Element(
+                              name: new DvText(
+                                 value: 'Street address'
+                              ),
+                              archetype_details: new Archetyped(
+                                 archetype_id: new ArchetypeId(
+                                    value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                                 ),
+                                 template_id: new TemplateId(
+                                    value: 'person_complete'
+                                 ),
+                                 rm_version: '1.0.2'
+                              ),
+                              archetype_node_id: 'at0006',
+                              value: new DvText(
+                                 value: 'Miguel Barreiro 3285'
+                              )
+                           ),
+                           new Element(
+                              name: new DvText(
+                                 value: 'City'
+                              ),
+                              archetype_details: new Archetyped(
+                                 archetype_id: new ArchetypeId(
+                                    value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                                 ),
+                                 template_id: new TemplateId(
+                                    value: 'person_complete'
+                                 ),
+                                 rm_version: '1.0.2'
+                              ),
+                              archetype_node_id: 'at0015',
+                              value: new DvText(
+                                 value: 'Montevideo'
+                              )
+                           ),
+                           new Element(
+                              name: new DvText(
+                                 value: 'State / province / department'
+                              ),
+                              archetype_details: new Archetyped(
+                                 archetype_id: new ArchetypeId(
+                                    value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                                 ),
+                                 template_id: new TemplateId(
+                                    value: 'person_complete'
+                                 ),
+                                 rm_version: '1.0.2'
+                              ),
+                              archetype_node_id: 'at0016',
+                              value: new DvText(
+                                 value: 'Montevideo'
+                              )
+                           ),
+                           new Element(
+                              name: new DvText(
+                                 value: 'Postal code'
+                              ),
+                              archetype_details: new Archetyped(
+                                 archetype_id: new ArchetypeId(
+                                    value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                                 ),
+                                 template_id: new TemplateId(
+                                    value: 'person_complete'
+                                 ),
+                                 rm_version: '1.0.2'
+                              ),
+                              archetype_node_id: 'at0017',
+                              value: new DvText(
+                                 value: '11300'
+                              )
+                           ),
+                           new Element(
+                              name: new DvText(
+                                 value: 'Country'
+                              ),
+                              archetype_details: new Archetyped(
+                                 archetype_id: new ArchetypeId(
+                                    value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                                 ),
+                                 template_id: new TemplateId(
+                                    value: 'person_complete'
+                                 ),
+                                 rm_version: '1.0.2'
+                              ),
+                              archetype_node_id: 'at0018',
+                              value: new DvText(
+                                 value: 'Uruguay'
+                              )
+                           )
+                        ]
+                     )
+                  ),
+                  new Address(
+                     name: new DvText(
+                        value: 'Work address'
+                     ),
+                     archetype_details: new Archetyped(
+                        archetype_id: new ArchetypeId(
+                           value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                        ),
+                        template_id: new TemplateId(
+                           value: 'person_complete'
+                        ),
+                        rm_version: '1.0.2'
+                     ),
+                     archetype_node_id: 'at0022',
+                     details: new ItemTree(
+                        name: new DvText(
+                           value: 'Tree'
+                        ),
+                        archetype_details: new Archetyped(
+                           archetype_id: new ArchetypeId(
+                              value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                           ),
+                           template_id: new TemplateId(
+                              value: 'person_complete'
+                           ),
+                           rm_version: '1.0.2'
+                        ),
+                        archetype_node_id: 'at0040',
+                        items: [
+                           new Element(
+                              name: new DvText(
+                                 value: 'Street address'
+                              ),
+                              archetype_details: new Archetyped(
+                                 archetype_id: new ArchetypeId(
+                                    value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                                 ),
+                                 template_id: new TemplateId(
+                                    value: 'person_complete'
+                                 ),
+                                 rm_version: '1.0.2'
+                              ),
+                              archetype_node_id: 'at0023',
+                              value: new DvText(
+                                 value: 'Juan Paullier 995'
+                              )
+                           ),
+                           new Element(
+                              name: new DvText(
+                                 value: 'City'
+                              ),
+                              archetype_details: new Archetyped(
+                                 archetype_id: new ArchetypeId(
+                                    value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                                 ),
+                                 template_id: new TemplateId(
+                                    value: 'person_complete'
+                                 ),
+                                 rm_version: '1.0.2'
+                              ),
+                              archetype_node_id: 'at0024',
+                              value: new DvText(
+                                 value: 'Montevideo'
+                              )
+                           ),
+                           new Element(
+                              name: new DvText(
+                                 value: 'State / province / department'
+                              ),
+                              archetype_details: new Archetyped(
+                                 archetype_id: new ArchetypeId(
+                                    value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                                 ),
+                                 template_id: new TemplateId(
+                                    value: 'person_complete'
+                                 ),
+                                 rm_version: '1.0.2'
+                              ),
+                              archetype_node_id: 'at0025',
+                              value: new DvText(
+                                 value: 'Montevideo'
+                              )
+                           ),
+                           new Element(
+                              name: new DvText(
+                                 value: 'Postal code'
+                              ),
+                              archetype_details: new Archetyped(
+                                 archetype_id: new ArchetypeId(
+                                    value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                                 ),
+                                 template_id: new TemplateId(
+                                    value: 'person_complete'
+                                 ),
+                                 rm_version: '1.0.2'
+                              ),
+                              archetype_node_id: 'at0026',
+                              value: new DvText(
+                                 value: '11200'
+                              )
+                           ),
+                           new Element(
+                              name: new DvText(
+                                 value: 'Country'
+                              ),
+                              archetype_details: new Archetyped(
+                                 archetype_id: new ArchetypeId(
+                                    value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                                 ),
+                                 template_id: new TemplateId(
+                                    value: 'person_complete'
+                                 ),
+                                 rm_version: '1.0.2'
+                              ),
+                              archetype_node_id: 'at0027',
+                              value: new DvText(
+                                 value: 'Uruguay'
+                              )
+                           )
+                        ]
+                     )
+                  ),
+                  new Address(
+                     name: new DvText(
+                        value: 'Phone number'
+                     ),
+                     archetype_details: new Archetyped(
+                        archetype_id: new ArchetypeId(
+                           value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                        ),
+                        template_id: new TemplateId(
+                           value: 'person_complete'
+                        ),
+                        rm_version: '1.0.2'
+                     ),
+                     archetype_node_id: 'at0028',
+                     details: new ItemTree(
+                        name: new DvText(
+                           value: 'Tree'
+                        ),
+                        archetype_details: new Archetyped(
+                           archetype_id: new ArchetypeId(
+                              value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                           ),
+                           template_id: new TemplateId(
+                              value: 'person_complete'
+                           ),
+                           rm_version: '1.0.2'
+                        ),
+                        archetype_node_id: 'at0041',
+                        items: [
+                           new Element(
+                              name: new DvText(
+                                 value: 'Number'
+                              ),
+                              archetype_details: new Archetyped(
+                                 archetype_id: new ArchetypeId(
+                                    value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                                 ),
+                                 template_id: new TemplateId(
+                                    value: 'person_complete'
+                                 ),
+                                 rm_version: '1.0.2'
+                              ),
+                              archetype_node_id: 'at0029',
+                              value: new DvText(
+                                 value: '555 034 145'
+                              )
+                           ),
+                           new Element(
+                              name: new DvText(
+                                 value: 'Country code'
+                              ),
+                              archetype_details: new Archetyped(
+                                 archetype_id: new ArchetypeId(
+                                    value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                                 ),
+                                 template_id: new TemplateId(
+                                    value: 'person_complete'
+                                 ),
+                                 rm_version: '1.0.2'
+                              ),
+                              archetype_node_id: 'at0030',
+                              value: new DvText(
+                                 value: '+598'
+                              )
+                           )
+                        ]
+                     )
+                  ),
+                  new Address(
+                     name: new DvText(
+                        value: 'Email'
+                     ),
+                     archetype_details: new Archetyped(
+                        archetype_id: new ArchetypeId(
+                           value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                        ),
+                        template_id: new TemplateId(
+                           value: 'person_complete'
+                        ),
+                        rm_version: '1.0.2'
+                     ),
+                     archetype_node_id: 'at0031',
+                     details: new ItemTree(
+                        name: new DvText(
+                           value: 'Tree'
+                        ),
+                        archetype_details: new Archetyped(
+                           archetype_id: new ArchetypeId(
+                              value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                           ),
+                           template_id: new TemplateId(
+                              value: 'person_complete'
+                           ),
+                           rm_version: '1.0.2'
+                        ),
+                        archetype_node_id: 'at0042',
+                        items: [
+                           new Element(
+                              name: new DvText(
+                                 value: 'Email address'
+                              ),
+                              archetype_details: new Archetyped(
+                                 archetype_id: new ArchetypeId(
+                                    value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                                 ),
+                                 template_id: new TemplateId(
+                                    value: 'person_complete'
+                                 ),
+                                 rm_version: '1.0.2'
+                              ),
+                              archetype_node_id: 'at0032',
+                              value: new DvText(
+                                 value: 'info@cabolabs.com'
+                              )
+                           )
+                        ]
+                     )
+                  )
+               ]
+            )
+         ],
+         identities: [
+            new PartyIdentity(
+               name: new DvText(
+                  value: 'Identifier'
+               ),
+               archetype_details: new Archetyped(
+                  archetype_id: new ArchetypeId(
+                     value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                  ),
+                  template_id: new TemplateId(
+                     value: 'person_complete'
+                  ),
+                  rm_version: '1.0.2'
+               ),
+               archetype_node_id: 'at0003',
+               details: new ItemTree(
+                  name: new DvText(
+                     value: 'Identifier'
+                  ),
+                  archetype_details: new Archetyped(
+                     archetype_id: new ArchetypeId(
+                        value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                     ),
+                     template_id: new TemplateId(
+                        value: 'person_complete'
+                     ),
+                     rm_version: '1.0.2'
+                  ),
+                  archetype_node_id: 'at0038',
+                  items: [
+                     new Element(
+                        name: new DvText(
+                           value: 'Full name'
+                        ),
+                        archetype_details: new Archetyped(
+                           archetype_id: new ArchetypeId(
+                              value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                           ),
+                           template_id: new TemplateId(
+                              value: 'person_complete'
+                           ),
+                           rm_version: '1.0.2'
+                        ),
+                        archetype_node_id: 'at0007',
+                        value: new DvText(
+                           value: 'Pablo Pazos'
+                        )
+                     ),
+                     new Element(
+                        name: new DvText(
+                           value: 'Date of birth'
+                        ),
+                        archetype_details: new Archetyped(
+                           archetype_id: new ArchetypeId(
+                              value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                           ),
+                           template_id: new TemplateId(
+                              value: 'person_complete'
+                           ),
+                           rm_version: '1.0.2'
+                        ),
+                        archetype_node_id: 'at0008',
+                        value: new DvDate(
+                           value: '2023-07-09'
+                        )
+                     ),
+                     new Element(
+                        name: new DvText(
+                           value: 'Sex'
+                        ),
+                        archetype_details: new Archetyped(
+                           archetype_id: new ArchetypeId(
+                              value: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0'
+                           ),
+                           template_id: new TemplateId(
+                              value: 'person_complete'
+                           ),
+                           rm_version: '1.0.2'
+                        ),
+                        archetype_node_id: 'at0009',
+                        value: new DvCodedText(
+                           value: 'Masculine',
+                           defining_code: new CodePhrase(
+                              code_string: 'at0033',
+                              terminology_id: new TerminologyId(
+                                 value: 'local'
+                              )
+                           )
+                        )
+                     )
+                  ]
+               )
+            )
+         ],
+         relationships: [
+            new PartyRelationship(
+               name: new DvText(
+                  value: 'generic relationship'
+               ),
+               archetype_details: new Archetyped(
+                  archetype_id: new ArchetypeId(
+                     value: 'openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.generic_relationship.v1'
+                  ),
+                  template_id: new TemplateId(
+                     value: 'generic_relationship'
+                  ),
+                  rm_version: '1.0.2'
+               ),
+               archetype_node_id: 'openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.generic_relationship.v1',
+               details: new ItemTree(
+                  name: new DvText(
+                     value: 'tree'
+                  ),
+                  archetype_details: new Archetyped(
+                     archetype_id: new ArchetypeId(
+                        value: 'openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.generic_relationship.v1'
+                     ),
+                     template_id: new TemplateId(
+                        value: 'generic_relationship'
+                     ),
+                     rm_version: '1.0.2'
+                  ),
+                  archetype_node_id: 'at0001',
+                  items: [
+                     new Element(
+                        name: new DvText(
+                           value: 'relationship type'
+                        ),
+                        archetype_details: new Archetyped(
+                           archetype_id: new ArchetypeId(
+                              value: 'openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.generic_relationship.v1'
+                           ),
+                           template_id: new TemplateId(
+                              value: 'generic_relationship'
+                           ),
+                           rm_version: '1.0.2'
+                        ),
+                        archetype_node_id: 'at0002',
+                        value: new DvCodedText(
+                           value: 'Natural child',
+                           defining_code: new CodePhrase(
+                              code_string: '75226009',
+                              terminology_id: new TerminologyId(
+                                 value: 'SNOMED-CT'
+                              )
+                           )
+                        )
+                     )
+                  ]
+               ),
+               time_validity: new DvInterval(
+                  lower: new DvDate(
+                     value: '2023-01-01'
+                  ),
+                  upper_unbounded: true,
+                  lower_included: true
+               ),
+               source: new PartyRef(
+                  id: new HierObjectId(
+                     value: '1234-1234-1234-1234'
+                  ),
+                  type: 'PERSON',
+                  namespace: 'demographic'
+               ),
+               target: new PartyRef(
+                  id: new HierObjectId(
+                     value: '5678-1234-1234-1234'
+                  ),
+                  type: 'PERSON',
+                  namespace: 'demographic'
+               )
+            )
+         ]
+      )
+   }
 
    void testEhrDtoSerialize()
    {

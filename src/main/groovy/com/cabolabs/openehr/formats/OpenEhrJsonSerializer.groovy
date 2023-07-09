@@ -193,7 +193,7 @@ class OpenEhrJsonSerializer {
          a.languages.each { dvtext ->
 
             method = this.method(dvtext)
-            out.langauges << this."$method"(dvtext)
+            out.languages << this."$method"(dvtext)
          }
       }
 
@@ -225,7 +225,7 @@ class OpenEhrJsonSerializer {
          a.languages.each { dvtext ->
 
             method = this.method(dvtext)
-            out.langauges << this."$method"(dvtext)
+            out.languages << this."$method"(dvtext)
          }
       }
 

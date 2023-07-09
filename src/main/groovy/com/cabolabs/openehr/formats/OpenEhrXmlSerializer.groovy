@@ -155,32 +155,161 @@ class OpenEhrXmlSerializer {
 
    private void fillPartyDto(PartyDto p)
    {
-      // TODO:
+      this.fillLocatable(p)
+
+      // optional
+      if (p.details)
+      {
+         def method = this.method(p.details)
+         builder.details('xsi:type': openEhrType(p.name)) {
+            this."$method"(p.details)
+         }
+      }
+
+      // optional
+      if (p.contacts)
+      {
+         p.contacts.each { contact ->
+
+            builder.contacts {
+               this.serializeContact(contact)
+            }
+         }
+      }
+
+      // mandatory, at least 1 object
+      p.identities.each { identity ->
+
+         builder.identities {
+            this.serializePartyIdentity(identity)
+         }
+      }
    }
 
    private void fillActorDto(ActorDto a)
    {
-      // TODO:
+      this.fillPartyDto(a)
+
+      // optional
+      if (a.languages)
+      {
+         a.languages.each { dvtext ->
+
+            method = this.method(dvtext)
+            builder.languages {
+               this."$method"(dvtext)
+            }
+         }
+      }
+
+      // optional
+      if (a.roles)
+      {
+         a.roles.each { role ->
+
+            builder.roles {
+               this.serializeRoleDto(role)
+            }
+         }
+      }
    }
 
    private serializeRoleDto(Role r)
    {
-      // TODO:
+      // for now this is the same as Role
+      serializeRole(r)
    }
 
    private void fillActor(Actor a)
    {
-      // TODO:
+      this.fillParty(a)
+
+      // optional
+      if (a.languages)
+      {
+         a.languages.each { dvtext ->
+
+            method = this.method(dvtext)
+            builder.languages {
+               this."$method"(dvtext)
+            }
+         }
+      }
+
+      // optional
+      if (a.roles)
+      {
+         a.roles.each { role ->
+
+            builder.roles {
+               this.serializeRoleDto(role)
+            }
+         }
+      }
    }
 
    private void fillParty(Party p)
    {
-      // TODO:
+      this.fillLocatable(p)
+
+      // optional
+      if (p.details)
+      {
+         def method = this.method(p.details)
+         builder.details('xsi:type': openEhrType(p.name)) {
+            this."$method"(p.details)
+         }
+      }
+
+      // optional
+      if (p.contacts)
+      {
+         p.contacts.each { contact ->
+
+            builder.contacts {
+               this.serializeContact(contact)
+            }
+         }
+      }
+
+      // mandatory, at least 1 object
+      p.identities.each { identity ->
+
+         builder.identities {
+            this.serializePartyIdentity(identity)
+         }
+      }
+
+      // TODO: reverse_relationships
    }
 
    private void serializePartyRelationship(PartyRelationship p)
    {
-      // TODO:
+      this.fillLocatable(p)
+
+      // optional
+      if (p.details)
+      {
+         def method = this.method(p.details)
+         builder.details('xsi:type': openEhrType(p.name)) {
+            this."$method"(p.details)
+         }
+      }
+
+      if (p.time_validity)
+      {
+         builder.time_validity {
+            this.serializeDvInterval(p.time_validity)
+         }
+      }
+
+      builder.source {
+         this.serializePartyRef(p.source)
+      }
+
+      builder.target {
+         this.serializePartyRef(p.target)
+      }
    }
 
 
@@ -379,52 +508,86 @@ class OpenEhrXmlSerializer {
 
    private void serializePersonDto(PersonDto p)
    {
-      // TODO:
+      this.fillActorDto(p)
    }
 
    private void serializeOrganizationDto(OrganizationDto p)
    {
-      // TODO:
+      this.fillActorDto(p)
    }
 
    private void serializeGroupDto(GroupDto p)
    {
-      // TODO:
+      this.fillActorDto(p)
    }
 
    private void serializeAgentDto(AgentDto p)
    {
-      // TODO:
+      this.fillActorDto(p)
    }
 
    private void serializePerson(Person p)
    {
-      // TODO:
+      this.fillActor(p)
    }
 
    private void serializeOrganization(Organization o)
    {
-      // TODO:
+      this.fillActor(p)
    }
 
    private void serializeGroup(Group g)
    {
-      // TODO:
+      this.fillActor(p)
    }
 
    private void serializeAgent(Agent a)
    {
-      // TODO:
+      this.fillActor(p)
    }
 
    private void serializeRole(Role r)
    {
-      // TODO:
+      this.fillParty(r)
+
+      if (r.time_validity)
+      {
+         builder.time_validity {
+            this.serializeDvInterval(r.time_validity)
+         }
+      }
+
+      // For API the role doesn't have performer, it's the Actor that contains
+      // the Role
+      if (r.performer)
+      {
+         builder.performer {
+            this.serializePartyRef(r.performer)
+         }
+      }
+
+      r.capabilities.each { capability ->
+         builder.capabilities {
+            serializeCapability(capability)
+         }
+      }
    }
 
    private void serializeCapability(Capability c)
    {
-      // TODO:
+      this.fillLocatable(c)
+
+      def method = this.method(c.credentials)
+      builder.credentials('xsi:type': openEhrType(c.credentials)) {
+         this."$method"(c.credentials)
+      }
+
+      if (c.time_validity)
+      {
+         builder.time_validity {
+            this.serializeDvInterval(c.time_validity)
+         }
+      }
    }
 
    private void serializeContact(Contact c)
@@ -1324,13 +1487,22 @@ class OpenEhrXmlSerializer {
 
    void serializeDvInterval(DvInterval o)
    {
-      String method = this.method(o.lower)
-      builder.lower('xsi:type': this.openEhrType(o.lower)) {
-         this."$method"(o.lower)
+      String method
+
+      if (o.lower)
+      {
+         method = this.method(o.lower)
+         builder.lower('xsi:type': this.openEhrType(o.lower)) {
+            this."$method"(o.lower)
+         }
       }
-      method = this.method(o.upper)
-      builder.upper('xsi:type': this.openEhrType(o.upper)) {
-         this."$method"(o.upper)
+
+      if (o.upper)
+      {
+         method = this.method(o.upper)
+         builder.upper('xsi:type': this.openEhrType(o.upper)) {
+            this."$method"(o.upper)
+         }
       }
 
       // _included are optional in the XSD
