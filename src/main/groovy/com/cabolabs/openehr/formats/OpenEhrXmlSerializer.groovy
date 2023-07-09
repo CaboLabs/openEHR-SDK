@@ -3,38 +3,41 @@ package com.cabolabs.openehr.formats
 import groovy.xml.MarkupBuilder
 import java.text.SimpleDateFormat
 
+import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
+import com.cabolabs.openehr.rm_1_0_2.common.generic.*
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 import com.cabolabs.openehr.rm_1_0_2.common.change_control.OriginalVersion
 import com.cabolabs.openehr.rm_1_0_2.common.change_control.Version
 import com.cabolabs.openehr.rm_1_0_2.common.directory.Folder
-import com.cabolabs.openehr.rm_1_0_2.common.generic.*
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.rm_1_0_2.composition.EventContext
 import com.cabolabs.openehr.rm_1_0_2.composition.content.entry.*
 import com.cabolabs.openehr.rm_1_0_2.composition.content.navigation.Section
 import com.cabolabs.openehr.rm_1_0_2.data_structures.history.Event
 import com.cabolabs.openehr.rm_1_0_2.data_structures.history.History
-import com.cabolabs.openehr.rm_1_0_2.data_structures.history.IntervalEvent
 import com.cabolabs.openehr.rm_1_0_2.data_structures.history.PointEvent
+import com.cabolabs.openehr.rm_1_0_2.data_structures.history.IntervalEvent
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.*
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Cluster
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Element
 import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DvBoolean
 import com.cabolabs.openehr.rm_1_0_2.data_types.basic.DvIdentifier
-import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDate
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDuration
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvTime
+import com.cabolabs.openehr.rm_1_0_2.data_types.encapsulated.*
+import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.CodePhrase
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvCodedText
-import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
-import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvEhrUri
 import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvUri
+import com.cabolabs.openehr.rm_1_0_2.data_types.uri.DvEhrUri
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
-
+import com.cabolabs.openehr.rm_1_0_2.demographic.*
+import com.cabolabs.openehr.dto_1_0_2.ehr.EhrDto
+import com.cabolabs.openehr.dto_1_0_2.demographic.*
 
 class OpenEhrXmlSerializer {
 
@@ -43,10 +46,7 @@ class OpenEhrXmlSerializer {
 
    public OpenEhrXmlSerializer()
    {
-      // pretty is false by default
-      writer = new StringWriter()
-      builder = new MarkupBuilder(new IndentPrinter(new PrintWriter(writer), "", false))
-      builder.setDoubleQuotes(true)
+      this(false)
    }
 
    public OpenEhrXmlSerializer(boolean pretty)
@@ -69,7 +69,11 @@ class OpenEhrXmlSerializer {
    // EventContext => EVENT_CONTEXT
    private String openEhrType(Object o)
    {
-      o.getClass().getSimpleName().replaceAll("[A-Z]", '_$0').toUpperCase().replaceAll( /^_/, '')
+
+      String clazz = o.getClass().getSimpleName()
+      if (clazz == "Organization") clazz = "Organisation" // alias of UK based RM!
+      else if (clazz == "OrganizationDto") clazz = "Organisation" // alias of UK based RM!
+      clazz.replaceAll("[A-Z]", '_$0').toUpperCase().replaceAll( /^_/, '') - '_DTO' // if the type is XXX_DTO, removes _DTO
    }
 
    private String method(Object obj)
@@ -80,37 +84,43 @@ class OpenEhrXmlSerializer {
    }
 
    // this allows to serialize any LOCATABLE
-   String serialize(Locatable o, boolean pretty = false)
+   String serialize(Locatable o)
    {
-      return internalSerialize(o, pretty)
+      return internalSerialize(o)
    }
 
    // since VERSION is not LOCATABLE, this allows to serialize a VERSION
-   String serialize(Version v, boolean pretty = false)
+   String serialize(Version v)
    {
-      return internalSerialize(v, pretty)
+      return internalSerialize(v)
    }
 
    // this is used by both entry points, since the code is the same
-   private String internalSerialize(Object o, boolean pretty = false)
+   // analogous to the toMap methods on OpenEhrJsonSerializer
+   private String internalSerialize(Object o)
    {
-      writer = new StringWriter()
-
-      if (pretty)
-      {
-         builder = new MarkupBuilder(writer)
-      }
-      else
-      {
-         builder = new MarkupBuilder(new IndentPrinter(new PrintWriter(writer), "", false))
-      }
-
-      builder.setDoubleQuotes(true)
-
       String method = this.method(o)
       this."$method"(o)
 
       return writer.toString()
+   }
+
+   public String serialize(EhrDto ehr)
+   {
+      builder.ehr {
+         ehr_id {
+            this.serializeHierObjectId(ehr.ehr_id)
+         }
+         system_id {
+            this.serializeHierObjectId(ehr.system_id)
+         }
+         time_created {
+            this.serializeDvDateTime(ehr.time_created)
+         }
+         ehr_status(archetype_node_id: ehr.ehr_status.archetype_node_id) {
+            this.serializeEhrStatus(ehr.ehr_status)
+         }
+      }
    }
 
    private void fillLocatable(Locatable o)
@@ -142,6 +152,37 @@ class OpenEhrXmlSerializer {
 
       // TODO: feeder audit
    }
+
+   private void fillPartyDto(PartyDto p)
+   {
+      // TODO:
+   }
+
+   private void fillActorDto(ActorDto a)
+   {
+      // TODO:
+   }
+
+   private serializeRoleDto(Role r)
+   {
+      // TODO:
+   }
+
+   private void fillActor(Actor a)
+   {
+      // TODO:
+   }
+
+   private void fillParty(Party p)
+   {
+      // TODO:
+   }
+
+   private void serializePartyRelationship(PartyRelationship p)
+   {
+      // TODO:
+   }
+
 
    private void serializeOriginalVersion(OriginalVersion v)
    {
@@ -197,6 +238,51 @@ class OpenEhrXmlSerializer {
          }
       }
    }
+
+
+   // The entry point for EHRStatus will be serialize(Locatable)
+   private void serializeEhrStatus(EhrStatus status)
+   {
+      // TODO: we need one internal serializer for the attributes only and one complete serialier for the ehr_status itself
+      /*
+      builder.ehr_status(archetype_node_id: status.archetype_node_id) {
+
+         this.fillLocatable(status)
+
+         if (status.subject)
+         {
+            this.serializerPartySelf(status.subject)
+         }
+
+         is_modifiable(status.is_modifiable)
+         is_queryable(status.is_queryable)
+
+         if (status.other_details)
+         {
+            String method = this.method(status.other_details)
+            this."$method"(status.other_details)
+         }
+      }
+      */
+
+      // internal serializer code
+      this.fillLocatable(status)
+
+      if (status.subject)
+      {
+         this.serializePartySelf(status.subject)
+      }
+
+      builder.is_modifiable(status.is_modifiable)
+      builder.is_queryable(status.is_queryable)
+
+      if (status.other_details)
+      {
+         String method = this.method(status.other_details)
+         this."$method"(status.other_details)
+      }
+   }
+
 
    public String serializeFolder(Folder folder)
    {
@@ -290,6 +376,72 @@ class OpenEhrXmlSerializer {
          this.serializeCompositionInternals(c)
       }
    }
+
+   private void serializePersonDto(PersonDto p)
+   {
+      // TODO:
+   }
+
+   private void serializeOrganizationDto(OrganizationDto p)
+   {
+      // TODO:
+   }
+
+   private void serializeGroupDto(GroupDto p)
+   {
+      // TODO:
+   }
+
+   private void serializeAgentDto(AgentDto p)
+   {
+      // TODO:
+   }
+
+   private void serializePerson(Person p)
+   {
+      // TODO:
+   }
+
+   private void serializeOrganization(Organization o)
+   {
+      // TODO:
+   }
+
+   private void serializeGroup(Group g)
+   {
+      // TODO:
+   }
+
+   private void serializeAgent(Agent a)
+   {
+      // TODO:
+   }
+
+   private void serializeRole(Role r)
+   {
+      // TODO:
+   }
+
+   private void serializeCapability(Capability c)
+   {
+      // TODO:
+   }
+
+   private void serializeContact(Contact c)
+   {
+      // TODO:
+   }
+
+   private void serializeAddress(Address ad)
+   {
+      // TODO:
+   }
+
+   private void serializePartyIdentity(PartyIdentity pi)
+   {
+      // TODO:
+   }
+
 
    void serializeEventContext(EventContext e)
    {
@@ -709,38 +861,6 @@ class OpenEhrXmlSerializer {
       }
    }
 
-   void serializeElement(Element o)
-   {
-      this.fillLocatable(o)
-
-      if (o.value)
-      {
-         String method = this.method(o.value)
-         builder.value('xsi:type': this.openEhrType(o.value)) {
-            this."$method"(o.value)
-         }
-      }
-
-      if (o.null_flavour)
-      {
-         builder.null_flavour() {
-            this.serializeDvCodedText(o.null_flavour)
-         }
-      }
-   }
-
-   void serializeCluster(Cluster o)
-   {
-      this.fillLocatable(o)
-
-      String method
-      o.items.each { item ->
-         method = this.method(item)
-         builder.items('xsi:type': this.openEhrType(item), archetype_node_id: item.archetype_node_id) {
-            this."$method"(item)
-         }
-      }
-   }
 
    void serializeSection(Section s)
    {
@@ -954,7 +1074,6 @@ class OpenEhrXmlSerializer {
       }
    }
 
-
    void serializeAdminEntry(AdminEntry o)
    {
       this.fillLocatable(o)
@@ -965,6 +1084,41 @@ class OpenEhrXmlSerializer {
          this."$method"(o.data)
       }
    }
+
+
+   void serializeCluster(Cluster o)
+   {
+      this.fillLocatable(o)
+
+      String method
+      o.items.each { item ->
+         method = this.method(item)
+         builder.items('xsi:type': this.openEhrType(item), archetype_node_id: item.archetype_node_id) {
+            this."$method"(item)
+         }
+      }
+   }
+
+   void serializeElement(Element o)
+   {
+      this.fillLocatable(o)
+
+      if (o.value)
+      {
+         String method = this.method(o.value)
+         builder.value('xsi:type': this.openEhrType(o.value)) {
+            this."$method"(o.value)
+         }
+      }
+
+      if (o.null_flavour)
+      {
+         builder.null_flavour() {
+            this.serializeDvCodedText(o.null_flavour)
+         }
+      }
+   }
+
 
 
    void serializeDvDateTime(DvDateTime o)
@@ -1198,11 +1352,6 @@ class OpenEhrXmlSerializer {
 
    /*
    void serializeTerminologyId(TerminologyId o)
-   {
-      builder.value(o.value)
-   }
-
-   void serializeHierObjectId(HierObjectId o)
    {
       builder.value(o.value)
    }

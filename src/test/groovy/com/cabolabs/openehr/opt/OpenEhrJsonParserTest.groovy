@@ -289,7 +289,10 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
        def json_ehr_status = $/
          {
             "_type": "EHR_STATUS",
-            "archetype_node_id": "openEHR-EHR-EHR_STATUS.generic.v1",
+            "name": {
+               "_type": "DV_TEXT",
+               "value": "EHR Status"
+            },
             "archetype_details": {
                "archetype_id": {
                   "value": "openEHR-EHR-EHR_STATUS.generic.v1"
@@ -299,10 +302,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
                },
                "rm_version": "1.0.2"
             },
-            "name": {
-               "_type": "DV_TEXT",
-               "value": "EHR Status"
-            },
+            "archetype_node_id": "openEHR-EHR-EHR_STATUS.generic.v1",
             "subject": {
                "external_ref": {
                   "id": {

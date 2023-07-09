@@ -1024,7 +1024,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
       assert report.errors.size() == 0
 
-      def locatable_string = new OpenEhrJsonSerializer().serialize(compo, true)
+      def locatable_string = new OpenEhrJsonSerializer(true).serialize(compo)
 
       println locatable_string
    }

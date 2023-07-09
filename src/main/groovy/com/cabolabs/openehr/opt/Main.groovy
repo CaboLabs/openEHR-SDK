@@ -500,11 +500,11 @@ class Main {
 
       if (format == 'json')
       {
-         serializer = new OpenEhrJsonSerializer()
+         serializer = new OpenEhrJsonSerializer(true)
       }
       else
       {
-         serializer = new OpenEhrXmlSerializer()
+         serializer = new OpenEhrXmlSerializer(true)
       }
 
       opts.each { opt ->
@@ -546,7 +546,7 @@ class Main {
             }
 
             // this is always pretty printed
-            contents = serializer.serialize(instance, true)
+            contents = serializer.serialize(instance)
 
             dt = new java.text.SimpleDateFormat("yyyyMMddhhmmss").format(new Date())
             path = destination_path + PS + (opt.templateId.replaceAll(' ', '_').toLowerCase() +"_"+ dt +"_"+ file_number.toString().padLeft(6, '0') +'_'+ i +'.'+ ext)

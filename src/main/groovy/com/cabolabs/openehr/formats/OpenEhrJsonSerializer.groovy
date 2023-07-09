@@ -41,6 +41,18 @@ import com.cabolabs.openehr.dto_1_0_2.demographic.*
 
 class OpenEhrJsonSerializer {
 
+   boolean pretty
+
+   public OpenEhrJsonSerializer()
+   {
+      this(false)
+   }
+
+   public OpenEhrJsonSerializer(boolean pretty)
+   {
+      this.pretty = pretty
+   }
+
    // TODO: comply with the JSON date format
    //def dateFormatter = new SimpleDateFormat("yyyyMMdd'T'HHmmss,SSSZ")
 
@@ -61,9 +73,9 @@ class OpenEhrJsonSerializer {
       return method
    }
 
-   private String encode(Map m, boolean pretty = false)
+   private String encode(Map m)
    {
-      if (pretty)
+      if (this.pretty)
       {
          return JsonOutput.prettyPrint(JsonOutput.toJson(m))
       }
@@ -71,10 +83,10 @@ class OpenEhrJsonSerializer {
       return JsonOutput.toJson(m)
    }
 
-   String serialize(Locatable o, boolean pretty = false)
+   String serialize(Locatable o)
    {
       def out = this.toMap(o)
-      this.encode(out, pretty)
+      this.encode(out)
    }
 
    Map toMap(Locatable o)
@@ -83,10 +95,10 @@ class OpenEhrJsonSerializer {
       return this."$method"(o)
    }
 
-   String serialize(Version o, boolean pretty = false)
+   String serialize(Version o)
    {
       def out = this.toMap(o)
-      this.encode(out, pretty)
+      this.encode(out)
    }
 
    Map toMap(Version o)
@@ -95,10 +107,10 @@ class OpenEhrJsonSerializer {
       return this."$method"(o) // e.g. serializeOriginalVersion
    }
 
-   String serialize(EhrDto ehr, boolean pretty = false)
+   String serialize(EhrDto ehr)
    {
       Map out = this.toMap(ehr)
-      this.encode(out, pretty)
+      this.encode(out)
    }
 
    Map toMap(EhrDto ehr)
@@ -338,7 +350,7 @@ class OpenEhrJsonSerializer {
    {
       def out = [:]
 
-      out._type = 'EHR_STATUS'
+      out._type = 'EHR_STATUS' // TODO: not needed, there is only one use and it's known
 
       this.fillLocatable(status, out)
 
@@ -829,7 +841,7 @@ class OpenEhrJsonSerializer {
 
    private Map serializeArchetypeId(ArchetypeId o)
    {
-      Map out = [_type: 'ARCHETYPE_ID'] // NOTE: all uses of ARCHETYPE_ID are known, type is optional
+      Map out = [:] //[_type: 'ARCHETYPE_ID'] // NOTE: all uses of ARCHETYPE_ID are known, type is optional
 
       this.fillObjectId(o, out)
 
@@ -856,7 +868,7 @@ class OpenEhrJsonSerializer {
 
    private Map serializeTemplateId(TemplateId o)
    {
-      Map out = [_type: 'TEMPLATE_ID'] // NOTE: all uses of TEMPLATE_ID are known, type is optional
+      Map out = [:] //[_type: 'TEMPLATE_ID'] // NOTE: all uses of TEMPLATE_ID are known, type is optional
 
       this.fillObjectId(o, out)
 
