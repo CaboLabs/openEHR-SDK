@@ -18,6 +18,7 @@ import com.cabolabs.openehr.rm_1_0_2.demographic.*
 import com.cabolabs.openehr.validation.*
 
 import com.cabolabs.openehr.opt.manager.*
+import com.cabolabs.openehr.opt.instance_validation.*
 
 class OpenEhrXmlSerializerTest extends GroovyTestCase {
 
@@ -40,7 +41,7 @@ class OpenEhrXmlSerializerTest extends GroovyTestCase {
          ),
          archetype_node_id: 'openEHR-DEMOGRAPHIC-PERSON.person_complete.v0',
          roles: [
-            // TODO:
+            // TODO: for Person, roles are PartyRef, for PersonDTP are Role
          ],
          languages: [
             new DvText(value: 'es')
@@ -90,7 +91,10 @@ class OpenEhrXmlSerializerTest extends GroovyTestCase {
                         ),
                         archetype_node_id: 'at0011',
                         value: new DvIdentifier(
-                           // TODO:
+                           issuer: 'Hospital X',
+                           assigner: 'Hospital X',
+                           id: '1234545545',
+                           type: 'MRN'
                         )
                      )
                   ]
@@ -659,6 +663,24 @@ class OpenEhrXmlSerializerTest extends GroovyTestCase {
             )
          ]
       )
+
+      def serializer = new OpenEhrXmlSerializer(true)
+      def personString = serializer.serialize(person)
+
+      println personString
+
+
+
+      //def slurper = new XmlSlurper(false, false)
+      //def gpath = slurper.parseText(personString)
+
+      // NOTE: favour should be 'api' and current validator doesn't have an option for that, we neither have the XSD for that.
+      def inputStream = getClass().getResourceAsStream('/xsd/Version.xsd')
+      def schemaValidator = new XmlValidation(inputStream)
+      if (!schemaValidator.validate(personString))
+      {
+         println schemaValidator.getErrors()
+      }
    }
 
    void testEhrDtoSerialize()
@@ -716,14 +738,18 @@ class OpenEhrXmlSerializerTest extends GroovyTestCase {
       def serializer = new OpenEhrXmlSerializer()
       def ehr_string = serializer.serialize(dto_ehr)
 
-      /* TODO
-      def slurper = new JsonSlurper()
-      def json_map = slurper.parseText(ehr_string)
+      /* TODO: validate XML against API schema
 
-      def validator = new JsonInstanceValidation('api', '1.0.2')
-      def errors = validator.validate(json_map)
+      def slurper = new XmlSlurper(false, false)
+      def gpath = slurper.parseText(xml)
 
-      assert !errors
+      // NOTE: favour should be 'api' and current validator doesn't have an option for that, we neither have the XSD for that.
+      def inputStream = getClass().getResourceAsStream('/xsd/Version.xsd')
+      schemaValidator = new XmlValidation(inputStream)
+      if (!schemaValidator.validate(xml))
+      {
+         println schemaValidator.getErrors()
+      }
       */
    }
 

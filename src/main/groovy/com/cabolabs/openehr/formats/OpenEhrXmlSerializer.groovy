@@ -161,7 +161,7 @@ class OpenEhrXmlSerializer {
       if (p.details)
       {
          def method = this.method(p.details)
-         builder.details('xsi:type': openEhrType(p.name)) {
+         builder.details('xsi:type': openEhrType(p.details)) {
             this."$method"(p.details)
          }
       }
@@ -208,7 +208,7 @@ class OpenEhrXmlSerializer {
          a.roles.each { role ->
 
             builder.roles {
-               this.serializeRoleDto(role)
+               this.serializeRoleDtoInternal(role)
             }
          }
       }
@@ -220,9 +220,17 @@ class OpenEhrXmlSerializer {
       serializeRole(r)
    }
 
+   private serializeRoleDtoInternal(Role r)
+   {
+      // for now this is the same as Role
+      serializeRoleInternal(r)
+   }
+
    private void fillActor(Actor a)
    {
       this.fillParty(a)
+
+      def method
 
       // optional
       if (a.languages)
@@ -239,12 +247,13 @@ class OpenEhrXmlSerializer {
       // optional
       if (a.roles)
       {
-         a.roles.each { role ->
+         // FIXME: the roles for an Actor should be PartyRef, for an ActorDto are Role
+         // a.roles.each { role ->
 
-            builder.roles {
-               this.serializeRoleDto(role)
-            }
-         }
+         //    builder.roles {
+         //       this.serializeRoleDto(role)
+         //    }
+         // }
       }
    }
 
@@ -256,7 +265,7 @@ class OpenEhrXmlSerializer {
       if (p.details)
       {
          def method = this.method(p.details)
-         builder.details('xsi:type': openEhrType(p.name)) {
+         builder.details('xsi:type': openEhrType(p.details), archetype_node_id: p.details.archetype_node_id) {
             this."$method"(p.details)
          }
       }
@@ -266,7 +275,7 @@ class OpenEhrXmlSerializer {
       {
          p.contacts.each { contact ->
 
-            builder.contacts {
+            builder.contacts(archetype_node_id: contact.archetype_node_id) {
                this.serializeContact(contact)
             }
          }
@@ -275,7 +284,7 @@ class OpenEhrXmlSerializer {
       // mandatory, at least 1 object
       p.identities.each { identity ->
 
-         builder.identities {
+         builder.identities(archetype_node_id: identity.archetype_node_id) {
             this.serializePartyIdentity(identity)
          }
       }
@@ -528,7 +537,14 @@ class OpenEhrXmlSerializer {
 
    private void serializePerson(Person p)
    {
-      this.fillActor(p)
+      builder.person(
+         xmlns: 'http://schemas.openehr.org/v1',
+         'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+         'xsi:type': 'PERSON',
+         archetype_node_id: p.archetype_node_id) {
+
+         this.fillActor(p)
+      }
    }
 
    private void serializeOrganization(Organization o)
@@ -546,7 +562,16 @@ class OpenEhrXmlSerializer {
       this.fillActor(p)
    }
 
+   // Role woth the root node
    private void serializeRole(Role r)
+   {
+      builder.role('xsi:type': 'ROLE') {
+         serializeRoleInternal(r)
+      }
+   }
+
+   // Role without the root node
+   private void serializeRoleInternal(Role r)
    {
       this.fillParty(r)
 
@@ -592,17 +617,41 @@ class OpenEhrXmlSerializer {
 
    private void serializeContact(Contact c)
    {
-      // TODO:
+      this.fillLocatable(c)
+
+      if (c.time_validity)
+      {
+         builder.time_validity {
+            this.serializeDvInterval(c.time_validity)
+         }
+      }
+
+      c.addresses.each { address ->
+
+         builder.addresses(archetype_node_id: address.archetype_node_id) {
+            this.serializeAddress(address)
+         }
+      }
    }
 
    private void serializeAddress(Address ad)
    {
-      // TODO:
+      this.fillLocatable(ad)
+
+      def method = this.method(ad.details)
+      builder.details('xsi:type': this.openEhrType(ad.details), archetype_node_id: ad.details.archetype_node_id) {
+         this."$method"(ad.details)
+      }
    }
 
    private void serializePartyIdentity(PartyIdentity pi)
    {
-      // TODO:
+      this.fillLocatable(pi)
+
+      def method = this.method(pi.details)
+      builder.details('xsi:type': this.openEhrType(pi.details), archetype_node_id: pi.details.archetype_node_id) {
+         this."$method"(pi.details)
+      }
    }
 
 
@@ -1517,9 +1566,15 @@ class OpenEhrXmlSerializer {
       }
 
       // _unbounded are mandatory in the XSD
-      builder.lower_unbounded(o.lower_unbounded)
+      if (o.lower_unbounded != null)
+         builder.lower_unbounded(o.lower_unbounded)
+      else
+         builder.lower_unbounded(o.lower == null)
 
-      builder.upper_unbounded(o.upper_unbounded)
+      if (o.upper_unbounded != null)
+         builder.upper_unbounded(o.upper_unbounded)
+      else
+         builder.upper_unbounded(o.upper == null)
    }
 
    /*
