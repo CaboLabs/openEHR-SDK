@@ -65,7 +65,7 @@ class Main {
 
             if (args.size() < 3)
             {
-               println 'usage: opt ingen [path_to_opt|path_to_opt_folder] dest_folder [amount] [json|xml] [version|composition] [withParticipations]'
+               println 'usage: opt ingen [path_to_opt|path_to_opt_folder] dest_folder [amount] [json|xml] [version|locatable] [withParticipations]'
                System.exit(0)
             }
 
@@ -113,7 +113,7 @@ class Main {
 
             // TODO: separate xml/json from the composition/version in two params
             def format = 'json'
-            def generate = 'version'
+            def generate = 'locatable'
 
             if (args.size() > 4)
             {
@@ -128,9 +128,9 @@ class Main {
 
             if (args.size() > 5)
             {
-               if (!['version', 'composition'].contains(args[5]))
+               if (!['version', 'locatable'].contains(args[5]))
                {
-                  println "result type should be one of 'version' or 'composition', '"+ args[5] +"' was specified"
+                  println "result type should be one of 'version' or 'locatable', '"+ args[5] +"' was specified"
                   System.exit(0)
                }
 
@@ -509,7 +509,8 @@ class Main {
 
       opts.each { opt ->
 
-         //println opt.definition.rmTypeName
+         println opt.definition.rmTypeName
+         println generate
 
          for (i in 1..count)
          {
@@ -519,6 +520,10 @@ class Main {
             }
             else
             {
+               println "OPT root type" + opt.definition.rmTypeName
+               System.err.println "OPT root type" + opt.definition.rmTypeName
+
+
                switch (opt.definition.rmTypeName) // all possible archetype roots
                {
                   case 'COMPOSITION':

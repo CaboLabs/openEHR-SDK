@@ -5,9 +5,11 @@ import java.time.LocalDate
 import java.time.temporal.WeekFields
 import com.cabolabs.openehr.rm_1_0_2.support.identification.PartyRef
 import com.cabolabs.openehr.rm_1_0_2.support.identification.HierObjectId
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvInterval
+import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDate
 
 class DataGenerator {
-   
+
    // Generates DV_DURATION.value expression
    static String duration_value_from_pattern(String pattern)
    {
@@ -122,6 +124,20 @@ class DataGenerator {
          type: demographicType,
          id: new HierObjectId(
             value: java.util.UUID.randomUUID().toString()
+         )
+      )
+   }
+
+   // This is used for demographics .time_validity intervals
+   static DvInterval date_interval()
+   {
+      new DvInterval(
+         lower_included: true,
+         lower_unbounded: false,
+         upper_included: false,
+         upper_unbounded: true,
+         lower: new DvDate(
+            value: new Date().toOpenEHRDate()
          )
       )
    }

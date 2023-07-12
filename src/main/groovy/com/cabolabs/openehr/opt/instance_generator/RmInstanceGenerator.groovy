@@ -113,22 +113,9 @@ class RmInstanceGenerator {
       String date_format = "yyyy-MM-dd",
       String time_format = "HH:mm:ss")
    {
-      /* THIS CANT BE USED UNTIL Groovy 2.5.x, since Grails 3.3.10 uses 2.4.17 we keep building under that version
-         OLD javadocs by Groovy version
-      // https://mrhaki.blogspot.com/2018/06/groovy-goodness-customizing-json-output.html
-      // https://docs.groovy-lang.org/latest/html/gapi/groovy/json/JsonGenerator.Options.html
-      def options = new JsonGenerator.Options()
-        .excludeNulls()
-        .disableUnicodeEscaping()
-        .build()
-
-      builder = new JsonBuilder(options)
-      */
-
-      //builder = new JsonBuilder()
-
       out = [:]
 
+      // FIXME: these should be in a common Helpers class
       // ---------------------------------------------------------------------------------
       // Helpers
 
@@ -1427,6 +1414,9 @@ class RmInstanceGenerator {
 
       // TODO: if there are constraints for time_validity, consider those
 
+      // NOTE: this is generated not considering any constraints that might be in the OPT
+      role.time_validity = DataGenerator.date_interval()
+
       // Generate a dummy mandatory performer PARTY_REF
       role.performer = DataGenerator.random_party_ref()
 
@@ -1451,9 +1441,64 @@ class RmInstanceGenerator {
       return pi
    }
 
-   // TODO: Contact
-   // TODO: Address
+   private Contact generate_CONTACT(ObjectNode o, String parent_arch_id)
+   {
+      def c = new Contact()
 
+      add_LOCATABLE_elements(o, c, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
+
+      def oa = o.attributes.find{ it.rmAttributeName == 'addresses' }
+
+      if (oa)
+      {
+         // TODO: this should be an OPT rule exception:
+         // if a multiple attribute has minimal cardinality bigger than the
+         // amount of items generated, it could be because the OPT doesn't
+         // have constraints for the items in the multiple attribute,
+         // which means unconstrained, but also means there is no
+         // definition of what can be inside, and if we add dummy nodes
+         // the name validation will fail since there is no text defined in the
+         // OPT for the generated node.
+         if (oa.cardinality && oa.cardinality.interval.lower > 0 && !oa.children)
+         {
+            throw new Exception("The multiple attribute at ${oa.templateDataPath} has a lower cardinality constraint of ${oa.cardinality.interval.lower} but there are no children objects defined in the template, so the instance generator can't generate any more. If some content is required in a container, then at least one content object should be defined in the OPT.")
+         }
+
+         def addresses = processAttributeChildren(oa, opt.definition.archetypeId)
+
+         // it is possible the cardinality upper is lower than the items generated because there are more alternatives
+         // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
+         if (oa.cardinality && oa.cardinality.interval.upper)
+         {
+            addresses = addresses.take(oa.cardinality.interval.upper)
+         }
+
+         c.addresses = addresses
+      }
+
+      // NOTE: this is generated not considering any constraints that might be in the OPT
+      c.time_validity = DataGenerator.date_interval()
+
+      return c
+   }
+
+   private Address generate_ADDRESS(ObjectNode o, String parent_arch_id)
+   {
+      def a = new Address()
+
+      add_LOCATABLE_elements(o, a, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
+
+      def oa = o.attributes.find{ it.rmAttributeName == 'details' }
+
+      if (oa)
+      {
+         // returns a list, take the first obj
+         def details = processAttributeChildren(oa, opt.definition.archetypeId)
+         a.details = details[0]
+      }
+
+      return a
+   }
 
 
    private Section generate_SECTION(ObjectNode o, String parent_arch_id)
@@ -2555,9 +2600,7 @@ class RmInstanceGenerator {
          upper_unbounded: false
       )
 
-      // TODO: refactor with XmlInstanceGEnerator since the code is the same
-
-      // get constraints for DV_COUNT limits
+      // get constraints for limits
       def lower_attr = o.attributes.find { it.rmAttributeName == 'lower' }
       def upper_attr = o.attributes.find { it.rmAttributeName == 'upper' }
 
@@ -2651,6 +2694,108 @@ class RmInstanceGenerator {
       return interval
    }
 
+   private generate_DV_INTERVAL__DV_DATE(ObjectNode o, String parent_arch_id)
+   {
+      def interval = new DvInterval(
+         lower_included: true,
+         upper_included: true,
+         lower_unbounded: false,
+         upper_unbounded: false
+      )
+
+      // get constraints for limits
+      def lower_attr = o.attributes.find { it.rmAttributeName == 'lower' }
+      def upper_attr = o.attributes.find { it.rmAttributeName == 'upper' }
+
+      // by default no constraint, which are all the else cases for the ifs below
+      def lower_constraint = 'no'
+      def upper_constraint = 'no'
+      def combined_constraint // this would be no_no, no_pattern, pattern_no, pattern_pattern, pattern comes from CDateTime.pattern
+
+      // when lower_constraint or upper_constraint are different than 'no', these will be not null
+      def lower_primitive, upper_primitive
+
+      if (lower_attr)
+      {
+         def cdt_lower = lower_attr.children[0]
+         if (cdt_lower)
+         {
+            def lower_attr_value = cdt_lower.attributes.find { it.rmAttributeName == 'value' }
+            if (lower_attr_value)
+            {
+               def lower_primitive_object = lower_attr_value.children[0]
+               if (lower_primitive_object)
+               {
+                  lower_primitive = lower_primitive_object.item
+                  if (lower_primitive && lower_primitive.pattern)
+                  {
+                     lower_constraint = 'pattern'
+                  }
+                  // TODO: support list in CDate
+               }
+            }
+         }
+      }
+
+      if (upper_attr)
+      {
+         def cdt_upper = upper_attr.children[0]
+         if (cdt_upper)
+         {
+            def upper_attr_value = cdt_upper.attributes.find { it.rmAttributeName == 'value' }
+            if (upper_attr_value)
+            {
+               def upper_primitive_object = upper_attr_value.children[0]
+               if (upper_primitive_object)
+               {
+                  upper_primitive = upper_primitive_object.item
+                  if (upper_primitive && upper_primitive.pattern)
+                  {
+                     upper_constraint = 'pattern'
+                  }
+                  // TODO: support list in CDate
+               }
+            }
+         }
+      }
+
+      combined_constraint = lower_constraint +'_'+ upper_constraint
+
+      String lower_value, upper_value
+
+      // TODO: support partial datetimes: https://github.com/ppazos/openEHR-OPT/issues/126
+      // Note the pattern constraints are for defining the partial parts not about the value itself
+      // NOTE: we use TimeCategory because Date+1 is not availble in groovy 2.x
+      switch (combined_constraint)
+      {
+         case 'no_no':
+            lower_value = new Date().toOpenEHRDate()
+            upper_value = use(TimeCategory){new Date() + 1.days}.toOpenEHRDate() // +1 day
+         break
+         case 'no_pattern':
+            lower_value = new Date().toOpenEHRDate()
+            upper_value = use(TimeCategory){new Date() + 1.days}.toOpenEHRDate() // +1 day
+         break
+         case 'pattern_no':
+            lower_value = new Date().toOpenEHRDate()
+            upper_value = use(TimeCategory){new Date() + 1.days}.toOpenEHRDate() // +1 day
+         break
+         case 'pattern_pattern':
+            lower_value = new Date().toOpenEHRDate()
+            upper_value = use(TimeCategory){new Date() + 1.days}.toOpenEHRDate() // +1 day
+         break
+      }
+
+      interval.lower = new DvDate(
+         value: lower_value
+      )
+
+      interval.upper = new DvDate(
+         value: upper_value
+      )
+
+      return interval
+   }
 
    def methodMissing(String name, args)
    {
