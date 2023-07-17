@@ -62,8 +62,8 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.TerminologyId
 import com.cabolabs.openehr.terminology.TerminologyParser
 import groovy.time.TimeCategory
 
-
 import com.cabolabs.openehr.rm_1_0_2.demographic.*
+import com.cabolabs.openehr.dto_1_0_2.demographic.*
 
 import java.text.SimpleDateFormat
 
@@ -257,11 +257,25 @@ class RmInstanceGenerator {
       return generatePerson()
    }
 
+   PersonDto generatePersonDtoFromOPT(OperationalTemplate opt)
+   {
+      this.opt = opt
+
+      return generatePersonDto()
+   }
+
    Agent generateAgentFromOPT(OperationalTemplate opt)
    {
       this.opt = opt
 
       return generateAgent()
+   }
+
+   AgentDto generateAgentDtoFromOPT(OperationalTemplate opt)
+   {
+      this.opt = opt
+
+      return generateAgentDto()
    }
 
    Group generateGroupFromOPT(OperationalTemplate opt)
@@ -271,11 +285,11 @@ class RmInstanceGenerator {
       return generateGroup()
    }
 
-   Role generateRoleFromOPT(OperationalTemplate opt)
+   GroupDto generateGroupDtoFromOPT(OperationalTemplate opt)
    {
       this.opt = opt
 
-      return generateRole()
+      return generateGroupDto()
    }
 
    Organization generateOrganizationFromOPT(OperationalTemplate opt)
@@ -283,6 +297,20 @@ class RmInstanceGenerator {
       this.opt = opt
 
       return generateOrganization()
+   }
+
+   OrganizationDto generateOrganizationDtoFromOPT(OperationalTemplate opt)
+   {
+      this.opt = opt
+
+      return generateOrganizationDto()
+   }
+
+   Role generateRoleFromOPT(OperationalTemplate opt)
+   {
+      this.opt = opt
+
+      return generateRole()
    }
 
    private Composition generateComposition(boolean addParticipations = false)
@@ -652,7 +680,7 @@ class RmInstanceGenerator {
       def value_constraint = o.getAttr('value')
 
       // there is a constraint for the name but doesnt have a specific value
-      if (!value_constraint)
+      if (!value_constraint || !value_constraint.children || !value_constraint.children[0].item)
       {
          value = new DvText(
             value: String.random((('A'..'Z')+('a'..'z')+' ,.').join(), 300) // TODO: improve using word / phrase dictionary
@@ -1257,6 +1285,79 @@ class RmInstanceGenerator {
       }
    }
 
+
+   private add_PARTY_DTO_elements(ObjectNode o, PartyDto p, String parent_arch_id)
+   {
+      add_LOCATABLE_elements(o, p, parent_arch_id, true)
+
+      def oa = o.attributes.find{ it.rmAttributeName == 'contacts' }
+
+      if (oa)
+      {
+         // TODO: this should be an OPT rule exception:
+         // if a multiple attribute has minimal cardinality bigger than the
+         // amount of items generated, it could be because the OPT doesn't
+         // have constraints for the items in the multiple attribute,
+         // which means unconstrained, but also means there is no
+         // definition of what can be inside, and if we add dummy nodes
+         // the name validation will fail since there is no text defined in the
+         // OPT for the generated node.
+         if (oa.cardinality && oa.cardinality.interval.lower > 0 && !oa.children)
+         {
+            throw new Exception("The multiple attribute at ${oa.templateDataPath} has a lower cardinality constraint of ${oa.cardinality.interval.lower} but there are no children objects defined in the template, so the instance generator can't generate any more. If some content is required in a container, then at least one content object should be defined in the OPT.")
+         }
+
+         def contacts = processAttributeChildren(oa, opt.definition.archetypeId)
+
+         // it is possible the cardinality upper is lower than the items generated because there are more alternatives
+         // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
+         if (oa.cardinality && oa.cardinality.interval.upper)
+         {
+            contacts = contacts.take(oa.cardinality.interval.upper)
+         }
+
+         p.contacts = contacts
+      }
+
+      oa = o.attributes.find{ it.rmAttributeName == 'identities' }
+
+      if (oa)
+      {
+         // TODO: this should be an OPT rule exception:
+         // if a multiple attribute has minimal cardinality bigger than the
+         // amount of items generated, it could be because the OPT doesn't
+         // have constraints for the items in the multiple attribute,
+         // which means unconstrained, but also means there is no
+         // definition of what can be inside, and if we add dummy nodes
+         // the name validation will fail since there is no text defined in the
+         // OPT for the generated node.
+         if (oa.cardinality && oa.cardinality.interval.lower > 0 && !oa.children)
+         {
+            throw new Exception("The multiple attribute at ${oa.templateDataPath} has a lower cardinality constraint of ${oa.cardinality.interval.lower} but there are no children objects defined in the template, so the instance generator can't generate any more. If some content is required in a container, then at least one content object should be defined in the OPT.")
+         }
+
+         def identities = processAttributeChildren(oa, opt.definition.archetypeId)
+
+         // it is possible the cardinality upper is lower than the items generated because there are more alternatives
+         // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
+         if (oa.cardinality && oa.cardinality.interval.upper)
+         {
+            identities = identities.take(oa.cardinality.interval.upper)
+         }
+
+         p.identities = identities
+      }
+
+      oa = o.attributes.find{ it.rmAttributeName == 'details' }
+
+      if (oa)
+      {
+         // returns a list, take the first obj
+         def details = processAttributeChildren(oa, opt.definition.archetypeId)
+         p.details = details[0]
+      }
+   }
+
    private add_ACTOR_elements(ObjectNode o, Actor a, String parent_arch_id)
    {
       add_PARTY_elements(o, a, parent_arch_id)
@@ -1298,6 +1399,51 @@ class RmInstanceGenerator {
       // TODO: consider if there are constraints for roles (I don't think it makes sense because the reference would probably be set at runtime)
       // NOTE: in 1.0.2 roles is 1..*
       a.roles << DataGenerator.random_party_ref('ROLE')
+   }
+
+   private add_ACTOR_DTO_elements(ObjectNode o, ActorDto a, String parent_arch_id)
+   {
+      add_PARTY_DTO_elements(o, a, parent_arch_id)
+
+      // TODO: if there are constraints for languages, consider those
+      def oa = opt.definition.attributes.find{ it.rmAttributeName == 'languages' }
+      if (oa)
+      {
+         // TODO: this should be an OPT rule exception:
+         // if a multiple attribute has minimal cardinality bigger than the
+         // amount of items generated, it could be because the OPT doesn't
+         // have constraints for the items in the multiple attribute,
+         // which means unconstrained, but also means there is no
+         // definition of what can be inside, and if we add dummy nodes
+         // the name validation will fail since there is no text defined in the
+         // OPT for the generated node.
+         if (oa.cardinality && oa.cardinality.interval.lower > 0 && !oa.children)
+         {
+            throw new Exception("The multiple attribute at ${oa.templateDataPath} has a lower cardinality constraint of ${oa.cardinality.interval.lower} but there are no children objects defined in the template, so the instance generator can't generate any more. If some content is required in a container, then at least one content object should be defined in the OPT.")
+         }
+
+         def languages = processAttributeChildren(oa, opt.definition.archetypeId)
+
+         // it is possible the cardinality upper is lower than the items generated because there are more alternatives
+         // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
+         if (oa.cardinality && oa.cardinality.interval.upper)
+         {
+            languages = languages.take(oa.cardinality.interval.upper)
+         }
+
+         if (oa.cardinality.interval.lower && oa.cardinality.interval.lower > languages.size())
+         {
+            // TODO: if the minimal amount of content objects is not met, more objects sould be generated
+         }
+
+         a.languages = languages
+      }
+
+      // TODO: consider if there are constraints for roles (I don't think it makes sense because the reference would probably be set at runtime)
+      // NOTE: in 1.0.2 roles is 1..*
+      //a.roles << DataGenerator.random_party_ref('ROLE')
+      //
+      // NEED: to pass an OPT for the roles to know which structure to generate
    }
 
    /**
@@ -1345,11 +1491,29 @@ class RmInstanceGenerator {
       return person
    }
 
+   private PersonDto generatePersonDto()
+   {
+      def person = new PersonDto()
+
+      add_ACTOR_DTO_elements(opt.definition, person, opt.definition.archetypeId)
+
+      return person
+   }
+
    private Organization generateOrganization()
    {
       def organization = new Organization()
 
       add_ACTOR_elements(opt.definition, organization, opt.definition.archetypeId)
+
+      return organization
+   }
+
+   private Organization generateOrganizationDto()
+   {
+      def organization = new OrganizationDto()
+
+      add_ACTOR_DTO_elements(opt.definition, organization, opt.definition.archetypeId)
 
       return organization
    }
@@ -1363,11 +1527,29 @@ class RmInstanceGenerator {
       return group
    }
 
+   private GroupDto generateGroupDto()
+   {
+      def group = new GroupDto()
+
+      add_ACTOR_DTO_elements(opt.definition, group, opt.definition.archetypeId)
+
+      return group
+   }
+
    private Agent generateAgent()
    {
       def agent = new Agent()
 
       add_ACTOR_elements(opt.definition, agent, opt.definition.archetypeId)
+
+      return agent
+   }
+
+   private AgentDto generateAgent(Dto)
+   {
+      def agent = new AgentDto()
+
+      add_ACTOR_DTO_elements(opt.definition, agent, opt.definition.archetypeId)
 
       return agent
    }

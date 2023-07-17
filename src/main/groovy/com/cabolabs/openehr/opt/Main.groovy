@@ -65,7 +65,9 @@ class Main {
 
             if (args.size() < 3)
             {
-               println 'usage: opt ingen [path_to_opt|path_to_opt_folder] dest_folder [amount] [json|xml] [version|locatable] [withParticipations]'
+               println 'usage: opt ingen [path_to_opt|path_to_opt_folder] dest_folder [amount] [json|xml] [version|locatable] [withParticipations] [rm|api]'
+               println 'withParticipations is only for COMPOSITION templates'
+               println 'rm|api is the flavour of the data structure "rm" is default, "api" has resolved OBJECT_REFs'
                System.exit(0)
             }
 
@@ -139,7 +141,9 @@ class Main {
 
             def with_participations = args.contains('withParticipations')
 
-            generateInstances(opts, destination_path, with_participations, count, format, generate)
+            def flavor = (args.contains('api') ? 'api' : 'rm')
+
+            generateInstances(opts, destination_path, with_participations, count, format, generate, flavor)
 
          break
          case 'optval':
@@ -487,7 +491,7 @@ class Main {
       }
    }
 
-   static def generateInstances(List opts, String destination_path, boolean withParticipations, int count, String format, String generate)
+   static def generateInstances(List opts, String destination_path, boolean withParticipations, int count, String format, String generate, String flavor)
    {
       def out, printer, file_number = 1
       def ext = (format == 'json') ? 'json' : 'xml'
@@ -530,7 +534,10 @@ class Main {
                      instance = generator.generateCompositionFromOPT(opt, withParticipations)
                   break
                   case 'PERSON':
-                     instance = generator.generatePersonFromOPT(opt)
+                     if (flavor == 'rm')
+                        instance = generator.generatePersonFromOPT(opt)
+                     else
+                        instance = generator.generatePersonDtoFromOPT(opt)
                   break
                   case 'ORGANISATION':
                      instance = generator.generateOrganizationFromOPT(opt)
