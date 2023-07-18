@@ -513,8 +513,8 @@ class Main {
 
       opts.each { opt ->
 
-         println opt.definition.rmTypeName
-         println generate
+         // println opt.definition.rmTypeName
+         // println generate
 
          for (i in 1..count)
          {
@@ -524,10 +524,6 @@ class Main {
             }
             else
             {
-               println "OPT root type" + opt.definition.rmTypeName
-               System.err.println "OPT root type" + opt.definition.rmTypeName
-
-
                switch (opt.definition.rmTypeName) // all possible archetype roots
                {
                   case 'COMPOSITION':

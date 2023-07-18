@@ -570,7 +570,7 @@ class OpenEhrXmlSerializerTest extends GroovyTestCase {
                         ),
                         archetype_node_id: 'at0009',
                         value: new DvCodedText(
-                           value: 'Masculine',
+                           value: 'Male',
                            defining_code: new CodePhrase(
                               code_string: 'at0033',
                               terminology_id: new TerminologyId(

@@ -1215,6 +1215,7 @@ class RmInstanceGenerator {
 
    private add_PARTY_elements(ObjectNode o, Party p, String parent_arch_id)
    {
+      println "add_PARTY_elements arch"+ parent_arch_id
       add_LOCATABLE_elements(o, p, parent_arch_id, true)
 
       def oa = o.attributes.find{ it.rmAttributeName == 'contacts' }
@@ -1234,7 +1235,7 @@ class RmInstanceGenerator {
             throw new Exception("The multiple attribute at ${oa.templateDataPath} has a lower cardinality constraint of ${oa.cardinality.interval.lower} but there are no children objects defined in the template, so the instance generator can't generate any more. If some content is required in a container, then at least one content object should be defined in the OPT.")
          }
 
-         def contacts = processAttributeChildren(oa, opt.definition.archetypeId)
+         def contacts = processAttributeChildren(oa, parent_arch_id)
 
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
          // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
@@ -1263,7 +1264,7 @@ class RmInstanceGenerator {
             throw new Exception("The multiple attribute at ${oa.templateDataPath} has a lower cardinality constraint of ${oa.cardinality.interval.lower} but there are no children objects defined in the template, so the instance generator can't generate any more. If some content is required in a container, then at least one content object should be defined in the OPT.")
          }
 
-         def identities = processAttributeChildren(oa, opt.definition.archetypeId)
+         def identities = processAttributeChildren(oa, parent_arch_id)
 
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
          // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
@@ -1280,7 +1281,7 @@ class RmInstanceGenerator {
       if (oa)
       {
          // returns a list, take the first obj
-         def details = processAttributeChildren(oa, opt.definition.archetypeId)
+         def details = processAttributeChildren(oa, parent_arch_id)
          p.details = details[0]
       }
    }
@@ -1307,7 +1308,7 @@ class RmInstanceGenerator {
             throw new Exception("The multiple attribute at ${oa.templateDataPath} has a lower cardinality constraint of ${oa.cardinality.interval.lower} but there are no children objects defined in the template, so the instance generator can't generate any more. If some content is required in a container, then at least one content object should be defined in the OPT.")
          }
 
-         def contacts = processAttributeChildren(oa, opt.definition.archetypeId)
+         def contacts = processAttributeChildren(oa, parent_arch_id)
 
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
          // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
@@ -1336,7 +1337,7 @@ class RmInstanceGenerator {
             throw new Exception("The multiple attribute at ${oa.templateDataPath} has a lower cardinality constraint of ${oa.cardinality.interval.lower} but there are no children objects defined in the template, so the instance generator can't generate any more. If some content is required in a container, then at least one content object should be defined in the OPT.")
          }
 
-         def identities = processAttributeChildren(oa, opt.definition.archetypeId)
+         def identities = processAttributeChildren(oa, parent_arch_id)
 
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
          // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
@@ -1353,7 +1354,7 @@ class RmInstanceGenerator {
       if (oa)
       {
          // returns a list, take the first obj
-         def details = processAttributeChildren(oa, opt.definition.archetypeId)
+         def details = processAttributeChildren(oa, parent_arch_id)
          p.details = details[0]
       }
    }
@@ -1609,6 +1610,8 @@ class RmInstanceGenerator {
    {
       def pi = new PartyIdentity()
 
+      parent_arch_id = o.archetypeId ?: parent_arch_id
+
       add_LOCATABLE_elements(o, pi, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
       def oa = o.attributes.find{ it.rmAttributeName == 'details' }
@@ -1626,6 +1629,8 @@ class RmInstanceGenerator {
    private Contact generate_CONTACT(ObjectNode o, String parent_arch_id)
    {
       def c = new Contact()
+
+      parent_arch_id = o.archetypeId ?: parent_arch_id
 
       add_LOCATABLE_elements(o, c, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
@@ -1646,7 +1651,7 @@ class RmInstanceGenerator {
             throw new Exception("The multiple attribute at ${oa.templateDataPath} has a lower cardinality constraint of ${oa.cardinality.interval.lower} but there are no children objects defined in the template, so the instance generator can't generate any more. If some content is required in a container, then at least one content object should be defined in the OPT.")
          }
 
-         def addresses = processAttributeChildren(oa, opt.definition.archetypeId)
+         def addresses = processAttributeChildren(oa, parent_arch_id)
 
          // it is possible the cardinality upper is lower than the items generated because there are more alternatives
          // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
@@ -1668,6 +1673,8 @@ class RmInstanceGenerator {
    {
       def a = new Address()
 
+      parent_arch_id = o.archetypeId ?: parent_arch_id
+
       add_LOCATABLE_elements(o, a, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
       def oa = o.attributes.find{ it.rmAttributeName == 'details' }
@@ -1675,7 +1682,7 @@ class RmInstanceGenerator {
       if (oa)
       {
          // returns a list, take the first obj
-         def details = processAttributeChildren(oa, opt.definition.archetypeId)
+         def details = processAttributeChildren(oa, parent_arch_id)
          a.details = details[0]
       }
 

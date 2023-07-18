@@ -278,12 +278,12 @@
           <items id="text">Sex</items>
         </term_definitions>
         <term_definitions code="at0003">
-          <items id="description">Masculine</items>
-          <items id="text">Masculine</items>
+          <items id="description">Male</items>
+          <items id="text">Male</items>
         </term_definitions>
         <term_definitions code="at0004">
-          <items id="description">Feminine</items>
-          <items id="text">Feminine</items>
+          <items id="description">Female</items>
+          <items id="text">Female</items>
         </term_definitions>
         <term_definitions code="at0005">
           <items id="description">Unknown</items>
