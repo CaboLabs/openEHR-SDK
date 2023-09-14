@@ -78,7 +78,8 @@ class DataGenerator {
 
       // random generates including the lower and excluding the upper
       def rnd = new java.util.concurrent.ThreadLocalRandom()
-      Long value = rnd.nextLong(l_limit_seconds, u_limit_seconds)
+      // the if below is to prevent the case where both limits are the same, and nextLong throws an exception
+      Long value = (l_limit_seconds < u_limit_seconds ? rnd.nextLong(l_limit_seconds, u_limit_seconds) : l_limit_seconds)
 
       // NOTE: this only outputs time
       return java.time.Duration.ofSeconds(value).toString()
@@ -97,7 +98,10 @@ class DataGenerator {
 
       // random between lo .. hi
       // the +1 is because the upper is exclusive
-      value = new Random().nextInt(hi - lo + 1) + lo
+      if (lo < hi)
+         value = new Random().nextInt(hi - lo + 1) + lo
+      else
+         value = lo
 
       return value
    }
@@ -112,7 +116,10 @@ class DataGenerator {
       if (!range.lowerIncluded) lo += 0.1
       if (!range.upperIncluded) hi -= 0.1
 
-      value = new Random().nextDouble() * (hi - lo) + lo // random between lo .. hi
+      if (lo < hi)
+         value = new Random().nextDouble() * (hi - lo) + lo // random between lo .. hi
+      else
+         value = lo
 
       return value
    }

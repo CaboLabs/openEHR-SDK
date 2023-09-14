@@ -2258,7 +2258,8 @@ class RmInstanceGenerator {
       // parent from now can be different than the parent if if the object has archetypeId
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
-      //AttributeNode a = o.parent
+      //println "ITEM_TREE parent_arch_id "+ parent_arch_id
+      // TODO: AD generates empty node_ids for the tree, that should be checked and return an error
 
       add_LOCATABLE_elements(o, struc, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 

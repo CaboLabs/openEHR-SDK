@@ -284,6 +284,7 @@ class OperationalTemplateParser {
          def uri = node.referenceSetUri.text()
          if (uri) terminologyRef = uri
 
+         // NOTE: node.archetype_id.value.text() is empty for all non-root nodes, so internal nodes don't know to which archetype they belong
 
          obn = new CCodePhrase(
             owner:            this.template,
