@@ -101,4 +101,18 @@ class ObjectNode extends Constraint {
    {
       this.attributes.find { it.rmAttributeName == name }
    }
+
+   // Returns the own archetypeId if this is a root node, or gets the nearest root node archetypeId from an ancestor.
+   String getOwnerArchetypeId()
+   {
+      if (this.archetypeId) return this.archetypeId
+
+      def ancestor = this.parent.parent // parent is an attribute, parent.parent is an object
+      while (!ancestor.archetypeId)
+      {
+         ancestor = ancestor.parent.parent
+      }
+
+      return ancestor.archetypeId
+   }
 }

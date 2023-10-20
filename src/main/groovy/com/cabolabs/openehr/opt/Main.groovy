@@ -56,7 +56,9 @@ class Main {
             def ui = gen.generate(opt)
 
             def destination_path = args[2]
-            new File( destination_path + PS + new java.text.SimpleDateFormat("'"+ opt.concept +"_'yyyyMMddhhmmss'_"+ opt.langCode +".html'").format(new Date()) ) << ui
+            def fname = destination_path + PS + new java.text.SimpleDateFormat("'"+ opt.concept +"_'yyyyMMddhhmmss'_"+ opt.langCode +".html'").format(new Date())
+            new File(fname) << ui
+            println "Generated: $fname"
 
          break
          case 'ingen':
