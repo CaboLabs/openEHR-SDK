@@ -552,7 +552,7 @@ class OperationalTemplateParser {
    {
       this.template.nodes.each { path, constraints ->
          constraints.each { constraint ->
-            if (constraint.path.startsWith(parent.path))
+            if (constraint.templatePath.startsWith(parent.templatePath))
             {
                // there could be many alternative child nodes with the same path
                if (!parent.nodes[constraint.path]) parent.nodes[constraint.path] = []
