@@ -92,7 +92,7 @@ class OptUiGenerator {
 
          //println "element name "+ opt.getTerm(parent_arch_id, o.nodeId)
 
-         b.div(class:o.rmTypeName +' form-group row form-item') {
+         b.div(class: o.rmTypeName +' form-group row form-item', 'data-tpath': o.templatePath) {
 
             if (name) generateFields(name, b, parent_arch_id)
             else
@@ -108,7 +108,7 @@ class OptUiGenerator {
 
       if (o.type == "ARCHETYPE_SLOT")
       {
-         b.div(class: o.rmTypeName +'  form-item') {
+         b.div(class: o.rmTypeName +'  form-item', 'data-tpath': o.templatePath) {
             label("ARCHETYPE_SLOT is not supported yet, found at "+ o.path)
          }
          return // Generator do not support slots on OPTs
@@ -145,7 +145,7 @@ class OptUiGenerator {
       }
       else
       {
-         b.div(class: o.rmTypeName +' form-item') {
+         b.div(class: o.rmTypeName +' form-item', 'data-tpath': o.templatePath) {
 
             // label for intermediate nodes
             def term = opt.getTerm(parent_arch_id, o.nodeId)
@@ -181,308 +181,313 @@ class OptUiGenerator {
    }
 
    // TODO: refactor in different functions
+   // Generates fields for an ELEMENT.value object node
    void generateFields(ObjectNode node, MarkupBuilder builder, String parent_arch_id)
    {
-      switch (node.rmTypeName)
-      {
-         // adds the DV attribute names to the template path
-         case 'DV_TEXT':
-            builder.textarea(
-               class:            node.rmTypeName +' form-control',
-               'data-tpath':     node.templatePath + '/value',
-               'data-archetype': node.getOwnerArchetypeId(),
-               'data-path':      node.path,
-               ''
-            )
-         break
-         case 'DV_CODED_TEXT':
+      builder.div(class: node.rmTypeName +' form-group row form-item', 'data-tpath': node.templatePath) {
 
-            def constraint = node.attributes.find{ it.rmAttributeName == 'defining_code' }.children[0]
+         switch (node.rmTypeName)
+         {
+            // adds the DV attribute names to the template path
+            case 'DV_TEXT':
+               builder.textarea(
+                  class:            node.rmTypeName +' form-control', // FIXME: this should be the type of the DV_TEXT.value attribute not the DV_TEXT
+                  'data-tpath':     node.templatePath + '/value',
+                  'data-archetype': node.getOwnerArchetypeId(),
+                  'data-path':      node.path,
+                  ''
+               )
+            break
+            case 'DV_CODED_TEXT':
 
-            if (constraint.rmTypeName == "CODE_PHRASE")
-            {
-               // is a ConstraintRef?
-               if (constraint.terminologyRef)
+               def constraint = node.attributes.find{ it.rmAttributeName == 'defining_code' }.children[0]
+
+               if (constraint.rmTypeName == "CODE_PHRASE")
                {
-                  builder.div(class: 'input-group') {
-                     input(
-                        type:             'text',
+                  // is a ConstraintRef?
+                  if (constraint.terminologyRef)
+                  {
+                     builder.div(class: 'input-group') {
+                        input(
+                           type:             'text',
+                           class:            node.rmTypeName +' form-control',
+                           'data-tpath':     constraint.templatePath,
+                           'data-archetype': node.getOwnerArchetypeId(),
+                           'data-path':      constraint.path
+                        )
+                        span(class:'input-group-text glyphicon glyphicon-search') {
+                           i(class: 'bi bi-search', '')
+                        }
+                     }
+                  }
+                  else // constraint is CCodePhrase
+                  {
+                     builder.select(
                         class:            node.rmTypeName +' form-control',
                         'data-tpath':     constraint.templatePath,
                         'data-archetype': node.getOwnerArchetypeId(),
                         'data-path':      constraint.path
-                     )
-                     span(class:'input-group-text glyphicon glyphicon-search') {
-                        i(class: 'bi bi-search', '')
-                     }
-                  }
-               }
-               else // constraint is CCodePhrase
-               {
-                  builder.select(
-                     class:            node.rmTypeName +' form-control',
-                     'data-tpath':     constraint.templatePath,
-                     'data-archetype': node.getOwnerArchetypeId(),
-                     'data-path':      constraint.path
-                     ) {
+                        ) {
 
-                     option(value:'', '')
+                        option(value:'', '')
 
-                     if (constraint.terminologyId == 'local')
-                     {
-                        constraint.codeList.each { code_node ->
-                           option(value:code_node, opt.getTerm(parent_arch_id, code_node))
+                        if (constraint.terminologyId == 'local')
+                        {
+                           constraint.codeList.each { code_node ->
+                              option(value:code_node, opt.getTerm(parent_arch_id, code_node))
+                           }
+
+                           // FIXME: constraint can be by code list or by terminology reference. For term ref we should have a search control, not a select
+                           if (constraint.codeList.size() == 0) println "Empty DV_CODED_TEXT.defining_code constraint "+ parent_arch_id + constraint.templatePath
                         }
-
-                        // FIXME: constraint can be by code list or by terminology reference. For term ref we should have a search control, not a select
-                        if (constraint.codeList.size() == 0) println "Empty DV_CODED_TEXT.defining_code constraint "+ parent_arch_id + constraint.templatePath
-                     }
-                     else // terminology openehr
-                     {
-                        constraint.codeList.each { code_node ->
-                           option(value:code_node, terminology.getRubric(opt.langCode, code_node))
+                        else // terminology openehr
+                        {
+                           constraint.codeList.each { code_node ->
+                              option(value:code_node, terminology.getRubric(opt.langCode, code_node))
+                           }
                         }
                      }
                   }
                }
-            }
-            else throw Exception("coded text constraint not supported "+ constraint.rmTypeName)
+               else throw Exception("coded text constraint not supported "+ constraint.rmTypeName)
 
-         break
-         case 'DV_QUANTITY':
+            break
+            case 'DV_QUANTITY':
 
-            builder.div(class:'col')
-            {
-               input(
-                  class: node.rmTypeName +' form-control',
-                  type:'number',
-                  'data-tpath':     node.templatePath +'/magnitude',
-                  'data-archetype': node.getOwnerArchetypeId(),
-                  'data-path':      node.path +'/magnitude'
-               )
-            }
-            builder.div(class:'col')
-            {
-               if (node.list.size() == 0)
+               builder.div(class:'col')
                {
                   input(
                      class: node.rmTypeName +' form-control',
-                     type:'text',
-                     'data-tpath':     node.templatePath+ '/units',
+                     type:'number',
+                     'data-tpath':     node.templatePath +'/magnitude',
                      'data-archetype': node.getOwnerArchetypeId(),
-                     'data-path':      node.path +'/units'
+                     'data-path':      node.path +'/magnitude'
                   )
                }
-               else
+               builder.div(class:'col')
                {
-                  select(
-                     class:            node.rmTypeName +' form-control',
-                     'data-tpath':     node.templatePath +'/units',
-                     'data-archetype': node.getOwnerArchetypeId(),
-                     'data-path':      node.path +'/units'
-                  ) {
+                  if (node.list.size() == 0)
+                  {
+                     input(
+                        class: node.rmTypeName +' form-control',
+                        type:'text',
+                        'data-tpath':     node.templatePath+ '/units',
+                        'data-archetype': node.getOwnerArchetypeId(),
+                        'data-path':      node.path +'/units'
+                     )
+                  }
+                  else
+                  {
+                     select(
+                        class:            node.rmTypeName +' form-control',
+                        'data-tpath':     node.templatePath +'/units',
+                        'data-archetype': node.getOwnerArchetypeId(),
+                        'data-path':      node.path +'/units'
+                     ) {
 
-                     option(value:'', '')
-                     node.list.units.each { u ->
+                        option(value:'', '')
+                        node.list.units.each { u ->
 
-                        option(value:u, u)
+                           option(value:u, u)
+                        }
                      }
                   }
                }
-            }
-         break
-         case 'DV_COUNT':
-            builder.input(
-               class:            node.rmTypeName +' form-control',
-               type:             'number',
-               'data-tpath':     node.templatePath,
-               'data-archetype': node.getOwnerArchetypeId(),
-               'data-path':      node.path
-            )
-         break
-         case 'DV_ORDINAL':
+            break
+            case 'DV_COUNT':
+               builder.input(
+                  class:            node.rmTypeName +' form-control',
+                  type:             'number',
+                  'data-tpath':     node.templatePath,
+                  'data-archetype': node.getOwnerArchetypeId(),
+                  'data-path':      node.path
+               )
+            break
+            case 'DV_ORDINAL':
 
-            // ordinal.value // int
-            // ordinal.symbol // DvCodedText
-            // ordinal.symbol.codeString
-            // ordinal.symbol.terminologyId
+               // ordinal.value // int
+               // ordinal.symbol // DvCodedText
+               // ordinal.symbol.codeString
+               // ordinal.symbol.terminologyId
 
-            builder.select(
-               class:            node.rmTypeName +' form-control',
-               'data-tpath':     node.templatePath,
-               'data-archetype': node.getOwnerArchetypeId(),
-               'data-path':      node.path
-            ) {
+               builder.select(
+                  class:            node.rmTypeName +' form-control',
+                  'data-tpath':     node.templatePath,
+                  'data-archetype': node.getOwnerArchetypeId(),
+                  'data-path':      node.path
+               ) {
 
-               option(value:'', '')
+                  option(value:'', '')
 
-               node.list.each { ord ->
+                  node.list.each { ord ->
 
-                  option(value:ord.value, opt.getTerm(parent_arch_id, ord.symbol.codeString))
+                     option(value:ord.value, opt.getTerm(parent_arch_id, ord.symbol.codeString))
+                  }
                }
-            }
-         break
-         case 'DV_TIME':
-            builder.input(
-               class:            node.rmTypeName +' form-control',
-               type:             'time',
-               'data-tpath':     node.templatePath,
-               'data-archetype': node.getOwnerArchetypeId(),
-               'data-path':      node.path
-            )
-         break
-         case 'DV_DATE':
-            builder.input(
-               class:            node.rmTypeName +' form-control',
-               type:             'date',
-               'data-tpath':     node.templatePath,
-               'data-archetype': node.getOwnerArchetypeId(),
-               'data-path':      node.path
-            )
-         break
-         case 'DV_DATE_TIME':
-            builder.input(
-               class:            node.rmTypeName +' form-control',
-               type:             'datetime-local',
-               'data-tpath':     node.templatePath,
-               'data-archetype': node.getOwnerArchetypeId(),
-               'data-path':      node.path
-            )
-         break
-         case 'DV_BOOLEAN':
-            builder.input(
-               class:            node.rmTypeName,
-               type:             'checkbox',
-               'data-tpath':     node.templatePath,
-               'data-archetype': node.getOwnerArchetypeId(),
-               'data-path':      node.path
-            )
-         break
-         case 'DV_DURATION':
-            builder.label('D') {
-               input(
-                  type:'number',
-                  'data-tpath':     node.templatePath +'/D',
+            break
+            case 'DV_TIME':
+               builder.input(
+                  class:            node.rmTypeName +' form-control',
+                  type:             'time',
+                  'data-tpath':     node.templatePath,
                   'data-archetype': node.getOwnerArchetypeId(),
-                  'data-path':      node.path +'/D',
-                  class: 'small '+ node.rmTypeName +' form-control')
-            }
-            builder.label('H') {
-               input(
-                  type:'number',
-                  'data-tpath':     node.templatePath +'/H',
+                  'data-path':      node.path
+               )
+            break
+            case 'DV_DATE':
+               builder.input(
+                  class:            node.rmTypeName +' form-control',
+                  type:             'date',
+                  'data-tpath':     node.templatePath,
                   'data-archetype': node.getOwnerArchetypeId(),
-                  'data-path':      node.path +'/H',
-                  class: 'small '+ node.rmTypeName +' form-control')
-            }
-            builder.label('M') {
-               input(
-                  type:'number',
-                  'data-tpath':     node.templatePath +'/M',
+                  'data-path':      node.path
+               )
+            break
+            case 'DV_DATE_TIME':
+               builder.input(
+                  class:            node.rmTypeName +' form-control',
+                  type:             'datetime-local',
+                  'data-tpath':     node.templatePath,
                   'data-archetype': node.getOwnerArchetypeId(),
-                  'data-path':      node.path +'/M',
-                  class: 'small '+ node.rmTypeName +' form-control')
-            }
-            builder.label('S') {
-               input(
-                  type:'number',
-                  'data-tpath':     node.templatePath +'/S',
+                  'data-path':      node.path
+               )
+            break
+            case 'DV_BOOLEAN':
+               builder.input(
+                  class:            node.rmTypeName,
+                  type:             'checkbox',
+                  'data-tpath':     node.templatePath,
                   'data-archetype': node.getOwnerArchetypeId(),
-                  'data-path':      node.path +'/S',
-                  class: 'small '+ node.rmTypeName +' form-control')
-            }
-         break
-         case 'DV_PROPORTION':
-            builder.div(class:'col-md-5') {
-               builder.label('numerator') {
+                  'data-path':      node.path
+               )
+            break
+            case 'DV_DURATION':
+               builder.label('D') {
                   input(
-                     type:             'number',
-                     'data-tpath':     node.templatePath +'/numerator',
+                     type:'number',
+                     'data-tpath':     node.templatePath +'/D',
                      'data-archetype': node.getOwnerArchetypeId(),
-                     'data-path':      node.path +'/numerator',
-                     class:            node.rmTypeName +' form-control'
+                     'data-path':      node.path +'/D',
+                     class: 'small '+ node.rmTypeName +' form-control')
+               }
+               builder.label('H') {
+                  input(
+                     type:'number',
+                     'data-tpath':     node.templatePath +'/H',
+                     'data-archetype': node.getOwnerArchetypeId(),
+                     'data-path':      node.path +'/H',
+                     class: 'small '+ node.rmTypeName +' form-control')
+               }
+               builder.label('M') {
+                  input(
+                     type:'number',
+                     'data-tpath':     node.templatePath +'/M',
+                     'data-archetype': node.getOwnerArchetypeId(),
+                     'data-path':      node.path +'/M',
+                     class: 'small '+ node.rmTypeName +' form-control')
+               }
+               builder.label('S') {
+                  input(
+                     type:'number',
+                     'data-tpath':     node.templatePath +'/S',
+                     'data-archetype': node.getOwnerArchetypeId(),
+                     'data-path':      node.path +'/S',
+                     class: 'small '+ node.rmTypeName +' form-control')
+               }
+            break
+            case 'DV_PROPORTION':
+               builder.div(class:'col-md-5') {
+                  builder.label('numerator') {
+                     input(
+                        type:             'number',
+                        'data-tpath':     node.templatePath +'/numerator',
+                        'data-archetype': node.getOwnerArchetypeId(),
+                        'data-path':      node.path +'/numerator',
+                        class:            node.rmTypeName +' form-control'
+                     )
+                  }
+               }
+               builder.div(class:'col-md-5') {
+                  builder.label('denominator') {
+                     input(
+                        type:             'number',
+                        'data-tpath':     node.templatePath +'/denominator',
+                        'data-archetype': node.getOwnerArchetypeId(),
+                        'data-path':      node.path +'/denominator',
+                        class:            node.rmTypeName +' form-control'
+                     )
+                  }
+               }
+            break
+            case 'DV_IDENTIFIER':
+               builder.label('issuer') {
+                  input(
+                     type:'text',
+                     'data-tpath':     node.templatePath +'/issuer',
+                     'data-archetype': node.getOwnerArchetypeId(),
+                     'data-path':      node.path +'/issuer',
+                     class:            'small '+ node.rmTypeName +' form-control'
                   )
                }
-            }
-            builder.div(class:'col-md-5') {
-               builder.label('denominator') {
+               builder.label('assigner') {
                   input(
-                     type:             'number',
-                     'data-tpath':     node.templatePath +'/denominator',
+                     type:'text',
+                     'data-tpath':     node.templatePath +'/assigner',
                      'data-archetype': node.getOwnerArchetypeId(),
-                     'data-path':      node.path +'/denominator',
-                     class:            node.rmTypeName +' form-control'
+                     'data-path':      node.path +'/assigned',
+                     class:            'small '+ node.rmTypeName +' form-control'
                   )
                }
-            }
-         break
-         case 'DV_IDENTIFIER':
-            builder.label('issuer') {
-               input(
-                  type:'text',
-                  'data-tpath':     node.templatePath +'/issuer',
+               builder.label('id') {
+                  input(
+                     type:             'text',
+                     'data-tpath':     node.templatePath +'/id',
+                     'data-archetype': node.getOwnerArchetypeId(),
+                     'data-path':      node.path +'/id',
+                     class:            'small '+ node.rmTypeName +' form-control'
+                  )
+               }
+               builder.label('type') {
+                  input(
+                     type:             'text',
+                     'data-tpath':     node.templatePath +'/type',
+                     'data-archetype': node.getOwnerArchetypeId(),
+                     'data-path':      node.path +'/type',
+                     class:            'small '+ node.rmTypeName +' form-control'
+                  )
+               }
+            break
+            case 'DV_MULTIMEDIA':
+               builder.input(
+                  class:            node.rmTypeName,
+                  type:             'file',
+                  'data-tpath':     node.templatePath,
                   'data-archetype': node.getOwnerArchetypeId(),
-                  'data-path':      node.path +'/issuer',
-                  class:            'small '+ node.rmTypeName +' form-control'
+                  'data-path':      node.path
                )
-            }
-            builder.label('assigner') {
-               input(
-                  type:'text',
-                  'data-tpath':     node.templatePath +'/assigner',
+            break
+            case 'DV_PARSABLE':
+               builder.textarea(
+                  class: node.rmTypeName +' form-control',
+                  'data-tpath':     node.templatePath,
                   'data-archetype': node.getOwnerArchetypeId(),
-                  'data-path':      node.path +'/assigned',
-                  class:            'small '+ node.rmTypeName +' form-control'
+                  'data-path':      node.path,
+                  ''
                )
-            }
-            builder.label('id') {
-               input(
+            break
+            case 'DV_URI':
+               builder.input(
+                  class:            node.rmTypeName +' form-control',
                   type:             'text',
-                  'data-tpath':     node.templatePath +'/id',
+                  'data-tpath':     node.templatePath,
                   'data-archetype': node.getOwnerArchetypeId(),
-                  'data-path':      node.path +'/id',
-                  class:            'small '+ node.rmTypeName +' form-control'
+                  'data-path':      node.path
                )
-            }
-            builder.label('type') {
-               input(
-                  type:             'text',
-                  'data-tpath':     node.templatePath +'/type',
-                  'data-archetype': node.getOwnerArchetypeId(),
-                  'data-path':      node.path +'/type',
-                  class:            'small '+ node.rmTypeName +' form-control'
-               )
-            }
-         break
-         case 'DV_MULTIMEDIA':
-            builder.input(
-               class:            node.rmTypeName,
-               type:             'file',
-               'data-tpath':     node.templatePath,
-               'data-archetype': node.getOwnerArchetypeId(),
-               'data-path':      node.path
-            )
-         break
-         case 'DV_PARSABLE':
-            builder.textarea(
-               class: node.rmTypeName +' form-control',
-               'data-tpath':     node.templatePath,
-               'data-archetype': node.getOwnerArchetypeId(),
-               'data-path':      node.path,
-               ''
-            )
-         break
-         case 'DV_URI':
-            builder.input(
-               class:            node.rmTypeName +' form-control',
-               type:             'text',
-               'data-tpath':     node.templatePath,
-               'data-archetype': node.getOwnerArchetypeId(),
-               'data-path':      node.path
-            )
-         break
-         default: // TODO: generar campos para los DV_INTERVAL
-            println "Datatype "+ node.rmTypeName +" not supported yet"
+            break
+            default: // TODO: generar campos para los DV_INTERVAL
+               println "Datatype "+ node.rmTypeName +" not supported yet"
+         }
       }
+
    }
 }
