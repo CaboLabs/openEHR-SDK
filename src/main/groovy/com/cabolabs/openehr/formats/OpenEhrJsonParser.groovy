@@ -162,6 +162,7 @@ class OpenEhrJsonParser {
       return ehr
    }
 
+   // FIXME: this should be parseLocatable
    // used to parse compositions and other descendant from Locatable
    // TODO: FOLDER and EHR_STATUS are above, we might need to use this one instead
    Locatable parseJson(String json)

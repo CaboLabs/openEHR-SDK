@@ -930,7 +930,7 @@ class RmInstanceGenerator {
             _denominator = 1
          break
          case 2: // percent
-            _numerator = (random_gen.nextFloat() * (num_hi - num_lo) + num_lo).round(1)
+            _numerator = (random_gen.nextFloat() * 100).round(1) // NOTE: for a percentage, 100 is the high value
             _denominator = 100
          break
          case [3,4]: // fraction, integer_fraction

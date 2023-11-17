@@ -215,7 +215,7 @@ class OpenEhrXmlParser {
       catch (Exception e)
       {
          println e.message
-         throw new XmlParseException("Can't parse XML, check ${type} is a VERSION type. If you tried to parse a LOCATABLE, use the parseXml method", e)
+         throw new XmlParseException("Can't parse XML, check ${type} is a VERSION type. If you tried to parse a LOCATABLE, use the parseLocatable method", e)
       }
       return out
    }

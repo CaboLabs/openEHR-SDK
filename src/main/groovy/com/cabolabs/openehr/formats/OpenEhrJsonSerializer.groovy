@@ -186,6 +186,8 @@ class OpenEhrJsonSerializer {
    {
       this.fillPartyDto(a, out)
 
+      def method
+
       // optional
       if (a.languages)
       {
@@ -217,6 +219,8 @@ class OpenEhrJsonSerializer {
    private void fillActor(Actor a, Map out)
    {
       this.fillParty(a, out)
+
+      def method
 
       // optional
       if (a.languages)
@@ -674,8 +678,7 @@ class OpenEhrJsonSerializer {
 
       out.system_id = a.system_id
 
-      String method
-      method = this.method(a.committer)
+      String method = this.method(a.committer)
       out.committer = [_type: this.openEhrType(a.committer)] + this."$method"(a.committer)
 
       out.time_committed = this.serializeDvDateTime(a.time_committed)
@@ -698,8 +701,7 @@ class OpenEhrJsonSerializer {
       // AuditDetails fields
       out.system_id = a.system_id
 
-      def method
-      method = this.method(a.committer)
+      def method = this.method(a.committer)
       out.committer = [_type: this.openEhrType(a.committer)] + this."$method"(a.committer)
 
       out.time_committed = this.serializeDvDateTime(a.time_committed)
@@ -911,9 +913,11 @@ class OpenEhrJsonSerializer {
    {
       this.fillEntry(o, out)
 
+      String method
+
       if (o.protocol)
       {
-         String method = this.method(o.protocol)
+         method = this.method(o.protocol)
          out.protocol = [_type: this.openEhrType(o.protocol)] + this."$method"(o.protocol)
 
          // TODO: check if this is needed

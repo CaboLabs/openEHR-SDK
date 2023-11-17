@@ -11,15 +11,13 @@ class RmValidationTest extends GroovyTestCase {
 
    private static String PS = System.getProperty("file.separator")
 
-   /*
-
    void testValidationFromXmlComposition()
    {
       String path = "/canonical_xml/test_all_datatypes.composition.en.xml"
       File file = new File(getClass().getResource(path).toURI())
       String xml = file.text
       def parser = new OpenEhrXmlParser()
-      Composition c = (Composition)parser.parseXml(xml)
+      Composition c = (Composition)parser.parseLocatable(xml)
 
       // TODO: add support for S3 repo
       String opt_repo_path = "/opts"
@@ -36,13 +34,14 @@ class RmValidationTest extends GroovyTestCase {
       }
    }
 
+   /*
    void testValidationFromXmlComposition2()
    {
       String path = "/canonical_xml/test_all_datatypes.composition.en.xml"
       File file = new File(getClass().getResource(path).toURI())
       String xml = file.text
       def parser = new OpenEhrXmlParser() // TODO: create a quick parser that doesn't calculate paths
-      Composition c = (Composition)parser.parseXml(xml)
+      Composition c = (Composition)parser.parseLocatable(xml)
 
       // TODO: add support for S3 repo
       String opt_repo_path = "/opts"

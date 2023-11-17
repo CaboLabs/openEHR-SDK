@@ -212,7 +212,7 @@ String path = "vital_signs.xml"
 File file = new File(getClass().getResource(path).toURI())
 String xml = file.text
 def parser = new OpenEhrXmlParser()
-Composition c = (Composition)parser.parseXml(xml)
+Composition c = (Composition)parser.parseLocatable(xml)
 ```
 
 ### Serialize a COMPOSITION to XML
@@ -249,7 +249,7 @@ report.errors.each { error ->
 ```groovy
 String xml = ...
 def parser = new OpenEhrXmlParser()
-Composition c = (Composition)parser.parseXml(xml)
+Composition c = (Composition)parser.parseLocatable(xml)
 def serializer = new OpenEhrJsonSerializer()
 String json = serializer.serialize(c)
 ```

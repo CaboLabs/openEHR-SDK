@@ -115,7 +115,6 @@ class Main {
             def destination_path = args[2]
             verifyFolder(destination_path)
 
-            // TODO: separate xml/json from the composition/version in two params
             def format = 'json'
             def generate = 'locatable'
 
@@ -282,6 +281,7 @@ class Main {
                   printer.flush()
                   printer.close()
                break
+               // TODO: trans FOLDER, EHR_STATUS, ACTOR, PARTY_RELATIONSHIP
                case "composition":
 
                   String path = args[2] // composition
@@ -302,7 +302,7 @@ class Main {
                      // Parse XML
                      String xml = f.text
                      def parser = new OpenEhrXmlParser()
-                     Composition c = (Composition)parser.parseXml(xml)
+                     Composition c = (Composition)parser.parseLocatable(xml)
 
                      // debug
                      // out = JsonOutput.toJson(c)
@@ -457,7 +457,7 @@ class Main {
    static validateXMLWithOPT(File xml)
    {
       def parser = new OpenEhrXmlParser()
-      def instance = parser.parseXml(xml.text) // should be a composition, if the file is a version it won't parse
+      def instance = parser.parseLocatable(xml.text) // xml should be a locatable
       validateCompositionWithOPT(instance)
    }
 
