@@ -1,6 +1,7 @@
 package com.cabolabs.openehr.query.saqm
 
 import com.cabolabs.openehr.query.OpenEhrQuery
+import com.cabolabs.openehr.query.saqm.condition.SAQMCondition
 
 class SAQMQuery extends OpenEhrQuery {
 
@@ -10,7 +11,7 @@ class SAQMQuery extends OpenEhrQuery {
    String description
 
    List projections
-   List conditions
+   SAQMCondition where
 
    boolean isCount = false
 }
