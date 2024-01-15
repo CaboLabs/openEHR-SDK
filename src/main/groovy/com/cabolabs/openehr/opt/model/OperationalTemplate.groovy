@@ -215,6 +215,9 @@ class OperationalTemplate {
 
    /**
     * Find root object node by archetypeId.
+    * FIXME: the same archetype could be used many times in the same OPT, so
+    * there could be many roots for the same archetypeId, and those could have
+    * different constraints like occurs 0..1 and 0..0
     */
    ObjectNode findRoot(String archetypeId)
    {
@@ -296,7 +299,7 @@ class OperationalTemplate {
       //Map rm_attrs = rm_attributes_not_in_opt[obn.rmTypeName]
       Map rm_attrs = Model.rm_attributes_not_in_opt[obn.rmTypeName]
 
-      def path_sep, aom_type, atnc, obnc
+      def path_sep, aom_type, atnc, obnc, parent_obn
 
       rm_attrs.each { attr, type ->
 
@@ -356,14 +359,36 @@ class OperationalTemplate {
 
             // Add nodes to the OPT
             // supports many alternative nodes with the same path
+            // TEST: should the key be templatePath or path?
             if (!this.nodes[obnc.templatePath]) this.nodes[obnc.templatePath] = []
             this.nodes[obnc.templatePath] << obnc
 
             obn.attributes << atnc
 
+            // NOTE: the code below seted the node to the parent but not to the archetype root
+            //       and all parent nodes, like the OPT parser does with the setFlatNodes(),
+            //       which generated an incosistent behavior.
+            //
             // Add nodes to the current ObjectNode
-            if (!obn.nodes[obnc.templatePath]) obn.nodes[obnc.templatePath] = []
-            obn.nodes[obnc.templatePath] << obnc
+
+            //if (!obn.nodes[obnc.templatePath]) obn.nodes[obnc.templatePath] = []
+            //obn.nodes[obnc.templatePath] << obnc
+
+            // The key for these nodes should be the archetype path not the template path
+            //if (!obn.nodes[obnc.path]) obn.nodes[obnc.path] = []
+            //obn.nodes[obnc.path] << obnc
+
+            // This while assigns the current generated node to all it's ascedant nodes,
+            // in their flat list, so when getting any of those nodes, the new injected
+            // node will be there and can be retrieved by it's path.
+            parent_obn = obn
+            while (parent_obn)
+            {
+               if (!parent_obn.nodes[obnc.path]) parent_obn.nodes[obnc.path] = []
+               parent_obn.nodes[obnc.path] << obnc
+
+               parent_obn = parent_obn?.parent?.parent
+            }
 
             // TODO: info log
             //println "adding new node ${obnc.templatePath} to node ${obn.templatePath}"

@@ -217,6 +217,54 @@ class OPTParserTest extends GroovyTestCase {
    }
 
 
+   void testParentPathsReviewOPT()
+   {
+      println "========= testParentPathsReviewOPT ==========="
+      def path = "opts/"+ OptManager.DEFAULT_NAMESPACE + "/review.opt"
+      def opt = TestUtils.loadTemplate(path)
+      opt.complete()
+
+      opt.nodes.sort{ it.key }.each { tpath, obns ->
+         //println tpath
+         //println obns.archetypeId
+         println obns.path // multiple nodes can occur at the same template path
+      }
+
+      def obn = opt.findRoot('openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1')
+
+      println obn
+
+      // Get the object node that for thet EVENT.time inside the observation
+      // NOTE: this is a list
+      def event_time_node = obn.getNodes('/data[at0001]/events[at0002]/time')
+
+      // We know the object node is for a datatype, so the parent object should be a locatable or pathable,
+      // in this case is for the EVENT
+      def event_node = event_time_node[0].parent.parent
+
+      println event_time_node[0]
+      println event_node.rmTypeName
+
+
+      // Then we want to verify if the event node contains a descendant path,
+      // this is to know the data
+      println event_node.nodes.find{ it.key == '/data[at0001]/events[at0002]/data[at0003]/items[at0037]/value' }
+
+      // event_node.nodes.each {
+      //    println it.key
+      // }
+
+      //println obn.getNodes('/data[at0001]/events[at0002]')
+
+      // obn.getNodes('/data[at0001]/events[at0002]').each{ _node ->
+      //    _node.nodes.each { pth, _nodes ->
+      //       println "--"+ pth
+      //    }
+      // }
+
+      println obn.getNodes('/data[at0001]/events[at0002]/data[at0003]/items[at0037]/value')
+   }
+
 
    void testCBooleanParse()
    {
