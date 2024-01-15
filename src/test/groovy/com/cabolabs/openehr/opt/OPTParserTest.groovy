@@ -248,7 +248,7 @@ class OPTParserTest extends GroovyTestCase {
 
       // Then we want to verify if the event node contains a descendant path,
       // this is to know the data
-      println event_node.nodes.find{ it.key == '/data[at0001]/events[at0002]/data[at0003]/items[at0038]/value' }
+      println event_node.nodes.find{ it.key == '/data[at0001]/events[at0002]/data[at0003]/items[at0037]/value' }
 
       // event_node.nodes.each {
       //    println it.key
@@ -264,7 +264,6 @@ class OPTParserTest extends GroovyTestCase {
 
       println obn.getNodes('/data[at0001]/events[at0002]/data[at0003]/items[at0037]/value')
    }
-
 
 
    void testCBooleanParse()

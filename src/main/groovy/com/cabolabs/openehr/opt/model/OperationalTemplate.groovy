@@ -359,17 +359,21 @@ class OperationalTemplate {
 
             // Add nodes to the OPT
             // supports many alternative nodes with the same path
+            // TEST: should the key be templatePath or path?
             if (!this.nodes[obnc.templatePath]) this.nodes[obnc.templatePath] = []
             this.nodes[obnc.templatePath] << obnc
 
             obn.attributes << atnc
-
 
             // NOTE: the code below seted the node to the parent but not to the archetype root
             //       and all parent nodes, like the OPT parser does with the setFlatNodes(),
             //       which generated an incosistent behavior.
             //
             // Add nodes to the current ObjectNode
+
+            //if (!obn.nodes[obnc.templatePath]) obn.nodes[obnc.templatePath] = []
+            //obn.nodes[obnc.templatePath] << obnc
+
             // The key for these nodes should be the archetype path not the template path
             //if (!obn.nodes[obnc.path]) obn.nodes[obnc.path] = []
             //obn.nodes[obnc.path] << obnc
@@ -385,7 +389,6 @@ class OperationalTemplate {
 
                parent_obn = parent_obn?.parent?.parent
             }
-
 
             // TODO: info log
             //println "adding new node ${obnc.templatePath} to node ${obn.templatePath}"

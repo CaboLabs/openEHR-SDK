@@ -1234,7 +1234,7 @@ class RmValidator2 {
 
 
    // ========================================================
-   // Finds the closes archetype root ascending from the object node
+   // Finds the closest archetype root ascending from the object node
    // TODO: these operations should be part of ObjectNode
    // Search for archetype root traversing the nodes up
    private ObjectNode findRootRecursive(ObjectNode obj)
