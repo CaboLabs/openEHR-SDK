@@ -553,6 +553,9 @@ class Main {
                   case 'FOLDER':
                      instance = generator.generateFolderFromOPT(opt)
                   break
+                  case 'EHR_STATUS':
+                     instance = generator.generateEhrStatusFromOPT(opt)
+                  break
                   default:
                      throw new Exception("Type ${opt.definition.rmTypeName} not supported yet")
                      // TODO: EHR_STATUS, FOLDER, AGENT, GROUP, ROLE

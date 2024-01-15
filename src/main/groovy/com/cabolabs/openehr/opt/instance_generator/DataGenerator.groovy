@@ -127,7 +127,7 @@ class DataGenerator {
    static PartyRef random_party_ref(String demographicType = "PERSON")
    {
       new PartyRef(
-         namespace: 'com.cabolabs.demographic',
+         namespace: 'DEMOGRAPHIC',
          type: demographicType,
          id: new HierObjectId(
             value: java.util.UUID.randomUUID().toString()

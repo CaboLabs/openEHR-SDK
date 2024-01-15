@@ -118,7 +118,7 @@ class OpenEhrXmlSerializer {
             this.serializeDvDateTime(ehr.time_created)
          }
          ehr_status(archetype_node_id: ehr.ehr_status.archetype_node_id) {
-            this.serializeEhrStatus(ehr.ehr_status)
+            this.serializeEhrStatusInternal(ehr.ehr_status)
          }
       }
    }
@@ -324,9 +324,11 @@ class OpenEhrXmlSerializer {
 
    private void serializeOriginalVersion(OriginalVersion v)
    {
-      builder.version(xmlns:'http://schemas.openehr.org/v1',
+      builder.version(
+         xmlns:'http://schemas.openehr.org/v1',
          'xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance',
-         'xsi:type': 'ORIGINAL_VERSION')
+         'xsi:type': 'ORIGINAL_VERSION'
+      )
       {
          builder.contribution {
             this.serializeObjectRef(v.contribution)
@@ -377,9 +379,21 @@ class OpenEhrXmlSerializer {
       }
    }
 
+   public String serializeEhrStatus(EhrStatus status)
+   {
+      builder.ehr_status(
+         xmlns:'http://schemas.openehr.org/v1',
+         'xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance',
+         'xsi:type': 'EHR_STATUS',
+         archetype_node_id: status.archetype_node_id
+      )
+      {
+         this.serializeEhrStatusInternal(status)
+      }
+   }
 
-   // The entry point for EHRStatus will be serialize(Locatable)
-   private void serializeEhrStatus(EhrStatus status)
+   // Generates the internal components of an ehrstatus
+   private void serializeEhrStatusInternal(EhrStatus status)
    {
       // TODO: we need one internal serializer for the attributes only and one complete serialier for the ehr_status itself
       /*
@@ -408,20 +422,25 @@ class OpenEhrXmlSerializer {
 
       if (status.subject)
       {
-         this.serializePartySelf(status.subject)
+         builder.subject {
+            this.serializePartySelf(status.subject)
+         }
       }
 
-      builder.is_modifiable(status.is_modifiable)
       builder.is_queryable(status.is_queryable)
+      builder.is_modifiable(status.is_modifiable)
 
       if (status.other_details)
       {
-         String method = this.method(status.other_details)
-         this."$method"(status.other_details)
+         builder.other_details('xsi:type': openEhrType(status.other_details), archetype_node_id: status.other_details.archetype_node_id) {
+            String method = this.method(status.other_details)
+            this."$method"(status.other_details)
+         }
       }
    }
 
 
+   // Top level folder
    public String serializeFolder(Folder folder)
    {
       builder.folder(

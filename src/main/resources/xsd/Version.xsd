@@ -72,6 +72,7 @@
                <xs:element name="subject" type="PARTY_SELF"/>
                <xs:element name="is_queryable" type="xs:boolean"/>
                <xs:element name="is_modifiable" type="xs:boolean"/>
+					<xs:element name="other_details" type="ITEM_STRUCTURE" minOccurs="0"/>
             </xs:sequence>
          </xs:extension>
       </xs:complexContent>

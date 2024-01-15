@@ -1,0 +1,44 @@
+<ehr_status xmlns="http://schemas.openehr.org/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="EHR_STATUS" archetype_node_id="openEHR-EHR-EHR_STATUS.coded.v1">
+  <name xsi:type="DV_TEXT">
+    <value>status</value>
+  </name>
+  <archetype_details>
+    <archetype_id>
+      <value>openEHR-EHR-EHR_STATUS.coded.v1</value>
+    </archetype_id>
+    <template_id>
+      <value>ehr_status_coded_en_v1</value>
+    </template_id>
+    <rm_version>1.0.2</rm_version>
+  </archetype_details>
+  <subject>
+    <external_ref>
+      <id xsi:type="HIER_OBJECT_ID">
+        <value>43054b68-61b0-4829-8cc4-d2f090350569</value>
+      </id>
+      <namespace>DEMOGRAPHIC</namespace>
+      <type>PERSON</type>
+    </external_ref>
+  </subject>
+  <is_queryable>true</is_queryable>
+  <is_modifiable>true</is_modifiable>
+  <other_details xsi:type="ITEM_TREE" archetype_node_id="at0001">
+    <name xsi:type="DV_TEXT">
+      <value>tree</value>
+    </name>
+    <items xsi:type="ELEMENT" archetype_node_id="at0002">
+      <name xsi:type="DV_TEXT">
+        <value>coded</value>
+      </name>
+      <value xsi:type="DV_CODED_TEXT">
+        <value>SmxaPbrllmSxquGzPmddSDfByhSsHQ</value>
+        <defining_code>
+          <terminology_id>
+            <value>terminology_not_specified_as_constraint_or_referenceSetUri_in_opt</value>
+          </terminology_id>
+          <code_string>918375</code_string>
+        </defining_code>
+      </value>
+    </items>
+  </other_details>
+</ehr_status>

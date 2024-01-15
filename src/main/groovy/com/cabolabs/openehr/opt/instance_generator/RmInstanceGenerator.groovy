@@ -60,6 +60,7 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.PartyRef
 import com.cabolabs.openehr.rm_1_0_2.support.identification.TemplateId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.TerminologyId
 import com.cabolabs.openehr.rm_1_0_2.common.directory.Folder
+import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
 import com.cabolabs.openehr.terminology.TerminologyParser
 import groovy.time.TimeCategory
 
@@ -317,6 +318,44 @@ class RmInstanceGenerator {
       this.opt = opt
 
       return generateRole()
+   }
+
+   EhrStatus generateEhrStatusFromOPT(OperationalTemplate opt)
+   {
+      this.opt = opt
+
+      def ehr_status = new EhrStatus(
+         subject: new PartySelf(
+            external_ref: new PartyRef(
+               namespace: 'DEMOGRAPHIC',
+               type: 'PERSON',
+               id: new HierObjectId(
+                  value: String.uuid()
+               )
+            )
+         ),
+         is_modifiable: true,
+         is_queryable: true
+      )
+
+
+      add_LOCATABLE_elements(opt.definition, ehr_status, opt.definition.archetypeId, true)
+
+
+      // other details
+
+      def oa = opt.definition.attributes.find { it.rmAttributeName == 'other_details' }
+
+      // ehr_status.other_details is a simple attribute, so the result will be a list of 1 item
+      def mattrs = processAttributeChildren(oa, opt.definition.archetypeId)
+
+      if (mattrs)
+      {
+         ehr_status.other_details = mattrs[0]
+      }
+
+
+      return ehr_status
    }
 
    // TODO: add support for param to allow generating random subfolder structures
@@ -2169,7 +2208,7 @@ class RmInstanceGenerator {
 
          oa = o.attributes.find { it.rmAttributeName == attr_name }
 
-         // in event there are no lists, so the results will be lists of 1 item
+         // in event there are no lists, so the result will be a list of 1 item
          mattrs = processAttributeChildren(oa, parent_arch_id)
 
          if (mattrs)
