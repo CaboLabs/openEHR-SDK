@@ -1316,7 +1316,7 @@ class OpenEhrXmlParser {
 
       String type, method
 
-	   // FIXME: rows are CLUSTERS, we don't need to get the dynamic method
+      // FIXME: rows are CLUSTERS, we don't need to get the dynamic method
       xml.rows.eachWithIndex { item, i ->
          type = item.'@xsi:type'.text()
          method = 'parse'+ type

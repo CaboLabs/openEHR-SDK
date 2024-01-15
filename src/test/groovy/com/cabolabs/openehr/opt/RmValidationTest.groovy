@@ -62,10 +62,10 @@ class RmValidationTest extends GroovyTestCase {
    void testValidationFromJsonComposition()
    {
       String path = "/canonical_json/minimal_action.json"
-	   File file = new File(getClass().getResource(path).toURI())
-	   String json = file.text
-	   def parser = new OpenEhrJsonParserQuick()
-	   Composition c = (Composition)parser.parseJson(json)
+      File file = new File(getClass().getResource(path).toURI())
+      String json = file.text
+      def parser = new OpenEhrJsonParserQuick()
+      Composition c = (Composition)parser.parseJson(json)
 
       // TODO: add support for S3 repo
       String opt_repo_path = "/opts"
@@ -85,10 +85,10 @@ class RmValidationTest extends GroovyTestCase {
     void testValidationFromJsonComposition2()
    {
       String path = "/canonical_json/minimal_action.json"
-	   File file = new File(getClass().getResource(path).toURI())
-	   String json = file.text
-	   def parser = new OpenEhrJsonParserQuick()
-	   Composition c = (Composition)parser.parseJson(json)
+      File file = new File(getClass().getResource(path).toURI())
+      String json = file.text
+      def parser = new OpenEhrJsonParserQuick()
+      Composition c = (Composition)parser.parseJson(json)
 
       // TODO: add support for S3 repo
       String opt_repo_path = "/opts"
@@ -108,10 +108,10 @@ class RmValidationTest extends GroovyTestCase {
    void testValidationFromJsonCompositionAllDatatypes()
    {
       String path = "/canonical_json/test_all_datatypes_en.json"
-	   File file = new File(getClass().getResource(path).toURI())
-	   String json = file.text
-	   def parser = new OpenEhrJsonParserQuick()
-	   Composition c = (Composition)parser.parseJson(json)
+      File file = new File(getClass().getResource(path).toURI())
+      String json = file.text
+      def parser = new OpenEhrJsonParserQuick()
+      Composition c = (Composition)parser.parseJson(json)
 
       // TODO: add support for S3 repo
       String opt_repo_path = "/opts"
@@ -131,10 +131,10 @@ class RmValidationTest extends GroovyTestCase {
    void testValidationFromJsonCompositionAllDatatypes2()
    {
       String path = "/canonical_json/test_all_datatypes_en.json"
-	   File file = new File(getClass().getResource(path).toURI())
-	   String json = file.text
-	   def parser = new OpenEhrJsonParserQuick()
-	   Composition c = (Composition)parser.parseJson(json)
+      File file = new File(getClass().getResource(path).toURI())
+      String json = file.text
+      def parser = new OpenEhrJsonParserQuick()
+      Composition c = (Composition)parser.parseJson(json)
 
       // TODO: add support for S3 repo
       String opt_repo_path = "/opts"
@@ -154,10 +154,10 @@ class RmValidationTest extends GroovyTestCase {
    void testValidationFromJsonCompositionInvalidCardinalitiesA()
    {
       String path = "/rm_validation/0_alternative_types.en.v1_000052_1.json"
-	   File file = new File(getClass().getResource(path).toURI())
-	   String json = file.text
-	   def parser = new OpenEhrJsonParserQuick()
-	   Composition c = (Composition)parser.parseJson(json)
+      File file = new File(getClass().getResource(path).toURI())
+      String json = file.text
+      def parser = new OpenEhrJsonParserQuick()
+      Composition c = (Composition)parser.parseJson(json)
 
       // TODO: add support for S3 repo
       String opt_repo_path = "/rm_validation"
@@ -177,10 +177,10 @@ class RmValidationTest extends GroovyTestCase {
    void testValidationFromJsonCompositionInvalidCardinalitiesA2()
    {
       String path = "/rm_validation/0_alternative_types.en.v1_000052_1.json"
-	   File file = new File(getClass().getResource(path).toURI())
-	   String json = file.text
-	   def parser = new OpenEhrJsonParserQuick()
-	   Composition c = (Composition)parser.parseJson(json)
+      File file = new File(getClass().getResource(path).toURI())
+      String json = file.text
+      def parser = new OpenEhrJsonParserQuick()
+      Composition c = (Composition)parser.parseJson(json)
 
       // TODO: add support for S3 repo
       String opt_repo_path = "/rm_validation"

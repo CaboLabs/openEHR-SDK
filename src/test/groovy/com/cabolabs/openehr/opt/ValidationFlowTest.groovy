@@ -856,7 +856,7 @@ class ValidationFlowTest extends GroovyTestCase {
    void test_compo_validation_missing_node()
    {
       String path = "/opts/test_validation_missing_node/composition.json"
-	   File file = new File(getClass().getResource(path).toURI())
+      File file = new File(getClass().getResource(path).toURI())
       def json_compo = file.text
 
       def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
@@ -902,7 +902,7 @@ class ValidationFlowTest extends GroovyTestCase {
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
       String path = "/canonical_json/minimal_action.json"
-	   File file = new File(getClass().getResource(path).toURI())
+      File file = new File(getClass().getResource(path).toURI())
       def json_compo = file.text
 
       def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
@@ -928,7 +928,7 @@ class ValidationFlowTest extends GroovyTestCase {
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
       String path = "/canonical_json/test_all_datatypes_en.json"
-	   File file = new File(getClass().getResource(path).toURI())
+      File file = new File(getClass().getResource(path).toURI())
       def json_compo = file.text
 
       def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
@@ -954,7 +954,7 @@ class ValidationFlowTest extends GroovyTestCase {
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
       String path = "/canonical_json/test_all_datatypes_en_constraints_violated.json"
-	   File file = new File(getClass().getResource(path).toURI())
+      File file = new File(getClass().getResource(path).toURI())
       def json_compo = file.text
 
       def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
@@ -1003,7 +1003,7 @@ class ValidationFlowTest extends GroovyTestCase {
    void test_compo_vital_signs_monitoring()
    {
       String path = "/canonical_json/vital_signs_monitoring.json"
-	   File file = new File(getClass().getResource(path).toURI())
+      File file = new File(getClass().getResource(path).toURI())
       def json_compo = file.text
 
       def parser = new OpenEhrJsonParserQuick(true) // does RM schema validation not API
@@ -1037,7 +1037,7 @@ class ValidationFlowTest extends GroovyTestCase {
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
       String path = "/canonical_json/demographic/generic_person.json"
-	   File file = new File(getClass().getResource(path).toURI())
+      File file = new File(getClass().getResource(path).toURI())
       def json_person = file.text
 
       def parser = new OpenEhrJsonParserQuick(true) // does RM schema validation not API
@@ -1066,7 +1066,7 @@ class ValidationFlowTest extends GroovyTestCase {
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
       String path = "/canonical_json/demographic/person_complete.json"
-	   File file = new File(getClass().getResource(path).toURI())
+      File file = new File(getClass().getResource(path).toURI())
       def json_person = file.text
 
       def parser = new OpenEhrJsonParserQuick(true)
@@ -1097,7 +1097,7 @@ class ValidationFlowTest extends GroovyTestCase {
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
       String path = "/canonical_json/demographic/generic_organization.json"
-	   File file = new File(getClass().getResource(path).toURI())
+      File file = new File(getClass().getResource(path).toURI())
       def json_organization = file.text
 
       def parser = new OpenEhrJsonParserQuick(true) // does RM schema validation not API
@@ -1129,7 +1129,7 @@ class ValidationFlowTest extends GroovyTestCase {
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
       String path = "/canonical_json/demographic/generic_group.json"
-	   File file = new File(getClass().getResource(path).toURI())
+      File file = new File(getClass().getResource(path).toURI())
       def json_group = file.text
 
       def parser = new OpenEhrJsonParserQuick(true) // does RM schema validation not API
@@ -1161,7 +1161,7 @@ class ValidationFlowTest extends GroovyTestCase {
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
       String path = "/canonical_json/demographic/generic_agent.json"
-	   File file = new File(getClass().getResource(path).toURI())
+      File file = new File(getClass().getResource(path).toURI())
       def json_agent = file.text
 
       def parser = new OpenEhrJsonParserQuick(true) // does RM schema validation not API
@@ -1190,7 +1190,7 @@ class ValidationFlowTest extends GroovyTestCase {
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
       String path = "/canonical_json/demographic/generic_role.json"
-	   File file = new File(getClass().getResource(path).toURI())
+      File file = new File(getClass().getResource(path).toURI())
       def json_role = file.text
 
       def parser = new OpenEhrJsonParser(true) // does RM schema validation not API

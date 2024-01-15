@@ -59,6 +59,7 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.ObjectVersionId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.PartyRef
 import com.cabolabs.openehr.rm_1_0_2.support.identification.TemplateId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.TerminologyId
+import com.cabolabs.openehr.rm_1_0_2.common.directory.Folder
 import com.cabolabs.openehr.terminology.TerminologyParser
 import groovy.time.TimeCategory
 
@@ -240,6 +241,11 @@ class RmInstanceGenerator {
    }
 
 
+   // FIXME: for the locatables, the method should know which type to generate by checking the root type,
+   //        we don't need all these explicit entry points. And we can have a generic param Map as a generic
+   //        parameter passing mechanism, so different types chould receive different params.
+
+
    /**
     * generates just the composition, no version info
     */
@@ -312,6 +318,74 @@ class RmInstanceGenerator {
 
       return generateRole()
    }
+
+   // TODO: add support for param to allow generating random subfolder structures
+   Folder generateFolderFromOPT(OperationalTemplate opt)
+   {
+      this.opt = opt
+
+      generate_FOLDER(opt.definition, opt.definition.archetypeId)
+   }
+
+   private Folder generate_FOLDER(ObjectNode o, String parent_arch_id)
+   {
+      def folder = new Folder()
+
+      add_LOCATABLE_elements(o, folder, parent_arch_id, true)
+
+
+      // subfolders
+
+      def oa = opt.definition.attributes.find{ it.rmAttributeName == 'folders' }
+
+      if (oa)
+      {
+         // TODO: this should be an OPT rule exception:
+         // if a multiple attribute has minimal cardinality bigger than the
+         // amount of items generated, it could be because the OPT doesn't
+         // have constraints for the items in the multiple attribute,
+         // which means unconstrained, but also means there is no
+         // definition of what can be inside, and if we add dummy nodes
+         // the name validation will fail since there is no text defined in the
+         // OPT for the generated node.
+         if (oa.cardinality && oa.cardinality.interval.lower > 0 && !oa.children)
+         {
+            throw new Exception("The multiple attribute at ${oa.templateDataPath} has a lower cardinality constraint of ${oa.cardinality.interval.lower} but there are no children objects defined in the template, so the instance generator can't generate any more. If some content is required in a container, then at least one content object should be defined in the OPT.")
+         }
+
+         def folders = processAttributeChildren(oa, opt.definition.archetypeId)
+
+         // it is possible the cardinality upper is lower than the items generated because there are more alternatives
+         // defined than the upper, here we cut the elements to the upper, this check should be on any collection attribute
+         if (oa.cardinality && oa.cardinality.interval.upper)
+         {
+            folders = folders.take(oa.cardinality.interval.upper)
+         }
+
+         // TODO: check min is lower than the actually generated amount and generate more if needed
+
+         folder.folders = folders
+      }
+
+
+      // random item references
+
+      def r = new Random().nextInt(5) // 5 is the max number of items, and 0 is the min
+
+      r.times {
+         folder.items << new ObjectRef(
+            namespace: 'EHR',
+            type: 'VERSIONED_COMPOSITION',
+            id: new HierObjectId(
+               value: String.uuid() // This simulates VERSIONED_COMPOSITION.uid
+            )
+         )
+      }
+
+      return folder
+   }
+
+
 
    private Composition generateComposition(boolean addParticipations = false)
    {
@@ -1482,7 +1556,7 @@ class RmInstanceGenerator {
    }
 
 
-   // DEMOGRAPHICS
+   // DEMOGRAPHIC top level methods
    private Person generatePerson()
    {
       def person = new Person()

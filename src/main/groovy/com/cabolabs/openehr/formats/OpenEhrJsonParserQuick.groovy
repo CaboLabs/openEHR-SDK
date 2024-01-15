@@ -1969,7 +1969,7 @@ class OpenEhrJsonParserQuick {
       t.rows = []
       json.rows.each { item ->
 
-	      // FIXME: rows are CLUSTERS, we don't need to get the dynamic method
+         // FIXME: rows are CLUSTERS, we don't need to get the dynamic method
          type = item._type
          method = 'parse'+ type
 

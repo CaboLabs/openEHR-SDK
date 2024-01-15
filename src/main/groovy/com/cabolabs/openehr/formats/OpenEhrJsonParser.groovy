@@ -1908,7 +1908,7 @@ class OpenEhrJsonParser {
 
       String type, method
 
-	   // FIXME: rows are CLUSTERS, we don't need to get the dynamic method
+      // FIXME: rows are CLUSTERS, we don't need to get the dynamic method
       json.rows.each { item ->
          type = item._type
          method = 'parse'+ type

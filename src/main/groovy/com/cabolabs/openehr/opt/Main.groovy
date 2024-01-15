@@ -522,6 +522,7 @@ class Main {
          {
             if (generate == 'version')
             {
+               // FIXME: only generates version<composition>
                instance = generator.generateVersionFromOPT(opt, withParticipations)
             }
             else
@@ -548,6 +549,9 @@ class Main {
                   break
                   case 'ROLE':
                      instance = generator.generateRoleFromOPT(opt)
+                  break
+                  case 'FOLDER':
+                     instance = generator.generateFolderFromOPT(opt)
                   break
                   default:
                      throw new Exception("Type ${opt.definition.rmTypeName} not supported yet")

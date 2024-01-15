@@ -424,8 +424,13 @@ class OpenEhrXmlSerializer {
 
    public String serializeFolder(Folder folder)
    {
-      builder.folder('xsi:type': 'FOLDER', archetype_node_id: folder.archetype_node_id) {
-
+      builder.folder(
+         xmlns:'http://schemas.openehr.org/v1', // root element attributes
+         'xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance',
+         'xsi:type': 'FOLDER',
+         archetype_node_id: folder.archetype_node_id
+      )
+      {
          this.fillLocatable(folder)
 
          folder.items.each { object_ref ->

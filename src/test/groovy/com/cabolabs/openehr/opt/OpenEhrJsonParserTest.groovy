@@ -736,17 +736,17 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 
    void testJsonParserReferralWithParticipationsToXml()
    {
-	  // parse JSON
-	  String path = PS +"canonical_json"+ PS +"referral.json"
-	  File file = new File(getClass().getResource(path).toURI())
-	  String json = file.text
-	  def parser = new OpenEhrJsonParserQuick()
-	  Composition c = (Composition)parser.parseJson(json)
+     // parse JSON
+     String path = PS +"canonical_json"+ PS +"referral.json"
+     File file = new File(getClass().getResource(path).toURI())
+     String json = file.text
+     def parser = new OpenEhrJsonParserQuick()
+     Composition c = (Composition)parser.parseJson(json)
 
-	  // serialize to XML
-	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
-	  String xml = serial.serialize(c)
-	  //println xml
+     // serialize to XML
+     OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
+     String xml = serial.serialize(c)
+     //println xml
 
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
@@ -756,17 +756,17 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 
    void testJsonParserMinimalActionToXml()
    {
-	  // parse JSON
-	  String path = PS +"canonical_json"+ PS +"minimal_action.json"
-	  File file = new File(getClass().getResource(path).toURI())
-	  String json = file.text
-	  def parser = new OpenEhrJsonParserQuick()
-	  Composition c = (Composition)parser.parseJson(json)
+     // parse JSON
+     String path = PS +"canonical_json"+ PS +"minimal_action.json"
+     File file = new File(getClass().getResource(path).toURI())
+     String json = file.text
+     def parser = new OpenEhrJsonParserQuick()
+     Composition c = (Composition)parser.parseJson(json)
 
-	  // serialize to XML
-	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
-	  String xml = serial.serialize(c)
-	  //println xml
+     // serialize to XML
+     OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
+     String xml = serial.serialize(c)
+     //println xml
 
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
@@ -777,17 +777,17 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 
    void testJsonParserMinimalEvaluationToXml()
    {
-	  // parse JSON
-	  String path = PS +"canonical_json"+ PS +"minimal_evaluation.json"
-	  File file = new File(getClass().getResource(path).toURI())
-	  String json = file.text
-	  def parser = new OpenEhrJsonParserQuick()
-	  Composition c = (Composition)parser.parseJson(json)
+     // parse JSON
+     String path = PS +"canonical_json"+ PS +"minimal_evaluation.json"
+     File file = new File(getClass().getResource(path).toURI())
+     String json = file.text
+     def parser = new OpenEhrJsonParserQuick()
+     Composition c = (Composition)parser.parseJson(json)
 
-	  // serialize to XML
-	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
-	  String xml = serial.serialize(c)
-	  //println xml
+     // serialize to XML
+     OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
+     String xml = serial.serialize(c)
+     //println xml
 
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
@@ -797,17 +797,17 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 
    void testJsonParserNestedToXml()
    {
-	  // parse JSON
-	  String path = PS +"canonical_json"+ PS +"nested.json"
-	  File file = new File(getClass().getResource(path).toURI())
-	  String json = file.text
-	  def parser = new OpenEhrJsonParserQuick()
-	  Composition c = (Composition)parser.parseJson(json)
+     // parse JSON
+     String path = PS +"canonical_json"+ PS +"nested.json"
+     File file = new File(getClass().getResource(path).toURI())
+     String json = file.text
+     def parser = new OpenEhrJsonParserQuick()
+     Composition c = (Composition)parser.parseJson(json)
 
-	  // serialize to XML
-	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
-	  String xml = serial.serialize(c)
-	  //println xml
+     // serialize to XML
+     OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
+     String xml = serial.serialize(c)
+     //println xml
 
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
@@ -817,17 +817,17 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 
    void testJsonParserOximetriaToXml()
    {
-	  // parse JSON
-	  String path = PS +"canonical_json"+ PS +"oximetria_obs.json"
-	  File file = new File(getClass().getResource(path).toURI())
-	  String json = file.text
-	  def parser = new OpenEhrJsonParserQuick()
-	  Composition c = (Composition)parser.parseJson(json)
+     // parse JSON
+     String path = PS +"canonical_json"+ PS +"oximetria_obs.json"
+     File file = new File(getClass().getResource(path).toURI())
+     String json = file.text
+     def parser = new OpenEhrJsonParserQuick()
+     Composition c = (Composition)parser.parseJson(json)
 
-	  // serialize to XML
-	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
-	  String xml = serial.serialize(c)
-	  //println xml
+     // serialize to XML
+     OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
+     String xml = serial.serialize(c)
+     //println xml
 
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
@@ -837,17 +837,17 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 
    void testJsonParserPhysicalActivityToXml()
    {
-	  // parse JSON
-	  String path = PS +"canonical_json"+ PS +"physical_activity.json"
-	  File file = new File(getClass().getResource(path).toURI())
-	  String json = file.text
-	  def parser = new OpenEhrJsonParserQuick()
-	  Composition c = (Composition)parser.parseJson(json)
+     // parse JSON
+     String path = PS +"canonical_json"+ PS +"physical_activity.json"
+     File file = new File(getClass().getResource(path).toURI())
+     String json = file.text
+     def parser = new OpenEhrJsonParserQuick()
+     Composition c = (Composition)parser.parseJson(json)
 
-	  // serialize to XML
-	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
-	  String xml = serial.serialize(c)
-	  //println xml
+     // serialize to XML
+     OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
+     String xml = serial.serialize(c)
+     //println xml
 
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
@@ -857,17 +857,17 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 
    void testJsonParserProzedurToXml()
    {
-	  // parse JSON
-	  String path = PS +"canonical_json"+ PS +"prozedur.json"
-	  File file = new File(getClass().getResource(path).toURI())
-	  String json = file.text
-	  def parser = new OpenEhrJsonParserQuick()
-	  Composition c = (Composition)parser.parseJson(json)
+     // parse JSON
+     String path = PS +"canonical_json"+ PS +"prozedur.json"
+     File file = new File(getClass().getResource(path).toURI())
+     String json = file.text
+     def parser = new OpenEhrJsonParserQuick()
+     Composition c = (Composition)parser.parseJson(json)
 
-	  // serialize to XML
-	  OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
-	  String xml = serial.serialize(c)
-	  //println xml
+     // serialize to XML
+     OpenEhrXmlSerializer serial = new OpenEhrXmlSerializer()
+     String xml = serial.serialize(c)
+     //println xml
 
      // validate xml
      def inputStream = this.getClass().getResourceAsStream('/xsd/Version.xsd')
