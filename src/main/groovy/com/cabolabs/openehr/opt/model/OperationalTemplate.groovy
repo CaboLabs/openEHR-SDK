@@ -351,9 +351,6 @@ class OperationalTemplate {
                // TODO: default_values
             )
 
-            println "owner: "+ obn.path
-            println " > "+ obnc.path
-
             // Add dummy text and description for the new nodes
             obnc.text = obnc.parent.parent.text +'.'+ obnc.parent.rmAttributeName
             obnc.description = obnc.parent.parent.description +'.'+ obnc.parent.rmAttributeName
