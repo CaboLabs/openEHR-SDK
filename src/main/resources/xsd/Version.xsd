@@ -60,9 +60,11 @@
          <xs:element name="system_id" type="HIER_OBJECT_ID"/>
          <xs:element name="ehr_id" type="HIER_OBJECT_ID"/>
          <xs:element name="time_created" type="DV_DATE_TIME"/>
+         <xs:element name="contributions" type="OBJECT_REF" minOccurs="0" maxOccurs="unbounded"/>
          <xs:element name="ehr_status" type="OBJECT_REF"/>
          <xs:element name="ehr_access" type="OBJECT_REF" minOccurs="0"/>
          <xs:element name="directory" type="OBJECT_REF" minOccurs="0"/>
+         <xs:element name="compositions" type="OBJECT_REF" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
    </xs:complexType>
    <xs:complexType name="EHR_STATUS">
@@ -200,7 +202,7 @@
       <xs:sequence>
          <xs:element name="start_time" type="DV_DATE_TIME"/>
          <xs:element name="end_time" type="DV_DATE_TIME" minOccurs="0"/>
-         <xs:element name="location" type="xs:string" minOccurs="0"/>
+         <xs:element name="location" type="NotEmptyString" minOccurs="0"/>
          <xs:element name="setting" type="DV_CODED_TEXT"/>
          <xs:element name="other_context" type="ITEM_STRUCTURE" minOccurs="0"/>
          <xs:element name="health_care_facility" type="PARTY_IDENTIFIED" minOccurs="0"/>
@@ -312,7 +314,7 @@
             <xs:sequence>
                <xs:element name="description" type="ITEM_STRUCTURE"/>
                <xs:element name="timing" type="DV_PARSABLE"/>
-               <xs:element name="action_archetype_id" type="xs:string"/>
+               <xs:element name="action_archetype_id" type="NotEmptyString"/>
             </xs:sequence>
          </xs:extension>
       </xs:complexContent>

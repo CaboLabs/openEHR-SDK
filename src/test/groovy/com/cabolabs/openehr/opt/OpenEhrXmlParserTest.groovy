@@ -199,7 +199,7 @@ class OpenEhrXmlParserTest extends GroovyTestCase {
       List<String> errors = parser.getValidationErrors()
 
       assert errors.size() == 1
-      assert errors[0] == "ERROR cvc-complex-type.2.4.b: The content of element 'ehr' is not complete. One of '\u007B\"http://schemas.openehr.org/v1\":ehr_status\u007D' is expected.\nline #: 12\n>>> </ehr>"
+      assert errors[0] == "ERROR cvc-complex-type.2.4.b: The content of element 'ehr' is not complete. One of '\u007B\"http://schemas.openehr.org/v1\":contributions, \"http://schemas.openehr.org/v1\":ehr_status\u007D' is expected.\nline #: 12\n>>> </ehr>"
    }
 
    void testJsonParserEhrStatus()
