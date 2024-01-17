@@ -386,18 +386,24 @@ class OpenEhrJsonSerializer {
 
       def method, _item
 
-      out.items = []
-      folder.items.each { object_ref ->
+      if (folder.items)
+      {
+         out.items = []
+         folder.items.each { object_ref ->
 
-         method = this.method(object_ref)
-         _item = [_type: this.openEhrType(object_ref)] + this."$method"(object_ref)
-         out.items << _item
+            method = this.method(object_ref)
+            _item = [_type: this.openEhrType(object_ref)] + this."$method"(object_ref)
+            out.items << _item
+         }
       }
 
-      out.folders = []
-      folder.folders.each { subfolder ->
+      if (folder.folders)
+      {
+         out.folders = []
+         folder.folders.each { subfolder ->
 
-         out.folders << this.serializeFolder(subfolder)
+            out.folders << this.serializeFolder(subfolder)
+         }
       }
 
       return out

@@ -118,7 +118,7 @@ class OpenEhrXmlSerializer {
             this.serializeDvDateTime(ehr.time_created)
          }
          ehr_status(archetype_node_id: ehr.ehr_status.archetype_node_id) {
-            this.serializeEhrStatusInternal(ehr.ehr_status)
+            this.serializeEhrStatusInternals(ehr.ehr_status)
          }
       }
    }
@@ -223,7 +223,7 @@ class OpenEhrXmlSerializer {
    private serializeRoleDtoInternal(Role r)
    {
       // for now this is the same as Role
-      serializeRoleInternal(r)
+      serializeRoleInternals(r)
    }
 
    private void fillActor(Actor a)
@@ -261,12 +261,11 @@ class OpenEhrXmlSerializer {
    {
       this.fillLocatable(p)
 
-      // optional
-      if (p.details)
-      {
-         def method = this.method(p.details)
-         builder.details('xsi:type': openEhrType(p.details), archetype_node_id: p.details.archetype_node_id) {
-            this."$method"(p.details)
+      // mandatory, at least 1 object
+      p.identities.each { identity ->
+
+         builder.identities(archetype_node_id: identity.archetype_node_id) {
+            this.serializePartyIdentity(identity)
          }
       }
 
@@ -281,15 +280,17 @@ class OpenEhrXmlSerializer {
          }
       }
 
-      // mandatory, at least 1 object
-      p.identities.each { identity ->
+      // TODO: relationships
+      // TODO: reverse_relationships
 
-         builder.identities(archetype_node_id: identity.archetype_node_id) {
-            this.serializePartyIdentity(identity)
+      // optional
+      if (p.details)
+      {
+         def method = this.method(p.details)
+         builder.details('xsi:type': openEhrType(p.details), archetype_node_id: p.details.archetype_node_id) {
+            this."$method"(p.details)
          }
       }
-
-      // TODO: reverse_relationships
    }
 
    private void serializePartyRelationship(PartyRelationship p)
@@ -388,34 +389,14 @@ class OpenEhrXmlSerializer {
          archetype_node_id: status.archetype_node_id
       )
       {
-         this.serializeEhrStatusInternal(status)
+         this.serializeEhrStatusInternals(status)
       }
    }
 
    // Generates the internal components of an ehrstatus
-   private void serializeEhrStatusInternal(EhrStatus status)
+   private void serializeEhrStatusInternals(EhrStatus status)
    {
-      // TODO: we need one internal serializer for the attributes only and one complete serialier for the ehr_status itself
-      /*
-      builder.ehr_status(archetype_node_id: status.archetype_node_id) {
-
-         this.fillLocatable(status)
-
-         if (status.subject)
-         {
-            this.serializerPartySelf(status.subject)
-         }
-
-         is_modifiable(status.is_modifiable)
-         is_queryable(status.is_queryable)
-
-         if (status.other_details)
-         {
-            String method = this.method(status.other_details)
-            this."$method"(status.other_details)
-         }
-      }
-      */
+      // We need one internal serializer for the attributes only and one complete serialier for the ehr_status itself
 
       // internal serializer code
       this.fillLocatable(status)
@@ -450,22 +431,40 @@ class OpenEhrXmlSerializer {
          archetype_node_id: folder.archetype_node_id
       )
       {
-         this.fillLocatable(folder)
+         serializeFolderInternals(folder)
+         // this.fillLocatable(folder)
 
-         folder.items.each { object_ref ->
+         // folder.items.each { object_ref ->
 
-            items() {
-               this.serializeObjectRef(object_ref)
-            }
-         }
+         //    items() {
+         //       this.serializeObjectRef(object_ref)
+         //    }
+         // }
 
-         folder.folders.each { subfolder ->
+         // folder.folders.each { subfolder ->
 
-            this.serializeFolders(subfolder)
-         }
+         //    this.serializeFolders(subfolder)
+         // }
       }
 
       return writer.toString()
+   }
+
+   private void serializeFolderInternals(Folder folder)
+   {
+      this.fillLocatable(folder)
+
+      folder.items.each { object_ref ->
+
+         builder.items() {
+            this.serializeObjectRef(object_ref)
+         }
+      }
+
+      folder.folders.each { subfolder ->
+
+         this.serializeFolders(subfolder)
+      }
    }
 
    /* serialize the subfolders of a folder where the root element should be name folders not folder (singular) */
@@ -567,35 +566,76 @@ class OpenEhrXmlSerializer {
          'xsi:type': 'PERSON',
          archetype_node_id: p.archetype_node_id) {
 
-         this.fillActor(p)
+         serializePersonInternals(p)
       }
+   }
+
+   private void serializePersonInternals(Person p)
+   {
+      this.fillActor(p)
    }
 
    private void serializeOrganization(Organization o)
    {
-      this.fillActor(p)
+      builder.organisation(
+         xmlns: 'http://schemas.openehr.org/v1',
+         'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+         'xsi:type': 'ORGANISATION',
+         archetype_node_id: o.archetype_node_id) {
+
+         this.serializeOrganizationInternals(o)
+      }
+   }
+
+   private void serializeOrganizationInternals(Organization o)
+   {
+      this.fillActor(o)
    }
 
    private void serializeGroup(Group g)
    {
-      this.fillActor(p)
+      builder.group(
+         xmlns: 'http://schemas.openehr.org/v1',
+         'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+         'xsi:type': 'GROUP',
+         archetype_node_id: g.archetype_node_id) {
+
+         this.serializeGroupInternals(g)
+      }
+   }
+
+   private void serializeGroupInternals(Group g)
+   {
+      this.fillActor(g)
    }
 
    private void serializeAgent(Agent a)
    {
-      this.fillActor(p)
+      builder.agent(
+         xmlns: 'http://schemas.openehr.org/v1',
+         'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+         'xsi:type': 'AGENT',
+         archetype_node_id: a.archetype_node_id) {
+
+         this.serializeAgentInternals(a)
+      }
+   }
+
+   private void serializeAgentInternals(Agent a)
+   {
+      this.fillActor(a)
    }
 
    // Role woth the root node
    private void serializeRole(Role r)
    {
       builder.role('xsi:type': 'ROLE') {
-         serializeRoleInternal(r)
+         serializeRoleInternals(r)
       }
    }
 
    // Role without the root node
-   private void serializeRoleInternal(Role r)
+   private void serializeRoleInternals(Role r)
    {
       this.fillParty(r)
 

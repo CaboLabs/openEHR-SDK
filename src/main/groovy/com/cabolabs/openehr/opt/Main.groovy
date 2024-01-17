@@ -522,8 +522,8 @@ class Main {
          {
             if (generate == 'version')
             {
-               // FIXME: only generates version<composition>
-               instance = generator.generateVersionFromOPT(opt, withParticipations)
+               // Generates a version of the type specified in the OPT
+               instance = generator.generateVersionFromOPT(opt, withParticipations, flavor)
             }
             else
             {

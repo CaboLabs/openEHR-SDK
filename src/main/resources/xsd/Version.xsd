@@ -80,79 +80,6 @@
       </xs:complexContent>
    </xs:complexType>
 
-
-   <xs:complexType name="PERSON">
-      <xs:complexContent>
-         <xs:extension base="ACTOR">
-         </xs:extension>
-      </xs:complexContent>
-   </xs:complexType>
-   <xs:complexType name="ACTOR">
-      <xs:complexContent>
-         <xs:extension base="PARTY">
-            <xs:sequence>
-               <xs:element name="roles" type="PARTY_REF" minOccurs="0" maxOccurs="unbounded"/>
-               <xs:element name="languages" type="DV_TEXT" minOccurs="0" maxOccurs="unbounded"/>
-            </xs:sequence>
-         </xs:extension>
-      </xs:complexContent>
-   </xs:complexType>
-
-   <xs:complexType name="PARTY">
-      <xs:complexContent>
-         <xs:extension base="LOCATABLE">
-            <xs:sequence>
-               <xs:element name="details" type="ITEM_STRUCTURE"/>
-               <xs:element name="contacts" type="CONTACT" minOccurs="0" maxOccurs="unbounded"/>
-               <xs:element name="identities" type="PARTY_IDENTITY" minOccurs="0" maxOccurs="unbounded"/>
-               <xs:element name="relationships" type="PARTY_RELATIONSHIP" minOccurs="0" maxOccurs="unbounded"/>
-               <!--  -->
-            </xs:sequence>
-         </xs:extension>
-      </xs:complexContent>
-   </xs:complexType>
-   <xs:complexType name="CONTACT">
-      <xs:complexContent>
-         <xs:extension base="LOCATABLE">
-            <xs:sequence>
-               <xs:element name="time_validity" type="DV_INTERVAL"/>
-               <xs:element name="addresses" type="ADDRESS" minOccurs="0" maxOccurs="unbounded"/>
-            </xs:sequence>
-         </xs:extension>
-      </xs:complexContent>
-   </xs:complexType>
-   <xs:complexType name="ADDRESS">
-      <xs:complexContent>
-         <xs:extension base="LOCATABLE">
-            <xs:sequence>
-               <xs:element name="details" type="ITEM_STRUCTURE"/>
-            </xs:sequence>
-         </xs:extension>
-      </xs:complexContent>
-   </xs:complexType>
-   <xs:complexType name="PARTY_IDENTITY">
-      <xs:complexContent>
-         <xs:extension base="LOCATABLE">
-            <xs:sequence>
-               <xs:element name="details" type="ITEM_STRUCTURE"/>
-            </xs:sequence>
-         </xs:extension>
-      </xs:complexContent>
-   </xs:complexType>
-   <xs:complexType name="PARTY_RELATIONSHIP">
-      <xs:complexContent>
-         <xs:extension base="LOCATABLE">
-            <xs:sequence>
-               <xs:element name="details" type="ITEM_STRUCTURE"/>
-               <xs:element name="time_validity" type="DV_INTERVAL"/>
-               <xs:element name="source" type="PARTY_REF"/>
-               <xs:element name="target" type="PARTY_REF"/>
-            </xs:sequence>
-         </xs:extension>
-      </xs:complexContent>
-   </xs:complexType>
-
-
    <xs:complexType name="VERSION" abstract="true">
       <xs:sequence>
          <xs:element name="contribution" type="OBJECT_REF"/>
@@ -184,6 +111,46 @@
          </xs:extension>
       </xs:complexContent>
    </xs:complexType>
+
+   <xs:complexType name="VERSIONED_OBJECT">
+		<xs:annotation>
+			<xs:documentation>Version control abstraction, defining semantics for versioning one complex object.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="uid" type="HIER_OBJECT_ID"/>
+			<xs:element name="owner_id" type="OBJECT_REF"/>
+			<xs:element name="time_created" type="DV_DATE_TIME"/>
+			<xs:element name="versions" type="VERSION" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>An ordered list of VERSIONs</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+    <xs:complexType name="CONTRIBUTION">
+        <xs:sequence>
+            <xs:element name="uid" type="HIER_OBJECT_ID"/>
+            <xs:element name="versions" type="OBJECT_REF" maxOccurs="unbounded"/>
+            <xs:element name="audit" type="AUDIT_DETAILS"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- Directory Package -->
+	<xs:complexType name="VERSIONED_FOLDER">
+		<xs:complexContent>
+			<xs:extension base="VERSIONED_OBJECT"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="FOLDER">
+		<xs:complexContent>
+			<xs:extension base="LOCATABLE">
+				<xs:sequence>
+					<xs:element name="folders" type="FOLDER" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="items" type="OBJECT_REF" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
    <xs:complexType name="COMPOSITION">
       <xs:complexContent>
          <xs:extension base="LOCATABLE">
@@ -356,16 +323,6 @@
          <xs:element name="type" type="DV_TEXT"/>
          <xs:element name="target" type="DV_EHR_URI"/>
       </xs:sequence>
-   </xs:complexType>
-   <xs:complexType name="FOLDER">
-      <xs:complexContent>
-         <xs:extension base="LOCATABLE">
-            <xs:sequence>
-               <xs:element name="folders" type="FOLDER" minOccurs="0" maxOccurs="unbounded"/>
-               <xs:element name="items" type="OBJECT_REF" minOccurs="0" maxOccurs="unbounded"/>
-            </xs:sequence>
-         </xs:extension>
-      </xs:complexContent>
    </xs:complexType>
    <xs:complexType name="HISTORY">
       <xs:complexContent>
@@ -1052,6 +1009,130 @@
          </xs:extension>
       </xs:complexContent>
    </xs:complexType>
+
+   <!-- Demographics -->
+
+   <xs:complexType name="VERSIONED_PARTY">
+		<xs:complexContent>
+			<xs:extension base="VERSIONED_OBJECT"/>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="PARTY" abstract="true">
+		<xs:complexContent>
+			<xs:extension base="LOCATABLE">
+				<xs:sequence>
+					<xs:element name="identities" type="PARTY_IDENTITY" maxOccurs="unbounded"/>
+					<xs:element name="contacts" type="CONTACT" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="relationships" type="PARTY_RELATIONSHIP" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="reverse_relationships" type="LOCATABLE_REF" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="details" type="ITEM_STRUCTURE" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="PARTY_IDENTITY">
+		<xs:complexContent>
+			<xs:extension base="LOCATABLE">
+				<xs:sequence>
+					<xs:element name="details" type="ITEM_STRUCTURE"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="CONTACT">
+		<xs:complexContent>
+			<xs:extension base="LOCATABLE">
+				<xs:sequence>
+					<xs:element name="time_validity" type="DV_INTERVAL" minOccurs="0"/>
+					<xs:element name="addresses" type="ADDRESS" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="ADDRESS">
+		<xs:complexContent>
+			<xs:extension base="LOCATABLE">
+				<xs:sequence>
+					<xs:element name="details" type="ITEM_STRUCTURE"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="ACTOR" abstract="true">
+		<xs:complexContent>
+			<xs:extension base="PARTY">
+				<xs:sequence>
+					<xs:element name="roles" type="PARTY_REF" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="languages" type="DV_TEXT" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="PERSON">
+		<xs:complexContent>
+			<xs:extension base="ACTOR"/>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="ORGANISATION">
+		<xs:complexContent>
+			<xs:extension base="ACTOR"/>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="GROUP">
+		<xs:complexContent>
+			<xs:extension base="ACTOR"/>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="AGENT">
+		<xs:complexContent>
+			<xs:extension base="ACTOR"/>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="ROLE">
+		<xs:complexContent>
+			<xs:extension base="PARTY">
+				<xs:sequence>
+					<xs:element name="capabilities" type="CAPABILITY" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="time_validity" type="DV_INTERVAL" minOccurs="0"/>
+					<xs:element name="performer" type="PARTY_REF"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="CAPABILITY">
+		<xs:complexContent>
+			<xs:extension base="LOCATABLE">
+				<xs:sequence>
+					<xs:element name="credentials" type="ITEM_STRUCTURE"/>
+					<xs:element name="time_validity" type="DV_INTERVAL" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="PARTY_RELATIONSHIP">
+		<xs:complexContent>
+			<xs:extension base="LOCATABLE">
+				<xs:sequence>
+					<xs:element name="details" type="ITEM_STRUCTURE" minOccurs="0"/>
+					<xs:element name="time_validity" type="DV_INTERVAL" minOccurs="0"/>
+					<xs:element name="source" type="PARTY_REF"/>
+					<xs:element name="target" type="PARTY_REF"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 
    <xs:simpleType name="NotEmptyString">
       <xs:restriction base="xs:string">

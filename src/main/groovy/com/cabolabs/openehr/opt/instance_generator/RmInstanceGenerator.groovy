@@ -185,7 +185,7 @@ class RmInstanceGenerator {
    /**
     * generates version with composition.
     */
-   Version generateVersionFromOPT(OperationalTemplate opt, boolean addParticipations = false)
+   Version generateVersionFromOPT(OperationalTemplate opt, boolean addParticipations = false, String flavor = 'rm')
    {
       this.opt = opt
 
@@ -234,9 +234,54 @@ class RmInstanceGenerator {
                ),
                code_string: '532'
             )
-         ),
-         data: generateComposition(addParticipations)
+         )
       )
+
+      switch (opt.definition.rmTypeName) // all possible archetype roots
+      {
+         case 'COMPOSITION':
+            version.data = generateComposition(addParticipations)
+         break
+         case 'PERSON':
+            if (flavor == 'rm')
+               version.data = generatePerson()
+            else
+               version.data = generatePersonDto()
+         break
+         case 'ORGANISATION':
+            if (flavor == 'rm')
+               version.data = generateOrganization()
+            else
+               version.data = generateOrganizationDto()
+         break
+         case 'AGENT':
+            if (flavor == 'rm')
+               version.data = generateAgent()
+            else
+               version.data = generateAgentDto()
+         break
+         case 'GROUP':
+            if (flavor == 'rm')
+               version.data = generateGroup()
+            else
+               version.data = generateGroupDto()
+         break
+         case 'ROLE':
+            version.data = generateRole()
+         break
+         case 'FOLDER':
+            version.data = generateFolderFromOPT(opt)
+         break
+         case 'EHR_STATUS':
+            version.data = generateEhrStatusFromOPT(opt)
+         break
+         default:
+            throw new Exception("Type ${opt.definition.rmTypeName} not supported yet")
+            // TODO: EHR_STATUS, FOLDER
+      }
+
+      // In the RM schemas the uid is necessary and by the REST recommendation the locatable.uid should be the same as the version.uid
+      version.data.uid = version.uid
 
       return version
    }
@@ -1328,7 +1373,7 @@ class RmInstanceGenerator {
 
    private add_PARTY_elements(ObjectNode o, Party p, String parent_arch_id)
    {
-      println "add_PARTY_elements arch"+ parent_arch_id
+      //println "add_PARTY_elements arch"+ parent_arch_id
       add_LOCATABLE_elements(o, p, parent_arch_id, true)
 
       def oa = o.attributes.find{ it.rmAttributeName == 'contacts' }
