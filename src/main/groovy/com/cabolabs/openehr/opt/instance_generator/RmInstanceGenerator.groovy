@@ -643,7 +643,7 @@ class RmInstanceGenerator {
          obj_type = obj_type.replace('<','__').replace('>','')
 
          method = 'generate_'+ obj_type
-         // println "method: "+ method
+         //println "method: "+ method
 
          // generates as many objects as the miniml allowable in the container parent
          minimal_number_of_objects.times {
@@ -3150,7 +3150,7 @@ class RmInstanceGenerator {
       // Intercept method that starts with find.
       if (name.startsWith("generate_"))
       {
-          println name - "generate_" + " is not supported yet"
+         throw new Exception(name - "generate_" + " is not supported yet")
       }
       else
       {
