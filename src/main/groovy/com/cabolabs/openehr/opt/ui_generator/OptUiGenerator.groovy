@@ -13,6 +13,10 @@ class OptUiGenerator {
    OperationalTemplate opt
    TerminologyParser terminology
 
+   // Options
+   boolean fullPage = true // true=generates html, head and body, false=just the form
+   int bootstrapVersion = 5 // only 4 or 5 bootstrap forms are supported
+
    private static List datavalues = [
       'DV_TEXT', 'DV_CODED_TEXT', 'DV_QUANTITY', 'DV_COUNT',
       'DV_ORDINAL', 'DV_DATE', 'DV_DATE_TIME', 'DV_PROPORTION',
@@ -23,11 +27,22 @@ class OptUiGenerator {
       'COMPOSITION', 'HISTORY', 'ITEM_TREE', 'ITEM_LIST', 'ITEM_SINGLE'
    ]
 
+   OptUiGenerator()
+   {
+   }
+
+   OptUiGenerator(boolean fullPage, int bootstrapVersion)
+   {
+      this.fullPage = fullPage
+      this.bootstrapVersion = bootstrapVersion
+   }
+
    String generate(OperationalTemplate opt)
    {
       this.opt = opt
       this.terminology = TerminologyParser.getInstance()
 
+      // TODO: make the terminology loading dynamic: try parsing all the files in the terminology folder
       terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_en.xml")) // this works to load the resource from the jar
       terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_es.xml"))
       terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_pt.xml"))
@@ -37,33 +52,51 @@ class OptUiGenerator {
       def builder = new MarkupBuilder(writer)
       builder.setDoubleQuotes(true) // Use double quotes on attributes
 
-      builder.mkp.yieldUnescaped '<!doctype html">\n'
+      builder.mkp.yieldUnescaped '<!doctype html>\n'
 
       // Generates HTML while traversing the archetype tree
-      builder.html(lang: opt.langCode) {
-         head() {
-            meta(name: "viewport", content: "width=device-width, initial-scale=1")
+      if (this.fullPage)
+      {
+         builder.html(lang: opt.langCode) {
+            head() {
+               meta(name: "viewport", content: "width=device-width, initial-scale=1")
 
-            mkp.comment('simple style')
-            link(rel:"stylesheet", href:"/static/style.css")
+               mkp.comment('simple style')
+               link(rel:"stylesheet", href:"/static/style.css")
 
-            style('''
-            .form-item {
-               padding-left: 1em;
-               margin-bottom: 0.5em;
+               style('''
+               .form-item {
+                  padding-left: 1em;
+                  margin-bottom: 0.5em;
+               }
+               ''')
+
+               mkp.comment('boostrap style')
+               if (this.bootstrapVersion == 5)
+               {
+                  link(rel:"stylesheet", href:"https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css")
+                  link(rel:"stylesheet", href:"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css")
+               }
+               else
+               {
+                  link(rel:"stylesheet", href:"https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css")
+               }
             }
-            ''')
-
-            mkp.comment('boostrap style')
-            link(rel:"stylesheet", href:"https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css")
-            link(rel:"stylesheet", href:"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css")
+            body() {
+               form() {
+                  h1(class: 'h3', opt.concept)
+                  input(type: 'hidden', name: 'template_id', value: opt.templateId)
+                  generate(opt.definition, builder, opt.definition.archetypeId)
+               }
+            }
          }
-         body() {
-            div(class: "form-container") {
-               h1(opt.concept)
-               input(type: 'hidden', name: 'template_id', value: opt.templateId)
-               generate(opt.definition, builder, opt.definition.archetypeId)
-            }
+      }
+      else
+      {
+         builder.form() {
+            h1(class: 'h3', opt.concept)
+            input(type: 'hidden', name: 'template_id', value: opt.templateId)
+            generate(opt.definition, builder, opt.definition.archetypeId)
          }
       }
 
@@ -83,6 +116,18 @@ class OptUiGenerator {
          return
       }
 
+
+      // classes form BS4
+      String formGroupClass = 'form-group'
+      String fieldLabelClass = ''
+      String fieldClass = 'form-control'
+      if (this.bootstrapVersion == 5)
+      {
+         formGroupClass = 'md-3'
+         fieldLabelClass = 'form-label'
+      }
+
+
       if (o.rmTypeName == "ELEMENT")
       {
          // constraints for ELEMENT.name and ELEMENT.value, can be null
@@ -92,12 +137,12 @@ class OptUiGenerator {
 
          //println "element name "+ opt.getTerm(parent_arch_id, o.nodeId)
 
-         b.div(class: o.rmTypeName +' form-group row form-item', 'data-tpath': o.templatePath) {
+         b.div(class: o.rmTypeName +' '+ formGroupClass +' form-item', 'data-tpath': o.templatePath) {
 
             if (name) generateFields(name, b, parent_arch_id)
             else
             {
-               label(class:'col col-form-label', opt.getTerm(parent_arch_id, o.nodeId))
+               label(class: fieldLabelClass, opt.getTerm(parent_arch_id, o.nodeId))
             }
 
             if (value) generateFields(value, b, parent_arch_id)
@@ -108,8 +153,8 @@ class OptUiGenerator {
 
       if (o.type == "ARCHETYPE_SLOT")
       {
-         b.div(class: o.rmTypeName +'  form-item', 'data-tpath': o.templatePath) {
-            label("ARCHETYPE_SLOT is not supported yet, found at "+ o.path)
+         b.div(class: o.rmTypeName +' form-item', 'data-tpath': o.templatePath) {
+            label(class: fieldLabelClass, "ARCHETYPE_SLOT is not supported yet, found at "+ o.path)
          }
          return // Generator do not support slots on OPTs
       }
@@ -152,9 +197,7 @@ class OptUiGenerator {
 
             if (term)
             {
-               span(class: 'col') {
-                  label(term)
-               }
+               label(class: fieldLabelClass, term)
             }
 
             //println o.path
@@ -184,14 +227,25 @@ class OptUiGenerator {
    // Generates fields for an ELEMENT.value object node
    void generateFields(ObjectNode node, MarkupBuilder builder, String parent_arch_id)
    {
-      builder.div(class: node.rmTypeName +' form-group row form-item', 'data-tpath': node.templatePath) {
+      // classes form BS4
+      String formGroupClass = 'form-group'
+      String fieldLabelClass = ''
+      String fieldClass = 'form-control'
+      if (this.bootstrapVersion == 5)
+      {
+         formGroupClass = 'md-3'
+         fieldLabelClass = 'form-label'
+      }
+
+
+      builder.div(class: node.rmTypeName +' '+ formGroupClass +' form-item', 'data-tpath': node.templatePath) {
 
          switch (node.rmTypeName)
          {
             // adds the DV attribute names to the template path
             case 'DV_TEXT':
                builder.textarea(
-                  class:            node.rmTypeName +' form-control', // FIXME: this should be the type of the DV_TEXT.value attribute not the DV_TEXT
+                  class:            node.rmTypeName +' '+ fieldClass, // FIXME: this should be the type of the DV_TEXT.value attribute not the DV_TEXT
                   'data-tpath':     node.templatePath + '/value',
                   'data-archetype': node.getOwnerArchetypeId(),
                   'data-path':      node.path,
@@ -210,7 +264,7 @@ class OptUiGenerator {
                      builder.div(class: 'input-group') {
                         input(
                            type:             'text',
-                           class:            node.rmTypeName +' form-control',
+                           class:            node.rmTypeName +' '+ fieldClass,
                            'data-tpath':     constraint.templatePath,
                            'data-archetype': node.getOwnerArchetypeId(),
                            'data-path':      constraint.path
@@ -223,7 +277,7 @@ class OptUiGenerator {
                   else // constraint is CCodePhrase
                   {
                      builder.select(
-                        class:            node.rmTypeName +' form-control',
+                        class:            node.rmTypeName +' '+ fieldClass,
                         'data-tpath':     constraint.templatePath,
                         'data-archetype': node.getOwnerArchetypeId(),
                         'data-path':      constraint.path
@@ -254,22 +308,19 @@ class OptUiGenerator {
             break
             case 'DV_QUANTITY':
 
-               builder.div(class:'col')
+               builder.div(class:'input-group')
                {
                   input(
-                     class: node.rmTypeName +' form-control',
+                     class: node.rmTypeName +' '+ fieldClass,
                      type:'number',
                      'data-tpath':     node.templatePath +'/magnitude',
                      'data-archetype': node.getOwnerArchetypeId(),
                      'data-path':      node.path +'/magnitude'
                   )
-               }
-               builder.div(class:'col')
-               {
                   if (node.list.size() == 0)
                   {
                      input(
-                        class: node.rmTypeName +' form-control',
+                        class: node.rmTypeName +' '+ fieldClass,
                         type:'text',
                         'data-tpath':     node.templatePath+ '/units',
                         'data-archetype': node.getOwnerArchetypeId(),
@@ -279,7 +330,7 @@ class OptUiGenerator {
                   else
                   {
                      select(
-                        class:            node.rmTypeName +' form-control',
+                        class:            node.rmTypeName +' '+ fieldClass,
                         'data-tpath':     node.templatePath +'/units',
                         'data-archetype': node.getOwnerArchetypeId(),
                         'data-path':      node.path +'/units'
@@ -296,7 +347,7 @@ class OptUiGenerator {
             break
             case 'DV_COUNT':
                builder.input(
-                  class:            node.rmTypeName +' form-control',
+                  class:            node.rmTypeName +' '+ fieldClass,
                   type:             'number',
                   'data-tpath':     node.templatePath,
                   'data-archetype': node.getOwnerArchetypeId(),
@@ -311,7 +362,7 @@ class OptUiGenerator {
                // ordinal.symbol.terminologyId
 
                builder.select(
-                  class:            node.rmTypeName +' form-control',
+                  class:            node.rmTypeName +' '+ fieldClass,
                   'data-tpath':     node.templatePath,
                   'data-archetype': node.getOwnerArchetypeId(),
                   'data-path':      node.path
@@ -327,7 +378,7 @@ class OptUiGenerator {
             break
             case 'DV_TIME':
                builder.input(
-                  class:            node.rmTypeName +' form-control',
+                  class:            node.rmTypeName +' '+ fieldClass,
                   type:             'time',
                   'data-tpath':     node.templatePath,
                   'data-archetype': node.getOwnerArchetypeId(),
@@ -336,7 +387,7 @@ class OptUiGenerator {
             break
             case 'DV_DATE':
                builder.input(
-                  class:            node.rmTypeName +' form-control',
+                  class:            node.rmTypeName +' '+ fieldClass,
                   type:             'date',
                   'data-tpath':     node.templatePath,
                   'data-archetype': node.getOwnerArchetypeId(),
@@ -345,14 +396,14 @@ class OptUiGenerator {
             break
             case 'DV_DATE_TIME':
                builder.input(
-                  class:            node.rmTypeName +' form-control',
+                  class:            node.rmTypeName +' '+ fieldClass,
                   type:             'datetime-local',
                   'data-tpath':     node.templatePath,
                   'data-archetype': node.getOwnerArchetypeId(),
                   'data-path':      node.path
                )
             break
-            case 'DV_BOOLEAN':
+            case 'DV_BOOLEAN': // TODO: fix form check classes for BS4 and BS5
                builder.input(
                   class:            node.rmTypeName,
                   type:             'checkbox',
@@ -368,7 +419,7 @@ class OptUiGenerator {
                      'data-tpath':     node.templatePath +'/D',
                      'data-archetype': node.getOwnerArchetypeId(),
                      'data-path':      node.path +'/D',
-                     class: 'small '+ node.rmTypeName +' form-control')
+                     class: 'small '+ node.rmTypeName +' '+ fieldClass)
                }
                builder.label('H') {
                   input(
@@ -376,7 +427,7 @@ class OptUiGenerator {
                      'data-tpath':     node.templatePath +'/H',
                      'data-archetype': node.getOwnerArchetypeId(),
                      'data-path':      node.path +'/H',
-                     class: 'small '+ node.rmTypeName +' form-control')
+                     class: 'small '+ node.rmTypeName +' '+ fieldClass)
                }
                builder.label('M') {
                   input(
@@ -384,7 +435,7 @@ class OptUiGenerator {
                      'data-tpath':     node.templatePath +'/M',
                      'data-archetype': node.getOwnerArchetypeId(),
                      'data-path':      node.path +'/M',
-                     class: 'small '+ node.rmTypeName +' form-control')
+                     class: 'small '+ node.rmTypeName +' '+ fieldClass)
                }
                builder.label('S') {
                   input(
@@ -392,29 +443,29 @@ class OptUiGenerator {
                      'data-tpath':     node.templatePath +'/S',
                      'data-archetype': node.getOwnerArchetypeId(),
                      'data-path':      node.path +'/S',
-                     class: 'small '+ node.rmTypeName +' form-control')
+                     class: 'small '+ node.rmTypeName +' '+ fieldClass)
                }
             break
             case 'DV_PROPORTION':
-               builder.div(class:'col-md-5') {
+               builder.div(class:'') {
                   builder.label('numerator') {
                      input(
                         type:             'number',
                         'data-tpath':     node.templatePath +'/numerator',
                         'data-archetype': node.getOwnerArchetypeId(),
                         'data-path':      node.path +'/numerator',
-                        class:            node.rmTypeName +' form-control'
+                        class:            node.rmTypeName +' '+ fieldClass
                      )
                   }
                }
-               builder.div(class:'col-md-5') {
+               builder.div(class:'') {
                   builder.label('denominator') {
                      input(
                         type:             'number',
                         'data-tpath':     node.templatePath +'/denominator',
                         'data-archetype': node.getOwnerArchetypeId(),
                         'data-path':      node.path +'/denominator',
-                        class:            node.rmTypeName +' form-control'
+                        class:            node.rmTypeName +' '+ fieldClass
                      )
                   }
                }
@@ -426,7 +477,7 @@ class OptUiGenerator {
                      'data-tpath':     node.templatePath +'/issuer',
                      'data-archetype': node.getOwnerArchetypeId(),
                      'data-path':      node.path +'/issuer',
-                     class:            'small '+ node.rmTypeName +' form-control'
+                     class:            'small '+ node.rmTypeName +' '+ fieldClass
                   )
                }
                builder.label('assigner') {
@@ -435,7 +486,7 @@ class OptUiGenerator {
                      'data-tpath':     node.templatePath +'/assigner',
                      'data-archetype': node.getOwnerArchetypeId(),
                      'data-path':      node.path +'/assigned',
-                     class:            'small '+ node.rmTypeName +' form-control'
+                     class:            'small '+ node.rmTypeName +' '+ fieldClass
                   )
                }
                builder.label('id') {
@@ -444,7 +495,7 @@ class OptUiGenerator {
                      'data-tpath':     node.templatePath +'/id',
                      'data-archetype': node.getOwnerArchetypeId(),
                      'data-path':      node.path +'/id',
-                     class:            'small '+ node.rmTypeName +' form-control'
+                     class:            'small '+ node.rmTypeName +' '+ fieldClass
                   )
                }
                builder.label('type') {
@@ -453,7 +504,7 @@ class OptUiGenerator {
                      'data-tpath':     node.templatePath +'/type',
                      'data-archetype': node.getOwnerArchetypeId(),
                      'data-path':      node.path +'/type',
-                     class:            'small '+ node.rmTypeName +' form-control'
+                     class:            'small '+ node.rmTypeName +' '+ fieldClass
                   )
                }
             break
@@ -468,7 +519,7 @@ class OptUiGenerator {
             break
             case 'DV_PARSABLE':
                builder.textarea(
-                  class: node.rmTypeName +' form-control',
+                  class: node.rmTypeName +' '+ fieldClass,
                   'data-tpath':     node.templatePath,
                   'data-archetype': node.getOwnerArchetypeId(),
                   'data-path':      node.path,
@@ -477,7 +528,7 @@ class OptUiGenerator {
             break
             case 'DV_URI':
                builder.input(
-                  class:            node.rmTypeName +' form-control',
+                  class:            node.rmTypeName +' '+ fieldClass,
                   type:             'text',
                   'data-tpath':     node.templatePath,
                   'data-archetype': node.getOwnerArchetypeId(),

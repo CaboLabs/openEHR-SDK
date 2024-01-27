@@ -46,13 +46,21 @@ class Main {
          case 'uigen':
             if (args.size() < 3)
             {
-               println 'usage: opt uigen path_to_opt dest_folder'
+               println 'usage: opt uigen path_to_opt dest_folder [bootstrap] [generate]'
+               println 'bootstrap=bs4|bs5 bs4 is the bootstrap 4 style, bs5 is the bootstrap 5 style'
+               println 'generate=full|form full generates the whole html page, form generates just the form'
                System.exit(0)
             }
 
             def path = args[1] //"resources"+ PS +"opts"+ PS +"Encuentro.opt"
             def opt = loadAndParse(path)
-            def gen = new OptUiGenerator()
+
+
+            // options:
+            boolean full = (args.contains('form') ? false : true)
+            int bootstrap = (args.contains('bs4') ? 4 : 5)
+
+            def gen = new OptUiGenerator(full, bootstrap)
             def ui = gen.generate(opt)
 
             def destination_path = args[2]
