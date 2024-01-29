@@ -177,7 +177,7 @@ class OptUiGenerator {
       if (avoidDisplaying.contains(o.rmTypeName))
       {
          // TODO: refactor below uses the same code
-          o.attributes.each { attr ->
+         o.attributes.each { attr ->
 
             // Sample avoid ACTIVITY.action_archetype_id
             // This can be done in a generic way by adding a mapping rmTypeName -> rmAttributeNames
@@ -254,56 +254,93 @@ class OptUiGenerator {
             break
             case 'DV_CODED_TEXT':
 
-               def constraint = node.attributes.find{ it.rmAttributeName == 'defining_code' }.children[0]
+               def attr = node.attributes.find{ it.rmAttributeName == 'defining_code' }
 
-               if (constraint.rmTypeName == "CODE_PHRASE")
+               if (!attr)
                {
-                  // is a ConstraintRef?
-                  if (constraint.terminologyRef)
+                  builder.label('value') {
+                     input(
+                        type:'text',
+                        'data-tpath':     node.templatePath +'/value',
+                        'data-archetype': node.getOwnerArchetypeId(),
+                        'data-path':      node.path +'/value',
+                        class:            'small '+ node.rmTypeName +' '+ fieldClass
+                     )
+                  }
+                  builder.label('code') {
+                     input(
+                        type:'text',
+                        'data-tpath':     node.templatePath +'/defining_code/code_string',
+                        'data-archetype': node.getOwnerArchetypeId(),
+                        'data-path':      node.path +'/defining_code/code_string',
+                        class:            'small '+ node.rmTypeName +' '+ fieldClass
+                     )
+                  }
+                  builder.label('terminology') {
+                     input(
+                        type:             'text',
+                        'data-tpath':     node.templatePath +'/defining_code/terminology_id',
+                        'data-archetype': node.getOwnerArchetypeId(),
+                        'data-path':      node.path +'/defining_code/terminology_id',
+                        class:            'small '+ node.rmTypeName +' '+ fieldClass
+                     )
+                  }
+               }
+               else
+               {
+                  def constraint = attr.children[0]
+
+                  if (constraint.rmTypeName == "CODE_PHRASE")
                   {
-                     builder.div(class: 'input-group') {
-                        input(
-                           type:             'text',
+                     // is a ConstraintRef?
+                     if (constraint.terminologyRef)
+                     {
+                        builder.div(class: 'input-group') {
+                           input(
+                              type:             'text',
+                              class:            node.rmTypeName +' '+ fieldClass,
+                              'data-tpath':     constraint.templatePath,
+                              'data-archetype': node.getOwnerArchetypeId(),
+                              'data-path':      constraint.path
+                           )
+                           // FIXME: use fontawesome5 icons for BS4 or BS5 icons
+                           span(class:'input-group-text glyphicon glyphicon-search') {
+                              i(class: 'bi bi-search', '')
+                           }
+                        }
+                     }
+                     else // constraint is CCodePhrase
+                     {
+                        builder.select(
                            class:            node.rmTypeName +' '+ fieldClass,
                            'data-tpath':     constraint.templatePath,
                            'data-archetype': node.getOwnerArchetypeId(),
                            'data-path':      constraint.path
-                        )
-                        span(class:'input-group-text glyphicon glyphicon-search') {
-                           i(class: 'bi bi-search', '')
-                        }
-                     }
-                  }
-                  else // constraint is CCodePhrase
-                  {
-                     builder.select(
-                        class:            node.rmTypeName +' '+ fieldClass,
-                        'data-tpath':     constraint.templatePath,
-                        'data-archetype': node.getOwnerArchetypeId(),
-                        'data-path':      constraint.path
-                        ) {
+                           ) {
 
-                        option(value:'', '')
+                           option(value:'', '')
 
-                        if (constraint.terminologyId == 'local')
-                        {
-                           constraint.codeList.each { code_node ->
-                              option(value:code_node, opt.getTerm(parent_arch_id, code_node))
+                           if (constraint.terminologyId == 'local')
+                           {
+                              constraint.codeList.each { code_node ->
+                                 option(value:code_node, opt.getTerm(parent_arch_id, code_node))
+                              }
+
+                              // FIXME: constraint can be by code list or by terminology reference. For term ref we should have a search control, not a select
+                              if (constraint.codeList.size() == 0) println "Empty DV_CODED_TEXT.defining_code constraint "+ parent_arch_id + constraint.templatePath
                            }
-
-                           // FIXME: constraint can be by code list or by terminology reference. For term ref we should have a search control, not a select
-                           if (constraint.codeList.size() == 0) println "Empty DV_CODED_TEXT.defining_code constraint "+ parent_arch_id + constraint.templatePath
-                        }
-                        else // terminology openehr
-                        {
-                           constraint.codeList.each { code_node ->
-                              option(value:code_node, terminology.getRubric(opt.langCode, code_node))
+                           else // terminology openehr
+                           {
+                              constraint.codeList.each { code_node ->
+                                 option(value:code_node, terminology.getRubric(opt.langCode, code_node))
+                              }
                            }
                         }
                      }
                   }
+                  else throw Exception("coded text constraint not supported "+ constraint.rmTypeName)
                }
-               else throw Exception("coded text constraint not supported "+ constraint.rmTypeName)
+
 
             break
             case 'DV_QUANTITY':
