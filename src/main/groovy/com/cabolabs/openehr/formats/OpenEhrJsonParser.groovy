@@ -805,6 +805,51 @@ class OpenEhrJsonParser {
       return role
    }
 
+
+   private Contact parseCONTACT(Map map, Pathable parent, String path, String dataPath)
+   {
+      def contact = new Contact()
+
+      this.fillLOCATABLE(contact, map, parent)
+
+      if (map.time_validity)
+      {
+         contact.time_validity = this.parseDV_INTERVAL(map.time_validity)
+      }
+
+      if (map.addresses)
+      {
+         contact.addresses = []
+         map.addresses.each { address ->
+            contact.addresses << this.parseADDRESS(address, contact,
+               this.multi_attr_archetype_path(map, 'addresses', i, path),
+               this.attr_path_multiple(map, 'addresses', i, dataPath)
+            )
+         }
+      }
+
+      return contact
+   }
+
+   private Address parseADDRESS(Map map, Pathable parent, String path, String dataPath)
+   {
+      def address = new Address()
+
+      this.fillLOCATABLE(address, map, parent)
+
+      if (map.details)
+      {
+         String method = 'parse'+ map.details._type
+         address.details = this."$method"(
+            map.details, address,
+            this.attr_archetype_path(map, 'details', path),
+            this.attr_path(map, 'details', dataPath)
+         )
+      }
+
+      return address
+   }
+
    private Capability parseCAPABILITY(Map map, Pathable parent, String path, String dataPath)
    {
       def capability = new Capability()

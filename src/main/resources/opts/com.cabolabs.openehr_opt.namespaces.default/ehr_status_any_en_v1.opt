@@ -58,7 +58,7 @@
     </template_id>
     <term_definitions code="at0000">
       <items id="description">Generic document containing a summary of health information about an individual.</items>
-      <items id="text">Health summary</items>
+      <items id="text">Generic Status</items>
     </term_definitions>
   </definition>
 </template>
