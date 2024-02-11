@@ -448,6 +448,14 @@ class OperationalTemplateParser {
          // NOTE: item is required by the AOM and for injected nodes from opt.complete() the item is added too.
          def primitive = node.item
 
+         // NOTE: there is an issue with the schemas https://openehr.atlassian.net/browse/SPECPR-432
+         //       this problem should be catched by the XSD but it's not and there might be some template
+         //       editors generating  C_PRIMITIVE_OBJECTS without the C_PRIMITIVE item.
+         if (!primitive)
+         {
+            throw new Exception("Invalid template: missing required primitive.item at "+ obn.archetypeId +" "+ path)
+         }
+
          // TODO: switch (primitive.'@xsi:type'.text())
          if (primitive.'@xsi:type'.text() == 'C_INTEGER')
          {
@@ -528,9 +536,8 @@ class OperationalTemplateParser {
          }
          else
          {
-            throw new Exception("primitive '"+primitive.'@xsi:type'.text() +"' not supported, check "+ path)
+            throw new Exception("primitive '"+ primitive.'@xsi:type'.text() +"' not supported, check "+ path)
          }
-
       }
       else
       {

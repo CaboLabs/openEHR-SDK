@@ -28,7 +28,7 @@ class TestUtils {
 
       def text = optFile.getText()
 
-      def parser = new OperationalTemplateParser()
+      def parser = new OperationalTemplateParser(true)
       return parser.parse(text)
    }
 }
