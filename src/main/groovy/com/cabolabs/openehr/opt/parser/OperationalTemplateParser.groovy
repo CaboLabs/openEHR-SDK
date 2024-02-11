@@ -381,17 +381,19 @@ class OperationalTemplateParser {
       else if (node.'@xsi:type'.text() == 'ARCHETYPE_SLOT')
       {
          obn = new ArchetypeSlot(
-            owner:        this.template,
-            rmTypeName:   node.rm_type_name.text(),
-            nodeId:       node.node_id.text() ?: null, // ?: avoids empty string
-            type:         node.'@xsi:type'.text(),
-            archetypeId:  node.archetype_id.value.text(),
-            templatePath: templatePath,
-            path:         path,
-            dataPath:     dataPath,
-            templateDataPath: templateDataPath
+            owner:            this.template,
+            rmTypeName:       node.rm_type_name.text(),
+            nodeId:           node.node_id.text() ?: null, // ?: avoids empty string
+            type:             node.'@xsi:type'.text(),
+            archetypeId:      node.archetype_id.value.text(),
+            templatePath:     templatePath,
+            path:             path,
+            dataPath:         dataPath,
+            templateDataPath: templateDataPath,
+            occurrences:      parseIntervalInt(node.occurrences)
          )
 
+         // NOTE: we are storing only the values, not the full expressions
          obn.includes = node.includes.expression.right_operand.item.pattern.text()
          obn.excludes = node.excludes.expression.right_operand.item.pattern.text()
       }

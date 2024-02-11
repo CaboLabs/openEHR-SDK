@@ -45,6 +45,7 @@ class OptXmlSerializer {
 
       builder.template(
          xmlns:'http://schemas.openehr.org/v1',
+         'xmlns:xsd':'http://www.w3.org/2001/XMLSchema',
          'xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance'
       )
       {
@@ -88,14 +89,10 @@ class OptXmlSerializer {
    {
       builder.rm_type_name(obn.rmTypeName)
 
-      if (!obn.occurrences) println obn.type +' '+ obn.path
+      //if (!obn.occurrences) println obn.type +' '+ obn.path
 
-      // if obn.type is ARCHETYPE_SLOT it won't have occurrences!
-      if (obn.occurrences)
-      {
-         builder.occurrences {
-            serialize(obn.occurrences)
-         }
+      builder.occurrences {
+         serialize(obn.occurrences)
       }
 
       // node_id is mandatory in the XSD even if the value is empty
@@ -130,6 +127,56 @@ class OptXmlSerializer {
          builder.term_definitions(code: termdef.code) {
             items(id: 'text', termdef.term.text)
             items(id: 'description', termdef.term.description)
+         }
+      }
+   }
+   void serialize(ArchetypeSlot obn)
+   {
+      fillObjectNode(obn)
+
+      if (obn.includes)
+      {
+         builder.includes {
+            expression('xsi:type': 'EXPR_BINARY_OPERATOR') {
+               type('Boolean')
+               operator('2007') // matches
+               precedence_overridden('false')
+               left_operand('xsi:type': 'EXPR_LEAF') {
+                  type('String')
+                  item('xsi:type': 'xsd:string', 'archetype_id/value')
+                  reference_type('attribute')
+               }
+               right_operand('xsi:type': 'EXPR_LEAF') {
+                  type('C_STRING')
+                  item('xsi:type': 'C_STRING') {
+                     pattern(obn.includes)
+                  }
+                  reference_type('constraint')
+               }
+            }
+         }
+      }
+
+      if (obn.excludes)
+      {
+         builder.excludes {
+            expression('xsi:type': 'EXPR_BINARY_OPERATOR') {
+               type('Boolean')
+               operator('2007') // matches
+               precedence_overridden('false')
+               left_operand('xsi:type': 'EXPR_LEAF') {
+                  type('String')
+                  item('xsi:type': 'xsd:string', 'archetype_id/value')
+                  reference_type('attribute')
+               }
+               right_operand('xsi:type': 'EXPR_LEAF') {
+                  type('C_STRING')
+                  item('xsi:type': 'C_STRING') {
+                     pattern(obn.excludes)
+                  }
+                  reference_type('constraint')
+               }
+            }
          }
       }
    }
