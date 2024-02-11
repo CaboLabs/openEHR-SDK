@@ -289,14 +289,15 @@ class OperationalTemplateParser {
          obn = new CCodePhrase(
             owner:            this.template,
             rmTypeName:       node.rm_type_name.text(),
-            nodeId:           node.node_id.text(),
+            nodeId:           node.node_id.text() ?: null, // ?: avoids empty string
             type:             node.'@xsi:type'.text(),
             archetypeId:      node.archetype_id.value.text(), // This is optional, just resolved slots have archId
             templatePath:     templatePath,
             path:             path,
             dataPath:         dataPath,
             templateDataPath: templateDataPath,
-            terminologyRef:   terminologyRef
+            terminologyRef:   terminologyRef,
+            occurrences:      parseIntervalInt(node.occurrences)
          )
 
          if (obn.type == 'CONSTRAINT_REF')
@@ -330,16 +331,19 @@ class OperationalTemplateParser {
          obn = new CDvQuantity(
             owner:            this.template,
             rmTypeName:       node.rm_type_name.text(),
-            nodeId:           node.node_id.text(),
+            nodeId:           node.node_id.text() ?: null, // ?: avoids empty string
             type:             node.'@xsi:type'.text(),
             archetypeId:      node.archetype_id.value.text(), // This is optional, just resolved slots have archId
             templatePath:     templatePath,
             path:             path,
             dataPath:         dataPath,
-            templateDataPath: templateDataPath
+            templateDataPath: templateDataPath,
+            occurrences:      parseIntervalInt(node.occurrences)
          )
 
-         obn.property = parseCodePhrase(node.property)
+         // property can be empty!
+         if (!node.property.isEmpty())
+            obn.property = parseCodePhrase(node.property)
 
          // CQuantityItem
          def cqi
@@ -356,13 +360,14 @@ class OperationalTemplateParser {
          obn = new CDvOrdinal(
             owner:            this.template,
             rmTypeName:       node.rm_type_name.text(),
-            nodeId:           node.node_id.text(),
+            nodeId:           node.node_id.text() ?: null, // ?: avoids empty string
             type:             node.'@xsi:type'.text(),
             archetypeId:      node.archetype_id.value.text(), // This is optional, just resolved slots have archId
             templatePath:     templatePath,
             path:             path,
             dataPath:         dataPath,
-            templateDataPath: templateDataPath
+            templateDataPath: templateDataPath,
+            occurrences:      parseIntervalInt(node.occurrences)
          )
 
          def coi
@@ -378,7 +383,7 @@ class OperationalTemplateParser {
          obn = new ArchetypeSlot(
             owner:        this.template,
             rmTypeName:   node.rm_type_name.text(),
-            nodeId:       node.node_id.text(),
+            nodeId:       node.node_id.text() ?: null, // ?: avoids empty string
             type:         node.'@xsi:type'.text(),
             archetypeId:  node.archetype_id.value.text(),
             templatePath: templatePath,
@@ -393,100 +398,118 @@ class OperationalTemplateParser {
       else if (node.'@xsi:type'.text() == 'C_PRIMITIVE_OBJECT')
       {
          obn = new PrimitiveObjectNode(
-            owner:        this.template,
-            rmTypeName:   node.rm_type_name.text(),
-            nodeId:       node.node_id.text(),
-            type:         node.'@xsi:type'.text(),
-            archetypeId:  node.archetype_id.value.text(), // This is optional, just resolved slots have archId
-            templatePath: templatePath,
-            path:         path,
-            dataPath:     dataPath,
-            templateDataPath: templateDataPath
+            owner:            this.template,
+            rmTypeName:       node.rm_type_name.text(),
+            nodeId:           node.node_id.text() ?: null, // ?: avoids empty string
+            type:             node.'@xsi:type'.text(),
+            archetypeId:      node.archetype_id.value.text(), // This is optional, just resolved slots have archId
+            templatePath:     templatePath,
+            path:             path,
+            dataPath:         dataPath,
+            templateDataPath: templateDataPath,
+            occurrences:      parseIntervalInt(node.occurrences)
          )
 
-         def primitive = node.item
+         def primitive = node.item // NOTE: the item is empty for injected nodes from opt.complete()
 
-         // FIXME: switch (primitive.'@xsi:type'.text())
-         if (primitive.'@xsi:type'.text() == 'C_INTEGER')
+         if (!primitive)
          {
-            obn.item = new CInteger()
-
-            if (!primitive.range.isEmpty())
-               obn.item.range = parseIntervalInt(primitive.range)
-            else
+            // FIXME: switch (primitive.'@xsi:type'.text())
+            if (primitive.'@xsi:type'.text() == 'C_INTEGER')
             {
-               primitive.list.each {
-                  obn.item.list << Integer.parseInt(it.text())
+               obn.occurrences = parseIntervalInt(node.occurrences)
+
+               obn.item = new CInteger()
+
+               if (!primitive.range.isEmpty())
+                  obn.item.range = parseIntervalInt(primitive.range)
+               else
+               {
+                  primitive.list.each {
+                     obn.item.list << Integer.parseInt(it.text())
+                  }
                }
             }
-         }
-         else if (primitive.'@xsi:type'.text() == 'C_DATE_TIME')
-         {
-            obn.item = new CDateTime()
-            obn.item.pattern = primitive.pattern.text()
-         }
-         else if (primitive.'@xsi:type'.text() == 'C_DATE')
-         {
-            obn.item = new CDate()
-            obn.item.pattern = primitive.pattern.text()
-         }
-         else if (primitive.'@xsi:type'.text() == 'C_BOOLEAN')
-         {
-            obn.item = new CBoolean(
-               trueValid: primitive.true_valid.text().toBoolean(),
-               falseValid: primitive.false_valid.text().toBoolean()
-            )
-            /*
-            <item xsi:type="C_BOOLEAN">
-             <true_valid>true</true_valid>
-             <false_valid>true</false_valid>
-            </item>
-            */
-         }
-         else if (primitive.'@xsi:type'.text() == 'C_DURATION')
-         {
-            obn.item = new CDuration()
-
-            if (!primitive.range.isEmpty())
-               obn.item.range = parseIntervalDuration(primitive.range)
-            else
+            else if (primitive.'@xsi:type'.text() == 'C_DATE_TIME')
             {
-               try
-               {
-                  obn.item.pattern = primitive.pattern.text() // throws exception if value is invalid
-               }
-               catch (Exception e)
-               {
-                  throw new Exception("There was a problem parsing the C_DURATION.pattern: "+ e.message, e)
-               }
-            }
-         }
-         else if (primitive.'@xsi:type'.text() == 'C_REAL')
-         {
-            obn.item = new CReal()
-            obn.item.range = parseIntervalDouble(primitive.range)
-         }
-         else if (primitive.'@xsi:type'.text() == 'C_STRING')
-         {
-            obn.item = new CString()
+               obn.occurrences = parseIntervalInt(node.occurrences)
 
-            if (!primitive.pattern.isEmpty())
+               obn.item = new CDateTime()
                obn.item.pattern = primitive.pattern.text()
-            else
+            }
+            else if (primitive.'@xsi:type'.text() == 'C_DATE')
             {
-               primitive.list.each {
-                  // there are OPTs with empty elements this avoids to load them as items on the list
-                  // <item xsi:type="C_STRING">
-                  //    <list />
-                  //  </item>
-                  if (it.text())
-                     obn.item.list << it.text()
+               obn.occurrences = parseIntervalInt(node.occurrences)
+
+               obn.item = new CDate()
+               obn.item.pattern = primitive.pattern.text()
+            }
+            else if (primitive.'@xsi:type'.text() == 'C_BOOLEAN')
+            {
+               obn.occurrences = parseIntervalInt(node.occurrences)
+
+               obn.item = new CBoolean(
+                  trueValid: primitive.true_valid.text().toBoolean(),
+                  falseValid: primitive.false_valid.text().toBoolean()
+               )
+               /*
+               <item xsi:type="C_BOOLEAN">
+               <true_valid>true</true_valid>
+               <false_valid>true</false_valid>
+               </item>
+               */
+            }
+            else if (primitive.'@xsi:type'.text() == 'C_DURATION')
+            {
+               obn.occurrences = parseIntervalInt(node.occurrences)
+
+               obn.item = new CDuration()
+
+               if (!primitive.range.isEmpty())
+                  obn.item.range = parseIntervalDuration(primitive.range)
+               else
+               {
+                  try
+                  {
+                     obn.item.pattern = primitive.pattern.text() // throws exception if value is invalid
+                  }
+                  catch (Exception e)
+                  {
+                     throw new Exception("There was a problem parsing the C_DURATION.pattern: "+ e.message, e)
+                  }
                }
             }
-         }
-         else
-         {
-            throw new Exception("primitive "+primitive.'@xsi:type'.text() +" not supported")
+            else if (primitive.'@xsi:type'.text() == 'C_REAL')
+            {
+               obn.occurrences = parseIntervalInt(node.occurrences)
+
+               obn.item = new CReal()
+               obn.item.range = parseIntervalDouble(primitive.range)
+            }
+            else if (primitive.'@xsi:type'.text() == 'C_STRING')
+            {
+               obn.occurrences = parseIntervalInt(node.occurrences)
+
+               obn.item = new CString()
+
+               if (!primitive.pattern.isEmpty())
+                  obn.item.pattern = primitive.pattern.text()
+               else
+               {
+                  primitive.list.each {
+                     // there are OPTs with empty elements this avoids to load them as items on the list
+                     // <item xsi:type="C_STRING">
+                     //    <list />
+                     //  </item>
+                     if (it.text())
+                        obn.item.list << it.text()
+                  }
+               }
+            }
+            else
+            {
+               throw new Exception("primitive '"+primitive.'@xsi:type'.text() +"' not supported, check "+ path)
+            }
          }
       }
       else
@@ -504,7 +527,7 @@ class OperationalTemplateParser {
          obn = new ObjectNode(
             owner:            this.template,
             rmTypeName:       node.rm_type_name.text(),
-            nodeId:           node.node_id.text(),
+            nodeId:           node.node_id.text() ?: null, // ?: avoids empty string
             type:             node.'@xsi:type'.text(),
             archetypeId:      node.archetype_id.value.text(), // This is optional, just resolved slots have archId
             templatePath:     templatePath,

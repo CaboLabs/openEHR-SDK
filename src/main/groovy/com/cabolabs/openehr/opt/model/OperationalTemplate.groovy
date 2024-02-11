@@ -307,7 +307,18 @@ class OperationalTemplate {
          // for instance, a null_flavour could be in the OPT
          if (!obn.attributes.find{ it.rmAttributeName == attr })
          {
-            aom_type = (type == 'String' ? 'C_PRIMITIVE_OBJECT' : 'C_COMPLEX_OBJECT')
+            if (Model.primitive_types.contains(type))
+            {
+               aom_type = 'C_PRIMITIVE_OBJECT'
+
+               // NOTE: this injected P.O.N. doesn't have an item: CPrimitive constraint, which should mean it allows anything
+               obnc = new PrimitiveObjectNode()
+            }
+            else
+            {
+               aom_type = 'C_COMPLEX_OBJECT'
+               obnc = new ObjectNode()
+            }
 
             // avoid // on root paths
             path_sep = "/"
@@ -331,25 +342,26 @@ class OperationalTemplate {
                )
             )
 
-            obnc = new ObjectNode(
-               owner:            this,
-               rmTypeName:       type,
-               type:             aom_type,
-               templatePath:     obn.templatePath +path_sep+ attr, // same paths as the attr since this has no nodeId
-               path:             obn.path +path_sep+ attr,
-               dataPath:         obn.dataPath +path_sep+ attr,
-               templateDataPath: obn.templateDataPath +path_sep+ attr,
-               parent:           atnc,
-               occurrences: new IntervalInt( // TODO: check the RM to see the default RM occurrences for this object
-                  upperIncluded:  true,
-                  lowerIncluded:  true,
-                  upperUnbounded: false,
-                  lowerUnbounded: false,
-                  lower: 0,
-                  upper: 1
-               )
-               // TODO: default_values
+            obnc.owner            = this
+            obnc.rmTypeName       = type
+            obnc.type             = aom_type
+            obnc.templatePath     = obn.templatePath +path_sep+ attr // same paths as the attr since this has no nodeId
+            obnc.path             = obn.path +path_sep+ attr
+            obnc.dataPath         = obn.dataPath +path_sep+ attr
+            obnc.templateDataPath = obn.templateDataPath +path_sep+ attr
+            obnc.parent           = atnc
+            obnc.occurrences      = new IntervalInt( // TODO: check the RM to see the default RM occurrences for this object
+               upperIncluded:  true,
+               lowerIncluded:  true,
+               upperUnbounded: false,
+               lowerUnbounded: false,
+               lower: 0,
+               upper: 1
             )
+
+            // TODO: default_values
+
+            // NOTE: if the
 
             // Add dummy text and description for the new nodes
             obnc.text = obnc.parent.parent.text +'.'+ obnc.parent.rmAttributeName

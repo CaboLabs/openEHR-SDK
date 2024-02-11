@@ -786,6 +786,7 @@ class OPTParserTest extends GroovyTestCase {
       def ui = gen.generate(opt)
       new File( "html" + PS + new java.text.SimpleDateFormat("'"+ opt.concept +"_'yyyyMMddhhmmss'_"+ opt.langCode +".html'").format(new Date()) ) << ui
    }
+
    void testUIGeneratorObservationES()
    {
       def path = "sets"+ "/composition_observation_1"+ "/composition_observation_es.opt"

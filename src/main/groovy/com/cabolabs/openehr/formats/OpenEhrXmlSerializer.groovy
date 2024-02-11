@@ -69,7 +69,6 @@ class OpenEhrXmlSerializer {
    // EventContext => EVENT_CONTEXT
    private String openEhrType(Object o)
    {
-
       String clazz = o.getClass().getSimpleName()
       if (clazz == "Organization") clazz = "Organisation" // alias of UK based RM!
       else if (clazz == "OrganizationDto") clazz = "Organisation" // alias of UK based RM!
