@@ -7,11 +7,33 @@ import com.cabolabs.openehr.opt.model.datatypes.*
 //import com.thoughtworks.xstream.XStream
 import groovy.util.slurpersupport.GPathResult
 import org.apache.log4j.Logger
+import com.cabolabs.openehr.opt.instance_validation.XmlValidation
 
 //@groovy.util.logging.Log4j
 class OperationalTemplateParser {
 
    private Logger log = Logger.getLogger(getClass())
+
+   // validate opt against schema
+   private boolean validate
+   private def schemaValidator
+   private def lastErrors
+
+   OperationalTemplateParser(boolean validate = false)
+   {
+      this.validate = validate
+
+      if (validate)
+      {
+         def inputStream = getClass().getResourceAsStream('/xsd/OperationalTemplate.xsd')
+         this.schemaValidator = new XmlValidation(inputStream)
+      }
+   }
+
+   def getLastErrors()
+   {
+      this.lastErrors
+   }
 
    // Parsed XML
    //GPathResult templateXML
@@ -35,10 +57,18 @@ class OperationalTemplateParser {
     */
    OperationalTemplate parse(String templateContents)
    {
-      def templateXML = new XmlSlurper().parseText( templateContents ) // GPathResult
+      if (this.validate)
+      {
+         boolean valid = this.schemaValidator.validate(templateContents)
 
-      // TODO: validate against XSD
+         if (!valid)
+         {
+            this.lastErrors = this.schemaValidator.getErrors()
+            return
+         }
+      }
 
+      def templateXML = new XmlSlurper().parseText(templateContents) // GPathResult
       return parseOperationalTemplate(templateXML)
    }
 

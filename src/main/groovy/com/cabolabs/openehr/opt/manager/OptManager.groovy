@@ -78,7 +78,7 @@ class OptManager {
       if (!repo) throw new Exception("Please initialize the OPT repository by calling init()")
 
       def opt
-      def parser = new OperationalTemplateParser()
+      def parser = new OperationalTemplateParser(true)
 
       def opts = this.repo.getAllOptKeysAndContents(namespace)
       opts.each { location, text ->
@@ -100,6 +100,7 @@ class OptManager {
          else
          {
             log.error("OPT could not be loaded "+ templateId)
+            log.error(parser.getLastErrors().toString())
          }
       }
 
