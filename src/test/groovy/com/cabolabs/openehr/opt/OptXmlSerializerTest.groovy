@@ -65,6 +65,22 @@ class OptXmlSerializerTest extends GroovyTestCase {
       assert optString == optString2
    }
 
+
+
+   void testError()
+   {
+      def path = "opts/"+ OptManager.DEFAULT_NAMESPACE + "/solicitacao_exame_error.opt" // this OPT has an error: a C_PRIMITIVE_OBJECT.item is missing
+
+      try
+      {
+         TestUtils.loadTemplate(path)
+      }
+      catch (Exception e)
+      {
+         assert e.getMessage().startsWith("Invalid template: missing required primitive.item")
+      }
+   }
+
    void testRole()
    {
       def path = "opts/"+ OptManager.DEFAULT_NAMESPACE + "/generic_role_complete.opt"

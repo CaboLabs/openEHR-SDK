@@ -451,7 +451,7 @@ class OperationalTemplateParser {
          // NOTE: there is an issue with the schemas https://openehr.atlassian.net/browse/SPECPR-432
          //       this problem should be catched by the XSD but it's not and there might be some template
          //       editors generating  C_PRIMITIVE_OBJECTS without the C_PRIMITIVE item.
-         if (!primitive)
+         if (primitive.isEmpty())
          {
             throw new Exception("Invalid template: missing required primitive.item at "+ obn.archetypeId +" "+ path)
          }
