@@ -2,6 +2,7 @@ package com.cabolabs.openehr.opt.model
 
 // to use the rm_attributes_not_in_opt
 import com.cabolabs.openehr.rm_1_0_2.Model
+import com.cabolabs.openehr.opt.model.primitive.*
 
 @groovy.util.logging.Log4j
 class OperationalTemplate {
@@ -299,7 +300,7 @@ class OperationalTemplate {
       //Map rm_attrs = rm_attributes_not_in_opt[obn.rmTypeName]
       Map rm_attrs = Model.rm_attributes_not_in_opt[obn.rmTypeName]
 
-      def path_sep, aom_type, atnc, obnc, parent_obn
+      def path_sep, aom_type, atnc, obnc, parent_obn, primitive_type
 
       rm_attrs.each { attr, type ->
 
@@ -311,8 +312,11 @@ class OperationalTemplate {
             {
                aom_type = 'C_PRIMITIVE_OBJECT'
 
-               // NOTE: this injected P.O.N. doesn't have an item: CPrimitive constraint, which should mean it allows anything
+               // NOTE: this injected P.O.N. should have an item CPrimitive constraint, it's required by the AOM
                obnc = new PrimitiveObjectNode()
+
+               primitive_type = 'com.cabolabs.openehr.opt.model.primitive.C'+ type // e.g. CString
+               obnc.item = Class.forName(primitive_type).newInstance() // NOTE: we can't add any constraints to the CPrimitive, so any value is allowed
             }
             else
             {
@@ -360,8 +364,6 @@ class OperationalTemplate {
             )
 
             // TODO: default_values
-
-            // NOTE: if the
 
             // Add dummy text and description for the new nodes
             obnc.text = obnc.parent.parent.text +'.'+ obnc.parent.rmAttributeName

@@ -111,7 +111,7 @@ class ValidationFlowTest extends GroovyTestCase {
                },
                "name": {
                   "_type": "DV_TEXT",
-                  "value": "Health summary"
+                  "value": "Generic Status"
                },
                "subject": {
                   "external_ref": {
@@ -336,7 +336,7 @@ class ValidationFlowTest extends GroovyTestCase {
             },
             "name": {
                "_type": "DV_TEXT",
-               "value": "Health summary"
+               "value": "Generic Status"
             },
             "subject": {
                "external_ref": {
@@ -525,7 +525,7 @@ class ValidationFlowTest extends GroovyTestCase {
             },
             "name": {
                "_type": "DV_TEXT",
-               "value": "Health summary"
+               "value": "Generic Status"
             },
             "subject": {
             },

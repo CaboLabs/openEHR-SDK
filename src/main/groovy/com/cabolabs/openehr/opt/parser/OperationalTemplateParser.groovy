@@ -412,107 +412,95 @@ class OperationalTemplateParser {
             occurrences:      parseIntervalInt(node.occurrences)
          )
 
-         def primitive = node.item // NOTE: the item is empty for injected nodes from opt.complete()
+         //println "PARSER prim.item "+ node.item
+         //if (!node.item) println path
 
-         if (!primitive)
+         // NOTE: item is required by the AOM and for injected nodes from opt.complete() the item is added too.
+         def primitive = node.item
+
+         // TODO: switch (primitive.'@xsi:type'.text())
+         if (primitive.'@xsi:type'.text() == 'C_INTEGER')
          {
-            // FIXME: switch (primitive.'@xsi:type'.text())
-            if (primitive.'@xsi:type'.text() == 'C_INTEGER')
-            {
-               obn.occurrences = parseIntervalInt(node.occurrences)
+            obn.item = new CInteger()
 
-               obn.item = new CInteger()
-
-               if (!primitive.range.isEmpty())
-                  obn.item.range = parseIntervalInt(primitive.range)
-               else
-               {
-                  primitive.list.each {
-                     obn.item.list << Integer.parseInt(it.text())
-                  }
-               }
-            }
-            else if (primitive.'@xsi:type'.text() == 'C_DATE_TIME')
-            {
-               obn.occurrences = parseIntervalInt(node.occurrences)
-
-               obn.item = new CDateTime()
-               obn.item.pattern = primitive.pattern.text()
-            }
-            else if (primitive.'@xsi:type'.text() == 'C_DATE')
-            {
-               obn.occurrences = parseIntervalInt(node.occurrences)
-
-               obn.item = new CDate()
-               obn.item.pattern = primitive.pattern.text()
-            }
-            else if (primitive.'@xsi:type'.text() == 'C_BOOLEAN')
-            {
-               obn.occurrences = parseIntervalInt(node.occurrences)
-
-               obn.item = new CBoolean(
-                  trueValid: primitive.true_valid.text().toBoolean(),
-                  falseValid: primitive.false_valid.text().toBoolean()
-               )
-               /*
-               <item xsi:type="C_BOOLEAN">
-               <true_valid>true</true_valid>
-               <false_valid>true</false_valid>
-               </item>
-               */
-            }
-            else if (primitive.'@xsi:type'.text() == 'C_DURATION')
-            {
-               obn.occurrences = parseIntervalInt(node.occurrences)
-
-               obn.item = new CDuration()
-
-               if (!primitive.range.isEmpty())
-                  obn.item.range = parseIntervalDuration(primitive.range)
-               else
-               {
-                  try
-                  {
-                     obn.item.pattern = primitive.pattern.text() // throws exception if value is invalid
-                  }
-                  catch (Exception e)
-                  {
-                     throw new Exception("There was a problem parsing the C_DURATION.pattern: "+ e.message, e)
-                  }
-               }
-            }
-            else if (primitive.'@xsi:type'.text() == 'C_REAL')
-            {
-               obn.occurrences = parseIntervalInt(node.occurrences)
-
-               obn.item = new CReal()
-               obn.item.range = parseIntervalDouble(primitive.range)
-            }
-            else if (primitive.'@xsi:type'.text() == 'C_STRING')
-            {
-               obn.occurrences = parseIntervalInt(node.occurrences)
-
-               obn.item = new CString()
-
-               if (!primitive.pattern.isEmpty())
-                  obn.item.pattern = primitive.pattern.text()
-               else
-               {
-                  primitive.list.each {
-                     // there are OPTs with empty elements this avoids to load them as items on the list
-                     // <item xsi:type="C_STRING">
-                     //    <list />
-                     //  </item>
-                     if (it.text())
-                        obn.item.list << it.text()
-                  }
-               }
-            }
+            if (!primitive.range.isEmpty())
+               obn.item.range = parseIntervalInt(primitive.range)
             else
             {
-               throw new Exception("primitive '"+primitive.'@xsi:type'.text() +"' not supported, check "+ path)
+               primitive.list.each {
+                  obn.item.list << Integer.parseInt(it.text())
+               }
             }
          }
+         else if (primitive.'@xsi:type'.text() == 'C_DATE_TIME')
+         {
+            obn.item = new CDateTime()
+            obn.item.pattern = primitive.pattern.text()
+         }
+         else if (primitive.'@xsi:type'.text() == 'C_DATE')
+         {
+            obn.item = new CDate()
+            obn.item.pattern = primitive.pattern.text()
+         }
+         else if (primitive.'@xsi:type'.text() == 'C_BOOLEAN')
+         {
+            obn.item = new CBoolean(
+               trueValid: primitive.true_valid.text().toBoolean(),
+               falseValid: primitive.false_valid.text().toBoolean()
+            )
+            /*
+            <item xsi:type="C_BOOLEAN">
+            <true_valid>true</true_valid>
+            <false_valid>true</false_valid>
+            </item>
+            */
+         }
+         else if (primitive.'@xsi:type'.text() == 'C_DURATION')
+         {
+            obn.item = new CDuration()
+
+            if (!primitive.range.isEmpty())
+               obn.item.range = parseIntervalDuration(primitive.range)
+            else
+            {
+               try
+               {
+                  obn.item.pattern = primitive.pattern.text() // throws exception if value is invalid
+               }
+               catch (Exception e)
+               {
+                  throw new Exception("There was a problem parsing the C_DURATION.pattern: "+ e.message, e)
+               }
+            }
+         }
+         else if (primitive.'@xsi:type'.text() == 'C_REAL')
+         {
+            obn.item = new CReal()
+            obn.item.range = parseIntervalDouble(primitive.range)
+         }
+         else if (primitive.'@xsi:type'.text() == 'C_STRING')
+         {
+            obn.item = new CString()
+
+            if (!primitive.pattern.isEmpty())
+               obn.item.pattern = primitive.pattern.text()
+            else
+            {
+               primitive.list.each { li ->
+                  // there are OPTs with empty elements this avoids to load them as items on the list
+                  // <item xsi:type="C_STRING">
+                  //    <list />
+                  //  </item>
+                  if (li.text())
+                     obn.item.list << li.text()
+               }
+            }
+         }
+         else
+         {
+            throw new Exception("primitive '"+primitive.'@xsi:type'.text() +"' not supported, check "+ path)
+         }
+
       }
       else
       {

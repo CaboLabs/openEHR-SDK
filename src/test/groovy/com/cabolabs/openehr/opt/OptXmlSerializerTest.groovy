@@ -31,6 +31,8 @@ class OptXmlSerializerTest extends GroovyTestCase {
       def toXml = new OptXmlSerializer(true)
       String optString = toXml.serialize(opt)
 
+      //println optString
+
       // validate string against schema
       def inputStream = getClass().getResourceAsStream('/xsd/OperationalTemplate.xsd')
       def schemaValidator = new XmlValidation(inputStream)
@@ -61,6 +63,15 @@ class OptXmlSerializerTest extends GroovyTestCase {
 
       // compare first serialization against the parsed and serialized from that string
       assert optString == optString2
+   }
+
+   void testRole()
+   {
+      def path = "opts/"+ OptManager.DEFAULT_NAMESPACE + "/generic_role_complete.opt"
+      def opt = TestUtils.loadTemplate(path)
+
+      validateOptString(opt)
+      verifySerializeParseSerialize(opt)
    }
 
    void testEHR_STATUS_anyOPT()

@@ -69,8 +69,11 @@ class OptXmlSerializer {
                purpose(opt.purpose)
             }
          }
-         uid {
-            value(opt.uid)
+         if (opt.uid)
+         {
+            uid {
+               value(opt.uid)
+            }
          }
          template_id {
             value(opt.templateId)
@@ -312,6 +315,10 @@ class OptXmlSerializer {
          builder.item('xsi:type': classToOpenEhrType(obn.item)) {
             serialize(obn.item)
          }
+      }
+      else
+      {
+         println "NO ITEM FOR "+ obn.path
       }
    }
 
