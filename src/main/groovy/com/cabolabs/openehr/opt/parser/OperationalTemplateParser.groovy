@@ -453,7 +453,7 @@ class OperationalTemplateParser {
          //       editors generating  C_PRIMITIVE_OBJECTS without the C_PRIMITIVE item.
          if (primitive.isEmpty())
          {
-            throw new Exception("Invalid template: missing required primitive.item at "+ obn.archetypeId +" "+ path)
+            throw new Exception("Invalid template: missing required primitive.item at "+ this.template.templateId +" "+ path)
          }
 
          // TODO: switch (primitive.'@xsi:type'.text())

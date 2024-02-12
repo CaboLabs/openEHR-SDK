@@ -83,7 +83,15 @@ class OptManager {
       def opts = this.repo.getAllOptKeysAndContents(namespace)
       opts.each { location, text ->
 
-         opt = parser.parse(text)
+         try
+         {
+            opt = parser.parse(text)
+         }
+         catch (Exception e)
+         {
+            log.error("OPT could not be loaded "+ templateId)
+            log.error(parser.getLastErrors().toString())
+         }
 
          if (opt)
          {
