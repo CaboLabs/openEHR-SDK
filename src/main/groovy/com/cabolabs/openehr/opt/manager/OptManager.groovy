@@ -89,7 +89,7 @@ class OptManager {
          }
          catch (Exception e)
          {
-            log.error("OPT could not be loaded "+ templateId)
+            log.error("OPT could not be loaded from "+ location)
             log.error(parser.getLastErrors().toString())
          }
 
@@ -107,7 +107,7 @@ class OptManager {
          }
          else
          {
-            log.error("OPT could not be loaded "+ templateId)
+            log.error("OPT could not be loaded from "+ location)
             log.error(parser.getLastErrors().toString())
          }
       }
