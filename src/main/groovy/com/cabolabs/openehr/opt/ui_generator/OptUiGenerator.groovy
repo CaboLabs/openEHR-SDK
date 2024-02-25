@@ -27,11 +27,8 @@ class OptUiGenerator {
       'COMPOSITION', 'HISTORY', 'ITEM_TREE', 'ITEM_LIST', 'ITEM_SINGLE'
    ]
 
-   OptUiGenerator()
-   {
-   }
 
-   OptUiGenerator(boolean fullPage, int bootstrapVersion)
+   OptUiGenerator(boolean fullPage = false, int bootstrapVersion = 4)
    {
       this.fullPage = fullPage
       this.bootstrapVersion = bootstrapVersion
@@ -52,11 +49,11 @@ class OptUiGenerator {
       def builder = new MarkupBuilder(writer)
       builder.setDoubleQuotes(true) // Use double quotes on attributes
 
-      builder.mkp.yieldUnescaped '<!doctype html>\n'
 
       // Generates HTML while traversing the archetype tree
       if (this.fullPage)
       {
+         builder.mkp.yieldUnescaped '<!doctype html>\n'
          builder.html(lang: opt.langCode) {
             head() {
                meta(name: "viewport", content: "width=device-width, initial-scale=1")
