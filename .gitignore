@@ -10,7 +10,7 @@
 build
 
 /html
-/documents
+/documents/**
 /.vscode
 /.settings
 /.idea
