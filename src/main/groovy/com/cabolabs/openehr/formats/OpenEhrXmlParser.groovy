@@ -508,7 +508,10 @@ class OpenEhrXmlParser {
       compo.composer = this."$method"(xml.composer)
 
       // NOTE: these paths are not using the node_id, are just attribute paths
-      compo.context = parseEVENT_CONTEXT(xml.context, compo)
+      if (!xml.context.isEmpty())
+      {
+         compo.context = parseEVENT_CONTEXT(xml.context, compo)
+      }
 
       def content = []
 

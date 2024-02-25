@@ -1071,9 +1071,12 @@ class OpenEhrJsonParserQuick {
       method = 'parse'+ type
       compo.composer = this."$method"(json.composer)
 
-      compo.context = parseEVENT_CONTEXT(
-         json.context, compo
-      )
+      if (json.context)
+      {
+         compo.context = parseEVENT_CONTEXT(
+            json.context, compo
+         )
+      }
 
       compo.content = []
       json.content.eachWithIndex { content_item, i ->
