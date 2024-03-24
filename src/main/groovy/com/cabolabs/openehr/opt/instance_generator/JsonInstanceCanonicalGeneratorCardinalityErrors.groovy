@@ -130,6 +130,8 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
 
       terminology = TerminologyParser.getInstance()
 
+      // FIXME: load all resources in folder
+      // https://www.logicbig.com/how-to/java/list-all-files-in-resouce-folder.html
       terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_en.xml")) // this works to load the resource from the jar
       terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_es.xml"))
       terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_pt.xml"))
