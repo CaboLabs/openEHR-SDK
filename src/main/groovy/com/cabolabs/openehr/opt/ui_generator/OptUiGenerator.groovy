@@ -243,13 +243,62 @@ class OptUiGenerator {
          {
             // adds the DV attribute names to the template path
             case 'DV_TEXT':
-               builder.textarea(
-                  class:            node.rmTypeName +' '+ fieldClass, // FIXME: this should be the type of the DV_TEXT.value attribute not the DV_TEXT
-                  'data-tpath':     node.templatePath + '/value',
-                  'data-archetype': node.getOwnerArchetypeId(),
-                  'data-path':      node.path,
-                  ''
-               )
+               def aValue = node.attributes.find{ it.rmAttributeName == 'value' }
+               if (aValue)
+               {
+                  // TODO: support alternative constraints for the value
+                  if (aValue.children)
+                  {
+                     if (aValue.children[0].item.pattern)
+                     {
+                        // TODO: add an input with a help that contains the pattern
+                     }
+                     else if (aValue.children[0].item.list)
+                     {
+                        if (aValue.children[0].item.list.size() == 1)
+                        {
+                           input(
+                              type:             'text',
+                              class:            node.rmTypeName +' '+ fieldClass,
+                              'data-tpath':     node.templatePath +'/value',
+                              'data-archetype': node.getOwnerArchetypeId(),
+                              'data-path':      node.path +'/value',
+                              value:            aValue.children[0].item.list[0]
+                           )
+                        }
+                        else
+                        {
+                           // radio button group
+                           for (String item: aValue.children[0].item.list)
+                           {
+                              // FIXME: this is BS4
+                              div(class: 'form-check') {
+                                 input(
+                                    type:             'radio',
+                                    class:            node.rmTypeName +' '+ fieldClass +' form-check-input',
+                                    'data-tpath':     node.templatePath +'/value',
+                                    'data-archetype': node.getOwnerArchetypeId(),
+                                    'data-path':      node.path +'/value',
+                                    value:            item,
+                                    name:             node.templatePath +'/value' // FIXME: also the occurrence # should be used to prevent duplicated names in different groups
+                                 )
+                                 label(class: 'form-check-label', item)
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+               else
+               {
+                  builder.textarea(
+                     class:            node.rmTypeName +' '+ fieldClass, // FIXME: this should be the type of the DV_TEXT.value attribute not the DV_TEXT
+                     'data-tpath':     node.templatePath + '/value',
+                     'data-archetype': node.getOwnerArchetypeId(),
+                     'data-path':      node.path +'/value',
+                     ''
+                  )
+               }
             break
             case 'DV_CODED_TEXT':
 

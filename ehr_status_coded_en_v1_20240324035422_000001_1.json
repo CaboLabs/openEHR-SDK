@@ -1,0 +1,58 @@
+{
+    "_type": "EHR_STATUS",
+    "name": {
+        "_type": "DV_TEXT",
+        "value": "status"
+    },
+    "archetype_details": {
+        "archetype_id": {
+            "value": "openEHR-EHR-EHR_STATUS.coded.v1"
+        },
+        "template_id": {
+            "value": "ehr_status_coded_en_v1"
+        },
+        "rm_version": "1.0.2"
+    },
+    "archetype_node_id": "openEHR-EHR-EHR_STATUS.coded.v1",
+    "subject": {
+        "external_ref": {
+            "id": {
+                "_type": "HIER_OBJECT_ID",
+                "value": "953d50ee-90ce-43ee-8510-9ff2c04d5f2f"
+            },
+            "namespace": "DEMOGRAPHIC",
+            "type": "PERSON"
+        }
+    },
+    "is_modifiable": true,
+    "is_queryable": true,
+    "other_details": {
+        "_type": "ITEM_TREE",
+        "name": {
+            "_type": "DV_TEXT",
+            "value": "tree"
+        },
+        "archetype_node_id": "at0001",
+        "items": [
+            {
+                "_type": "ELEMENT",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "coded"
+                },
+                "archetype_node_id": "at0002",
+                "value": {
+                    "_type": "DV_CODED_TEXT",
+                    "value": "rvWLArUNRJc.VvzujgWnJv.RyEPnBh",
+                    "defining_code": {
+                        "terminology_id": {
+                            "_type": "TERMINOLOGY_ID",
+                            "value": "terminology_not_specified_as_constraint_or_referenceSetUri_in_opt"
+                        },
+                        "code_string": "373992"
+                    }
+                }
+            }
+        ]
+    }
+}
