@@ -181,6 +181,8 @@ class OperationalTemplate {
       assert part == "text" || part == "description", "part should be text or description and is ${part}"
 
       // Recursive search for the archetype root by archetypeId
+      // FIXME: this only finds the first occurrence of the archetypeId, if there are two object constraints
+      // for the same archetypeID this won't find the second.
       def root = findRoot(archetypeId)
 
       if (!root)

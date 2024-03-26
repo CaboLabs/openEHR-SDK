@@ -247,11 +247,23 @@ class OptUiGenerator {
                if (aValue)
                {
                   // TODO: support alternative constraints for the value
+                  // TODO: all elements here are for bs4, need to check if DOM changes for bs5
                   if (aValue.children)
                   {
                      if (aValue.children[0].item.pattern)
                      {
-                        // TODO: add an input with a help that contains the pattern
+                        // Tadd an input with a help that contains the pattern
+                        input(
+                           type:             'text',
+                           class:            node.rmTypeName +' '+ fieldClass,
+                           'data-tpath':     node.templatePath +'/value',
+                           'data-archetype': node.getOwnerArchetypeId(),
+                           'data-path':      node.path +'/value'
+                        )
+                        span(
+                           class: 'form-text text-muted',
+                           aValue.children[0].item.pattern
+                        )
                      }
                      else if (aValue.children[0].item.list)
                      {
@@ -371,17 +383,27 @@ class OptUiGenerator {
                            if (constraint.terminologyId == 'local')
                            {
                               constraint.codeList.each { code_node ->
-                                 option(value:code_node, opt.getTerm(parent_arch_id, code_node))
+                                 // FIXME: it's not enough to know the archetype ID: if there are two object constraints for the same
+                                 //        archetype in the template, and those have different constraints for a coded text node,
+                                 //        then this method won't find the code if it's defined in the second object constraint, it only
+                                 //        finds the first one. I think we need to ask the current node's parent archetype root and not
+                                 //        the OPT for the term.
+                                 //option(value:code_node, opt.getTerm(parent_arch_id, code_node))
+                                 option(value:code_node, node.ownerArchetypeRoot.getText(code_node))
                               }
 
                               // FIXME: constraint can be by code list or by terminology reference. For term ref we should have a search control, not a select
                               if (constraint.codeList.size() == 0) println "Empty DV_CODED_TEXT.defining_code constraint "+ parent_arch_id + constraint.templatePath
                            }
-                           else // terminology openehr
+                           else if (constraint.terminologyId == 'openehr')
                            {
                               constraint.codeList.each { code_node ->
                                  option(value:code_node, terminology.getRubric(opt.langCode, code_node))
                               }
+                           }
+                           else
+                           {
+                              // TODO: add a dummy search control for external terminologies
                            }
                         }
                      }

@@ -95,7 +95,7 @@ class ObjectNode extends Constraint {
 
       return codedTerm.term.description
    }
-   
+
    // returns the constraints for the attribute with name
    AttributeNode getAttr(String name)
    {
@@ -105,6 +105,12 @@ class ObjectNode extends Constraint {
    // Returns the own archetypeId if this is a root node, or gets the nearest root node archetypeId from an ancestor.
    String getOwnerArchetypeId()
    {
+      def ancestor = getOwnerArchetypeRoot()
+      return ancestor?.archetypeId
+   }
+
+   ObjectNode getOwnerArchetypeRoot()
+   {
       if (this.archetypeId) return this.archetypeId
 
       def ancestor = this.parent.parent // parent is an attribute, parent.parent is an object
@@ -113,6 +119,6 @@ class ObjectNode extends Constraint {
          ancestor = ancestor.parent.parent
       }
 
-      return ancestor.archetypeId
+      return ancestor
    }
 }
