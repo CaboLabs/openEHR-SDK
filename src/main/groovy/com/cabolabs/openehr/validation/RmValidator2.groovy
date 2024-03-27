@@ -1215,7 +1215,8 @@ class RmValidator2 {
       //
       if (ct.defining_code.terminology_id.value == 'local' && !report.hasErrors())
       {
-         def valid_coded_value = o.owner.getTerm(findRootRecursive(o).archetypeId, ct.defining_code.code_string)
+         //def valid_coded_value = o.owner.getTerm(findRootRecursive(o).archetypeId, ct.defining_code.code_string)
+         def valid_coded_value = o.ownerArchetypeRoot.getText(ct.defining_code.code_string)
 
          if (valid_coded_value != ct.value)
          {

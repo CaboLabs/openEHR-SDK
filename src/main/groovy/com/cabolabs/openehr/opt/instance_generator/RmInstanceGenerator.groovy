@@ -800,7 +800,8 @@ class RmInstanceGenerator {
          // get value from archetype ontology
          if (terminology_id == 'local')
          {
-            value = this.opt.getTerm(parent_arch_id, first_code)
+            //value = this.opt.getTerm(parent_arch_id, first_code)
+            value = o.ownerArchetypeRoot.getText(first_code)
          }
          // get value form openehr terminology
          else if (terminology_id == 'openehr')
