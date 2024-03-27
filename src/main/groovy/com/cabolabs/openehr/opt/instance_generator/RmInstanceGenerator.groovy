@@ -511,6 +511,7 @@ class RmInstanceGenerator {
       // path is to attr, codeList is in the node
       def attr_category = opt.definition.attributes.find{ it.rmAttributeName == 'category' }
 
+      // TODO: check category is there
       // TODO: check all [0] are not null
       def category_code = attr_category.children[0].attributes.find { it.rmAttributeName == 'defining_code' }.children[0].codeList[0]
       def value = terminology.getRubric(opt.langCode, category_code)
@@ -607,7 +608,7 @@ class RmInstanceGenerator {
       {
          children = a.children
       }
-      else
+      else if (a.children) // checks if children has elements to avoid adding a null in the list
       {
          children = [ a.children[0] ] // NOTE: if there are multiple alternatives for a single attribute we can take anyone randomly here
       }
