@@ -1287,7 +1287,7 @@ class RmInstanceGenerator {
     */
 
    /**
-    * helper to adds archetype details, archetype node id and name to an existing locatable
+    * helper to add archetype details, archetype node id and name to an existing locatable
     * also checks if the object has a constraint for the name.
     */
    private void add_LOCATABLE_elements(ObjectNode o, Locatable loc, String parent_arch_id, boolean add_archetype_details = false)

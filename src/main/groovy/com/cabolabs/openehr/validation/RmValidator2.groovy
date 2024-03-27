@@ -287,7 +287,12 @@ class RmValidator2 {
       // nothing else to validate?
       if (!cma.children) return report
 
+println cma.children.groupBy{ it.nodeId }
+println cma.children.groupBy{ it.archetypeId }
+println ""
 
+      //def members_with_same_node_id = cma.children.groupBy{ it.nodeId }
+      //def members_with_same_archetype_id = cma.children.groupBy{ it.archetypeId }
 
       // Validate occurrences of items in the container: for each c_object in cma.children,
       //   1. count all items in container with the same c_object.node_id
@@ -303,6 +308,54 @@ class RmValidator2 {
          // assure the OPT is correctly defined because different sibling c_objects shoudn't have overlapping name constraints that
          // allow the same value on two different c_objects.
          //sibling_count = container.count { it.archetype_node_id == c_object.nodeId }
+
+         // FIXME: if there are sibling items in the container (e.g. composition.content) that have the same node_id,
+         // it could be that the C_MULTIPLE_ATTRIBUTE.children contain different constraints with the same node_id
+         // but for different objects, and the only way to tell which constraint applies to which item in the container
+         // list is by checking also the name against the name in the constraint.
+         // Also note that the name in the constraint could be also constrained: if the name is a text: 1. if the constraint
+         // is a list, then the item's name should be on that list to match the c_object, if the constraint is pattern, then
+         // the name of the item should match the pattern.
+         // If the constraint of the name is a coded text, if the terminology is local and the constraint a list, then the name's
+         // code should match an item on the list to match the c_object, if the terminology is external, we can't find the right
+         // c_object. So this below should be the rm_objects with the same node_id and matching the name of the constraint
+         // ONLY IF the C_MULTIPLE_ATTRIBUTE has two or more children with the same archetype_id/node_id
+
+
+         // NOTE: here I just need the counts, don't need the objects
+         // NOTE: the name matches below are not for reporting errors but to find the matching rm object items
+         // TODO: if there is no name match for an item, then the item name should be invalid! and reported
+         /*
+         for (def item: container)
+         {
+            if (c_object.type == 'C_ARCHETYPE_ROOT')
+            {
+               // TODO: if c_object doesn't have a constraint for the name, the match should be with the term with
+               // nodeId in the local terminology, which is the fixed name for the node.
+               // TODO: get all items that match the name constraint of the c_object AND have the same archetype ID
+               // NOTE: no errors mean the name of the item matches the name constraint in the template
+               if (c_object.getAttr('name'))
+                  report = validate(item, item.name, c_object.getAttr('name'), '/name')
+                  if (!report.hasErrors() && item.archetype_node_id == c_object.archetypeId)
+                  {
+                     // TODO: count in rm_objects_with_same_node_id
+                  }
+               else
+                  // TODO: count if the item has the same name as the c_object
+                  // If there is no constraint we can use the DV_TEXT.value even if the runtime name is DV_CODED_TEXT
+                  if (item.name.value == c_object.ownerArchetypeRoot.getText(c_object.nodeId))
+
+            }
+            else
+            {
+               // TODO: get all items that match the name constraint of the c_object AND have the same node ID
+
+               item.archetype_node_id == c_object.nodeId
+            }
+         }
+         */
+
+
 
          rm_objects_with_same_node_id = container.findAll {
             if (c_object.type == 'C_ARCHETYPE_ROOT')
@@ -1292,6 +1345,11 @@ class RmValidator2 {
       // TODO:
       // custom validation if the terminology is 'openehr', verify the code against
       // the openehr terminology files
+
+      println "validate CodePhrase "+ cp
+      println "constraint "+ o +" "+ o.codeList
+      println o.templateDataPath
+      println ""
 
 
       // specific type constraint validation
