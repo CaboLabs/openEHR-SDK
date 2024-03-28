@@ -127,8 +127,15 @@ class OperationalTemplateParser {
       // text   > .... > text+attr
       if (obn.nodeId)
       {
-         obn.text = this.template.getTerm(rootArchetypeId, obn.nodeId)
-         obn.description = this.template.getDescription(rootArchetypeId, obn.nodeId)
+         // NOTE: looking the code by archetype Id at the top level is not enough since we
+         // could have multiple occurrences of the same archetype with different constraints
+         // for the same nodeId: the text could be different for different instances of constraints
+         // for the same archetype. But the codes at the current archetype root should be right.
+
+         //obn.text = this.template.getTerm(rootArchetypeId, obn.nodeId)
+         //obn.description = this.template.getDescription(rootArchetypeId, obn.nodeId)
+         obn.text = obn.ownerArchetypeRoot.getText(obn.nodeId)
+         obn.description = obn.ownerArchetypeRoot.getDescription(obn.nodeId)
       }
       else
       {
