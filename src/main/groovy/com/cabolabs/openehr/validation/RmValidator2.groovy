@@ -148,7 +148,7 @@ class RmValidator2 {
       return true
    }
 
-   // Same as the method above, when processing OBJECT_REFs the method needs to exist and jsut pass
+   // Same as the method above, when processing OBJECT_REFs the method needs to exist and just pass
    private boolean checkAllowedType(AttributeNode cattr, ObjectRef rm_object, RmValidationReport report)
    {
       return true
@@ -287,9 +287,12 @@ class RmValidator2 {
       // nothing else to validate?
       if (!cma.children) return report
 
-println cma.children.groupBy{ it.nodeId }
-println cma.children.groupBy{ it.archetypeId }
-println ""
+      // TEST
+      // println cma.children.groupBy{ it.nodeId }
+      // println cma.children.groupBy{ it.archetypeId }
+      // println ""
+
+      def aName // AttributeNode constraint for the node name
 
       //def members_with_same_node_id = cma.children.groupBy{ it.nodeId }
       //def members_with_same_archetype_id = cma.children.groupBy{ it.archetypeId }
@@ -298,8 +301,10 @@ println ""
       //   1. count all items in container with the same c_object.node_id
       //   2. the count should be in c_object.occurrences
       // So the occurrences are validated in the parent attribute, not in the same node validation!
-      def sibling_count, rm_objects_with_same_node_id
-      cma.children.each { c_object ->
+      def sibling_count, rm_objects_with_same_node_id, name_report, check_attr_name
+      for (ObjectNode c_object: cma.children)
+      {
+         rm_objects_with_same_node_id = []
 
          // FIXME: sibling count should consider the name, see #160, so the container should only count siblings with the same name,
          // but the problem is to get the ones that match the c_object, because if the constraint is String, then it is a fixed value,
@@ -325,44 +330,50 @@ println ""
          // NOTE: here I just need the counts, don't need the objects
          // NOTE: the name matches below are not for reporting errors but to find the matching rm object items
          // TODO: if there is no name match for an item, then the item name should be invalid! and reported
-         /*
+
+         aName = c_object.getAttr('name')
+
          for (def item: container)
          {
-            if (c_object.type == 'C_ARCHETYPE_ROOT')
-            {
-               // TODO: if c_object doesn't have a constraint for the name, the match should be with the term with
-               // nodeId in the local terminology, which is the fixed name for the node.
-               // TODO: get all items that match the name constraint of the c_object AND have the same archetype ID
-               // NOTE: no errors mean the name of the item matches the name constraint in the template
-               if (c_object.getAttr('name'))
-                  report = validate(item, item.name, c_object.getAttr('name'), '/name')
-                  if (!report.hasErrors() && item.archetype_node_id == c_object.archetypeId)
-                  {
-                     // TODO: count in rm_objects_with_same_node_id
-                  }
-               else
-                  // TODO: count if the item has the same name as the c_object
-                  // If there is no constraint we can use the DV_TEXT.value even if the runtime name is DV_CODED_TEXT
-                  if (item.name.value == c_object.ownerArchetypeRoot.getText(c_object.nodeId))
+            // nodeId in the local terminology, which is the fixed name for the node.
+            // TODO: get all items that match the name constraint of the c_object AND have the same archetype ID
+            // NOTE: no errors mean the name of the item matches the name constraint in the template
+            if (c_object.type == 'C_ARCHETYPE_ROOT') check_attr_name = 'archetypeId'
+            else check_attr_name = 'nodeId'
 
+            if (aName)
+            {
+               // get all items that match the name constraint of the c_object AND have the same node ID
+               name_report = validate(item, item.name, aName, '/name')
+               if (!name_report.hasErrors() && item.archetype_node_id == c_object."$check_attr_name")
+               {
+                  //println "MATCHES 1: "+ c_object.rmTypeName +" "+ c_object.path +" "+ item.name.value
+
+                  rm_objects_with_same_node_id << item
+               }
             }
+            // if c_object doesn't have a constraint for the name, the match should be with the term with
             else
             {
-               // TODO: get all items that match the name constraint of the c_object AND have the same node ID
+               // TODO: count if the item has the same name as the c_object
+               // If there is no constraint we can use the DV_TEXT.value even if the runtime name is DV_CODED_TEXT
+               if (item.name.value == c_object.ownerArchetypeRoot.getText(c_object.nodeId) && item.archetype_node_id == c_object."$check_attr_name")
+               {
+                  //println "MATCHES 2: "+ c_object.rmTypeName +" "+ c_object.path +" "+ item.name.value
 
-               item.archetype_node_id == c_object.nodeId
+                  rm_objects_with_same_node_id << item
+               }
             }
          }
-         */
 
+         // This was the old version that didn't consider the name of the node matching the name of the constraint
+         // rm_objects_with_same_node_id = container.findAll {
+         //    if (c_object.type == 'C_ARCHETYPE_ROOT')
+         //       it.archetype_node_id == c_object.archetypeId
+         //    else
+         //       it.archetype_node_id == c_object.nodeId
+         // }
 
-
-         rm_objects_with_same_node_id = container.findAll {
-            if (c_object.type == 'C_ARCHETYPE_ROOT')
-               it.archetype_node_id == c_object.archetypeId
-            else
-               it.archetype_node_id == c_object.nodeId
-         }
 
          // If there are many rm_objects, we need to know which ones validate against the c_object name constraint
          if (rm_objects_with_same_node_id.size() > 1)
@@ -396,12 +407,19 @@ println ""
 
 
 
+      // Iterates through the rm items in the container and gets corresponding c_obbject alternatives in the
+      // multiple attribute children that match the rm item, so we checn the item against each of the c_objects
+      // until we find one that validates the item.
+
+
       // validate each item in the container
 
       // println "mattr children "+ cma.children*.templateDataPath
       // println "container node_ids "+ container*.archetype_node_id
-      def alternative_cobjs, cobj, error_report, name_constraint
-      container.eachWithIndex { item, i ->
+      def alternative_cobjs, cobj, error_report, name_constraint, item
+      for (int i=0; i < container.size(); i++)
+      {
+         item = container[i]
 
          // println "item: "+ item
 
@@ -418,21 +436,71 @@ println ""
          //
          // NOTE: the code below is safer since it checks if the name is not there when there are multiple
          //       alternatives with the same archetype_node_id.
-         alternative_cobjs = cma.children.findAll {
-            //println it.nodeId
-            if (it.type == 'C_ARCHETYPE_ROOT')
-               it.archetypeId == item.archetype_node_id
+
+         // alternative_cobjs = cma.children.findAll {
+         //    //println it.nodeId
+         //    if (it.type == 'C_ARCHETYPE_ROOT')
+         //       it.archetypeId == item.archetype_node_id
+         //    else
+         //       it.nodeId == item.archetype_node_id
+         // }
+
+
+         // ======================================================
+         // Find all the cobjs that match the archetypeId or nodeId of the item, but also have the same name or name constraint
+         alternative_cobjs = []
+
+         for (ObjectNode c_object: cma.children)
+         {
+            if (c_object.type == 'C_ARCHETYPE_ROOT') check_attr_name = 'archetypeId'
+            else check_attr_name = 'nodeId'
+
+            aName = c_object.getAttr('name')
+
+            if (aName)
+            {
+               // get all items that match the name constraint of the c_object AND have the same node ID
+               name_report = validate(item, item.name, aName, '/name')
+               if (!name_report.hasErrors() && item.archetype_node_id == c_object."$check_attr_name")
+               {
+                  //println "MATCHES A: "+ c_object.rmTypeName +" "+ c_object.path +" "+ item.name.value
+
+                  alternative_cobjs << c_object
+               }
+            }
+            // if c_object doesn't have a constraint for the name, the match should be with the term with
             else
-               it.nodeId == item.archetype_node_id
+            {
+               // TODO: count if the item has the same name as the c_object
+               // If there is no constraint we can use the DV_TEXT.value even if the runtime name is DV_CODED_TEXT
+               if (item.name.value == c_object.ownerArchetypeRoot.getText(c_object.nodeId) && item.archetype_node_id == c_object."$check_attr_name")
+               {
+                  //println "MATCHES B: "+ c_object.rmTypeName +" "+ c_object.path +" "+ item.name.value
+
+                  alternative_cobjs << c_object
+               }
+            }
          }
 
+
+
+
+
+         // ===================================================================
 
          // there is an object in the data that is not defined in the template
          if (!alternative_cobjs)
          {
             report.addError(
                item.dataPath,
-               "No c_object found with archetype_node_id ${item.archetype_node_id}, the RM object contains an item that is not defined in the template"
+               "No c_object found with archetype_node_id ${item.archetype_node_id} that matches the name '${item.name.value}' at ${item.dataPath}, the RM object contains an item that is not defined in the template"
+            )
+         }
+         else if (alternative_cobjs.size() > 1)
+         {
+            report.addError(
+               cma.templateDataPath,
+               "Multiple alternative constraint objects found for archetype_node_id '${item.archetype_node_id}' that matches the name '${item.name.value}' at ${item.dataPath}, none matches the constraints for the name or the current node text '${item.name?.value}' in the OPT"
             )
          }
 
@@ -441,6 +509,19 @@ println ""
          // println "alternative_cobjs "+ alternative_cobjs
          // println "alternative node_ids "+ alternative_cobjs*.nodeId
 
+
+         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+         // NOTE: there should only be one alternative that matches the name, if there are more alternatives, then the name
+         //       is not unique and the OPT is not valid.
+         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+         // only one alternative matches node id and name
+         cobj = alternative_cobjs[0]
+
+         //println "item name "+ item.name.value
+         //println cobj.getAttr('name')
+
+         /*
          // When there is only one alternative, that is matched by archetype_id or node_id only
          if (alternative_cobjs.size() == 1)
          {
@@ -448,6 +529,9 @@ println ""
          }
          else // When there are multiple alternatives, the specific C_OBJECT should be matched by name too (in OPT 1.4 there is no way around)
          {
+            // NOTE: to find the alternative we already checked for the name!
+
+
             // FIXME: when the container has a generated object to comply with the existence and the alternatives in the attribute are only slots,
             // then the object will match all the alternatives by name since for slots the validation returns true
 
@@ -500,6 +584,8 @@ println ""
 
             //println ""
          }
+         */
+
 
 
          // println "------"
@@ -687,7 +773,7 @@ println ""
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'OBSERVATION' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(ob, o)
          if (report.hasErrors())
@@ -727,7 +813,7 @@ println ""
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'HISTORY' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(h, o)
          if (report.hasErrors())
@@ -758,7 +844,7 @@ println ""
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'POINT_EVENT' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(e, o)
          if (report.hasErrors())
@@ -789,7 +875,7 @@ println ""
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'INTERVAL_EVENT' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(e, o)
          if (report.hasErrors())
@@ -821,7 +907,7 @@ println ""
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'EVALUATION' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(ev, o)
          if (report.hasErrors())
@@ -850,7 +936,7 @@ println ""
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'INSTRUCTION' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(ins, o)
          if (report.hasErrors())
@@ -892,7 +978,7 @@ println ""
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'ACTION' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(ac, o)
          if (report.hasErrors())
@@ -924,10 +1010,12 @@ println ""
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'ADMIN_ENTRY' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
+         // FIXME: if one alternative doesn't have errors, then the object is correct
+         // this is actually testing against all alternatives and returning if any doesn't match
          report = validate(ae, o)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // !hasErrors is one alternative that matches
          {
             return report
          }
@@ -962,7 +1050,7 @@ println ""
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'EVENT_CONTEXT' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(context, o)
          if (report.hasErrors())
@@ -1000,7 +1088,7 @@ println ""
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'ITEM_TREE' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(is, o)
          if (report.hasErrors())
@@ -1038,7 +1126,7 @@ println ""
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'ITEM_LIST' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(is, o)
          if (report.hasErrors())
@@ -1077,7 +1165,7 @@ println ""
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'ITEM_TABLE' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(is, o)
          if (report.hasErrors())
@@ -1115,7 +1203,7 @@ println ""
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'ITEM_SINGLE' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(is, o)
          if (report.hasErrors())
@@ -1144,7 +1232,7 @@ println ""
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'CLUSTER' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(cl, o)
          if (report.hasErrors())
@@ -1182,7 +1270,7 @@ println ""
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'ELEMENT' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(e, o)
          if (report.hasErrors())
@@ -1236,7 +1324,7 @@ println ""
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_CODED_TEXT' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, ct, o, dv_path)
          if (report.hasErrors()) // if there is one alternative that validates the data, then it passes the validation
@@ -1323,7 +1411,7 @@ println ""
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'CODE_PHRASE' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, cp, o, dv_path)
          if (report.hasErrors())
@@ -1346,10 +1434,10 @@ println ""
       // custom validation if the terminology is 'openehr', verify the code against
       // the openehr terminology files
 
-      println "validate CodePhrase "+ cp
-      println "constraint "+ o +" "+ o.codeList
-      println o.templateDataPath
-      println ""
+      // println "validate CodePhrase "+ cp
+      // println "constraint "+ o +" "+ o.codeList
+      // println o.templateDataPath
+      // println ""
 
 
       // specific type constraint validation
@@ -1382,7 +1470,7 @@ println ""
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_TEXT' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, te, o, dv_path)
          if (report.hasErrors())

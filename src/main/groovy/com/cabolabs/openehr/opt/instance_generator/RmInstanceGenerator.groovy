@@ -587,14 +587,14 @@ class RmInstanceGenerator {
    private List processAttributeChildren(AttributeNode a, String parent_arch_id)
    {
       //println "processAttributeChildren"
+	  
+	  List attrs = []
 
       // some cases might not have a constraint of an attribute, just checking that
       if (!a)
       {
-         return
+         return attrs
       }
-
-      List attrs = []
 
       //println "processAttributeChildren parent_arch_id: "+ parent_arch_id
 
@@ -613,8 +613,8 @@ class RmInstanceGenerator {
          children = [ a.children[0] ] // NOTE: if there are multiple alternatives for a single attribute we can take anyone randomly here
       }
 
-      children.each { obj ->
-
+      for (ObjectNode obj: children)
+      {
          minimal_number_of_objects = 1
 
          if (obj.occurrences)
@@ -636,7 +636,7 @@ class RmInstanceGenerator {
          {
             // TODO: log
             //builder.mkp.comment('SLOT IN '+ obj.path +' NOT PROCESSED')
-            return
+            return attrs
          }
 
          // wont process all the alternatives from children, just the first
@@ -653,6 +653,10 @@ class RmInstanceGenerator {
 
             attrs << "$method"(obj, parent_arch_id) // generate_OBSERVATION(a)
          }
+
+         // TEST
+         println "Generates for "+ obj.dataPath
+         if (obj.archetypeId) println obj.ownerArchetypeRoot.getText('at0000')
 
          // NOTE: this is always one object
          //println "instance: "+ instances.size()
@@ -1232,7 +1236,8 @@ class RmInstanceGenerator {
 
          if (o.list[0].symbol.terminologyId == 'local')
          {
-            value = opt.getTerm(parent_arch_id, o.list[0].symbol.codeString)
+            //value = opt.getTerm(parent_arch_id, o.list[0].symbol.codeString)
+            value = o.ownerArchetypeRoot.getText(o.list[0].symbol.codeString)
          }
          else
          {
@@ -1332,7 +1337,8 @@ class RmInstanceGenerator {
             if (!value_constraint)
             {
                loc.name = new DvText(
-                  value: this.opt.getTerm(parent_arch_id, o.nodeId)
+                  //value: this.opt.getTerm(parent_arch_id, o.nodeId)
+                  value: o.ownerArchetypeRoot.getText(o.nodeId)
                )
             }
             else
@@ -1353,7 +1359,8 @@ class RmInstanceGenerator {
       else // just add the name based on the archetype ontology terms
       {
          loc.name = new DvText(
-            value: this.opt.getTerm(parent_arch_id, o.nodeId)
+            //value: this.opt.getTerm(parent_arch_id, o.nodeId)
+            value: o.ownerArchetypeRoot.getText(o.nodeId)
          )
          // TODO: call generate_DV_TEXT
       }

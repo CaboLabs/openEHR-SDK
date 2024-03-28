@@ -141,7 +141,8 @@ class OptUiGenerator {
             if (name) generateFields(name, b, parent_arch_id)
             else
             {
-               label(class: fieldLabelClass, opt.getTerm(parent_arch_id, o.nodeId))
+               //label(class: fieldLabelClass, opt.getTerm(parent_arch_id, o.nodeId))
+               label(class: fieldLabelClass, o.ownerArchetypeRoot.getText(o.nodeId))
             }
 
             if (value) generateFields(value, b, parent_arch_id)
@@ -192,7 +193,8 @@ class OptUiGenerator {
          b.div(class: o.rmTypeName +' form-item', 'data-tpath': o.templatePath) {
 
             // label for intermediate nodes
-            def term = opt.getTerm(parent_arch_id, o.nodeId)
+            //def term = opt.getTerm(parent_arch_id, o.nodeId)
+            def term = o.ownerArchetypeRoot.getText(o.nodeId)
 
             if (term)
             {
@@ -479,7 +481,8 @@ class OptUiGenerator {
 
                   node.list.each { ord ->
 
-                     option(value:ord.value, opt.getTerm(parent_arch_id, ord.symbol.codeString))
+                     //option(value:ord.value, opt.getTerm(parent_arch_id, ord.symbol.codeString))
+                     option(value:ord.value, node.ownerArchetypeRoot.getText(ord.symbol.codeString))
                   }
                }
             break

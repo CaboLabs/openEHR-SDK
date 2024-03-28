@@ -111,7 +111,7 @@ class ObjectNode extends Constraint {
 
    ObjectNode getOwnerArchetypeRoot()
    {
-      if (this.archetypeId) return this.archetypeId
+      if (this.archetypeId) return this
 
       def ancestor = this.parent.parent // parent is an attribute, parent.parent is an object
       while (!ancestor.archetypeId)

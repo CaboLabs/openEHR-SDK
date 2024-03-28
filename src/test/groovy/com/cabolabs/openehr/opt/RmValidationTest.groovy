@@ -11,6 +11,21 @@ class RmValidationTest extends GroovyTestCase {
 
    private static String PS = System.getProperty("file.separator")
 
+   void testQuestionnaire()
+   {
+      Composition c = load_compo("/rm_validation/questionnaire.json")
+      OptManager opt_manager = init_manager("/rm_validation")
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(c, "")
+
+      report.errors.each { error ->
+         println 'AA: '+ error
+      }
+
+      assert !report.errors
+   }
+
    void testValidationFromXmlComposition()
    {
       String path = "/canonical_xml/test_all_datatypes.composition.en.xml"

@@ -157,6 +157,12 @@ class OperationalTemplate {
       this.nodes.values().flatten().findAll { it.templateDataPath == templateDataPath }
    }
 
+   // NOTE: looking the code by archetype Id at the top level is not enough since we
+   // could have multiple occurrences of the same archetype with different constraints
+   // for the same nodeId: the text could be different for different instances of constraints
+   // for the same archetype. But the codes at the current archetype root should be right.
+   // TODO: So we might need to remove this method from here since the correct search is bottom up
+   // to the archetype root, not top-down from the template root...
    def getTerm(String archetypeId, String nodeId)
    {
       getFromOntology(archetypeId, nodeId, 'text')
