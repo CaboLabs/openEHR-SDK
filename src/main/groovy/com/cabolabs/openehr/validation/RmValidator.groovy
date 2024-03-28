@@ -3295,9 +3295,6 @@ class RmValidator {
       {
          if (o.text != locatable.name.value)
          {
-            println "validate locatable "+ locatable
-            println o.rmTypeName
-
             report.addError(
                locatable.dataPath == '/' ? "/name" : locatable.dataPath + "/name",
                o.templateDataPath == '/' ? "/name" : o.templateDataPath + "/name",
