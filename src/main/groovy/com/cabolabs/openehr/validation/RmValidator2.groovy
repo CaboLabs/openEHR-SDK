@@ -333,7 +333,7 @@ class RmValidator2 {
 
          aName = c_object.getAttr('name')
 
-         for (def item: container)
+         for (Locatable item: container)
          {
             // nodeId in the local terminology, which is the fixed name for the node.
             // TODO: get all items that match the name constraint of the c_object AND have the same archetype ID
@@ -379,8 +379,8 @@ class RmValidator2 {
          if (rm_objects_with_same_node_id.size() > 1)
          {
             sibling_count = 0
-            rm_objects_with_same_node_id.each { rm_object ->
-
+            for (Locatable rm_object: rm_objects_with_same_node_id)
+            {
                // NOTE: validates the name, note if the OPT is not correct, there might not be a name constraint and there should be!
                if (!_validate_locatable(rm_object, c_object).hasErrors())
                {
@@ -1514,7 +1514,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_PROPORTION' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1560,7 +1560,7 @@ class RmValidator2 {
 
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_QUANTITY' }
 
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          //println o.type +" "+ o.rmTypeName
          report = validate(parent, d, o, dv_path)
@@ -1610,7 +1610,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_COUNT' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1646,7 +1646,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'INTEGER' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1695,7 +1695,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_DATE_TIME' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1734,7 +1734,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_DATE' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1773,7 +1773,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_TIME' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1810,7 +1810,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'STRING' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1860,7 +1860,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_ORDINAL' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1907,7 +1907,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_BOOLEAN' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1944,7 +1944,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'BOOLEAN' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -1992,7 +1992,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_DURATION' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -2031,7 +2031,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_INTERVAL' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -2079,7 +2079,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_MULTIMEDIA' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -2139,7 +2139,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_PARSABLE' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -2200,7 +2200,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_URI' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
@@ -2239,7 +2239,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
       def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_IDENTIFIER' }
-      for (o in alternatives_for_same_type)
+      for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
          if (report.hasErrors())
