@@ -511,9 +511,18 @@ class RmInstanceGenerator {
       // path is to attr, codeList is in the node
       def attr_category = opt.definition.attributes.find{ it.rmAttributeName == 'category' }
 
-      // TODO: check category is there
-      // TODO: check all [0] are not null
-      def category_code = attr_category.children[0].attributes.find { it.rmAttributeName == 'defining_code' }.children[0].codeList[0]
+      if (!attr_category)
+      {
+         throw new Exception("The category attribute should be present in all composition templates: category is missing")
+      }
+
+      def category_code = attr_category.children[0]?.attributes.find { it.rmAttributeName == 'defining_code' }?.children[0]?.codeList[0]
+
+      if (!category_code)
+      {
+         throw new Exception("Category code constraint is required for composition templates: missing category code")
+      }
+
       def value = terminology.getRubric(opt.langCode, category_code)
 
       compo.category = new DvCodedText(
@@ -587,7 +596,7 @@ class RmInstanceGenerator {
    private List processAttributeChildren(AttributeNode a, String parent_arch_id)
    {
       //println "processAttributeChildren"
-	  
+
 	  List attrs = []
 
       // some cases might not have a constraint of an attribute, just checking that
