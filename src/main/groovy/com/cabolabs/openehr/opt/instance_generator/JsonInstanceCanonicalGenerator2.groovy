@@ -2343,7 +2343,7 @@ class JsonInstanceCanonicalGenerator2 {
 
       String lower_value, upper_value
 
-      // TODO: support partial datetimes: https://github.com/ppazos/openEHR-OPT/issues/126
+      // TODO: support partial datetimes: https://github.com/CaboLabs/openEHR-SDK/issues/126
       // Note the pattern constraints are for defining the partial parts not about the value itself
       switch (combined_constraint)
       {

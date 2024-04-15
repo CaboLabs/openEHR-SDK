@@ -6,7 +6,7 @@ import com.cabolabs.openehr.opt.manager.*
 import com.cabolabs.openehr.opt.model.*
 
 // WINDOWS
-//def path = "C:\\Documents and Settings\\pab\\My Documents\\GitHub\\openEHR-OPT\\resources\\opts"
+//def path = "C:\\Documents and Settings\\pab\\My Documents\\GitHub\\openEHR-SDK\\resources\\opts"
 
 String PS = System.getProperty("file.separator")
 def path = "resources"+ PS +"opts"+ PS

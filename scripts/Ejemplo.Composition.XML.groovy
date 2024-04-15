@@ -44,7 +44,7 @@ xml.composition(xmlns: 'http://schemas.openehr.org/v1',
       terminology_id() {
         value('openehr')
       }
-      code_string(433) // 433=event, 431=persistent, ver https://github.com/ppazos/openEHR-OPT/blob/master/resources/terminology/openehr_terminology_en.xml
+      code_string(433) // 433=event, 431=persistent, ver https://github.com/CaboLabs/openEHR-SDK/blob/master/resources/terminology/openehr_terminology_en.xml
     }
   }
 

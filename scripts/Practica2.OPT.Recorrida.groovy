@@ -1,7 +1,7 @@
 import com.cabolabs.openehr.opt.manager.*
 import com.cabolabs.openehr.opt.model.*
 
-def path = "C:\\Documents and Settings\\pab\\My Documents\\GitHub\\openEHR-OPT\\resources\\opts"
+def path = "C:\\Documents and Settings\\pab\\My Documents\\GitHub\\openEHR-SDK\\resources\\opts"
 
 // Carga todos los OPTs de un directorio usando el OptManager
 def man = OptManager.getInstance(path)
@@ -16,7 +16,7 @@ traverse(opt.definition, 0)
 def traverse(ObjectNode o, int pad)
 {
    println " ".multiply(pad) + o.rmTypeName.padRight(35-pad, '.') + (o.archetypeId ?: o.path)
-   
+
    pad++
    o.attributes.each{
       traverse(it, pad)
@@ -26,7 +26,7 @@ def traverse(ObjectNode o, int pad)
 def traverse(AttributeNode a, int pad)
 {
    println " ".multiply(pad) + a.rmAttributeName
-   
+
    pad++
    a.children.each{
       traverse(it, pad)

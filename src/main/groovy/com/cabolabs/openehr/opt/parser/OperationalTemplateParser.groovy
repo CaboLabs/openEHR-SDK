@@ -581,7 +581,7 @@ class OperationalTemplateParser {
       //       complies with the DATA_VALUE definition). For instance we need to add PrimitiveObjectNode
       //       and CDateTime when we find a any_allowed for a DV_DATE_TIME. This is to validate the
       //       value at least is a valid DV_DATE_TIME, e.g. a DATE is not valid becaues it lacks the TIME part.
-      // see https://github.com/ppazos/openEHR-OPT/issues/34
+      // see https://github.com/CaboLabs/openEHR-SDK/issues/34
 
       node.attributes.each { xatn ->
 

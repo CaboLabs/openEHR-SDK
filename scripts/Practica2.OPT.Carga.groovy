@@ -1,14 +1,14 @@
 import com.cabolabs.openehr.opt.parser.*
 import com.cabolabs.openehr.opt.manager.*
 
-def path = "C:\\Documents and Settings\\pab\\My Documents\\GitHub\\openEHR-OPT\\resources\\opts"
+def path = "C:\\Documents and Settings\\pab\\My Documents\\GitHub\\openEHR-SDK\\resources\\opts"
 def path_to_opt = path + "\\Encuentro.opt"
 
 // Carga un OPT usando el parser directamente
 def parser = new OperationalTemplateParser()
 def optFile = new File( path_to_opt )
 def text = optFile.getText()
-      
+
 def opt = parser.parse( text )
 
 // Nodos y rutas del OPT

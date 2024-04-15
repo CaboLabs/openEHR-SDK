@@ -1,4 +1,4 @@
-openEHR-OPT
+openEHR-SDK
 ===========
 
 Java/Groovy Support of openEHR Operational Templates, Refernce Model, Data Generators and other tools for www.CaboLabs.com projects.
@@ -11,14 +11,14 @@ This will be used in CaboLabs apps like EHRGen, EHRServer, EMRApp and XML Rule E
 The build was tested with [Gradle 6.4.1](https://gradle.org/install/) installed from [SDKMAN!](https://sdkman.io/).
 
 ```shell
-$ cd openEHR-OPT
+$ cd openEHR-SDK
 $ gradle build
 ```
 
 Build without running the tests (faster)
 
 ```shell
-$ cd openEHR-OPT
+$ cd openEHR-SDK
 $ gradle build -x test
 ```
 
@@ -38,7 +38,7 @@ For running tests, there are many options, examples below:
 4. Run all tests
 
 ```shell
-$ cd openEHR-OPT
+$ cd openEHR-SDK
 $ gradle test --tests com.cabolabs.openehr.opt.OPTParserTest.testCompleteOPT
 $ gradle test --tests com.cabolabs.openehr.opt.OPTParserTest
 $ gradle test --tests com.cabolabs.openehr.opt*
@@ -160,7 +160,7 @@ static boolean validateXML(validator, file)
    {
       println file.name +' VALID'
    }
-   
+
    println ""
    return isValid
 }
