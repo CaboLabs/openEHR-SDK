@@ -1828,6 +1828,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
+	  // TODO: log
       if (!o.item) println "NO ITEM "+ o.path
 
       ValidationResult valid = o.item.isValid(d) // item is could be CDateTime, CString, CDate, CDuration, etc.

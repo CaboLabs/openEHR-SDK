@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" /><!-- simple style -->
+    <link rel="stylesheet" href="/static/style.css" />
+    <style>
+               .form-item {
+                  padding-left: 1em;
+                  margin-bottom: 0.5em;
+               }
+               </style><!-- boostrap style -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+  </head>
+  <body>
+    <form>
+      <h1 class="h3">Life style</h1>
+      <input type="hidden" name="template_id" value="Life style" />
+      <div class="DV_TEXT md-3 form-item" data-tpath="/name">
+        <input type="text" class="DV_TEXT form-control" data-tpath="/name/value" data-archetype="openEHR-EHR-COMPOSITION.questionnaire.v1" data-path="/name/value" value="Life style" />
+      </div>
+      <div class="ADMIN_ENTRY form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]">
+        <label class="form-label">Questionnaire question Q0001</label>
+        <div class="ELEMENT md-3 form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]">
+          <div class="DV_TEXT md-3 form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/name">
+            <input type="text" class="DV_TEXT form-control" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/name/value" data-archetype="openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1" data-path="/data[at0001]/items[at0002]/name/value" value="Do you smoke?" />
+          </div>
+          <div class="DV_CODED_TEXT md-3 form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/value">
+            <select class="DV_CODED_TEXT form-control" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/value/defining_code" data-archetype="openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1" data-path="/data[at0001]/items[at0002]/value/defining_code">
+              <option value=""></option>
+              <option value="A0001">yes</option>
+              <option value="A0002">no</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="ADMIN_ENTRY form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]">
+        <label class="form-label">Questionnaire question Q0002</label>
+        <div class="ELEMENT md-3 form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]">
+          <div class="DV_TEXT md-3 form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/name">
+            <input type="text" class="DV_TEXT form-control" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/name/value" data-archetype="openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1" data-path="/data[at0001]/items[at0002]/name/value" value="Sleeping quality" />
+          </div>
+          <div class="DV_CODED_TEXT md-3 form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/value">
+            <select class="DV_CODED_TEXT form-control" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/value/defining_code" data-archetype="openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1" data-path="/data[at0001]/items[at0002]/value/defining_code">
+              <option value=""></option>
+              <option value="A0003">good</option>
+              <option value="A0004">acceptable</option>
+              <option value="A0005">poor</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="ADMIN_ENTRY form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]">
+        <label class="form-label">Questionnaire question Q0003</label>
+        <div class="ELEMENT md-3 form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]">
+          <div class="DV_TEXT md-3 form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/name">
+            <input type="text" class="DV_TEXT form-control" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/name/value" data-archetype="openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1" data-path="/data[at0001]/items[at0002]/name/value" value="Do you usually take naps during the day?" />
+          </div>
+          <div class="DV_CODED_TEXT md-3 form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/value">
+            <select class="DV_CODED_TEXT form-control" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/value/defining_code" data-archetype="openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1" data-path="/data[at0001]/items[at0002]/value/defining_code">
+              <option value=""></option>
+              <option value="A0006">yes</option>
+              <option value="A0007">no</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="ADMIN_ENTRY form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]">
+        <label class="form-label">Questionnaire question Q0004</label>
+        <div class="ELEMENT md-3 form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]">
+          <div class="DV_TEXT md-3 form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/name">
+            <input type="text" class="DV_TEXT form-control" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/name/value" data-archetype="openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1" data-path="/data[at0001]/items[at0002]/name/value" value="Do you exercise regularly?" />
+          </div>
+          <div class="DV_CODED_TEXT md-3 form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/value">
+            <select class="DV_CODED_TEXT form-control" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/value/defining_code" data-archetype="openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1" data-path="/data[at0001]/items[at0002]/value/defining_code">
+              <option value=""></option>
+              <option value="A0008">yes</option>
+              <option value="A0009">no</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="ADMIN_ENTRY form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]">
+        <label class="form-label">Questionnaire question Q0005</label>
+        <div class="ELEMENT md-3 form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]">
+          <div class="DV_TEXT md-3 form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/name">
+            <input type="text" class="DV_TEXT form-control" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/name/value" data-archetype="openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1" data-path="/data[at0001]/items[at0002]/name/value" value="How much do you exercise and what kind of exercise do you do?" />
+          </div>
+          <div class="DV_TEXT md-3 form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/value">
+            <textarea class="DV_TEXT form-control" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/value/value" data-archetype="openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1" data-path="/data[at0001]/items[at0002]/value/value"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="ADMIN_ENTRY form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]">
+        <label class="form-label">Questionnaire question Q0006</label>
+        <div class="ELEMENT md-3 form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]">
+          <div class="DV_TEXT md-3 form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/name">
+            <input type="text" class="DV_TEXT form-control" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/name/value" data-archetype="openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1" data-path="/data[at0001]/items[at0002]/name/value" value="What do you usually eat at these times of the day?" />
+          </div>
+        </div>
+      </div>
+      <div class="ADMIN_ENTRY form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]">
+        <label class="form-label">Questionnaire question Q0013</label>
+        <div class="ELEMENT md-3 form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]">
+          <div class="DV_TEXT md-3 form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/name">
+            <input type="text" class="DV_TEXT form-control" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/name/value" data-archetype="openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1" data-path="/data[at0001]/items[at0002]/name/value" value="When do you feel most hungry?" />
+          </div>
+          <div class="DV_CODED_TEXT md-3 form-item" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/value">
+            <select class="DV_CODED_TEXT form-control" data-tpath="/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1]/data[at0001]/items[at0002]/value/defining_code" data-archetype="openEHR-EHR-ADMIN_ENTRY.questionnaire_question.v1" data-path="/data[at0001]/items[at0002]/value/defining_code">
+              <option value=""></option>
+              <option value="A0010">Morning</option>
+              <option value="A0011">Noon</option>
+              <option value="A0012">Mid Afternoon</option>
+              <option value="A0013">Late Evening</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </form>
+  </body>
+</html>
