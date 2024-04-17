@@ -9,7 +9,7 @@ class OperationalTemplateSummary {
    String templateId
    String concept
    String archetypeId
-   String created_timestamp
+   String createdTimestamp
    String language
    String semver
    String uid
