@@ -2445,6 +2445,9 @@ class RmValidator2 {
             )
          }
 
+         // NOTE: if value is null and existence lower is zero, there is no need to check occurrences, because occurrences come after existence. The issue is if the data is null, existence 0..1 and occurrence 1..1, then occurrences will fail. So in the case of null data + existence has 0 => do not check occurrences.
+
+         /*
          // occurrences
          // For a null value, the occurrences constraints should be checked on the parent object,
          // because with a null value, the dataPath can't be retrieved to set it on the error report.
@@ -2462,6 +2465,7 @@ class RmValidator2 {
          // for multiple alternatives, a null value will always validate since all occurrences.lower == 0,
          // when there are multiple alternatives for a single attribute, since lower == 1 would make that
          // node the only alternative, and there are many, so there is no need for an else here.
+         */
       }
    }
 
@@ -2519,7 +2523,10 @@ class RmValidator2 {
       {
          // existence: the only way of violating existence is with 1..1 so
          // it's checked only if the value is null
-         if (c_attr.existence && !c_attr.existence.has(0))
+         if (!c_attr.existence) return
+
+
+         if (!c_attr.existence.has(0))
          {
             report.addError(
                object.dataPath +'/'+ attribute_name,
@@ -2527,6 +2534,11 @@ class RmValidator2 {
                "/$attribute_name is not present but is required by the existence constraint"
             )
          }
+
+
+         // NOTE: if value is null and existence lower is zero, there is no need to check occurrences, because occurrences come after existence. The issue is if the data is null, existence 0..1 and occurrence 1..1, then occurrences will fail. So in the case of null data + existence has 0 => do not check occurrences.
+
+         /*
 
          // occurrences
          // For a null value, the occurrences constraints should be checked on the parent object,
@@ -2549,6 +2561,8 @@ class RmValidator2 {
          // for multiple alternatives, a null value will always validate since all occurrences.lower == 0,
          // when there are multiple alternatives for a single attribute, since lower == 1 would make that
          // node the only alternative, and there are many, so there is no need for an else here.
+
+         */
       }
    }
 
