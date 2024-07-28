@@ -33,14 +33,10 @@ import com.cabolabs.openehr.dto_1_0_2.ehr.EhrDto
 import com.cabolabs.openehr.dto_1_0_2.common.change_control.ContributionDto
 import com.cabolabs.openehr.dto_1_0_2.demographic.*
 import com.cabolabs.openehr.opt.instance_validation.JsonInstanceValidation
-import org.apache.log4j.Logger
-
 import groovy.json.JsonSlurper
 
-@groovy.util.logging.Log4j
+@groovy.util.logging.Log4j2
 class OpenEhrJsonParser {
-
-   //private Logger log = Logger.getLogger(getClass())
 
    def jsonValidator
 

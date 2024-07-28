@@ -3,14 +3,16 @@ package com.cabolabs.openehr.opt.manager
 import com.cabolabs.openehr.opt.parser.OperationalTemplateParser
 import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.opt.model.OperationalTemplate
-import org.apache.log4j.Logger
+// import org.apache.logging.log4j.Logger
+// import org.apache.logging.log4j.LogManager
 import groovy.transform.Synchronized
 import groovy.time.TimeCategory
 import groovy.time.TimeDuration
 
+@groovy.util.logging.Log4j2
 class OptManager {
 
-   private Logger log = Logger.getLogger(getClass())
+   //private Logger log = LogManager.getLogger(getClass())
 
    OptRepository repo
    int ttl_seconds = 1800 // 30 min in seconds

@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat
 import java.text.ParseException
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 
-@groovy.util.logging.Log4j
+@groovy.util.logging.Log4j2
 class CDate extends CPrimitive {
 
    // TODO: list constraint (this is not commonly used)

@@ -3,12 +3,14 @@ package com.cabolabs.openehr.terminology
 import com.cabolabs.openehr.opt.model.CodedTerm
 import com.cabolabs.openehr.opt.model.Term
 import groovy.util.slurpersupport.GPathResult
-import org.apache.log4j.Logger
+// import org.apache.logging.log4j.LogManager
+// import org.apache.logging.log4j.Logger
 
+@groovy.util.logging.Log4j2
 class TerminologyParser {
 
    private static TerminologyParser instance = null
-   private Logger log = Logger.getLogger(getClass())
+   //private Logger log = LogManager.getLogger(getClass())
 
    // TODO: now just read everything, we need to consider the language!!!
    Map<String, LocalizedCodedTerm> terms = [:]
@@ -118,11 +120,11 @@ class TerminologyParser {
             log.error("term for language '$fb_lang' and code '$code' is not defined in the openEHR terminology, can't fall back") // if the language is not supported will fall here
             return
          }
-         return this.terms[fb_lang +'_'+ code]?.term.text  
+         return this.terms[fb_lang +'_'+ code]?.term.text
       }
 
       if (!this.terms[lang +'_'+ code])
-      {   
+      {
          log.info("term for language '$lang' and code '$code' is not defined in the openEHR terminology, falling back to '$fb_lang'") // if the language is not supported will fall here
 
          if (!this.terms[fb_lang +'_'+ code])
@@ -130,7 +132,7 @@ class TerminologyParser {
             log.error("term for language '$fb_lang' and code '$code' is not defined in the openEHR terminology, can't fall back") // if the language is not supported will fall here
             return
          }
-         return this.terms[fb_lang +'_'+ code]?.term.text   
+         return this.terms[fb_lang +'_'+ code]?.term.text
       }
       return this.terms[lang +'_'+ code]?.term.text
    }
