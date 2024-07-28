@@ -4,7 +4,7 @@ import com.cabolabs.openehr.opt.model.IntervalDuration
 import com.cabolabs.openehr.opt.model.datatypes.Duration
 import com.cabolabs.openehr.opt.model.validation.ValidationResult
 
-@groovy.util.logging.Log4j
+@groovy.util.logging.Log4j2
 class CDuration extends CPrimitive {
 
    String pattern
@@ -38,7 +38,7 @@ class CDuration extends CPrimitive {
    static boolean validPattern(String pattern)
    {
       def matcher = ~/^P(([YMWD]+)|([YMWD]*T[HMS]+))$/
-   
+
       return pattern.matches(matcher)
    }
 }

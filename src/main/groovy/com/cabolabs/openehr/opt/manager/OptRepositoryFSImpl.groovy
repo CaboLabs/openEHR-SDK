@@ -1,13 +1,15 @@
 package com.cabolabs.openehr.opt.manager
 
 import net.pempek.unicode.UnicodeBOMInputStream
-import org.apache.log4j.Logger
+// import org.apache.logging.log4j.Logger
+// import org.apache.logging.log4j.LogManager
 import java.io.FileNotFoundException
 
+@groovy.util.logging.Log4j2
 class OptRepositoryFSImpl implements OptRepository {
 
    private static String PS = File.separator
-   private Logger log = Logger.getLogger(getClass())
+   //private Logger log = LogManager.getLogger(getClass())
 
    // This is the path to the root repo location in the file system
    private String repoLocation
@@ -193,7 +195,7 @@ class OptRepositoryFSImpl implements OptRepository {
    String addTrailingSeparator(String path)
    {
       if (!path) return ""
-      
+
       if (path.charAt(path.length()-1) != File.separatorChar)
       {
          path += File.separator

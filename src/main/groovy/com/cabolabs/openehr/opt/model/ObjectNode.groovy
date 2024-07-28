@@ -3,7 +3,7 @@ package com.cabolabs.openehr.opt.model
 import java.util.Map
 import groovy.util.slurpersupport.GPathResult
 
-@groovy.util.logging.Log4j
+@groovy.util.logging.Log4j2
 class ObjectNode extends Constraint {
 
    OperationalTemplate owner

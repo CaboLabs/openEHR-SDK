@@ -7,7 +7,7 @@ import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 import java.text.ParseException
 import java.text.SimpleDateFormat
 
-@groovy.util.logging.Log4j
+@groovy.util.logging.Log4j2
 class CTime extends CPrimitive {
 
    // TODO: range constraint

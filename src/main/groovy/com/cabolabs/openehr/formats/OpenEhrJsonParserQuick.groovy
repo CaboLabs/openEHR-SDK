@@ -33,18 +33,16 @@ import com.cabolabs.openehr.dto_1_0_2.ehr.EhrDto
 import com.cabolabs.openehr.dto_1_0_2.common.change_control.ContributionDto
 import com.cabolabs.openehr.dto_1_0_2.demographic.*
 import com.cabolabs.openehr.opt.instance_validation.JsonInstanceValidation
-import org.apache.log4j.Logger
-
 import groovy.json.JsonSlurper
 
 /**
  * This is the same as the original JsonParser but doesn't generate the paths for pathable, those can be
  * calculated later. So for uses that don't require the paths in the RM instances, this will be faster.
  */
-@groovy.util.logging.Log4j
+@groovy.util.logging.Log4j2
 class OpenEhrJsonParserQuick {
 
-   //private Logger log = Logger.getLogger(getClass())
+   //private Logger log = LogManager.getLogger(getClass())
 
    def jsonValidator
 
