@@ -149,8 +149,13 @@ class RmInstanceGenerator {
          new Random( System.currentTimeMillis() ).nextInt( max - from + 1 ) + from
       }
 
-      Double.metaClass.static.random = { double max, double from ->
-         new Random( System.currentTimeMillis() ).nextDouble() * (max - from ) + from
+      // Double.metaClass.static.random = { double max, double from ->
+      //    new Random( System.currentTimeMillis() ).nextDouble() * (max - from ) + from
+      // }
+
+      BigDecimal.metaClass.static.random = { BigDecimal max, BigDecimal from ->
+         BigDecimal randomBigDecimal = from.add(new BigDecimal(Math.random()).multiply(max.subtract(from)))
+         return randomBigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP)
       }
 
       String.metaClass.static.uuid = { ->
@@ -2892,21 +2897,21 @@ class RmInstanceGenerator {
       combined_constraint = lower_constraint +'_'+ upper_constraint
 
       // FIXME: would be better to use BigDecimal
-      Double lower_magnitude, upper_magnitude
+      BigDecimal lower_magnitude, upper_magnitude
       String _units = (lower_qty_item ? lower_qty_item.units : (upper_qty_item ? upper_qty_item.units : 'no_units_constraint'))
 
       switch (combined_constraint)
       {
          case 'no_no':
-            lower_magnitude = Double.random(10.0, 0.0)
+            lower_magnitude = BigDecimal.random(new BigDecimal(10.0), new BigDecimal(0.0))
             upper_magnitude = lower_magnitude + 1.0
          break
          case 'no_range':
-            upper_magnitude = DataGenerator.double_in_range(upper_qty_magnitude_interval)
+            upper_magnitude = DataGenerator.bigdecimal_in_range(upper_qty_magnitude_interval)
             lower_magnitude = upper_magnitude - 1.0
          break
          case 'range_no':
-            lower_magnitude = DataGenerator.double_in_range(lower_qty_magnitude_interval)
+            lower_magnitude = DataGenerator.bigdecimal_in_range(lower_qty_magnitude_interval)
             upper_magnitude = lower_magnitude + 1.0
          break
          case 'range_range':

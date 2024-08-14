@@ -2,8 +2,8 @@ package com.cabolabs.openehr.rm_1_0_2.data_types.quantity
 
 class DvProportion extends DvAmount {
 
-   Float numerator
-   Float denominator
+   BigDecimal numerator
+   BigDecimal denominator
    Integer type
    Integer precision = -1
 

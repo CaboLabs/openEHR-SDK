@@ -862,20 +862,20 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
       switch (type)
       {
          case 1: // unitary
-            _numerator = (random_gen.nextFloat() * (num_hi - num_lo) + num_lo).round(1)
+            _numerator = BigDecimal.random(new BigDecimal(num_hi), new BigDecimal(num_lo))
             _denominator = 1
          break
          case 2: // percent
-            _numerator = (random_gen.nextFloat() * (num_hi - num_lo) + num_lo).round(1)
+            _numerator = BigDecimal.random(new BigDecimal(num_hi), new BigDecimal(num_lo))
             _denominator = 100
          break
          case [3,4]: // fraction, integer_fraction
-            _numerator = (random_gen.nextFloat() * (num_hi - num_lo) + num_lo).round(0)
-            _denominator = (random_gen.nextFloat() * (den_hi - den_lo) + den_lo).round(0)
+            numerator = BigDecimal.random(new BigDecimal(num_hi), new BigDecimal(num_lo)).setScale(0, BigDecimal.ROUND_HALF_UP)
+            _denominator = BigDecimal.random(new BigDecimal(den_hi), new BigDecimal(den_lo)).setScale(0, BigDecimal.ROUND_HALF_UP)
          break
          default:
-            _numerator = (random_gen.nextFloat() * (num_hi - num_lo) + num_lo).round(1)
-            _denominator = (random_gen.nextFloat() * (den_hi - den_lo) + den_lo).round(1)
+            _numerator = BigDecimal.random(new BigDecimal(num_hi), new BigDecimal(num_lo))
+            _denominator = BigDecimal.random(new BigDecimal(den_hi), new BigDecimal(den_lo))
       }
 
       [
@@ -934,7 +934,7 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
 
       [
          _type: 'DV_QUANTITY',
-         magnitude: (rand.nextFloat() * (hi - lo) + lo).round(1), // TODO: take the precision from the OPT
+         magnitude: BigDecimal.random(new BigDecimal(hi), new BigDecimal(lo)),
          units: _units
       ]
    }

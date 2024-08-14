@@ -91,8 +91,13 @@ class XmlInstanceGenerator {
          new Random( System.currentTimeMillis() ).nextInt( max - from + 1 ) + from
       }
 
-      Double.metaClass.static.random = { double max, double from ->
-         new Random( System.currentTimeMillis() ).nextDouble() * (max - from ) + from
+      // Double.metaClass.static.random = { double max, double from ->
+      //    new Random( System.currentTimeMillis() ).nextDouble() * (max - from ) + from
+      // }
+
+      BigDecimal.metaClass.static.random = { BigDecimal max, BigDecimal from ->
+         BigDecimal randomBigDecimal = from.add(new BigDecimal(Math.random()).multiply(max.subtract(from)))
+         return randomBigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP)
       }
 
       String.metaClass.static.uuid = { ->
@@ -954,7 +959,7 @@ class XmlInstanceGenerator {
       switch (_type)
       {
          case 1: // unitary
-            _numerator = (random_gen.nextFloat() * (num_hi - num_lo) + num_lo).round(1)
+            _numerator = BigDecimal.random(new BigDecimal(num_hi), new BigDecimal(num_lo))
             _denominator = 1
          break
          case 2: // percent
@@ -962,12 +967,12 @@ class XmlInstanceGenerator {
             _denominator = 100
          break
          case [3,4]: // fraction, integer_fraction
-            _numerator = (random_gen.nextFloat() * (num_hi - num_lo) + num_lo).round(0)
-            _denominator = (random_gen.nextFloat() * (den_hi - den_lo) + den_lo).round(0)
+            _numerator = BigDecimal.random(new BigDecimal(num_hi), new BigDecimal(num_lo)).setScale(0, BigDecimal.ROUND_HALF_UP)
+            _denominator = BigDecimal.random(new BigDecimal(den_hi), new BigDecimal(den_lo)).setScale(0, BigDecimal.ROUND_HALF_UP)
          break
          default:
-            _numerator = (random_gen.nextFloat() * (num_hi - num_lo) + num_lo).round(1)
-            _denominator = (random_gen.nextFloat() * (den_hi - den_lo) + den_lo).round(1)
+            _numerator = BigDecimal.random(new BigDecimal(num_hi), new BigDecimal(num_lo))
+            _denominator = BigDecimal.random(new BigDecimal(den_hi), new BigDecimal(den_lo))
       }
 
       builder."${a.rmAttributeName}"('xsi:type':'DV_PROPORTION') {
@@ -1018,10 +1023,9 @@ class XmlInstanceGenerator {
       }
 
       AttributeNode a = o.parent
-      Random rand = new Random()
 
       builder."${a.rmAttributeName}"('xsi:type':'DV_QUANTITY') {
-         magnitude((rand.nextFloat() * (hi - lo) + lo).round(1)) //Integer.random(hi, lo) ) // TODO: should be BigDecinal not just Integer
+         magnitude(BigDecimal.random(new BigDecimal(hi), new BigDecimal(lo)),) //Integer.random(hi, lo) ) // TODO: should be BigDecinal not just Integer
          units(_units)
       }
 
@@ -2060,21 +2064,21 @@ class XmlInstanceGenerator {
       combined_constraint = lower_constraint +'_'+ upper_constraint
 
       // FIXME: would be better to use BigDecimal
-      Double lower_magnitude, upper_magnitude
+      BigDecimal lower_magnitude, upper_magnitude
       String _units = (lower_qty_item ? lower_qty_item.units : (upper_qty_item ? upper_qty_item.units : 'no_units_constraint'))
 
       switch (combined_constraint)
       {
          case 'no_no':
-            lower_magnitude = Double.random(10.0, 0.0)
+            lower_magnitude = BigDecimal.random(new BigDecimal(10.0), new BigDecimal(0.0))
             upper_magnitude = lower_magnitude + 1.0
          break
          case 'no_range':
-            upper_magnitude = DataGenerator.double_in_range(upper_qty_magnitude_interval)
+            upper_magnitude = DataGenerator.bigdecimal_in_range(upper_qty_magnitude_interval)
             lower_magnitude = upper_magnitude - 1.0
          break
          case 'range_no':
-            lower_magnitude = DataGenerator.double_in_range(lower_qty_magnitude_interval)
+            lower_magnitude = DataGenerator.bigdecimal_in_range(lower_qty_magnitude_interval)
             upper_magnitude = lower_magnitude + 1.0
          break
          case 'range_range':

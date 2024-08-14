@@ -426,7 +426,7 @@ class OptXmlSerializer {
       }
    }
 
-   void serialize(IntervalDouble iv)
+   void serialize(IntervalBigDecimal iv)
    {
       builder.lower_included(iv.lowerIncluded)
       builder.upper_included(iv.upperIncluded)

@@ -291,7 +291,8 @@ class JsonSerializer {
 
       return n
    }
-   Map serialize(IntervalDouble iv)
+
+   Map serialize(IntervalBigDecimal iv)
    {
       def n = [
          lower_unbounded: iv.lowerUnbounded,
@@ -303,6 +304,7 @@ class JsonSerializer {
 
       return n
    }
+
    Map serialize(IntervalDuration iv)
    {
       def n = [
@@ -315,6 +317,7 @@ class JsonSerializer {
 
       return n
    }
+
    Map serialize(CodePhrase c)
    {
       def n = [

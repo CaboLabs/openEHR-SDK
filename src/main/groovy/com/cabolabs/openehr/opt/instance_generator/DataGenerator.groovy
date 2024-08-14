@@ -106,18 +106,21 @@ class DataGenerator {
       return value
    }
 
-   static Double double_in_range(IntervalDouble range)
+   static BigDecimal bigdecimal_in_range(IntervalBigDecimal range)
    {
-      Double value
+      BigDecimal value
 
-      Double lo = ((range.lowerUnbounded) ? 0 : range.lower)
-      Double hi = ((range.upperUnbounded) ? 100 : range.upper)
+      BigDecimal lo = ((range.lowerUnbounded) ? 0 : range.lower)
+      BigDecimal hi = ((range.upperUnbounded) ? 100 : range.upper)
 
       if (!range.lowerIncluded) lo += 0.1
       if (!range.upperIncluded) hi -= 0.1
 
       if (lo < hi)
-         value = new Random().nextDouble() * (hi - lo) + lo // random between lo .. hi
+      {
+         //value = new Random().nextDouble() * (hi - lo) + lo // random between lo .. hi
+         value = randomBigDecimal(new BigDecimal(lo), new BigDecimal(hi))
+      }
       else
          value = lo
 
@@ -147,5 +150,11 @@ class DataGenerator {
             value: new Date().toOpenEHRDate()
          )
       )
+   }
+
+   public static BigDecimal randomBigDecimal(BigDecimal min, BigDecimal max)
+   {
+      BigDecimal randomBigDecimal = min.add(new BigDecimal(Math.random()).multiply(max.subtract(min)))
+      return randomBigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP)
    }
 }

@@ -1494,7 +1494,7 @@ class OpenEhrXmlParser {
    {
       DvQuantity q = new DvQuantity()
 
-      q.magnitude = xml.magnitude.toDouble() // Double.valueOf(xml.magnitude.text())
+      q.magnitude = xml.magnitude.toBigDecimal() // Double.valueOf(xml.magnitude.text())
 
       q.units = xml.units.text()
 
@@ -1522,8 +1522,8 @@ class OpenEhrXmlParser {
    private DvProportion parseDV_PROPORTION(GPathResult xml)
    {
       DvProportion d = new DvProportion(
-         numerator: xml.numerator.toFloat(),
-         denominator: xml.denominator.toFloat(),
+         numerator: xml.numerator.toBigDecimal(),
+         denominator: xml.denominator.toBigDecimal(),
          type: xml.type.toInteger()
       )
 
