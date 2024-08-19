@@ -7,6 +7,7 @@ class TerminologyId extends ObjectId {
    {
 
    }
+
    TerminologyId(String value)
    {
       this.value = value

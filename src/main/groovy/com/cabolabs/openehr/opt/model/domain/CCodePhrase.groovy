@@ -42,16 +42,16 @@ class CCodePhrase extends ObjectNode {
       {
          def _terminologyId = this.terminologyRef.split(":")[1].split("\\?")[0]
 
-         if (_terminologyId != cp.terminology_id.value)
+         if (_terminologyId != cp.terminologyId.value)
          {
-            return new ValidationResult(isValid: false, message: "terminology '${cp.terminology_id.value}' doesn't match the external terminology ${_terminologyId}")
+            return new ValidationResult(isValid: false, message: "terminology '${cp.terminologyId.value}' doesn't match the external terminology ${_terminologyId}")
          }
 
          return new ValidationResult(isValid: true)
       }
 
-      def _code = cp.code_string
-      def _terminologyId = cp.terminology_id.value
+      def _code = cp.codeString
+      def _terminologyId = cp.terminologyId.value
 
       //println "TID: "+ _terminologyId
 

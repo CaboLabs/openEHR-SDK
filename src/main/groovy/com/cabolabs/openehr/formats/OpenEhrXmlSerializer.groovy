@@ -1454,10 +1454,10 @@ class OpenEhrXmlSerializer {
    void serializeCodePhrase(CodePhrase o)
    {
       builder.terminology_id() {
-         this.serializeTerminologyId(o.terminology_id)
+         this.serializeTerminologyId(o.terminologyId)
       }
 
-      builder.code_string(o.code_string)
+      builder.code_string(o.codeString)
    }
 
    void serializeDvIdentifier(DvIdentifier o)

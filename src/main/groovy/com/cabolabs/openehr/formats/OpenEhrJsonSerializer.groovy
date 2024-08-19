@@ -1405,7 +1405,7 @@ class OpenEhrJsonSerializer {
 
       out.terminology_id = this.serializeTerminologyId(o.terminology_id)
 
-      out.code_string = o.code_string
+      out.code_string = o.codeString
 
       return out
    }

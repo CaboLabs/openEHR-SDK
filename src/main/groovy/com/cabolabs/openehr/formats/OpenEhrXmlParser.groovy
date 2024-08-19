@@ -1414,8 +1414,8 @@ class OpenEhrXmlParser {
    private CodePhrase parseCODE_PHRASE(GPathResult xml)
    {
       new CodePhrase(
-         code_string: xml.code_string,
-         terminology_id: this.parseTERMINOLOGY_ID(xml.terminology_id)
+         codeString: xml.code_string,
+         terminologyId: this.parseTERMINOLOGY_ID(xml.terminology_id)
       )
    }
 

@@ -354,8 +354,8 @@ class FlatMapSerializer {
 
    private void process_cp(CodePhrase cp, String parentPath)
    {
-      this.add(parentPath +'/code_string', cp.code_string)
-      this.add(parentPath +'/terminology_id/value', cp.terminology_id.value)
+      this.add(parentPath +'/code_string', cp.codeString)
+      this.add(parentPath +'/terminology_id/value', cp.terminologyId.value)
    }
 
    private void process_dv(DataValue dv, String parentPath)

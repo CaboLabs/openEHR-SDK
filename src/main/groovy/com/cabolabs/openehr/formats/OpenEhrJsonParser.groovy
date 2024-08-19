@@ -2058,8 +2058,8 @@ class OpenEhrJsonParser {
    private CodePhrase parseCODE_PHRASE(Map json)
    {
       new CodePhrase(
-         code_string: json.code_string,
-         terminology_id: this.parseTERMINOLOGY_ID(json.terminology_id)
+         codeString: json.code_string,
+         terminologyId: this.parseTERMINOLOGY_ID(json.terminology_id)
       )
    }
 

@@ -348,6 +348,8 @@ class FlatMapParser {
                // removes the current field map from the tokens to keep iterating on children fields
                next_field_tokens = field_tokens.collect { it.tail() }
 
+               println "X "+ next_field_tokens
+
                constructor_params[attr] = this."new$type"(field_attrs, next_field_tokens)
             }
          }
@@ -506,7 +508,23 @@ class FlatMapParser {
    {
       Map constructor_params = this.get_constructor_params('CODE_PHRASE', model_attrs, tokens)
 
+      //println "constructor params code phrase "+ constructor_params
+      // constructor params code phrase
+      // [terminology_id:com.cabolabs.openehr.rm_1_0_2.support.identification.TerminologyId@1de9b505, code_string:en]
+
+      // NOTE: the RM implementation has codeString and the model attrs has code_string, this does the conversion
+      constructor_params = constructor_params.collectEntries{ entry -> [(snake2Camel(entry.key)): entry.value] }
+
+      //println "constructor params code phrase 2 "+ constructor_params
+      //[terminologyId:com.cabolabs.openehr.rm_1_0_2.support.identification.TerminologyId@7b122839, codeString:en]
+
       new CodePhrase(constructor_params)
+   }
+
+
+   String snake2Camel(String snake)
+   {
+      snake.replaceAll( "(_)([A-Za-z0-9])", { Object[] it -> it[2].toUpperCase() } )
    }
 
    private Version parse_version(Map flat_map)
