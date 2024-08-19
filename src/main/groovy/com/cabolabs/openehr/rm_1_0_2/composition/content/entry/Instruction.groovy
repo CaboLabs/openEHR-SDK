@@ -28,4 +28,11 @@ class Instruction extends CareEntry {
          activity.fillPathable(this, "activities[$i]")
       }
    }
+
+   // getter with initializer
+   List<Activity> getActivities()
+   {
+      if (activities == null) activities = []
+      activities
+   }
 }

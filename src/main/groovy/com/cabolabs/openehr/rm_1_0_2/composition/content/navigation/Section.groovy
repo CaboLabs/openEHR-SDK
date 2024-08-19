@@ -18,4 +18,11 @@ class Section extends ContentItem {
          content_item.fillPathable(this, "items[$i]")
       }
    }
+
+   // getter with initializer
+   List<ContentItem> getItems()
+   {
+      if (items == null) items = []
+      items
+   }
 }

@@ -18,4 +18,11 @@ class ItemList extends ItemStructure {
          item.fillPathable(this, "items[$i]")
       }
    }
+
+   // getter with initializer
+   List<Element> getItems()
+   {
+      if (items == null) items = []
+      items
+   }
 }

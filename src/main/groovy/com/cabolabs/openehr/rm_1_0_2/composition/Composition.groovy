@@ -36,4 +36,11 @@ class Composition extends Locatable {
          content_item.fillPathable(this, "content[$i]")
       }
    }
+
+   // getter with initializer
+   List<ContentItem> getContent()
+   {
+      if (content == null) content = []
+      content
+   }
 }

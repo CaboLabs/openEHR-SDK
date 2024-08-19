@@ -412,14 +412,14 @@ class OpenEhrXmlParser {
          xml.other_participations.each { _participation ->
 
             participation = this.parsePARTICIPATION(_participation)
-            e.other_participations.add(participation)
+            e.otherParticipations.add(participation)
          }
       }
 
 
       if (!xml.workflow_id.isEmpty())
       {
-         e.workflow_id = this.parseOBJECT_REF(xml.workflow_id)
+         e.workflowId = this.parseOBJECT_REF(xml.workflow_id)
       }
    }
 
@@ -522,7 +522,7 @@ class OpenEhrXmlParser {
             throw new XmlParseException("@xsi:type required for COMPOSITION.content[$i]")
          }
          method = 'parse'+ type
-         if (!compo.content) compo.content = []
+         //if (!compo.content) compo.content = []
          compo.content.add(
             this."$method"(content_item, compo)
          )
@@ -970,7 +970,8 @@ class OpenEhrXmlParser {
             throw new XmlParseException("@xsi:type required for SECTION.items[$i]")
          }
          method = 'parse'+ type
-         if (!section.items) section.items = []
+
+         //if (!section.items) section.items = []
          section.items.add(
             this."$method"(content_item, section)
          )
@@ -1037,7 +1038,8 @@ class OpenEhrXmlParser {
       xml.events.eachWithIndex { event, i ->
          type = event.'@xsi:type'.text()
          method = 'parse'+ type
-         if (!h.events) h.events = []
+
+         //if (!h.events) h.events = []
          h.events.add(
             this."$method"(event, h)
          )

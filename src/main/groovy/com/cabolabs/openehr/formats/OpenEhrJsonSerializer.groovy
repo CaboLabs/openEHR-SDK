@@ -899,19 +899,19 @@ class OpenEhrJsonSerializer {
          out.provider = [_type: this.openEhrType(o.provider)] + this."$method"(o.provider)
       }
 
-      if (o.other_participations)
+      if (o.otherParticipations)
       {
          out.other_participations = []
-         o.other_participations.each { participation ->
+         o.otherParticipations.each { participation ->
 
             out.other_participations << this.serializeParticipation(participation)
          }
       }
 
-      if (o.workflow_id)
+      if (o.workflowId)
       {
-         method = this.method(o.workflow_id)
-         out.workflow_id = [_type: this.openEhrType(o.workflow_id)] + this."$method"(o.workflow_id)
+         method = this.method(o.workflowId)
+         out.workflow_id = [_type: this.openEhrType(o.workflowId)] + this."$method"(o.workflowId)
       }
    }
 

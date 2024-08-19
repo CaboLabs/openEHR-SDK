@@ -9,9 +9,9 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvInterval
  *
  */
 class Contact extends Locatable {
-   
+
    DvInterval time_validity // DvDate
-   List addresses // Address
+   List<Address> addresses // Address
 
    @Override
    void fillPathable(Pathable parent, String parentAttribute)
@@ -21,5 +21,12 @@ class Contact extends Locatable {
       this.parent = parent
 
       this.addresses.fillPathable(this, "addresses")
+   }
+
+   // getter with initializer
+   List<Address> getAddresses()
+   {
+      if (addresses == null) addresses = []
+      addresses
    }
 }

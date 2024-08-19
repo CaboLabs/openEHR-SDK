@@ -18,4 +18,11 @@ class ItemTree extends ItemStructure {
          item.fillPathable(this, "items[$i]")
       }
    }
+
+   // getter with initializer
+   List<Item> getItems()
+   {
+      if (items == null) items = []
+      items
+   }
 }
