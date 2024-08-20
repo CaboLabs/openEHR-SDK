@@ -529,17 +529,13 @@ class FlatMapParser {
 
    private Version parse_version(Map flat_map)
    {
-
-
       // TODO:
       return null
    }
 
    private EhrDto parse_ehr(Map flat_map)
    {
-
       // TODO:
       return null
-
    }
 }
