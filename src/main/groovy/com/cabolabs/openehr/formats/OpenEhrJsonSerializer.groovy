@@ -1403,7 +1403,7 @@ class OpenEhrJsonSerializer {
    {
       def out = [:]
 
-      out.terminology_id = this.serializeTerminologyId(o.terminology_id)
+      out.terminology_id = this.serializeTerminologyId(o.terminologyId)
 
       out.code_string = o.codeString
 

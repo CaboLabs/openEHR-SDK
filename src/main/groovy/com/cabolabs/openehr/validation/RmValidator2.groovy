@@ -1354,7 +1354,7 @@ class RmValidator2 {
       //       will return null, and null is always different than the value, making the validation to fail, so
       //       the value is validated ONLY if the defining_code validates OK.
       //
-      if (ct.defining_code.terminology_id.value == 'local' && !report.hasErrors())
+      if (ct.defining_code.terminologyId.value == 'local' && !report.hasErrors())
       {
          //def valid_coded_value = o.owner.getTerm(findRootRecursive(o).archetypeId, ct.defining_code.code_string)
          def valid_coded_value = o.ownerArchetypeRoot.getText(ct.defining_code.codeString)
