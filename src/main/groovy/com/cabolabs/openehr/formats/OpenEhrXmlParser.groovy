@@ -412,14 +412,14 @@ class OpenEhrXmlParser {
          xml.other_participations.each { _participation ->
 
             participation = this.parsePARTICIPATION(_participation)
-            e.other_participations.add(participation)
+            e.otherParticipations.add(participation)
          }
       }
 
 
       if (!xml.workflow_id.isEmpty())
       {
-         e.workflow_id = this.parseOBJECT_REF(xml.workflow_id)
+         e.workflowId = this.parseOBJECT_REF(xml.workflow_id)
       }
    }
 
@@ -522,7 +522,7 @@ class OpenEhrXmlParser {
             throw new XmlParseException("@xsi:type required for COMPOSITION.content[$i]")
          }
          method = 'parse'+ type
-         if (!compo.content) compo.content = []
+         //if (!compo.content) compo.content = []
          compo.content.add(
             this."$method"(content_item, compo)
          )
@@ -970,7 +970,8 @@ class OpenEhrXmlParser {
             throw new XmlParseException("@xsi:type required for SECTION.items[$i]")
          }
          method = 'parse'+ type
-         if (!section.items) section.items = []
+
+         //if (!section.items) section.items = []
          section.items.add(
             this."$method"(content_item, section)
          )
@@ -1037,7 +1038,8 @@ class OpenEhrXmlParser {
       xml.events.eachWithIndex { event, i ->
          type = event.'@xsi:type'.text()
          method = 'parse'+ type
-         if (!h.events) h.events = []
+
+         //if (!h.events) h.events = []
          h.events.add(
             this."$method"(event, h)
          )
@@ -1412,8 +1414,8 @@ class OpenEhrXmlParser {
    private CodePhrase parseCODE_PHRASE(GPathResult xml)
    {
       new CodePhrase(
-         code_string: xml.code_string,
-         terminology_id: this.parseTERMINOLOGY_ID(xml.terminology_id)
+         codeString: xml.code_string,
+         terminologyId: this.parseTERMINOLOGY_ID(xml.terminology_id)
       )
    }
 
@@ -1494,7 +1496,7 @@ class OpenEhrXmlParser {
    {
       DvQuantity q = new DvQuantity()
 
-      q.magnitude = xml.magnitude.toDouble() // Double.valueOf(xml.magnitude.text())
+      q.magnitude = xml.magnitude.toBigDecimal() // Double.valueOf(xml.magnitude.text())
 
       q.units = xml.units.text()
 
@@ -1522,8 +1524,8 @@ class OpenEhrXmlParser {
    private DvProportion parseDV_PROPORTION(GPathResult xml)
    {
       DvProportion d = new DvProportion(
-         numerator: xml.numerator.toFloat(),
-         denominator: xml.denominator.toFloat(),
+         numerator: xml.numerator.toBigDecimal(),
+         denominator: xml.denominator.toBigDecimal(),
          type: xml.type.toInteger()
       )
 

@@ -11,10 +11,10 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.PartyRef
  *
  */
 class Role extends Party {
-   
+
    DvInterval time_validity // DvDate
    PartyRef performer
-   List capabilities // Capability
+   List<Capability> capabilities // Capability
 
    @Override
    void fillPathable(Pathable parent, String parentAttribute)
@@ -24,5 +24,12 @@ class Role extends Party {
       this.parent = parent
 
       this.capabilities.fillPathable(this, "capabilities")
+   }
+
+   // getter with initializer
+   List<Capability> getCapabilities()
+   {
+      if (capabilities == null) capabilities = []
+      capabilities
    }
 }

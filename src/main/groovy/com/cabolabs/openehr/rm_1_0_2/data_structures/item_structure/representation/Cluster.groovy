@@ -19,4 +19,11 @@ class Cluster extends Item {
          item.fillPathable(this, "items[$i]")
       }
    }
+
+   // getter with initializer
+   List<Item> getItems()
+   {
+      if (items == null) items = []
+      items
+   }
 }

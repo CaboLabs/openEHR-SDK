@@ -149,8 +149,13 @@ class RmInstanceGenerator {
          new Random( System.currentTimeMillis() ).nextInt( max - from + 1 ) + from
       }
 
-      Double.metaClass.static.random = { double max, double from ->
-         new Random( System.currentTimeMillis() ).nextDouble() * (max - from ) + from
+      // Double.metaClass.static.random = { double max, double from ->
+      //    new Random( System.currentTimeMillis() ).nextDouble() * (max - from ) + from
+      // }
+
+      BigDecimal.metaClass.static.random = { BigDecimal max, BigDecimal from ->
+         BigDecimal randomBigDecimal = from.add(new BigDecimal(Math.random()).multiply(max.subtract(from)))
+         return randomBigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP)
       }
 
       String.metaClass.static.uuid = { ->
@@ -207,10 +212,10 @@ class RmInstanceGenerator {
             change_type: new DvCodedText(
                value: 'creation',
                defining_code: new CodePhrase(
-                  terminology_id: new TerminologyId(
+                  terminologyId: new TerminologyId(
                      value: 'openehr'
                   ),
-                  code_string: '249'
+                  codeString: '249'
                )
             ),
             committer: new PartyIdentified(
@@ -231,10 +236,10 @@ class RmInstanceGenerator {
          lifecycle_state: new DvCodedText(
             value: 'complete', // TODO: I18N
             defining_code: new CodePhrase(
-               terminology_id: new TerminologyId(
+               terminologyId: new TerminologyId(
                   value: 'openehr'
                ),
-               code_string: '532'
+               codeString: '532'
             )
          )
       )
@@ -477,16 +482,16 @@ class RmInstanceGenerator {
    {
       def compo = new Composition(
          language: new CodePhrase(
-            terminology_id: new TerminologyId(
+            terminologyId: new TerminologyId(
                value: opt.langTerminology
             ),
-            code_string: opt.langCode
+            codeString: opt.langCode
          ),
          territory: new CodePhrase(
-            terminology_id: new TerminologyId(
+            terminologyId: new TerminologyId(
                value: 'ISO_3166-1'
             ),
-            code_string: 'UY' // TODO: pick from list, associate country with language
+            codeString: 'UY' // TODO: pick from list, associate country with language
          ),
          composer: new PartyIdentified(
             external_ref: new PartyRef(
@@ -528,10 +533,10 @@ class RmInstanceGenerator {
       compo.category = new DvCodedText(
          value: value,
          defining_code: new CodePhrase(
-            terminology_id: new TerminologyId(
+            terminologyId: new TerminologyId(
                value: 'openehr'
             ),
-            code_string: category_code
+            codeString: category_code
          )
       )
 
@@ -696,10 +701,10 @@ class RmInstanceGenerator {
          setting: new DvCodedText(
             value: setting_entry.value,
             defining_code: new CodePhrase(
-               terminology_id: new TerminologyId(
+               terminologyId: new TerminologyId(
                   value: 'openehr'
                ),
-               code_string: setting_entry.key.toString()
+               codeString: setting_entry.key.toString()
             )
          )
       )
@@ -720,20 +725,20 @@ class RmInstanceGenerator {
                   relationship: new DvCodedText(
                      value: participation.relationship.rubric,
                      defining_code: new CodePhrase(
-                        terminology_id: new TerminologyId(
+                        terminologyId: new TerminologyId(
                            value: 'openehr'
                         ),
-                        code_string: participation.relationship.code
+                        codeString: participation.relationship.code
                      )
                   )
                ),
                mode: new DvCodedText(
                   value: 'not specified', // TODO: pick from list of valid values/codes
                   defining_code: new CodePhrase(
-                     terminology_id: new TerminologyId(
+                     terminologyId: new TerminologyId(
                         value: 'openehr'
                      ),
-                     code_string: '193'
+                     codeString: '193'
                   )
                )
             )
@@ -829,10 +834,10 @@ class RmInstanceGenerator {
       def coded = new DvCodedText(
          value: value,
          defining_code: new CodePhrase(
-            terminology_id: new TerminologyId(
+            terminologyId: new TerminologyId(
                value: terminology_id
             ),
-            code_string: first_code
+            codeString: first_code
          )
       )
 
@@ -842,10 +847,10 @@ class RmInstanceGenerator {
    private CodePhrase generate_attr_CODE_PHRASE(String terminology, String code)
    {
       new CodePhrase(
-         terminology_id: new TerminologyId(
+         terminologyId: new TerminologyId(
             value: terminology
          ),
-         code_string: code
+         codeString: code
       )
    }
 
@@ -1258,10 +1263,10 @@ class RmInstanceGenerator {
             symbol: new DvCodedText(
                value: value,
                defining_code: new CodePhrase(
-                  terminology_id: new TerminologyId(
+                  terminologyId: new TerminologyId(
                      value: o.list[0].symbol.terminologyId
                   ),
-                  code_string: o.list[0].symbol.codeString
+                  codeString: o.list[0].symbol.codeString
                )
             )
          )
@@ -1273,10 +1278,10 @@ class RmInstanceGenerator {
          symbol: new DvCodedText(
             value: "autogenerated (node doesn't have a constraint)",
             defining_code: new CodePhrase(
-               terminology_id: new TerminologyId(
+               terminologyId: new TerminologyId(
                   value: 'com.cabolabs.openehr.opt'
                ),
-               code_string: String.random(('A'..'Z').join(), 10)
+               codeString: String.random(('A'..'Z').join(), 10)
             )
          )
       )
@@ -1633,17 +1638,17 @@ class RmInstanceGenerator {
       add_LOCATABLE_elements(o, e, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
       e.language = new CodePhrase(
-         terminology_id: new TerminologyId(
+         terminologyId: new TerminologyId(
             value: this.opt.langTerminology
          ),
-         code_string: this.opt.langCode
+         codeString: this.opt.langCode
       )
 
       e.encoding = new CodePhrase(
-         terminology_id: new TerminologyId(
+         terminologyId: new TerminologyId(
             value: 'IANA_character-sets'
          ),
-         code_string: 'UTF-8' // TODO: deberia salir de una config global
+         codeString: 'UTF-8' // TODO: deberia salir de una config global
       )
 
       // TODO: party proxy / party self generator
@@ -2342,10 +2347,10 @@ class RmInstanceGenerator {
          ev.math_function = new DvCodedText(// coded text attribute
             value: "maximum",
             defining_code: new CodePhrase(
-               terminology_id: new TerminologyId(
+               terminologyId: new TerminologyId(
                   value: 'openehr'
                ),
-               code_string: '144'
+               codeString: '144'
             )
          )
       }
@@ -2597,10 +2602,10 @@ class RmInstanceGenerator {
                elem.null_flavour = new DvCodedText(
                   value: 'no information',
                   defining_code: new CodePhrase(
-                     terminology_id: new TerminologyId(
+                     terminologyId: new TerminologyId(
                         value: 'openehr'
                      ),
-                     code_string: '271'
+                     codeString: '271'
                   )
                )
             }
@@ -2620,10 +2625,10 @@ class RmInstanceGenerator {
             elem.null_flavour = new DvCodedText(
                value: 'no information',
                defining_code: new CodePhrase(
-                  terminology_id: new TerminologyId(
+                  terminologyId: new TerminologyId(
                      value: 'openehr'
                   ),
-                  code_string: '271'
+                  codeString: '271'
                )
             )
          }
@@ -2892,21 +2897,21 @@ class RmInstanceGenerator {
       combined_constraint = lower_constraint +'_'+ upper_constraint
 
       // FIXME: would be better to use BigDecimal
-      Double lower_magnitude, upper_magnitude
+      BigDecimal lower_magnitude, upper_magnitude
       String _units = (lower_qty_item ? lower_qty_item.units : (upper_qty_item ? upper_qty_item.units : 'no_units_constraint'))
 
       switch (combined_constraint)
       {
          case 'no_no':
-            lower_magnitude = Double.random(10.0, 0.0)
+            lower_magnitude = BigDecimal.random(new BigDecimal(10.0), new BigDecimal(0.0))
             upper_magnitude = lower_magnitude + 1.0
          break
          case 'no_range':
-            upper_magnitude = DataGenerator.double_in_range(upper_qty_magnitude_interval)
+            upper_magnitude = DataGenerator.bigdecimal_in_range(upper_qty_magnitude_interval)
             lower_magnitude = upper_magnitude - 1.0
          break
          case 'range_no':
-            lower_magnitude = DataGenerator.double_in_range(lower_qty_magnitude_interval)
+            lower_magnitude = DataGenerator.bigdecimal_in_range(lower_qty_magnitude_interval)
             upper_magnitude = lower_magnitude + 1.0
          break
          case 'range_range':

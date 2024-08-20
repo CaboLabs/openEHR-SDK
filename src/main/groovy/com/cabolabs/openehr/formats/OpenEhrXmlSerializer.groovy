@@ -999,9 +999,9 @@ class OpenEhrXmlSerializer {
          }
       }
 
-      if (o.other_participations)
+      if (o.otherParticipations)
       {
-         o.other_participations.each { participation ->
+         o.otherParticipations.each { participation ->
 
             builder.other_participations {
                this.serializeParticipation(participation)
@@ -1009,11 +1009,11 @@ class OpenEhrXmlSerializer {
          }
       }
 
-      if (o.workflow_id)
+      if (o.workflowId)
       {
-         method = this.method(o.workflow_id)
-         builder.workflow_id('xsi:type': this.openEhrType(o.workflow_id)) {
-            this."$method"(o.workflow_id)
+         method = this.method(o.workflowId)
+         builder.workflow_id('xsi:type': this.openEhrType(o.workflowId)) {
+            this."$method"(o.workflowId)
          }
       }
    }
@@ -1454,10 +1454,10 @@ class OpenEhrXmlSerializer {
    void serializeCodePhrase(CodePhrase o)
    {
       builder.terminology_id() {
-         this.serializeTerminologyId(o.terminology_id)
+         this.serializeTerminologyId(o.terminologyId)
       }
 
-      builder.code_string(o.code_string)
+      builder.code_string(o.codeString)
    }
 
    void serializeDvIdentifier(DvIdentifier o)

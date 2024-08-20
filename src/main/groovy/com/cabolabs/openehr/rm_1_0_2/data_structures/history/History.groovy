@@ -32,4 +32,11 @@ class History extends DataStructure {
 
       this.summary?.fillPathable(this, 'summary')
    }
+
+   // getter with initializer
+   List<Event> getEvents()
+   {
+      if (events == null) events = []
+      events
+   }
 }

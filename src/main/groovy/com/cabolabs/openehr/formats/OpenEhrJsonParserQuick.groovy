@@ -497,14 +497,14 @@ class OpenEhrJsonParserQuick {
          json.other_participations.each { _participation ->
 
             participation = this.parsePARTICIPATION(_participation)
-            e.other_participations.add(participation)
+            e.otherParticipations.add(participation)
          }
       }
 
 
       if (json.workflow_id)
       {
-         e.workflow_id = this.parseOBJECT_REF(json.workflow_id)
+         e.workflowId = this.parseOBJECT_REF(json.workflow_id)
       }
    }
 
@@ -1076,7 +1076,7 @@ class OpenEhrJsonParserQuick {
          )
       }
 
-      compo.content = []
+      //compo.content = []
       json.content.eachWithIndex { content_item, i ->
          type = content_item._type
          if (!type)
@@ -1560,7 +1560,7 @@ class OpenEhrJsonParserQuick {
 
       String type, method
 
-      section.items = []
+      //section.items = []
       json.items.eachWithIndex { content_item, i ->
 
          type = content_item._type
@@ -1647,7 +1647,7 @@ class OpenEhrJsonParserQuick {
 
       String type, method
 
-      h.events = []
+      //h.events = []
       json.events.eachWithIndex { event, i ->
 
          type = event._type
@@ -2066,8 +2066,8 @@ class OpenEhrJsonParserQuick {
    private CodePhrase parseCODE_PHRASE(Map json)
    {
       new CodePhrase(
-         code_string: json.code_string,
-         terminology_id: this.parseTERMINOLOGY_ID(json.terminology_id)
+         codeString: json.code_string,
+         terminologyId: this.parseTERMINOLOGY_ID(json.terminology_id)
       )
    }
 

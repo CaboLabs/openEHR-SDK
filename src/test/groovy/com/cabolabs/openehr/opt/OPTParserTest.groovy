@@ -542,8 +542,8 @@ class OPTParserTest extends GroovyTestCase {
          symbol: new DvCodedText(
             value: 'bla bla bla',
             defining_code: new CodePhrase(
-               code_string: 'at0010',
-               terminology_id: new TerminologyId(
+               codeString: 'at0010',
+               terminologyId: new TerminologyId(
                   value: 'local'
                )
             )
@@ -554,8 +554,8 @@ class OPTParserTest extends GroovyTestCase {
          symbol: new DvCodedText(
             value: 'bla bla bla',
             defining_code: new CodePhrase(
-               code_string: 'at0010',
-               terminology_id: new TerminologyId(
+               codeString: 'at0010',
+               terminologyId: new TerminologyId(
                   value: 'local'
                )
             )
@@ -567,8 +567,8 @@ class OPTParserTest extends GroovyTestCase {
          symbol: new DvCodedText(
             value: 'bla bla bla',
             defining_code: new CodePhrase(
-               code_string: 'at0010',
-               terminology_id: new TerminologyId(
+               codeString: 'at0010',
+               terminologyId: new TerminologyId(
                   value: 'SNOMED'
                )
             )
@@ -580,8 +580,8 @@ class OPTParserTest extends GroovyTestCase {
          symbol: new DvCodedText(
             value: 'bla bla bla',
             defining_code: new CodePhrase(
-               code_string: 'at0010',
-               terminology_id: new TerminologyId(
+               codeString: 'at0010',
+               terminologyId: new TerminologyId(
                   value: 'local'
                )
             )
@@ -593,8 +593,8 @@ class OPTParserTest extends GroovyTestCase {
          symbol: new DvCodedText(
             value: 'bla bla bla',
             defining_code: new CodePhrase(
-               code_string: 'a6666',
-               terminology_id: new TerminologyId(
+               codeString: 'a6666',
+               terminologyId: new TerminologyId(
                   value: 'local'
                )
             )

@@ -572,8 +572,8 @@ class OpenEhrXmlSerializerTest extends GroovyTestCase {
                         value: new DvCodedText(
                            value: 'Male',
                            defining_code: new CodePhrase(
-                              code_string: 'at0033',
-                              terminology_id: new TerminologyId(
+                              codeString: 'at0033',
+                              terminologyId: new TerminologyId(
                                  value: 'local'
                               )
                            )
@@ -630,8 +630,8 @@ class OpenEhrXmlSerializerTest extends GroovyTestCase {
                         value: new DvCodedText(
                            value: 'Natural child',
                            defining_code: new CodePhrase(
-                              code_string: '75226009',
-                              terminology_id: new TerminologyId(
+                              codeString: '75226009',
+                              terminologyId: new TerminologyId(
                                  value: 'SNOMED-CT'
                               )
                            )

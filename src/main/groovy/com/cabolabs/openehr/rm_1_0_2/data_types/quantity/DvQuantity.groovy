@@ -2,7 +2,7 @@ package com.cabolabs.openehr.rm_1_0_2.data_types.quantity
 
 class DvQuantity extends DvAmount {
 
-   Double magnitude
+   BigDecimal magnitude
    Integer precision // could be null
    String units
 
@@ -45,7 +45,7 @@ class DvQuantity extends DvAmount {
 
    int compareTo(Object o)
    {
-      if (!(o instanceof DvQuantity)) throw new Exception("Can't compare "+ e.getClas() +" to DvQuantity")
+      if (!(o instanceof DvQuantity)) throw new Exception("Can't compare "+ e.getClass() +" to DvQuantity")
       if (this.units != o.units) throw new Exception("Can't compare quantities with different units")
 
       return this.magnitude <=> o.magnitude

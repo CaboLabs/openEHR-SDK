@@ -7,6 +7,18 @@ class DvDateTime extends DvTemporal {
 
    String value
 
+   // Prevents groovy.lang.GroovyRuntimeException: Could not find named-arg compatible constructor with the second constructor
+   DvDateTime()
+   {
+
+   }
+
+   DvDateTime(Date date)
+   {
+      SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"); // ISO date format
+      this.value = formatter.format(date)
+   }
+
    @Override
    public Number getMagnitude() {
       // TODO Auto-generated method stub

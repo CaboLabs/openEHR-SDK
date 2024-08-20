@@ -16,6 +16,17 @@ class ArchetypeId extends ObjectId {
    version_id: String
    */
 
+   // Prevents groovy.lang.GroovyRuntimeException: Could not find named-arg compatible constructor with the second constructor
+   ArchetypeId()
+   {
+
+   }
+
+   ArchetypeId(String value)
+   {
+      this.value = value
+   }
+
    String getQualifiedRmEntity()
    {
       // TODO

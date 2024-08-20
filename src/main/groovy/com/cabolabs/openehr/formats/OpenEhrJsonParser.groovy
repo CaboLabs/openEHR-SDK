@@ -543,14 +543,14 @@ class OpenEhrJsonParser {
          json.other_participations.each { _participation ->
 
             participation = this.parsePARTICIPATION(_participation)
-            e.other_participations.add(participation)
+            e.otherParticipations.add(participation)
          }
       }
 
 
       if (json.workflow_id)
       {
-         e.workflow_id = this.parseOBJECT_REF(json.workflow_id)
+         e.workflowId = this.parseOBJECT_REF(json.workflow_id)
       }
    }
 
@@ -1001,7 +1001,7 @@ class OpenEhrJsonParser {
          }
          method = 'parse'+ type
 
-         if (!compo.content) compo.content = []
+         //if (!compo.content) compo.content = []
 
          compo.content.add(
             this."$method"(
@@ -1510,7 +1510,7 @@ class OpenEhrJsonParser {
 
          method = 'parse'+ type
 
-         if (!section.items) section.items = []
+         //if (!section.items) section.items = []
 
          section.items.add(
             this."$method"(
@@ -1600,7 +1600,7 @@ class OpenEhrJsonParser {
          type = event._type
          method = 'parse'+ type
 
-         if (!h.events) h.events = []
+         //if (!h.events) h.events = []
 
          h.events.add(
             this."$method"(
@@ -2058,8 +2058,8 @@ class OpenEhrJsonParser {
    private CodePhrase parseCODE_PHRASE(Map json)
    {
       new CodePhrase(
-         code_string: json.code_string,
-         terminology_id: this.parseTERMINOLOGY_ID(json.terminology_id)
+         codeString: json.code_string,
+         terminologyId: this.parseTERMINOLOGY_ID(json.terminology_id)
       )
    }
 

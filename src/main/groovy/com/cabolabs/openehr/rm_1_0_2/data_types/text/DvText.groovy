@@ -10,4 +10,15 @@ class DvText extends DataValue {
    // TODO: formating
    // TODO: language
    // TODO: encoding
+
+   // Prevents groovy.lang.GroovyRuntimeException: Could not find named-arg compatible constructor with the second constructor
+   DvText()
+   {
+
+   }
+
+   DvText(String value)
+   {
+      this.value = value
+   }
 }

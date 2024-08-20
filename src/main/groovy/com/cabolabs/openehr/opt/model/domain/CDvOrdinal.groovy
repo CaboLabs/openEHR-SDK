@@ -17,8 +17,8 @@ class CDvOrdinal extends ObjectNode {
    ValidationResult isValid(DvOrdinal d)
    {
       int value            = d.value
-      String codeString    = d.symbol.defining_code.code_string
-      String terminologyId = d.symbol.defining_code.terminology_id.value
+      String codeString    = d.symbol.defining_code.codeString
+      String terminologyId = d.symbol.defining_code.terminologyId.value
 
       CDvOrdinalItem item = list.find{ it.value == value }
 

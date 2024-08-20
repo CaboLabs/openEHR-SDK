@@ -21,7 +21,7 @@ class CDvQuantity extends ObjectNode {
       if (list.size() > 0)
       {
          String units = dvq.units
-         Double magnitude = dvq.magnitude
+         BigDecimal magnitude = dvq.magnitude
 
          def item = list.find { it.units == units }
 

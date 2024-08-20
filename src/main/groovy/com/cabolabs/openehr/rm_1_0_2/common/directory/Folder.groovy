@@ -24,4 +24,18 @@ class Folder extends Locatable {
          folder.fillPathable(this, "folders($i)")
       }
    }
+
+   // getter with initializer
+   List<Folder> getFolders()
+   {
+      if (folders == null) folders = []
+      folders
+   }
+
+   // getter with initializer
+   List<ObjectRef> getItems()
+   {
+      if (items == null) items = []
+      items
+   }
 }

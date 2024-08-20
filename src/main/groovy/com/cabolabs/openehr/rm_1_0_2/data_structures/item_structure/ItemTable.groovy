@@ -18,4 +18,11 @@ class ItemTable extends ItemStructure {
          item.fillPathable(this, "rows[$i]")
       }
    }
+
+   // getter with initializer
+   List<Cluster> getRows()
+   {
+      if (rows == null) rows = []
+      rows
+   }
 }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.cabolabs.openehr.rm_1_0_2.ehr
 
@@ -21,4 +21,19 @@ class Ehr {
    List<ObjectRef> compositions
    ObjectRef directory
    List<ObjectRef> contributions
+
+
+
+   // getter with initializer
+   List<ObjectRef> getCompositions()
+   {
+      if (compositions == null) compositions = []
+      compositions
+   }
+   // getter with initializer
+   List<ObjectRef> getContributions()
+   {
+      if (contributions == null) contributions = []
+      contributions
+   }
 }

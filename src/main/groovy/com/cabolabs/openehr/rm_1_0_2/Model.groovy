@@ -601,7 +601,7 @@ class Model {
          other_reference_ranges: 'DV_INTERVAL' // multiple
       ],
       DV_QUANTITY: [
-         magnitude: 'Double',
+         magnitude: 'BigDecimal',
          precision: 'Integer',
          units: 'String',
          // DV_AMOUNT
@@ -671,7 +671,7 @@ class Model {
    static List primitive_types = [
       'Integer',
       'Real',
-      'Double',
+      'BigDecimal',
       'Boolean',
       'String',
       'Character'

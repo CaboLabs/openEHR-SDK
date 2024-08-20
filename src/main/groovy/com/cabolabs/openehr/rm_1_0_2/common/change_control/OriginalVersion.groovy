@@ -11,7 +11,7 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.HierObjectId
 class OriginalVersion extends Version {
 
    List<Attestation> attestations = []
-   
+
 
    HierObjectId owner_id()
    {
@@ -34,5 +34,12 @@ class OriginalVersion extends Version {
    Boolean is_merged()
    {
       false
+   }
+
+   // getter with initializer
+   List<Attestation> getAttestations()
+   {
+      if (attestations == null) attestations = []
+      attestations
    }
 }
