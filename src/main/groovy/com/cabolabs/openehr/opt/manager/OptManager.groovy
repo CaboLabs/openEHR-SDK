@@ -9,7 +9,7 @@ import groovy.transform.Synchronized
 import groovy.time.TimeCategory
 import groovy.time.TimeDuration
 
-@groovy.util.logging.Log4j2
+@groovy.util.logging.Slf4j
 class OptManager {
 
    //private Logger log = LogManager.getLogger(getClass())

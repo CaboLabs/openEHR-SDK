@@ -6,7 +6,7 @@ import groovy.util.slurpersupport.GPathResult
 // import org.apache.logging.log4j.LogManager
 // import org.apache.logging.log4j.Logger
 
-@groovy.util.logging.Log4j2
+@groovy.util.logging.Slf4j
 class TerminologyParser {
 
    private static TerminologyParser instance = null

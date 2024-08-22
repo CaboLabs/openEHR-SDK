@@ -5,8 +5,6 @@ import com.cabolabs.openehr.opt.model.validation.ValidationResult
 //import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.CodePhrase
 
-
-@groovy.util.logging.Log4j2
 class CCodePhrase extends ObjectNode {
 
    // CODE LIST CONSTRAINT
@@ -64,8 +62,6 @@ class CCodePhrase extends ObjectNode {
 
       if (this.terminologyId)
       {
-         //log.info("CCodePhrase isValid")
-
          if (_terminologyId != this.terminologyId)
          {
             return new ValidationResult(isValid: false, message: "terminology_id '${_terminologyId}' doesn't match '${this.terminologyId}'")

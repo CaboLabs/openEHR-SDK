@@ -4,7 +4,6 @@ import com.cabolabs.openehr.opt.model.ObjectNode
 import com.cabolabs.openehr.opt.model.validation.ValidationResult
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvOrdinal
 
-@groovy.util.logging.Log4j2
 class CDvOrdinal extends ObjectNode {
 
    // List<CDvOrdinalItem>

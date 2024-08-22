@@ -3,7 +3,6 @@ package com.cabolabs.openehr.opt.model.primitive
 import com.cabolabs.openehr.opt.model.IntervalInt
 import com.cabolabs.openehr.opt.model.validation.ValidationResult
 
-@groovy.util.logging.Log4j2
 class CBoolean extends CPrimitive {
 
    Boolean trueValid

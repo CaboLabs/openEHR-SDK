@@ -4,7 +4,7 @@ package com.cabolabs.openehr.opt.model
 import com.cabolabs.openehr.rm_1_0_2.Model
 import com.cabolabs.openehr.opt.model.primitive.*
 
-@groovy.util.logging.Log4j2
+@groovy.util.logging.Slf4j
 class OperationalTemplate {
 
    String uid

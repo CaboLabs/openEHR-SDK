@@ -5,7 +5,7 @@ import net.pempek.unicode.UnicodeBOMInputStream
 // import org.apache.logging.log4j.LogManager
 import java.io.FileNotFoundException
 
-@groovy.util.logging.Log4j2
+@groovy.util.logging.Slf4j
 class OptRepositoryFSImpl implements OptRepository {
 
    private static String PS = File.separator

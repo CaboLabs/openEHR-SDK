@@ -9,7 +9,6 @@ import groovy.util.slurpersupport.GPathResult
 // import org.apache.logging.log4j.LogManager
 // import org.apache.logging.log4j.Logger
 
-@groovy.util.logging.Log4j2
 class OperationalTemplateParser {
 
    //private Logger log = LogManager.getLogger(getClass())

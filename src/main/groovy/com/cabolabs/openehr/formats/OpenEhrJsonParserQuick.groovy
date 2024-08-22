@@ -39,7 +39,7 @@ import groovy.json.JsonSlurper
  * This is the same as the original JsonParser but doesn't generate the paths for pathable, those can be
  * calculated later. So for uses that don't require the paths in the RM instances, this will be faster.
  */
-@groovy.util.logging.Log4j2
+@groovy.util.logging.Slf4j
 class OpenEhrJsonParserQuick {
 
    //private Logger log = LogManager.getLogger(getClass())

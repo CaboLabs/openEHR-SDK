@@ -35,7 +35,7 @@ import com.cabolabs.openehr.dto_1_0_2.demographic.*
 import com.cabolabs.openehr.opt.instance_validation.JsonInstanceValidation
 import groovy.json.JsonSlurper
 
-@groovy.util.logging.Log4j2
+@groovy.util.logging.Slf4j
 class OpenEhrJsonParser {
 
    def jsonValidator

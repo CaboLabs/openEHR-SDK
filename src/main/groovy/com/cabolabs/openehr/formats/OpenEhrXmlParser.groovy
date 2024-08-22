@@ -41,7 +41,6 @@ import com.cabolabs.openehr.opt.instance_validation.*
 //import groovy.xml.XmlSlurper
 //import groovy.xml.slurpersupport.GPathResult
 
-@groovy.util.logging.Log4j2
 class OpenEhrXmlParser {
 
    def schemaValidate = false

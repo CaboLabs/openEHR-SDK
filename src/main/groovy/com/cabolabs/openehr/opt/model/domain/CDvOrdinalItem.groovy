@@ -2,7 +2,6 @@ package com.cabolabs.openehr.opt.model.domain
 
 import com.cabolabs.openehr.opt.model.datatypes.CodePhrase
 
-@groovy.util.logging.Log4j2
 class CDvOrdinalItem {
 
    int value
