@@ -2265,8 +2265,8 @@ class RmInstanceGenerator {
 
       add_LOCATABLE_elements(o, ev, parent_arch_id)
 
-      ev.time = generate_DV_DATE_TIME(null, null)
       // IM attribute not present in the OPT
+      ev.time = generate_DV_DATE_TIME(null, null)
 
       def process_attrs = [
          'data',
@@ -2306,7 +2306,7 @@ class RmInstanceGenerator {
 
       def process_attrs = [
          'data',
-         'state'
+         'state' // NOTE: this is optional!
       ]
 
       def oa, mattrs
@@ -2314,13 +2314,16 @@ class RmInstanceGenerator {
 
          oa = o.attributes.find { it.rmAttributeName == attr_name }
 
-         // in event there are no lists, so the results will be lists of 1 item
+         // in event there are no lists, so the result will be a list of 1 item
          mattrs = processAttributeChildren(oa, parent_arch_id)
 
-         ev."${oa.rmAttributeName}" = mattrs[0]
+         if (mattrs)
+         {
+            ev."${oa.rmAttributeName}" = mattrs[0]
+         }
       }
 
-      // TODO: if there is no attribute contraint, the duration generation wont work so we should check that here
+      // required attribute
       oa = o.attributes.find { it.rmAttributeName == 'width' }
       if (oa)
       {
@@ -2335,6 +2338,7 @@ class RmInstanceGenerator {
          )
       }
 
+      // required attribute
       oa = o.attributes.find { it.rmAttributeName == 'math_function' }
       if (oa)
       {
@@ -2354,6 +2358,8 @@ class RmInstanceGenerator {
             )
          )
       }
+
+      // TODO: if a constraint for sample_count is included, generate a value for it.
 
       return ev
    }
