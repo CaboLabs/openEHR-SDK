@@ -259,7 +259,119 @@
                                         "description": "unknown.context.participations",
                                         "_class": "ObjectNode",
                                         "attributes": [
-                                            
+                                            {
+                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                "rm_attribute_name": "function",
+                                                "children": [
+                                                    {
+                                                        "archetype_id": null,
+                                                        "path": "/context/participations/function",
+                                                        "type": "C_COMPLEX_OBJECT",
+                                                        "rm_type_name": "DV_TEXT",
+                                                        "node_id": null,
+                                                        "text": "Test all types.context.participations.function",
+                                                        "description": "unknown.context.participations.function",
+                                                        "_class": "ObjectNode",
+                                                        "attributes": [
+                                                            
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                "rm_attribute_name": "mode",
+                                                "children": [
+                                                    {
+                                                        "archetype_id": null,
+                                                        "path": "/context/participations/mode",
+                                                        "type": "C_COMPLEX_OBJECT",
+                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                        "node_id": null,
+                                                        "text": "Test all types.context.participations.mode",
+                                                        "description": "unknown.context.participations.mode",
+                                                        "_class": "ObjectNode",
+                                                        "attributes": [
+                                                            
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                "rm_attribute_name": "time",
+                                                "children": [
+                                                    {
+                                                        "archetype_id": null,
+                                                        "path": "/context/participations/time",
+                                                        "type": "C_COMPLEX_OBJECT",
+                                                        "rm_type_name": "DV_INTERVAL<DV_DATE_TIME>",
+                                                        "node_id": null,
+                                                        "text": "Test all types.context.participations.time",
+                                                        "description": "unknown.context.participations.time",
+                                                        "_class": "ObjectNode",
+                                                        "attributes": [
+                                                            {
+                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                "rm_attribute_name": "lower",
+                                                                "children": [
+                                                                    {
+                                                                        "archetype_id": null,
+                                                                        "path": "/context/participations/time/lower",
+                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                        "rm_type_name": "DV_DATE_TIME",
+                                                                        "node_id": null,
+                                                                        "text": "Test all types.context.participations.time.lower",
+                                                                        "description": "unknown.context.participations.time.lower",
+                                                                        "_class": "ObjectNode",
+                                                                        "attributes": [
+                                                                            
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                "rm_attribute_name": "upper",
+                                                                "children": [
+                                                                    {
+                                                                        "archetype_id": null,
+                                                                        "path": "/context/participations/time/upper",
+                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                        "rm_type_name": "DV_DATE_TIME",
+                                                                        "node_id": null,
+                                                                        "text": "Test all types.context.participations.time.upper",
+                                                                        "description": "unknown.context.participations.time.upper",
+                                                                        "_class": "ObjectNode",
+                                                                        "attributes": [
+                                                                            
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                "rm_attribute_name": "performer",
+                                                "children": [
+                                                    {
+                                                        "archetype_id": null,
+                                                        "path": "/context/participations/performer",
+                                                        "type": "C_COMPLEX_OBJECT",
+                                                        "rm_type_name": "[PARTY_IDENTIFIED, PARTY_RELATED, PARTY_SELF]",
+                                                        "node_id": null,
+                                                        "text": "Test all types.context.participations.performer",
+                                                        "description": "unknown.context.participations.performer",
+                                                        "_class": "ObjectNode",
+                                                        "attributes": [
+                                                            
+                                                        ]
+                                                    }
+                                                ]
+                                            }
                                         ]
                                     }
                                 ]

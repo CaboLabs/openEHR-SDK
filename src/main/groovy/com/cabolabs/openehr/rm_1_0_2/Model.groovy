@@ -20,7 +20,7 @@ class Model {
          'location':       'String',
          'start_time':     'DV_DATE_TIME',
          'end_time':       'DV_DATE_TIME',
-         'participations': 'PARTICIPATION'
+         'participations': 'PARTICIPATION' // has many!
       ],
       'ACTION': [
          'time': 'DV_DATE_TIME',
@@ -82,6 +82,14 @@ class Model {
       'LOCATABLE_REF': [ // to allow to query by locatable_ref id and path, used in INSTRUCTION_DETAILS.instruction_id
          'id': 'OBJECT_VERSION_ID',
          'path': 'String'
+      ],
+
+      'PARTICIPATION': [
+         function:  'DV_TEXT',
+         mode:      'DV_CODED_TEXT',
+         time:      'DV_INTERVAL<DV_DATE_TIME>',
+         // NOTE: in complete() the list in the type is not supported
+         performer: ['PARTY_IDENTIFIED', 'PARTY_RELATED', 'PARTY_SELF']
       ],
 
       // DVs: this is for the DV_INTERVAL types here, to complete it's internal structs

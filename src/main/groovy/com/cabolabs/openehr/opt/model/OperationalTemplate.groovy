@@ -316,6 +316,7 @@ class OperationalTemplate {
          // for instance, a null_flavour could be in the OPT
          if (!obn.attributes.find{ it.rmAttributeName == attr })
          {
+            // TODO: support that type could be a list of possible types (inheritance structure only with concrete types), I guess here we should pick one or just add all the alternative types.
             if (Model.primitive_types.contains(type))
             {
                aom_type = 'C_PRIMITIVE_OBJECT'
@@ -331,6 +332,8 @@ class OperationalTemplate {
                aom_type = 'C_COMPLEX_OBJECT'
                obnc = new ObjectNode()
             }
+
+            println attr
 
             // avoid // on root paths
             path_sep = "/"
