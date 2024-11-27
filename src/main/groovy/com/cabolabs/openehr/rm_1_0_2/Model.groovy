@@ -16,10 +16,11 @@ class Model {
          'context': 'EVENT_CONTEXT' // if no other_context is specified the event context is not on the OPT, we need to check if it is or not to avoid double indexing.
       ],
       'EVENT_CONTEXT': [
-         'setting': 'DV_CODED_TEXT',
-         'location': 'String',
-         'start_time': 'DV_DATE_TIME',
-         'end_time': 'DV_DATE_TIME'
+         'setting':        'DV_CODED_TEXT',
+         'location':       'String',
+         'start_time':     'DV_DATE_TIME',
+         'end_time':       'DV_DATE_TIME',
+         'participations': 'PARTICIPATION'
       ],
       'ACTION': [
          'time': 'DV_DATE_TIME',
@@ -107,6 +108,9 @@ class Model {
    private static Map collection_attrs = [
       COMPOSITION: [
          'content'
+      ],
+      EVENT_CONTEXT: [
+         'participations'
       ],
       SECTION: [
          'items'
@@ -539,14 +543,21 @@ class Model {
          value: 'String'
       ],
 
+      PARTICIPATION: [
+         function:  'DV_TEXT',
+         mode:      'DV_CODED_TEXT',
+         time:      'DV_INTERVAL<DV_DATE_TIME>',
+         performer: ['PARTY_IDENTIFIED', 'PARTY_RELATED', 'PARTY_SELF']
+      ],
+
       DV_BOOLEAN: [
          value: 'Boolean'
       ],
       DV_IDENTIFIER: [
-         issuer: 'String',
+         issuer:   'String',
          assigner: 'String',
-         id: 'String',
-         type: 'String'
+         id:       'String',
+         type:     'String'
       ],
 
       DV_TEXT: [

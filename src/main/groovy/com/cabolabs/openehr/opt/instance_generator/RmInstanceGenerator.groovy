@@ -669,8 +669,8 @@ class RmInstanceGenerator {
          }
 
          // TEST
-         println "Generates for "+ obj.dataPath
-         if (obj.archetypeId) println obj.ownerArchetypeRoot.getText('at0000')
+         //println "Generates for "+ obj.dataPath
+         //if (obj.archetypeId) println obj.ownerArchetypeRoot.getText('at0000')
 
          // NOTE: this is always one object
          //println "instance: "+ instances.size()

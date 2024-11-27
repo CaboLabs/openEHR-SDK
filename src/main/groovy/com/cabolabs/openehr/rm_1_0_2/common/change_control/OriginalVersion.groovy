@@ -10,7 +10,8 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.HierObjectId
 
 class OriginalVersion extends Version {
 
-   List<Attestation> attestations = []
+   List<Attestation> attestations
+   Set<ObjectVersionId> other_input_version_uids
 
 
    HierObjectId owner_id()

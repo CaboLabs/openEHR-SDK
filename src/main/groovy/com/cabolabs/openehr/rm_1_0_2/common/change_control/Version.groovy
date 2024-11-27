@@ -20,8 +20,6 @@ abstract class Version {
    ObjectRef contribution
    String signature
 
-   //abstract List<ObjectVersionId> other_input_version_uids() // ???
-
    abstract HierObjectId owner_id()
    abstract Boolean is_branch()
    abstract String canonical_form()
