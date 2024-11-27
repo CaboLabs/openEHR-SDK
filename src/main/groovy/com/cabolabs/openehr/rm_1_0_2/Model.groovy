@@ -84,13 +84,35 @@ class Model {
          'path': 'String'
       ],
 
-      'PARTICIPATION': [
+      PARTICIPATION: [
          function:  'DV_TEXT',
          mode:      'DV_CODED_TEXT',
          time:      'DV_INTERVAL<DV_DATE_TIME>',
          // NOTE: in complete() the list in the type is not supported
          performer: ['PARTY_IDENTIFIED', 'PARTY_RELATED', 'PARTY_SELF']
       ],
+      PARTY_IDENTIFIED: [
+         // inherited from PARTY_PROXY
+         external_ref: 'PARTY_REF',
+
+         name: 'String',
+         identifiers: 'DV_IDENTIFIER' // multiple
+      ],
+      PARTY_RELATED: [
+         // inherited from PARTY_PROXY
+         external_ref: 'PARTY_REF',
+
+         // inherited from PARTY_IDENTIFIED
+         name: 'String',
+         identifiers: 'DV_IDENTIFIER', // multiple
+
+         relationship: 'DV_CODED_TEXT'
+      ],
+      PARTY_SELF: [
+         // inherited from PARTY_PROXY
+         external_ref: 'PARTY_REF'
+      ],
+
 
       // DVs: this is for the DV_INTERVAL types here, to complete it's internal structs
       // NOTE: need to match specific type of DV_INTERVAL

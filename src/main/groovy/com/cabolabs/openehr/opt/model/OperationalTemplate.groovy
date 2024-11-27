@@ -302,6 +302,123 @@ class OperationalTemplate {
       completeRecursive(this.definition)
       this.isCompleted = true
    }
+
+   // Processes a single node alternative type
+   private completeNodeSingle(AttributeNode atnc, String attr, String type)
+   {
+      def aom_type, obnc
+      if (Model.primitive_types.contains(type))
+      {
+         aom_type = 'C_PRIMITIVE_OBJECT'
+
+         // NOTE: this injected P.O.N. should have an item CPrimitive constraint, it's required by the AOM
+         obnc = new PrimitiveObjectNode()
+
+         def primitive_type = 'com.cabolabs.openehr.opt.model.primitive.C'+ type // e.g. CString
+         obnc.item = Class.forName(primitive_type).newInstance() // NOTE: we can't add any constraints to the CPrimitive, so any value is allowed
+      }
+      else
+      {
+         aom_type = 'C_COMPLEX_OBJECT'
+         obnc = new ObjectNode()
+      }
+
+      // NOTE: atnc.parent = obn
+
+      // avoid // on root paths
+      def path_sep = "/"
+      if (atnc.parent.path == "/") path_sep = ""
+
+      obnc.owner            = this // this template
+      obnc.rmTypeName       = type
+      obnc.type             = aom_type
+      obnc.templatePath     = atnc.parent.templatePath     + path_sep + attr // same paths as the attr since this has no nodeId
+      obnc.path             = atnc.parent.path             + path_sep + attr
+      obnc.dataPath         = atnc.parent.dataPath         + path_sep + attr
+      obnc.templateDataPath = atnc.parent.templateDataPath + path_sep + attr
+      obnc.parent           = atnc
+      obnc.occurrences      = new IntervalInt( // TODO: check the RM to see the default RM occurrences for this object
+         upperIncluded:  true,
+         lowerIncluded:  true,
+         upperUnbounded: false,
+         lowerUnbounded: false,
+         lower: 0,
+         upper: 1
+      )
+
+      // TODO: default_values
+
+      // Add dummy text and description for the new nodes
+      obnc.text = obnc.parent.parent.text +'.'+ obnc.parent.rmAttributeName
+      obnc.description = obnc.parent.parent.description +'.'+ obnc.parent.rmAttributeName
+
+      atnc.children << obnc
+
+
+      // Add nodes to the OPT
+      // supports many alternative nodes with the same path
+      // TEST: should the key be templatePath or path?
+      if (!this.nodes[obnc.templatePath]) this.nodes[obnc.templatePath] = []
+      this.nodes[obnc.templatePath] << obnc
+
+
+      // This while assigns the current generated node to all it's ascedant nodes,
+      // in their flat list, so when getting any of those nodes, the new injected
+      // node will be there and can be retrieved by it's path.
+      def parent_obn = atnc.parent
+      while (parent_obn)
+      {
+         if (!parent_obn.nodes[obnc.path]) parent_obn.nodes[obnc.path] = []
+         parent_obn.nodes[obnc.path] << obnc
+
+         parent_obn = parent_obn?.parent?.parent
+      }
+   }
+
+   private completeNodeAlternatives(AttributeNode atnc, String attr, List types)
+   {
+      types.each { type ->
+
+         completeNodeSingle(atnc, attr, type)
+      }
+   }
+
+   private completeAttribute(ObjectNode obn, String attr, Object type_or_types)
+   {
+      // avoid // on root paths
+      def path_sep = "/"
+      if (obn.path == "/") path_sep = ""
+
+      def atnc = new AttributeNode(
+         rmAttributeName:  attr,
+         type:             'C_SINGLE_ATTRIBUTE',
+         parent:           obn,
+         path:             obn.path             + path_sep + attr,
+         dataPath:         obn.dataPath         + path_sep + attr,
+         templatePath:     obn.templatePath     + path_sep + attr,
+         templateDataPath: obn.templateDataPath + path_sep + attr,
+         existence:        new IntervalInt( // TODO: check the RM to see the RM existence for this attribute
+            upperIncluded:  true,
+            lowerIncluded:  true,
+            upperUnbounded: false,
+            lowerUnbounded: false,
+            lower: 0,
+            upper: 1
+         )
+      )
+
+      if (type_or_types instanceof List)
+      {
+         completeNodeAlternatives(atnc, attr, type_or_types)
+      }
+      else
+      {
+         completeNodeSingle(atnc, attr, type_or_types)
+      }
+
+      obn.attributes << atnc
+   }
+
    private completeRecursive(ObjectNode obn)
    {
       // attr name -> type
@@ -317,6 +434,10 @@ class OperationalTemplate {
          if (!obn.attributes.find{ it.rmAttributeName == attr })
          {
             // TODO: support that type could be a list of possible types (inheritance structure only with concrete types), I guess here we should pick one or just add all the alternative types.
+
+            completeAttribute(obn, attr, type) // type can be a list
+
+            /*
             if (Model.primitive_types.contains(type))
             {
                aom_type = 'C_PRIMITIVE_OBJECT'
@@ -332,8 +453,6 @@ class OperationalTemplate {
                aom_type = 'C_COMPLEX_OBJECT'
                obnc = new ObjectNode()
             }
-
-            println attr
 
             // avoid // on root paths
             path_sep = "/"
@@ -357,7 +476,13 @@ class OperationalTemplate {
                )
             )
 
-            obnc.owner            = this
+
+            completeNodeSingle(atnc, attr, type)
+            */
+
+
+            /*
+            obnc.owner            = this // this template
             obnc.rmTypeName       = type
             obnc.type             = aom_type
             obnc.templatePath     = obn.templatePath +path_sep+ attr // same paths as the attr since this has no nodeId
@@ -381,14 +506,16 @@ class OperationalTemplate {
             obnc.description = obnc.parent.parent.description +'.'+ obnc.parent.rmAttributeName
 
             atnc.children << obnc
+            */
+
 
             // Add nodes to the OPT
             // supports many alternative nodes with the same path
             // TEST: should the key be templatePath or path?
-            if (!this.nodes[obnc.templatePath]) this.nodes[obnc.templatePath] = []
-            this.nodes[obnc.templatePath] << obnc
+            // if (!this.nodes[obnc.templatePath]) this.nodes[obnc.templatePath] = []
+            // this.nodes[obnc.templatePath] << obnc
 
-            obn.attributes << atnc
+//               obn.attributes << atnc
 
             // NOTE: the code below seted the node to the parent but not to the archetype root
             //       and all parent nodes, like the OPT parser does with the setFlatNodes(),
@@ -403,6 +530,7 @@ class OperationalTemplate {
             //if (!obn.nodes[obnc.path]) obn.nodes[obnc.path] = []
             //obn.nodes[obnc.path] << obnc
 
+/*
             // This while assigns the current generated node to all it's ascedant nodes,
             // in their flat list, so when getting any of those nodes, the new injected
             // node will be there and can be retrieved by it's path.
@@ -414,6 +542,7 @@ class OperationalTemplate {
 
                parent_obn = parent_obn?.parent?.parent
             }
+*/
 
             // TODO: info log
             //println "adding new node ${obnc.templatePath} to node ${obn.templatePath}"

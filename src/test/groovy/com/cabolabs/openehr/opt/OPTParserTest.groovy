@@ -182,7 +182,9 @@ class OPTParserTest extends GroovyTestCase {
       opt.complete()
       toJson.serialize(opt)
       def complete = toJson.get(true)
-      new File('a_opt_complete.json') << toJson.get(true)
+      def json = toJson.get(true)
+      new File('a_opt_complete.json') << json
+      println json
 
       assert incomplete.size() < complete.size()
    }
