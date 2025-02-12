@@ -26,8 +26,8 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.ObjectRef
 import com.cabolabs.openehr.dto_1_0_2.ehr.EhrDto
 import com.cabolabs.openehr.dto_1_0_2.demographic.*
 
-
 // TODO: there are no validators for CReal, which would work for some values like precision
+@groovy.util.logging.Slf4j
 class RmValidator2 {
 
    OptManager opt_manager
@@ -1828,8 +1828,7 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-	  // TODO: log
-      if (!o.item) println "NO ITEM "+ o.path
+      if (!o.item) log.warning("NO ITEM "+ o.path)
 
       ValidationResult valid = o.item.isValid(d) // item is could be CDateTime, CString, CDate, CDuration, etc.
 

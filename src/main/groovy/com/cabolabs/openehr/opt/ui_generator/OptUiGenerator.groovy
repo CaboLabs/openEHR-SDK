@@ -8,6 +8,7 @@ import groovy.xml.MarkupBuilder
 
 import java.util.jar.JarFile
 
+@groovy.util.logging.Slf4j
 class OptUiGenerator {
 
    OperationalTemplate opt
@@ -395,7 +396,7 @@ class OptUiGenerator {
                               }
 
                               // FIXME: constraint can be by code list or by terminology reference. For term ref we should have a search control, not a select
-                              if (constraint.codeList.size() == 0) println "Empty DV_CODED_TEXT.defining_code constraint "+ parent_arch_id + constraint.templatePath
+                              if (constraint.codeList.size() == 0) log.warning("Empty DV_CODED_TEXT.defining_code constraint "+ parent_arch_id + constraint.templatePath)
                            }
                            else if (constraint.terminologyId == 'openehr')
                            {
@@ -646,7 +647,7 @@ class OptUiGenerator {
                )
             break
             default: // TODO: generar campos para los DV_INTERVAL
-               println "Datatype "+ node.rmTypeName +" not supported yet"
+               log.info("Datatype "+ node.rmTypeName +" not supported yet")
          }
       }
 

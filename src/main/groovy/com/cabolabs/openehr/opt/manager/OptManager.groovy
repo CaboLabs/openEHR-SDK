@@ -92,14 +92,14 @@ class OptManager {
          catch (Exception e)
          {
             log.error("OPT could not be loaded from "+ location)
-            log.error(parser.getLastErrors().toString())
+            log.error(parser.getLastErrors().toString().substring(0, 200) + '...')
          }
 
          if (opt)
          {
             if (complete) opt.complete()
 
-            log.debug("Loading OPT: " + opt.templateId)
+            //log.debug("Loading OPT: " + opt.templateId)
 
             if (!this.cache[namespace]) this.cache[namespace] = [:]
             if (!this.timestamps[namespace]) this.timestamps[namespace] = [:]
@@ -110,7 +110,7 @@ class OptManager {
          else
          {
             log.error("OPT could not be loaded from "+ location)
-            log.error(parser.getLastErrors().toString())
+            log.error(parser.getLastErrors().toString().substring(0, 200) + '...')
          }
       }
 

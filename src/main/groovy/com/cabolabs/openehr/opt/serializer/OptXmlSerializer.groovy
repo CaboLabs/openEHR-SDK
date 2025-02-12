@@ -7,6 +7,7 @@ import com.cabolabs.openehr.opt.model.primitive.*
 import com.cabolabs.openehr.opt.model.domain.*
 import com.cabolabs.openehr.opt.model.datatypes.*
 
+@groovy.util.logging.Slf4j
 class OptXmlSerializer {
 
    def writer
@@ -91,8 +92,6 @@ class OptXmlSerializer {
    void fillObjectNode(ObjectNode obn)
    {
       builder.rm_type_name(obn.rmTypeName)
-
-      //if (!obn.occurrences) println obn.type +' '+ obn.path
 
       builder.occurrences {
          serialize(obn.occurrences)
@@ -318,7 +317,7 @@ class OptXmlSerializer {
       }
       else
       {
-         println "NO ITEM FOR "+ obn.path
+         log.warning("NO ITEM FOR "+ obn.path)
       }
    }
 
