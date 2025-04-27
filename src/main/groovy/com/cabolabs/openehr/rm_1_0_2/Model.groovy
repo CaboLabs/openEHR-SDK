@@ -7,24 +7,25 @@ package com.cabolabs.openehr.rm_1_0_2
 class Model {
 
    public static Map rm_attributes_not_in_opt = [
-      'EHR_STATUS': [
-         'subject': 'PARTY_SELF',
-         'is_queryable': 'Boolean',
-         'is_modifiable': 'Boolean'
+      EHR_STATUS: [
+         subject:       'PARTY_SELF',
+         is_queryable:  'Boolean',
+         is_modifiable: 'Boolean'
       ],
-      'COMPOSITION': [
-         'context': 'EVENT_CONTEXT' // if no other_context is specified the event context is not on the OPT, we need to check if it is or not to avoid double indexing.
+      COMPOSITION: [
+         composer: ['PARTY_IDENTIFIED', 'PARTY_RELATED', 'PARTY_SELF'],
+         context: 'EVENT_CONTEXT' // if no other_context is specified the event context is not on the OPT, we need to check if it is or not to avoid double indexing.
       ],
-      'EVENT_CONTEXT': [
-         'setting':        'DV_CODED_TEXT',
-         'location':       'String',
-         'start_time':     'DV_DATE_TIME',
-         'end_time':       'DV_DATE_TIME',
-         'participations': 'PARTICIPATION' // has many!
+      EVENT_CONTEXT: [
+         setting:        'DV_CODED_TEXT',
+         location:       'String',
+         start_time:     'DV_DATE_TIME',
+         end_time:       'DV_DATE_TIME',
+         participations: 'PARTICIPATION' // has many!
       ],
-      'ACTION': [
-         'time': 'DV_DATE_TIME',
-         'instruction_details': 'INSTRUCTION_DETAILS'
+      ACTION: [
+         time: 'DV_DATE_TIME',
+         instruction_details: 'INSTRUCTION_DETAILS'
       ],
       'INSTRUCTION_DETAILS': [
          'instruction_id': 'LOCATABLE_REF',

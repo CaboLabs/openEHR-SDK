@@ -33,88 +33,6 @@ class OperationalTemplate {
    // Map<String, List<ObjectNode>>
    Map nodes = [:] // TemplatePath -> lista de nodos alternativos con la misma path
 
-   // TODO: this should be RM Version dependent! maybe as external metadata files
-   // RM attributes that are not in the OPT but also need to be indexed for querying.
-   // This is like a schema, but is not including the attrs that are on OPTs.
-   /*
-   def rm_attributes_not_in_opt = [
-      'EHR_STATUS': [
-         'subject': 'PARTY_SELF',
-         'is_queryable': 'Boolean',
-         'is_modifiable': 'Boolean'
-      ],
-      'COMPOSITION': [
-         'context': 'EVENT_CONTEXT' // if no other_context is specified the event context is not on the OPT, we need to check if it is or not to avoid double indexing.
-      ],
-      'EVENT_CONTEXT': [
-         'setting': 'DV_CODED_TEXT',
-         'location': 'String',
-         'start_time': 'DV_DATE_TIME',
-         'end_time': 'DV_DATE_TIME'
-      ],
-      'ACTION': [
-         'time': 'DV_DATE_TIME',
-         'instruction_details': 'INSTRUCTION_DETAILS'
-      ],
-      'INSTRUCTION_DETAILS': [
-         'instruction_id': 'LOCATABLE_REF',
-         'activity_id': 'String'
-      ],
-      'INSTRUCTION': [
-         'narrative': 'DV_TEXT',
-         'expiry_time': 'DV_DATE_TIME'
-      ],
-      'ACTIVITY': [
-         'timing': 'DV_PARSABLE',
-         'action_archetype_id': 'String'
-      ],
-      'HISTORY': [
-         'origin': 'DV_DATE_TIME',
-         'period': 'DV_DURATION',
-         'duration': 'DV_DURATION'
-      ],
-      'EVENT': [ // to avoid issues with clients using abstract types, considered point event
-         'time': 'DV_DATE_TIME'
-      ],
-      'POINT_EVENT': [
-         'time': 'DV_DATE_TIME'
-      ],
-      'INTERVAL_EVENT': [
-         'time': 'DV_DATE_TIME',
-         'width': 'DV_DURATION'
-      ],
-      'ELEMENT': [
-         'null_flavour': 'DV_CODED_TEXT' // this could be in the opt constraining the possible codes
-      ],
-
-      // DEMOGRAPHIC
-      'PARTY_RELATIONSHIP': [
-         'source': 'PARTY_REF', // need to support queries over the relationship.source to find all the relationships of an actor
-         'time_validity': 'DV_INTERVAL'
-      ],
-      'ROLE': [
-         'time_validity': 'DV_INTERVAL'
-      ],
-      'CAPABILITY': [
-         'time_validity': 'DV_INTERVAL'
-      ],
-      'CONTACT': [
-         'time_validity': 'DV_INTERVAL'
-      ],
-
-      // REF and ID
-      'PARTY_REF': [
-         'id': 'OBJECT_VERSION_ID' // NOTE: this is OBJECT_ID but our implementation only allows OBJECT_VERSION_ID here, this should be part of the conformance statement!
-      ],
-      'OBJECT_VERSION_ID': [
-         'value': 'String' // need to query by the PARTY_REF.id by a string criteria
-      ],
-      'LOCATABLE_REF': [ // to allow to query by locatable_ref id and path, used in INSTRUCTION_DETAILS.instruction_id
-         'id': 'OBJECT_VERSION_ID',
-         'path': 'String'
-      ]
-   ]
-   */
 
    /*
     * gets a node by template path
@@ -422,7 +340,6 @@ class OperationalTemplate {
    private completeRecursive(ObjectNode obn)
    {
       // attr name -> type
-      //Map rm_attrs = rm_attributes_not_in_opt[obn.rmTypeName]
       Map rm_attrs = Model.rm_attributes_not_in_opt[obn.rmTypeName]
 
       def path_sep, aom_type, atnc, obnc, parent_obn, primitive_type
