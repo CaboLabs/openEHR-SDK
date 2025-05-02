@@ -123,45 +123,6 @@ class XmlInstanceGenerator {
 
       terminology = TerminologyParser.getInstance()
 
-      // TODO: move code to a terminology manager
-      // web environment?
-      /*
-      def terminology_repo_path = "resources"+ PS +"terminology"+ PS
-      def terminology_repo = new File(terminology_repo_path)
-      if (!terminology_repo.exists()) // try to load from resources
-      {
-         //def folder_path = Holders.grailsApplication.parentContext.getResource("resources"+ PS +"terminology"+ PS).getLocation().getPath()
-         //println "Terminology not found in file system"
-
-         // absolute route to the JAR File
-         //println new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath())
-
-         def jar = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath())
-         if (jar.isFile())
-         {
-            def real_jar_file = new JarFile(jar)
-            def entries = real_jar_file.entries()
-            def e, is
-            while (entries.hasMoreElements())
-            {
-               e = entries.nextElement()
-               if (!e.isDirectory() && e.name.startsWith(terminology_repo_path))
-               {
-                  println e.name
-                  is = real_jar_file.getInputStream(e)
-                  this.terminology.parseTerms(is) // This is loading every XML in the folder!
-               }
-            }
-            real_jar_file.close()
-         }
-      }
-      else
-      {
-         terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_en.xml"))
-         terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_es.xml"))
-         terminology.parseTerms(new File("resources"+ PS +"terminology"+ PS +"openehr_terminology_pt.xml"))
-      }
-      */
       // FIXME: load all resources in folder
       // https://www.logicbig.com/how-to/java/list-all-files-in-resouce-folder.html
       terminology.parseTerms(getClass().getResourceAsStream("/terminology/openehr_terminology_en.xml")) // this works to load the resource from the jar

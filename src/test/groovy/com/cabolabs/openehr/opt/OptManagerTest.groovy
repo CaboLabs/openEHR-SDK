@@ -7,7 +7,6 @@ import com.cabolabs.openehr.opt.ui_generator.OptUiGenerator
 import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.opt.manager.*
 import com.cabolabs.openehr.opt.instance_generator.*
-import com.cabolabs.openehr.terminology.TerminologyParser
 import com.cabolabs.openehr.opt.instance_validation.XmlValidation
 import com.cabolabs.openehr.opt.serializer.JsonSerializer
 
@@ -55,6 +54,57 @@ class OptManagerTest extends GroovyTestCase {
       }
       //man.reset()
    }
+
+   void testRootArchetype()
+   {
+      println "====== testRootArchetype ======"
+
+      String namespace = 'compo_root_nodes'
+
+      // manager users the default repo
+      assert man.getLoadedOpts(namespace).size() == 0
+      man.loadAll(namespace, true)
+      assert man.getLoadedOpts(namespace).size() == 1
+
+      /*
+      println "Referenced Archetypes from OPTManager"
+      def refArchs = man.getAllReferencedArchetypes(namespace)
+      refArchs.keySet().sort{it}.each { archId ->
+         println archId
+         refArchs[archId].each { obj ->
+            println obj.rmTypeName +' '+obj.archetypeId + obj.path
+            obj.nodes.keySet().sort{it}.each { path ->
+               if (obj.nodes[path] instanceof ObjectNode)
+                  println "\t"+ obj.nodes[path].rmTypeName +"\t"+path
+            }
+         }
+      }
+
+      println man.getNodes('openEHR-EHR-ADMIN_ENTRY.demographics.v1', '/', namespace)
+
+      println man.cache
+      */
+
+      def opt = man.getOpt('Demographics', namespace)
+      // opt.nodes.keySet().sort{it}.each{ path ->
+      //    println path
+      // }
+
+      def root = opt.findRoot("openEHR-EHR-COMPOSITION.demographics.v1")
+
+      println root
+
+      def toJson = new JsonSerializer()
+      toJson.serialize(root)
+      def json = toJson.get()
+
+      println json
+
+      //println opt.getNode('/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]')
+
+      man.reset()
+   }
+
 
    void testReferencedArchetypes()
    {

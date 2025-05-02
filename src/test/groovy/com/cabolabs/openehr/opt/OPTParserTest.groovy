@@ -826,10 +826,15 @@ class OPTParserTest extends GroovyTestCase {
    {
       def tm = TerminologyParser.getInstance()
 
-      def terms = tm.parseTerms(new File(getClass().getResource("/terminology"+ "/openehr_terminology_en.xml").toURI()))
+      tm.parseTerms(new File(getClass().getResource("/terminology"+ "/openehr_terminology_en.xml").toURI()))
       //println terms
       assert tm.getRubric('en', '433') == 'event'
-      println tm.getRubric('en', '229')
+      assert tm.getRubric('en', '229') == 'primary nursing care'
+
+      def rubrics = tm.getGroupConcepts("null_flavours")
+      rubrics.each {
+         println it.rubric
+      }
    }
 
 

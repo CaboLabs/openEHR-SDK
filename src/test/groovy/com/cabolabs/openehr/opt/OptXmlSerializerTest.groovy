@@ -290,16 +290,6 @@ class OptXmlSerializerTest extends GroovyTestCase {
       }
    }
 
-   void testTerminologyParser()
-   {
-      def tm = TerminologyParser.getInstance()
-
-      def terms = tm.parseTerms(new File(getClass().getResource("/terminology"+ "/openehr_terminology_en.xml").toURI()))
-      //println terms
-      assert tm.getRubric('en', '433') == 'event'
-      println tm.getRubric('en', '229')
-   }
-
    void testParser()
    {
       log.info(  new File('').getCanonicalPath() )

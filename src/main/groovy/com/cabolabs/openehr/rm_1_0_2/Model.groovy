@@ -74,13 +74,21 @@ class Model {
       ],
 
       // REF and ID
-      'PARTY_REF': [
-         'id': 'OBJECT_VERSION_ID' // NOTE: this is OBJECT_ID but our implementation only allows OBJECT_VERSION_ID here, this should be part of the conformance statement!
+      PARTY_REF: [
+         'id': ['GENERIC_ID', 'HIER_OBJECT_ID', 'OBJECT_VERSION_ID']
+         //'OBJECT_VERSION_ID' // NOTE: this is OBJECT_ID but our implementation only allows OBJECT_VERSION_ID here, this should be part of the conformance statement!
       ],
-      'OBJECT_VERSION_ID': [
-         'value': 'String' // need to query by the PARTY_REF.id by a string criteria
+      OBJECT_VERSION_ID: [
+         value: 'String' // need to query by the PARTY_REF.id by a string criteria
       ],
-      'LOCATABLE_REF': [ // to allow to query by locatable_ref id and path, used in INSTRUCTION_DETAILS.instruction_id
+      HIER_OBJECT_ID: [
+         value: 'String'
+      ],
+      GENERIC_ID: [
+         value: 'String'
+      ],
+
+      LOCATABLE_REF: [ // to allow to query by locatable_ref id and path, used in INSTRUCTION_DETAILS.instruction_id
          'id': 'OBJECT_VERSION_ID',
          'path': 'String'
       ],
@@ -315,7 +323,7 @@ class Model {
          archetype_details: 'ARCHETYPED',
          name:              ['DV_TEXT', 'DV_CODED_TEXT'],
          archetype_node_id: 'String',
-         uid:               ['HIER_OBJECT_ID', 'OBJECT_VERSION_ID']
+         uid:               ['HIER_OBJECT_ID', 'OBJECT_VERSION_ID'] // NOTE: only OBJECT_VERSION_ID should be used for the compo.uid
       ],
       EVENT_CONTEXT: [
          start_time:           'DV_DATE_TIME',
@@ -539,7 +547,7 @@ class Model {
          // OBJECT_REF
          namespace: 'String',
          type:      'String',
-         id:        ['GENERIC_ID', 'HIER_OBJECT_ID', 'OBJECT_VERSION_ID', 'TERMINOLOGY_ID', 'TEMPLATE_ID', 'ARCHETYPE_ID']
+         id:        ['GENERIC_ID', 'HIER_OBJECT_ID', 'OBJECT_VERSION_ID'] // NOTE: only these could be the id type for PARTY_REF.id
       ],
       LOCATABLE_REF: [
          path: 'String',

@@ -58,3 +58,33 @@ application {
     // Define the main class for the application.
     mainClass = 'com.cabolabs.openehr.opt.Main'
 }
+
+/*
+test {
+   debug = true
+   // Optionally set a specific port
+   jvmArgs '-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005'
+}
+*/
+
+/*
+sourceSets {
+   main {
+       groovy {
+           srcDirs = ['src/main/groovy']
+       }
+       resources {
+           srcDirs = ['src/main/resources']
+       }
+   }
+   test {
+       groovy {
+           srcDirs = ['src/test/groovy']
+       }
+       resources {
+           srcDirs = ['src/test/resources']
+       }
+   }
+}
+*/
+
