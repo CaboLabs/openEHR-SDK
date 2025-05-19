@@ -8,16 +8,16 @@ class Model {
 
    public static Map rm_attributes_not_in_opt = [
       EHR_STATUS: [
-         uid:           'String',
+         uid:           'OBJECT_VERSION_ID', // NOTE: in the RM all possible UID_BASED_ID could be the type but only this one is used by recommendation
          subject:       'PARTY_SELF',
          is_queryable:  'Boolean',
          is_modifiable: 'Boolean'
       ],
       FOLDER: [
-         uid:           'String'
+         uid:           'OBJECT_VERSION_ID'
       ],
       COMPOSITION: [
-         uid:           'String',
+         uid:           'OBJECT_VERSION_ID',
          composer:      ['PARTY_IDENTIFIED', 'PARTY_RELATED', 'PARTY_SELF'],
          context:       'EVENT_CONTEXT' // if no other_context is specified the event context is not on the OPT, we need to check if it is or not to avoid double indexing.
       ],
@@ -37,11 +37,11 @@ class Model {
          'activity_id': 'String'
       ],
       INSTRUCTION: [
-         narrative:   'DV_TEXT',
-         expiry_time: 'DV_DATE_TIME'
+         narrative:    'DV_TEXT',
+         expiry_time:  'DV_DATE_TIME'
       ],
       ACTIVITY: [
-         timing:      'DV_PARSABLE',
+         timing:       'DV_PARSABLE',
          action_archetype_id: 'String'
       ],
       HISTORY: [
@@ -65,24 +65,24 @@ class Model {
 
       // DEMOGRAPHIC
       PERSON: [
-         uid:           'String'
+         uid:           'OBJECT_VERSION_ID'
       ],
       ORGANISATION: [
-         uid:           'String'
+         uid:           'OBJECT_VERSION_ID'
       ],
       GROUP: [
-         uid:           'String'
+         uid:           'OBJECT_VERSION_ID'
       ],
       AGENT: [
-         uid:           'String'
+         uid:           'OBJECT_VERSION_ID'
       ],
       PARTY_RELATIONSHIP: [
-         uid:           'String',
+         uid:           'OBJECT_VERSION_ID',
          source:        'PARTY_REF', // need to support queries over the relationship.source to find all the relationships of an actor
          time_validity: 'DV_INTERVAL<DV_DATE>'
       ],
       ROLE: [
-         uid:           'String',
+         uid:           'OBJECT_VERSION_ID',
          time_validity: 'DV_INTERVAL<DV_DATE>'
       ],
       CAPABILITY: [
@@ -145,8 +145,8 @@ class Model {
       // DVs: this is for the DV_INTERVAL types here, to complete it's internal structs
       // NOTE: need to match specific type of DV_INTERVAL
       'DV_INTERVAL<DV_DATE>': [
-         'lower': 'DV_DATE',
-         'upper': 'DV_DATE'
+         lower: 'DV_DATE',
+         upper: 'DV_DATE'
       ],
       'DV_INTERVAL<DV_DATE_TIME>': [
          'lower': 'DV_DATE_TIME',
@@ -328,7 +328,7 @@ class Model {
          // LOCATABLE
          name:                 ['DV_TEXT', 'DV_CODED_TEXT'],
          archetype_node_id:    'String',
-         uid:                  'UID_BASED_ID',
+         uid:                  ['HIER_OBJECT_ID', 'OBJECT_VERSION_ID'],
          archetype_details:    'ARCHETYPED'
       ],
       COMPOSITION: [
@@ -339,10 +339,10 @@ class Model {
          content:   ['SECTION', 'ADMIN_ENTRY', 'OBSERVATION', 'EVALUATION', 'INSTRUCTION', 'ACTION'], // list because the type is abstract, multiple attribute, can query the multiple attr map
          context:   'EVENT_CONTEXT', // if no other_context is specified the event context is not on the OPT, we need to check if it is or not to avoid double indexing.
          // LOCATABLE
-         archetype_details: 'ARCHETYPED',
-         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
-         archetype_node_id: 'String',
-         uid:               ['HIER_OBJECT_ID', 'OBJECT_VERSION_ID'] // NOTE: only OBJECT_VERSION_ID should be used for the compo.uid
+         archetype_details:    'ARCHETYPED',
+         name:                 ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_node_id:    'String',
+         uid:                  'OBJECT_VERSION_ID' // NOTE: only OBJECT_VERSION_ID should be used for the compo.uid
       ],
       EVENT_CONTEXT: [
          start_time:           'DV_DATE_TIME',
@@ -358,7 +358,7 @@ class Model {
          // LOCATABLE
          name:                 ['DV_TEXT', 'DV_CODED_TEXT'],
          archetype_node_id:    'String',
-         uid:                  'UID_BASED_ID',
+         uid:                  ['HIER_OBJECT_ID', 'OBJECT_VERSION_ID'],
          archetype_details:    'ARCHETYPED'
       ],
       OBSERVATION: [
@@ -376,7 +376,7 @@ class Model {
          // LOCATABLE
          name:                 ['DV_TEXT', 'DV_CODED_TEXT'],
          archetype_node_id:    'String',
-         uid:                  'UID_BASED_ID',
+         uid:                  ['HIER_OBJECT_ID', 'OBJECT_VERSION_ID'],
          archetype_details:    'ARCHETYPED'
       ],
       EVALUATION: [
@@ -393,7 +393,7 @@ class Model {
          // LOCATABLE
          name:                 ['DV_TEXT', 'DV_CODED_TEXT'],
          archetype_node_id:    'String',
-         uid:                  'UID_BASED_ID',
+         uid:                  ['HIER_OBJECT_ID', 'OBJECT_VERSION_ID'],
          archetype_details:    'ARCHETYPED'
       ],
       INSTRUCTION: [
@@ -413,7 +413,7 @@ class Model {
          // LOCATABLE
          name:                 ['DV_TEXT', 'DV_CODED_TEXT'],
          archetype_node_id:    'String',
-         uid:                  'UID_BASED_ID',
+         uid:                  ['HIER_OBJECT_ID', 'OBJECT_VERSION_ID'],
          archetype_details:    'ARCHETYPED'
       ],
       ACTION: [
@@ -433,7 +433,7 @@ class Model {
          // LOCATABLE
          name:                 ['DV_TEXT', 'DV_CODED_TEXT'],
          archetype_node_id:    'String',
-         uid:                  'UID_BASED_ID',
+         uid:                  ['HIER_OBJECT_ID', 'OBJECT_VERSION_ID'],
          archetype_details:    'ARCHETYPED'
       ],
       ADMIN_ENTRY: [
@@ -447,7 +447,7 @@ class Model {
          // LOCATABLE
          name:                 ['DV_TEXT', 'DV_CODED_TEXT'],
          archetype_node_id:    'String',
-         uid:                  'UID_BASED_ID',
+         uid:                  ['HIER_OBJECT_ID', 'OBJECT_VERSION_ID'],
          archetype_details:    'ARCHETYPED'
       ],
       INSTRUCTION_DETAILS: [
@@ -456,13 +456,13 @@ class Model {
          wf_details:          ['ITEM_TREE', 'ITEM_LIST', 'ITEM_TABLE', 'ITEM_SINGLE']
       ],
       ACTIVITY: [
-         description:         ['ITEM_TREE', 'ITEM_LIST', 'ITEM_TABLE', 'ITEM_SINGLE'],
-         timing:              'DV_PARSABLE',
-         action_archetype_id: 'String',
+         description:          ['ITEM_TREE', 'ITEM_LIST', 'ITEM_TABLE', 'ITEM_SINGLE'],
+         timing:               'DV_PARSABLE',
+         action_archetype_id:  'String',
          // LOCATABLE
          name:                 ['DV_TEXT', 'DV_CODED_TEXT'],
          archetype_node_id:    'String',
-         uid:                  'UID_BASED_ID',
+         uid:                  ['HIER_OBJECT_ID', 'OBJECT_VERSION_ID'],
          archetype_details:    'ARCHETYPED'
       ],
       HISTORY: [
@@ -474,7 +474,7 @@ class Model {
          // LOCATABLE
          name:                 ['DV_TEXT', 'DV_CODED_TEXT'],
          archetype_node_id:    'String',
-         uid:                  'UID_BASED_ID',
+         uid:                  ['HIER_OBJECT_ID', 'OBJECT_VERSION_ID'],
          archetype_details:    'ARCHETYPED'
       ],
       // FIXME: this type shouldn't be in the schema
@@ -504,7 +504,7 @@ class Model {
          // LOCATABLE
          name:                 ['DV_TEXT', 'DV_CODED_TEXT'],
          archetype_node_id:    'String',
-         uid:                  'UID_BASED_ID',
+         uid:                  ['HIER_OBJECT_ID', 'OBJECT_VERSION_ID'],
          archetype_details:    'ARCHETYPED'
       ],
 
@@ -513,7 +513,7 @@ class Model {
          // LOCATABLE
          name:                 ['DV_TEXT', 'DV_CODED_TEXT'],
          archetype_node_id:    'String',
-         uid:                  'UID_BASED_ID',
+         uid:                  ['HIER_OBJECT_ID', 'OBJECT_VERSION_ID'],
          archetype_details:    'ARCHETYPED'
       ],
       ELEMENT: [
@@ -536,7 +536,7 @@ class Model {
          // LOCATABLE
          name:                 ['DV_TEXT', 'DV_CODED_TEXT'],
          archetype_node_id:    'String',
-         uid:                  'UID_BASED_ID',
+         uid:                  ['HIER_OBJECT_ID', 'OBJECT_VERSION_ID'],
          archetype_details:    'ARCHETYPED'
       ],
       PARTY_IDENTIFIED: [
@@ -569,11 +569,11 @@ class Model {
          id:        ['GENERIC_ID', 'HIER_OBJECT_ID', 'OBJECT_VERSION_ID'] // NOTE: only these could be the id type for PARTY_REF.id
       ],
       LOCATABLE_REF: [
-         path: 'String',
+         path:      'String',
          // OBJECT_REF
          namespace: 'String',
-         type: 'String',
-         id: ['HIER_OBJECT_ID', 'OBJECT_VERSION_ID'] // LOCATABLE_REF redefines id to be only UID_BASED_ID
+         type:      'String',
+         id:        'OBJECT_VERSION_ID' // LOCATABLE_REF redefines id to be only UID_BASED_ID
       ],
       GENERIC_ID: [
          scheme: 'String',
