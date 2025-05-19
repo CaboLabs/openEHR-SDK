@@ -8,13 +8,18 @@ class Model {
 
    public static Map rm_attributes_not_in_opt = [
       EHR_STATUS: [
+         uid:           'String',
          subject:       'PARTY_SELF',
          is_queryable:  'Boolean',
          is_modifiable: 'Boolean'
       ],
+      FOLDER: [
+         uid:           'String'
+      ],
       COMPOSITION: [
-         composer: ['PARTY_IDENTIFIED', 'PARTY_RELATED', 'PARTY_SELF'],
-         context: 'EVENT_CONTEXT' // if no other_context is specified the event context is not on the OPT, we need to check if it is or not to avoid double indexing.
+         uid:           'String',
+         composer:      ['PARTY_IDENTIFIED', 'PARTY_RELATED', 'PARTY_SELF'],
+         context:       'EVENT_CONTEXT' // if no other_context is specified the event context is not on the OPT, we need to check if it is or not to avoid double indexing.
       ],
       EVENT_CONTEXT: [
          setting:        'DV_CODED_TEXT',
@@ -27,50 +32,64 @@ class Model {
          time: 'DV_DATE_TIME',
          instruction_details: 'INSTRUCTION_DETAILS'
       ],
-      'INSTRUCTION_DETAILS': [
+      INSTRUCTION_DETAILS: [
          'instruction_id': 'LOCATABLE_REF',
          'activity_id': 'String'
       ],
-      'INSTRUCTION': [
-         'narrative': 'DV_TEXT',
-         'expiry_time': 'DV_DATE_TIME'
+      INSTRUCTION: [
+         narrative:   'DV_TEXT',
+         expiry_time: 'DV_DATE_TIME'
       ],
-      'ACTIVITY': [
-         'timing': 'DV_PARSABLE',
-         'action_archetype_id': 'String'
+      ACTIVITY: [
+         timing:      'DV_PARSABLE',
+         action_archetype_id: 'String'
       ],
-      'HISTORY': [
-         'origin': 'DV_DATE_TIME',
-         'period': 'DV_DURATION',
-         'duration': 'DV_DURATION'
+      HISTORY: [
+         origin:       'DV_DATE_TIME',
+         period:       'DV_DURATION',
+         duration:     'DV_DURATION'
       ],
-      'EVENT': [ // to avoid issues with clients using abstract types, considered point event
-         'time': 'DV_DATE_TIME'
+      EVENT: [ // to avoid issues with clients using abstract types, considered point event
+         time:         'DV_DATE_TIME'
       ],
-      'POINT_EVENT': [
-         'time': 'DV_DATE_TIME'
+      POINT_EVENT: [
+         time:         'DV_DATE_TIME'
       ],
-      'INTERVAL_EVENT': [
+      INTERVAL_EVENT: [
          'time': 'DV_DATE_TIME',
          'width': 'DV_DURATION'
       ],
-      'ELEMENT': [
+      ELEMENT: [
          'null_flavour': 'DV_CODED_TEXT' // this could be in the opt constraining the possible codes
       ],
 
       // DEMOGRAPHIC
-      'PARTY_RELATIONSHIP': [
-         'source': 'PARTY_REF', // need to support queries over the relationship.source to find all the relationships of an actor
+      PERSON: [
+         uid:           'String'
+      ],
+      ORGANISATION: [
+         uid:           'String'
+      ],
+      GROUP: [
+         uid:           'String'
+      ],
+      AGENT: [
+         uid:           'String'
+      ],
+      PARTY_RELATIONSHIP: [
+         uid:           'String',
+         source:        'PARTY_REF', // need to support queries over the relationship.source to find all the relationships of an actor
+         time_validity: 'DV_INTERVAL<DV_DATE>'
+      ],
+      ROLE: [
+         uid:           'String',
+         time_validity: 'DV_INTERVAL<DV_DATE>'
+      ],
+      CAPABILITY: [
          'time_validity': 'DV_INTERVAL<DV_DATE>'
       ],
-      'ROLE': [
-         'time_validity': 'DV_INTERVAL<DV_DATE>'
-      ],
-      'CAPABILITY': [
-         'time_validity': 'DV_INTERVAL<DV_DATE>'
-      ],
-      'CONTACT': [
-         'time_validity': 'DV_INTERVAL<DV_DATE>'
+      CONTACT: [
+         time_validity: 'DV_INTERVAL<DV_DATE>'
       ],
 
       // REF and ID
