@@ -49,7 +49,7 @@
     },
     "context": {
         "start_time": {
-            "value": "20210502T031711,582-0300"
+            "value": "2021-05-02T03:17:11.582-03:00"
         },
         "setting": {
             "value": "emergency care",
@@ -162,7 +162,7 @@
                 "archetype_node_id": "at0001",
                 "origin": {
                     "_type": "DV_DATE_TIME",
-                    "value": "20210502T031711,650-0300"
+                    "value": "2021-05-02T03:17:11.650-03:00"
                 },
                 "events": [
                     {
@@ -174,7 +174,7 @@
                         "archetype_node_id": "at0002",
                         "time": {
                             "_type": "DV_DATE_TIME",
-                            "value": "20210502T031711,657-0300"
+                            "value": "2021-05-02T03:17:11.657-03:00"
                         },
                         "data": {
                             "_type": "ITEM_TREE",

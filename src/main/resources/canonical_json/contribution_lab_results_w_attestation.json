@@ -19,7 +19,7 @@
                 "_type": "ATTESTATION",
                 "system_id": "CABOLABS_EHR",
                 "time_committed": {
-                    "value": "20200823T070458,689+0000"
+                    "value": "2020-08-23T07:04:58.689Z"
                 },
                 "change_type": {
                     "value": "creation",
@@ -94,7 +94,7 @@
                 },
                 "context": {
                     "start_time": {
-                        "value": "20200629T212517,759+0000"
+                        "value": "2020-06-29T21:25:17.759Z"
                     },
                     "setting": {
                         "value": "home",
@@ -192,7 +192,7 @@
                                     "archetype_node_id": "at0075",
                                     "value": {
                                         "_type": "DV_DATE_TIME",
-                                        "value": "20200629T212517,773+0000"
+                                        "value": "2020-06-29T21:25:17.773Z"
                                     }
                                 }
                             ]
@@ -206,7 +206,7 @@
                             "archetype_node_id": "at0001",
                             "origin": {
                                 "_type": "DV_DATE_TIME",
-                                "value": "20200629T212517,773+0000"
+                                "value": "2020-06-29T21:25:17.773Z"
                             },
                             "events": [
                                 {
@@ -218,7 +218,7 @@
                                     "archetype_node_id": "at0002",
                                     "time": {
                                         "_type": "DV_DATE_TIME",
-                                        "value": "20200629T212517,773+0000"
+                                        "value": "2020-06-29T21:25:17.773Z"
                                     },
                                     "data": {
                                         "_type": "ITEM_TREE",
@@ -669,7 +669,7 @@
                                     "archetype_node_id": "at0075",
                                     "value": {
                                         "_type": "DV_DATE_TIME",
-                                        "value": "20200629T212517,833+0000"
+                                        "value": "2020-06-29T21:25:17.833Z"
                                     }
                                 }
                             ]
@@ -683,7 +683,7 @@
                             "archetype_node_id": "at0001",
                             "origin": {
                                 "_type": "DV_DATE_TIME",
-                                "value": "20200629T212517,834+0000"
+                                "value": "2020-06-29T21:25:17.834Z"
                             },
                             "events": [
                                 {
@@ -695,7 +695,7 @@
                                     "archetype_node_id": "at0002",
                                     "time": {
                                         "_type": "DV_DATE_TIME",
-                                        "value": "20200629T212517,839+0000"
+                                        "value": "2020-06-29T21:25:17.839Z"
                                     },
                                     "data": {
                                         "_type": "ITEM_TREE",
@@ -1067,7 +1067,7 @@
         "_type": "AUDIT_DETAILS",
         "system_id": "CABOLABS_EHR",
         "time_committed": {
-            "value": "20200823T070458,689+0000"
+            "value": "2020-08-23T07:04:58.689Z"
         },
         "change_type": {
             "value": "creation",

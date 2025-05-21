@@ -1,0 +1,76 @@
+{
+	"_type": "PARTY_RELATIONSHIP",
+	"name": {
+		"_type": "DV_TEXT",
+		"value": "generic relationship"
+	},
+	"uid": {
+		"_type": "OBJECT_VERSION_ID",
+		"value": "b870bd2d-8402-43e5-90e2-dfd42d01f935::ATOMIK::1"
+	},
+	"archetype_details": {
+		"archetype_id": {
+			"value": "openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.generic_relationship.v1"
+		},
+		"template_id": {
+			"valuexxx": "generic_relationship"
+		},
+		"rm_version": "1.0.2"
+	},
+	"archetype_node_id": "openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.generic_relationship.v1",
+	"details": {
+		"_type": "ITEM_TREE",
+		"name": {
+			"_type": "DV_TEXT",
+			"value": "tree"
+		},
+		"archetype_node_id": "at0001",
+		"items": [
+			{
+				"_type": "ELEMENT",
+				"name": {
+					"_type": "DV_TEXT",
+					"value": "relationship type"
+				},
+				"archetype_node_id": "at0002",
+				"value": {
+					"_type": "DV_CODED_TEXT",
+					"value": "Natural child",
+					"defining_code": {
+						"terminology_id": {
+							"_type": "TERMINOLOGY_ID",
+							"value": "SNOMED-CT"
+						},
+						"code_string": "75226009"
+					}
+				}
+			}
+		]
+	},
+	"time_validity": {
+		"lower": {
+			"_type": "DV_DATE",
+			"value": "2025-44-55s"
+		},
+		"lower_included": true,
+		"lower_unbounded": false,
+		"upper_included": false,
+		"upper_unbounded": true
+	},
+	"source": {
+		"id": {
+			"_type": "OBJECT_VERSION_ID",
+			"value": "d6fbc2d1-33ce-4915-9111-97da473f7bec"
+		},
+		"namespace": "demographic",
+		"type": "PERSON"
+	},
+	"target": {
+		"id": {
+			"_type": "OBJECT_VERSION_ID",
+			"value": "8e8ba474-96b3-4fc4-a823-39606e28ea3d"
+		},
+		"namespace": "demographic",
+		"type": "PERSON"
+	}
+}

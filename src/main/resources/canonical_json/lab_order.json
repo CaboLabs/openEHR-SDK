@@ -49,7 +49,7 @@
     },
     "context": {
         "start_time": {
-            "value": "20200624T212056,227+0000"
+            "value": "2020-06-24T21:20:56.227Z"
         },
         "setting": {
             "value": "emergency care",
@@ -236,7 +236,7 @@
                                 "archetype_node_id": "at0040.1",
                                 "value": {
                                     "_type": "DV_DATE_TIME",
-                                    "value": "20200624T212056,281+0000"
+                                    "value": "2020-06-24T21:20:56.281Z"
                                 }
                             },
                             {
@@ -248,7 +248,7 @@
                                 "archetype_node_id": "at0144.1",
                                 "value": {
                                     "_type": "DV_DATE_TIME",
-                                    "value": "20200624T212056,281+0000"
+                                    "value": "2020-06-24T21:20:56.281Z"
                                 }
                             },
                             {

@@ -118,6 +118,8 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       def parser = new OpenEhrJsonParserQuick(true) // true validates against JSON Schema
       Folder f = (Folder)parser.parseJson(json)
 
+      println parser.getJsonValidationErrors()
+
       assert f
 
       assert f.items.size() == 1
@@ -1053,7 +1055,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
                   }
                },
                "time_committed": {
-                  "value": "2023-03-27T00:03:30+0000"
+                  "value": "2023-03-27T00:03:30Z"
                },
                "change_type": {
                   "value": "creation",

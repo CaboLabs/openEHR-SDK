@@ -49,7 +49,7 @@
     },
     "context": {
         "start_time": {
-            "value": "20200817T232252,107+0000"
+            "value": "2020-08-17T23:22:52.107+00:00"
         },
         "setting": {
             "value": "primary medical care",
@@ -101,7 +101,7 @@
                         "archetype_node_id": "at0070",
                         "value": {
                             "_type": "DV_DATE_TIME",
-                            "value": "20200817T232252,174+0000"
+                            "value": "2020-08-17T23:22:52.174+00:00"
                         }
                     }
                 ]
@@ -205,7 +205,7 @@
                         "archetype_node_id": "at0077",
                         "value": {
                             "_type": "DV_DATE_TIME",
-                            "value": "20200817T232252,198+0000"
+                            "value": "2020-08-17T23:22:52.198+00:00"
                         }
                     },
                     {
@@ -217,7 +217,7 @@
                         "archetype_node_id": "at0003",
                         "value": {
                             "_type": "DV_DATE_TIME",
-                            "value": "20200817T232252,198+0000"
+                            "value": "2020-08-17T23:22:52.198+00:00"
                         }
                     },
                     {
@@ -345,7 +345,7 @@
                         "archetype_node_id": "at0030",
                         "value": {
                             "_type": "DV_DATE_TIME",
-                            "value": "20200817T232252,216+0000"
+                            "value": "2020-08-17T23:22:52.216+00:00"
                         }
                     },
                     {

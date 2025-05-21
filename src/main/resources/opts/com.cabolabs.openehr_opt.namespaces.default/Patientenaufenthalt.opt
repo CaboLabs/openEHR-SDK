@@ -337,8 +337,8 @@
                   <items id="text">Fall-Beginn</items>
                 </term_definitions>
                 <term_definitions code="at0003">
-                  <items id="description">Der Status des Falls. 
-Der Status "abgeschlossen" bedeutet, dass dem Patienten die entsprechende Fallnummer zugeordnet wurde. 
+                  <items id="description">Der Status des Falls.
+Der Status "abgeschlossen" bedeutet, dass dem Patienten die entsprechende Fallnummer zugeordnet wurde.
 Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnummer fälschlicherweise zugeordnet wurde.</items>
                   <items id="text">Status</items>
                 </term_definitions>
@@ -536,8 +536,8 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                   <items id="text">Fall-Beginn</items>
                 </term_definitions>
                 <term_definitions code="at0003">
-                  <items id="description">Der Status des Falls. 
-Der Status "abgeschlossen" bedeutet, dass dem Patienten die entsprechende Fallnummer zugeordnet wurde. 
+                  <items id="description">Der Status des Falls.
+Der Status "abgeschlossen" bedeutet, dass dem Patienten die entsprechende Fallnummer zugeordnet wurde.
 Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnummer fälschlicherweise zugeordnet wurde.</items>
                   <items id="text">Status</items>
                 </term_definitions>
@@ -735,8 +735,8 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                   <items id="text">Fall-Beginn</items>
                 </term_definitions>
                 <term_definitions code="at0003">
-                  <items id="description">Der Status des Falls. 
-Der Status "abgeschlossen" bedeutet, dass dem Patienten die entsprechende Fallnummer zugeordnet wurde. 
+                  <items id="description">Der Status des Falls.
+Der Status "abgeschlossen" bedeutet, dass dem Patienten die entsprechende Fallnummer zugeordnet wurde.
 Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnummer fälschlicherweise zugeordnet wurde.</items>
                   <items id="text">Status</items>
                 </term_definitions>
@@ -1666,7 +1666,7 @@ gebräuchlichen Namen, einer formellen und vollständig beschreibenden Bezeichnu
                       <items id="text">Beschreibung</items>
                     </term_definitions>
                     <term_definitions code="at0003">
-                      <items id="comment">Nicht zutreffend, wenn eine Kategorie bereits unter "Gerätename" dokumentiert ist. 
+                      <items id="comment">Nicht zutreffend, wenn eine Kategorie bereits unter "Gerätename" dokumentiert ist.
 Beispiel: Wenn das 'Gerät' als 'Harnkatheter' bezeichnet wird; der 'Typ' kann als 'Verweilkatheter' oder 'Kondom' aufgezeichnet werden. Die Codierung mit einer Terminologie ist wünschenswert, sofern dies möglich ist. Dies kann die Verwendung von GTIN- oder EAN-Nummern einschließen.</items>
                       <items id="description">Die Kategorie des Medizingeräts.</items>
                       <items id="text">Gerätetyp</items>
@@ -1728,7 +1728,7 @@ Beispiel: Wenn das 'Gerät' als 'Harnkatheter' bezeichnet wird; der 'Typ' kann a
                       <items id="text">Weitere ID</items>
                     </term_definitions>
                     <term_definitions code="at0025">
-                      <items id="comment">Wenn das Medizinprodukt eine eigentliche Softwareanwendung ist, erfassen Sie die Version der Software mit diesem Datenelement. Wenn in dem Medizingerät mehrere Softwareanwendungen eingebettet sind, zeichnen Sie jede Softwarekomponente in einem separaten CLUSTER-Archetyp im 
+                      <items id="comment">Wenn das Medizinprodukt eine eigentliche Softwareanwendung ist, erfassen Sie die Version der Software mit diesem Datenelement. Wenn in dem Medizingerät mehrere Softwareanwendungen eingebettet sind, zeichnen Sie jede Softwarekomponente in einem separaten CLUSTER-Archetyp im
 Komponenten-SLOT auf - entweder als verschachtelte Instanz eines
 anderen CLUSTER.device-Archetyps oder unter Verwendung eines
 CLUSTER-Archetyps, der speziell für die Aufzeichnung von
@@ -2313,7 +2313,7 @@ Die Organisation, die für die Bereitstellung und den Unterhalt des Standorts ve
                 <term_definitions code="0200">
                   <items id="text">Geriatrie</items>
                 </term_definitions>
-                <term_definitions code="0300">
+                <term_definitions code="03:00">
                   <items id="text">Kardiologie</items>
                 </term_definitions>
                 <term_definitions code="0400">

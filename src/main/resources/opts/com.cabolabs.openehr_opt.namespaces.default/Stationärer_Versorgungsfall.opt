@@ -919,7 +919,7 @@
                 <term_definitions code="0200">
                   <items id="text">Geriatrie</items>
                 </term_definitions>
-                <term_definitions code="0300">
+                <term_definitions code="03:00">
                   <items id="text">Kardiologie</items>
                 </term_definitions>
                 <term_definitions code="0400">

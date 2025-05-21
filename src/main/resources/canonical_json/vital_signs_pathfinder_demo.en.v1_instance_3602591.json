@@ -12,7 +12,7 @@
         "_type": "AUDIT_DETAILS",
         "system_id": "CABOLABS_EHR",
         "time_committed": {
-            "value": "20200607T010639,652+0000"
+            "value": "2020-06-07T01:06:39.652Z"
         },
         "change_type": {
             "value": "creation",
@@ -90,7 +90,7 @@
         },
         "context": {
             "start_time": {
-                "value": "20200607T010639,672+0000"
+                "value": "2020-06-07T01:06:39.672Z"
             },
             "setting": {
                 "value": "primary medical care",
@@ -198,7 +198,7 @@
                     "archetype_node_id": "at0001",
                     "origin": {
                         "_type": "DV_DATE_TIME",
-                        "value": "20200607T010639,744+0000"
+                        "value": "2020-06-07T01:06:39.744Z"
                     },
                     "events": [
                         {
@@ -210,7 +210,7 @@
                             "archetype_node_id": "at0006",
                             "time": {
                                 "_type": "DV_DATE_TIME",
-                                "value": "20200607T010639,746+0000"
+                                "value": "2020-06-07T01:06:39.746Z"
                             },
                             "data": {
                                 "_type": "ITEM_TREE",
@@ -394,7 +394,7 @@
                     "archetype_node_id": "at0002",
                     "origin": {
                         "_type": "DV_DATE_TIME",
-                        "value": "20200607T010639,795+0000"
+                        "value": "2020-06-07T01:06:39.795Z"
                     },
                     "events": [
                         {
@@ -406,7 +406,7 @@
                             "archetype_node_id": "at0003",
                             "time": {
                                 "_type": "DV_DATE_TIME",
-                                "value": "20200607T010639,795+0000"
+                                "value": "2020-06-07T01:06:39.795Z"
                             },
                             "data": {
                                 "_type": "ITEM_TREE",
@@ -505,7 +505,7 @@
                     },
                     "archetype_node_id": "at0007",
                     "items": [
-                        
+
                     ]
                 },
                 "data": {
@@ -517,7 +517,7 @@
                     "archetype_node_id": "at0001",
                     "origin": {
                         "_type": "DV_DATE_TIME",
-                        "value": "20200607T010639,807+0000"
+                        "value": "2020-06-07T01:06:39.807Z"
                     },
                     "events": [
                         {
@@ -529,7 +529,7 @@
                             "archetype_node_id": "at0002",
                             "time": {
                                 "_type": "DV_DATE_TIME",
-                                "value": "20200607T010639,807+0000"
+                                "value": "2020-06-07T01:06:39.807Z"
                             },
                             "data": {
                                 "_type": "ITEM_TREE",
@@ -748,7 +748,7 @@
                     "archetype_node_id": "at0002",
                     "origin": {
                         "_type": "DV_DATE_TIME",
-                        "value": "20200607T010639,863+0000"
+                        "value": "2020-06-07T01:06:39.863Z"
                     },
                     "events": [
                         {
@@ -760,7 +760,7 @@
                             "archetype_node_id": "at0003",
                             "time": {
                                 "_type": "DV_DATE_TIME",
-                                "value": "20200607T010639,864+0000"
+                                "value": "2020-06-07T01:06:39.864Z"
                             },
                             "data": {
                                 "_type": "ITEM_TREE",
@@ -907,7 +907,7 @@
                     },
                     "archetype_node_id": "at0015",
                     "items": [
-                        
+
                     ]
                 },
                 "data": {
@@ -919,7 +919,7 @@
                     "archetype_node_id": "at0002",
                     "origin": {
                         "_type": "DV_DATE_TIME",
-                        "value": "20200607T010639,895+0000"
+                        "value": "2020-06-07T01:06:39.895Z"
                     },
                     "events": [
                         {
@@ -931,7 +931,7 @@
                             "archetype_node_id": "at0003",
                             "time": {
                                 "_type": "DV_DATE_TIME",
-                                "value": "20200607T010639,896+0000"
+                                "value": "2020-06-07T01:06:39.896Z"
                             },
                             "data": {
                                 "_type": "ITEM_TREE",

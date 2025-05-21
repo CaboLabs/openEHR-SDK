@@ -19,7 +19,7 @@
       <name>Dr. House</name>
     </committer>
     <time_committed>
-      <value>20190114T183649,250+0000</value>
+      <value>20190114T183649,250+Z</value>
     </time_committed>
     <change_type>
       <value>creation</value>
@@ -80,7 +80,7 @@
     </composer>
     <context>
       <start_time>
-        <value>20190114T183649,294+0000</value>
+        <value>20190114T183649,294+Z</value>
       </start_time>
       <setting>
         <value>Hospital D</value>
@@ -114,14 +114,14 @@
           <value>Event Series</value>
         </name>
         <origin xsi:type="DV_DATE_TIME">
-          <value>20190114T183649,326+0000</value>
+          <value>20190114T183649,326+Z</value>
         </origin>
         <events archetype_node_id="at0002" xsi:type="POINT_EVENT">
           <name>
             <value>Cualquier evento</value>
           </name>
           <time xsi:type="DV_DATE_TIME">
-            <value>20190114T183649,332+0000</value>
+            <value>20190114T183649,332+Z</value>
           </time>
           <data archetype_node_id="at0003" xsi:type="ITEM_TREE">
             <name>
@@ -193,7 +193,7 @@
                 <value>datetime</value>
               </name>
               <value xsi:type="DV_DATE_TIME">
-                <value>20190114T183649,426+0000</value>
+                <value>20190114T183649,426+Z</value>
               </value>
             </items>
             <items archetype_node_id="at0011" xsi:type="ELEMENT">
@@ -201,7 +201,7 @@
                 <value>datetime any</value>
               </name>
               <value xsi:type="DV_DATE_TIME">
-                <value>20190114T183649,427+0000</value>
+                <value>20190114T183649,427+Z</value>
               </value>
             </items>
             <items archetype_node_id="at0012" xsi:type="ELEMENT">
@@ -359,10 +359,10 @@
           </name>
           <value xsi:type="DV_INTERVAL"><!-- note specific type is not valid here: DV_INERVAL<DV_COUNT> doesn't exist in the XSD -->
            <lower xsi:type="DV_DATE_TIME">
-             <value>20190114T183649,426+0000</value>
+             <value>20190114T183649,426+Z</value>
            </lower>
            <upper xsi:type="DV_DATE_TIME">
-             <value>20190114T183649,426+0000</value>
+             <value>20190114T183649,426+Z</value>
            </upper>
            <lower_unbounded>false</lower_unbounded>
            <upper_unbounded>false</upper_unbounded>
@@ -455,7 +455,7 @@
                     <value>partial datetime</value>
                   </name>
                   <value xsi:type="DV_DATE_TIME">
-                    <value>20190114T183649,426+0000</value>
+                    <value>20190114T183649,426+Z</value>
                   </value>
                 </items>
               </description>
@@ -484,7 +484,7 @@
             </encoding>
             <subject xsi:type="PARTY_SELF" />
             <time xsi:type="DV_DATE_TIME">
-              <value>20190114T183650,154+0000</value>
+              <value>20190114T183650,154+Z</value>
             </time>
             <description archetype_node_id="at0001" xsi:type="ITEM_TREE">
               <name>

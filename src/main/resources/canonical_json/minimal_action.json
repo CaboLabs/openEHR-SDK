@@ -49,7 +49,7 @@
     },
     "context": {
         "start_time": {
-            "value": "20200730T152210,874+0000"
+            "value": "2020-07-30T15:22:10.874Z"
         },
         "setting": {
             "value": "primary medical care",
@@ -86,7 +86,7 @@
             },
             "time": {
                 "_type": "DV_DATE_TIME",
-                "value": "20200730T152210,874+0000"
+                "value": "2020-07-30T15:22:10.874Z"
             },
             "description": {
                 "_type": "ITEM_TREE",

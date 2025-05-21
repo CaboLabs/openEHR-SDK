@@ -19,7 +19,7 @@
 				<name>Dr. Yamamoto</name>
 			</committer>
 			<time_committed>
-				<value>20210906T013121,717+0000</value>
+				<value>20210906T013121,717+Z</value>
 			</time_committed>
 			<change_type>
 				<value>creation</value>
@@ -77,7 +77,7 @@
 			</composer>
 			<context>
 				<start_time>
-					<value>20210905T184540,736+0000</value>
+					<value>20210905T184540,736+Z</value>
 				</start_time>
 				<setting>
 					<value>emergency care</value>
@@ -111,14 +111,14 @@
 						<value>Event Series</value>
 					</name>
 					<origin xsi:type="DV_DATE_TIME">
-						<value>20210905T184540,738+0000</value>
+						<value>20210905T184540,738+Z</value>
 					</origin>
 					<events archetype_node_id="at0002" xsi:type="POINT_EVENT">
 						<name>
 							<value>Cualquier evento</value>
 						</name>
 						<time xsi:type="DV_DATE_TIME">
-							<value>20210905T184540,739+0000</value>
+							<value>20210905T184540,739+Z</value>
 						</time>
 						<data archetype_node_id="at0003" xsi:type="ITEM_TREE">
 							<name>
@@ -182,7 +182,7 @@
 									<value>Datetime</value>
 								</name>
 								<value xsi:type="DV_DATE_TIME">
-									<value>20210905T184540,746+0000</value>
+									<value>20210905T184540,746+Z</value>
 								</value>
 							</items>
 							<items archetype_node_id="at0013" xsi:type="ELEMENT">
@@ -260,10 +260,10 @@
 								</name>
 								<value xsi:type="DV_INTERVAL">
 									<lower xsi:type="DV_DATE_TIME">
-										<value>20210905T184540,785+0000</value>
+										<value>20210905T184540,785+Z</value>
 									</lower>
 									<upper xsi:type="DV_DATE_TIME">
-										<value>20210905T184540,787+0000</value>
+										<value>20210905T184540,787+Z</value>
 									</upper>
 									<lower_unbounded>true</lower_unbounded>
 									<upper_unbounded>true</upper_unbounded>

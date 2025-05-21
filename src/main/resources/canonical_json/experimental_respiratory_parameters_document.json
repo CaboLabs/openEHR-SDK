@@ -12,7 +12,7 @@
         "_type": "AUDIT_DETAILS",
         "system_id": "CABOLABS_EHR",
         "time_committed": {
-            "value": "20200823T070458,689+0000"
+            "value": "2020-08-23T07:04:58.689Z"
         },
         "change_type": {
             "value": "creation",
@@ -90,7 +90,7 @@
         },
         "context": {
             "start_time": {
-                "value": "20200823T070458,703+0000"
+                "value": "2020-08-23T07:04:58.703Z"
             },
             "setting": {
                 "value": "primary medical care",
@@ -134,7 +134,7 @@
                     "archetype_node_id": "at0001",
                     "origin": {
                         "_type": "DV_DATE_TIME",
-                        "value": "20200823T070458,723+0000"
+                        "value": "2020-08-23T07:04:58.723Z"
                     },
                     "events": [
                         {
@@ -146,7 +146,7 @@
                             "archetype_node_id": "at0002",
                             "time": {
                                 "_type": "DV_DATE_TIME",
-                                "value": "20200823T070458,732+0000"
+                                "value": "2020-08-23T07:04:58.732Z"
                             },
                             "data": {
                                 "_type": "ITEM_TREE",

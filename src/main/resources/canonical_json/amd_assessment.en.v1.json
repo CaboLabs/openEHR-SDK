@@ -49,7 +49,7 @@
     },
     "context": {
         "start_time": {
-            "value": "20210301T024055,410+0000"
+            "value": "2021-03-01T02:40:55.410+00:00"
         },
         "setting": {
             "value": "primary medical care",
@@ -100,7 +100,7 @@
                         },
                         "archetype_node_id": "at0028",
                         "items": [
-                            
+
                         ]
                     },
                     "data": {
@@ -112,7 +112,7 @@
                         "archetype_node_id": "at0001",
                         "origin": {
                             "_type": "DV_DATE_TIME",
-                            "value": "20210301T024055,421+0000"
+                            "value": "2021-03-01T02:40:55.421+00:00"
                         },
                         "events": [
                             {
@@ -124,7 +124,7 @@
                                 "archetype_node_id": "at0002",
                                 "time": {
                                     "_type": "DV_DATE_TIME",
-                                    "value": "20210301T024055,422+0000"
+                                    "value": "2021-03-01T02:40:55.422+00:00"
                                 },
                                 "data": {
                                     "_type": "ITEM_TREE",
@@ -342,7 +342,7 @@
                         },
                         "archetype_node_id": "at0004",
                         "items": [
-                            
+
                         ]
                     },
                     "data": {
@@ -354,7 +354,7 @@
                         "archetype_node_id": "at0001",
                         "origin": {
                             "_type": "DV_DATE_TIME",
-                            "value": "20210301T024055,476+0000"
+                            "value": "2021-03-01T02:40:55.476+00:00"
                         },
                         "events": [
                             {
@@ -366,7 +366,7 @@
                                 "archetype_node_id": "at0002",
                                 "time": {
                                     "_type": "DV_DATE_TIME",
-                                    "value": "20210301T024055,476+0000"
+                                    "value": "2021-03-01T02:40:55.476+00:00"
                                 },
                                 "data": {
                                     "_type": "ITEM_TREE",
@@ -462,7 +462,7 @@
                                     },
                                     "archetype_node_id": "at0003",
                                     "items": [
-                                        
+
                                     ]
                                 }
                             }
@@ -554,7 +554,7 @@
                         },
                         "archetype_node_id": "at0032",
                         "items": [
-                            
+
                         ]
                     },
                     "data": {
@@ -610,7 +610,7 @@
                                 "archetype_node_id": "at0077",
                                 "value": {
                                     "_type": "DV_DATE_TIME",
-                                    "value": "20210301T024055,512+0000"
+                                    "value": "2021-03-01T02:40:55.512+00:00"
                                 }
                             },
                             {
@@ -731,7 +731,7 @@
                                 "archetype_node_id": "at0004",
                                 "value": {
                                     "_type": "DV_DATE_TIME",
-                                    "value": "20210301T024055,523+0000"
+                                    "value": "2021-03-01T02:40:55.523+00:00"
                                 }
                             },
                             {
@@ -743,7 +743,7 @@
                                 "archetype_node_id": "at0009",
                                 "value": {
                                     "_type": "DV_DATE_TIME",
-                                    "value": "20210301T024055,523+0000"
+                                    "value": "2021-03-01T02:40:55.523+00:00"
                                 }
                             }
                         ]
@@ -813,7 +813,7 @@
                         },
                         "archetype_node_id": "at0004",
                         "items": [
-                            
+
                         ]
                     },
                     "data": {
@@ -900,7 +900,7 @@
                                 "archetype_node_id": "at0003",
                                 "value": {
                                     "_type": "DV_DATE_TIME",
-                                    "value": "20210301T024055,558+0000"
+                                    "value": "2021-03-01T02:40:55.558+00:00"
                                 }
                             },
                             {
@@ -912,7 +912,7 @@
                                 "archetype_node_id": "at0011",
                                 "value": {
                                     "_type": "DV_DATE",
-                                    "value": "20210301"
+                                    "value": "2021-03-01"
                                 }
                             }
                         ]
@@ -1160,7 +1160,7 @@
                                         "archetype_node_id": "at0040",
                                         "value": {
                                             "_type": "DV_DATE_TIME",
-                                            "value": "20210301T024055,623+0000"
+                                            "value": "2021-03-01T02:40:55.623+00:00"
                                         }
                                     },
                                     {
@@ -1172,7 +1172,7 @@
                                         "archetype_node_id": "at0144",
                                         "value": {
                                             "_type": "DV_DATE_TIME",
-                                            "value": "20210301T024055,629+0000"
+                                            "value": "2021-03-01T02:40:55.629+00:00"
                                         }
                                     }
                                 ]
@@ -1371,7 +1371,7 @@
                                         "archetype_node_id": "at0040",
                                         "value": {
                                             "_type": "DV_DATE_TIME",
-                                            "value": "20210301T024055,686+0000"
+                                            "value": "2021-03-01T02:40:55.686+00:00"
                                         }
                                     },
                                     {
@@ -1383,7 +1383,7 @@
                                         "archetype_node_id": "at0145",
                                         "value": {
                                             "_type": "DV_DATE_TIME",
-                                            "value": "20210301T024055,687+0000"
+                                            "value": "2021-03-01T02:40:55.687+00:00"
                                         }
                                     },
                                     {
@@ -1395,7 +1395,7 @@
                                         "archetype_node_id": "at0144",
                                         "value": {
                                             "_type": "DV_DATE_TIME",
-                                            "value": "20210301T024055,691+0000"
+                                            "value": "2021-03-01T02:40:55.691+00:00"
                                         }
                                     },
                                     {
@@ -1493,7 +1493,7 @@
                                 "archetype_node_id": "at0017",
                                 "value": {
                                     "_type": "DV_DATE_TIME",
-                                    "value": "20210301T024055,715+0000"
+                                    "value": "2021-03-01T02:40:55.715+00:00"
                                 }
                             },
                             {

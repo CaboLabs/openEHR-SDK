@@ -12,13 +12,13 @@
             },
             "namespace": "local",
             "type": "COMPOSITION"
-        }   
+        }
     ],
     "audit":{
         "_type": "AUDIT_DETAILS",
         "system_id": "CABOLABS_EHR",
         "time_committed": {
-            "value": "20200823T070458,689+0000"
+            "value": "2020-08-23T07:04:58.689Z"
         },
         "change_type": {
             "value": "creation",

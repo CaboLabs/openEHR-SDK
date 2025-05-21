@@ -1343,10 +1343,10 @@ class XmlInstanceGeneratorTagged {
       /*
       <value xsi:type="DV_INTERVAL"><!-- note specific type is not valid here: DV_INERVAL<DV_COUNT> doesn't exist in the XSD -->
          <lower xsi:type="DV_DATE_TIME">
-           <value>20190114T183649,426+0000</value>
+           <value>20190114T183649,426+Z</value>
          </lower>
          <upper xsi:type="DV_DATE_TIME">
-           <value>20190114T183649,426+0000</value>
+           <value>20190114T183649,426+Z</value>
          </upper>
          <lower_unbounded>false</lower_unbounded>
          <upper_unbounded>false</upper_unbounded>

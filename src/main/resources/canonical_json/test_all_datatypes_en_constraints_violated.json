@@ -49,7 +49,7 @@
     },
     "context": {
         "start_time": {
-            "value": "20210502T030731,960-0300"
+            "value": "2021-05-02T03:07:31.960-03:00"
         },
         "setting": {
             "value": "emergency care",
@@ -122,7 +122,7 @@
                 "archetype_node_id": "at0001",
                 "origin": {
                     "_type": "DV_DATE_TIME",
-                    "value": "20210502T030731,981-0300"
+                    "value": "2021-05-02T03:07:31.981-03:00"
                 },
                 "events": [
                     {
@@ -134,7 +134,7 @@
                         "archetype_node_id": "at0002",
                         "time": {
                             "_type": "DV_DATE_TIME",
-                            "value": "20210502T030731,986-0300"
+                            "value": "2021-05-02T03:07:31.986-03:00"
                         },
                         "data": {
                             "_type": "ITEM_TREE",
@@ -226,7 +226,7 @@
                                     "archetype_node_id": "at0012",
                                     "value": {
                                         "_type": "DV_DATE_TIME",
-                                        "value": "20210502T030732,064-0300"
+                                        "value": "2021-05-02T03:07:32.064-03:00"
                                     }
                                 },
                                 {
@@ -333,11 +333,11 @@
                                         "_type": "DV_INTERVAL",
                                         "lower": {
                                             "_type": "DV_DATE_TIME",
-                                            "value": "20210502T030732,080-0300"
+                                            "value": "2021-05-02T03:07:32.080-03:00"
                                         },
                                         "upper": {
                                             "_type": "DV_DATE_TIME",
-                                            "value": "20210502T030732,082-0300"
+                                            "value": "2021-05-02T03:07:32.082-03:00"
                                         },
                                         "lower_unbounded": false,
                                         "upper_unbounded": false,
@@ -439,7 +439,7 @@
                                     "archetype_node_id": "at0028",
                                     "value": {
                                         "_type": "DV_DATE",
-                                        "value": "20210502"
+                                        "value": "2021-05-02"
                                     }
                                 }
                             ]
