@@ -655,7 +655,7 @@ class ValidationFlowTest extends GroovyTestCase {
                {
                   "id": {
                      "_type": "HIER_OBJECT_ID",
-                     "value": "replaceme"
+                     "value": "7496d24d-feb5-4b68-a91f-ef4b7eb86394"
                   },
                   "namespace": "EHR",
                   "type": "VERSIONED_COMPOSITION"
@@ -666,6 +666,8 @@ class ValidationFlowTest extends GroovyTestCase {
 
       def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
       Folder folder = parser.parseJson(json_folder)
+
+      println parser.getJsonValidationErrors()
 
       assert folder
 

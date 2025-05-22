@@ -6,14 +6,14 @@
 	},
 	"uid": {
 		"_type": "OBJECT_VERSION_ID",
-		"value": "c70ec1e2-eef8-4698-b9dd-e0af55fc3995::CABOLABS_ATOMIK_SERVER::1"
+		"value": "c70ec1e2-eef8-4698-b9dd-e0af55fc3995::CABOLABS_ATOMIK_SERVER::1.10.0"
 	},
 	"archetype_details": {
 		"archetype_id": {
 			"value": "openEHR-EHR-COMPOSITION.test_all_datatypes.v1"
 		},
 		"template_id": {
-			"valuexxx": "test_all_datatypes.en.v1"
+			"value": "test_all_datatypes.en.v1"
 		},
 		"rm_version": "1.0.2"
 	},

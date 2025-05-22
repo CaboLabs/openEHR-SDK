@@ -9684,7 +9684,8 @@
             ],
             "properties": {
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 },
                 "_type": {
                     "type": "string",
@@ -10375,7 +10376,8 @@
             ],
             "properties": {
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}::[\\w\\.]+::(0|[1-9][0-9]*)(\\.(0|[1-9][0-9]*))?(\\.(0|[1-9][0-9]*))?$"
                 },
                 "_type": {
                     "type": "string",
@@ -16070,7 +16072,8 @@
             ],
             "properties": {
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(?:::[\\w\\.]+)?$"
                 },
                 "_type": {
                     "type": "string",
