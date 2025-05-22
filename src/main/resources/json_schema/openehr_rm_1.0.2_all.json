@@ -11,18 +11,6 @@
             "if": {
                 "properties": {
                     "_type": {
-                        "const": "PARTY_RELATIONSHIP"
-                    }
-                }
-            },
-            "then": {
-                "$ref": "#/definitions/PARTY_RELATIONSHIP"
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "_type": {
                         "const": "COMPOSITION"
                     }
                 }
@@ -341,6 +329,18 @@
             },
             "then": {
                 "$ref": "#/definitions/IMPORTED_VERSION"
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "_type": {
+                        "const": "PARTY_RELATIONSHIP"
+                    }
+                }
+            },
+            "then": {
+                "$ref": "#/definitions/PARTY_RELATIONSHIP"
             }
         }
     ],
