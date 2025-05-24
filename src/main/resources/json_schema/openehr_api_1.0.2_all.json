@@ -23,6 +23,18 @@
             "if": {
                 "properties": {
                     "_type": {
+                        "const": "FOLDER"
+                    }
+                }
+            },
+            "then": {
+                "$ref": "#/definitions/FOLDER"
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "_type": {
                         "const": "OBSERVATION"
                     }
                 }
@@ -317,6 +329,18 @@
             },
             "then": {
                 "$ref": "#/definitions/IMPORTED_VERSION"
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "_type": {
+                        "const": "PARTY_RELATIONSHIP"
+                    }
+                }
+            },
+            "then": {
+                "$ref": "#/definitions/PARTY_RELATIONSHIP"
             }
         }
     ],
@@ -719,7 +743,8 @@
                     "$ref": "#/definitions/DV_DURATION"
                 },
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "time"
                 },
                 "_type": {
                     "type": "string",
@@ -1219,7 +1244,8 @@
                     "$ref": "#/definitions/DV_DURATION"
                 },
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "date-time"
                 },
                 "_type": {
                     "type": "string",
@@ -1257,7 +1283,8 @@
                     "type": "boolean"
                 },
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "duration"
                 },
                 "_type": {
                     "type": "string",
@@ -4049,7 +4076,8 @@
                                         "AGENT",
                                         "GROUP",
                                         "ORGANISATION",
-                                        "PERSON"
+                                        "PERSON",
+                                        "PARTY_RELATIONSHIP"
                                     ]
                                 }
                             }
@@ -4172,6 +4200,21 @@
                             },
                             "then": {
                                 "$ref": "#/definitions/PERSON"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "PARTY_RELATIONSHIP"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/PARTY_RELATIONSHIP"
                             }
                         }
                     ]
@@ -8083,7 +8126,8 @@
                     "$ref": "#/definitions/DV_DURATION"
                 },
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "date"
                 },
                 "_type": {
                     "type": "string",
@@ -9514,7 +9558,8 @@
             ],
             "properties": {
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 },
                 "_type": {
                     "type": "string",
@@ -10205,7 +10250,8 @@
             ],
             "properties": {
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}::[\\w\\.]+::(0|[1-9][0-9]*)(\\.(0|[1-9][0-9]*))?(\\.(0|[1-9][0-9]*))?$"
                 },
                 "_type": {
                     "type": "string",
@@ -10224,10 +10270,292 @@
             ],
             "properties": {
                 "lower": {
-                    "type": "object"
+                    "allOf": [
+                        {
+                            "required": [
+                                "_type"
+                            ],
+                            "properties": {
+                                "_type": {
+                                    "type": "string",
+                                    "enum": [
+                                        "DV_DATE",
+                                        "DV_DATE_TIME",
+                                        "DV_TIME",
+                                        "DV_DURATION",
+                                        "DV_ORDINAL",
+                                        "DV_PROPORTION",
+                                        "DV_COUNT",
+                                        "DV_QUANTITY"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "DV_DATE"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/DV_DATE"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "DV_DATE_TIME"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/DV_DATE_TIME"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "DV_TIME"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/DV_TIME"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "DV_DURATION"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/DV_DURATION"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "DV_ORDINAL"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/DV_ORDINAL"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "DV_PROPORTION"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/DV_PROPORTION"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "DV_COUNT"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/DV_COUNT"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "DV_QUANTITY"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/DV_QUANTITY"
+                            }
+                        }
+                    ]
                 },
                 "upper": {
-                    "type": "object"
+                    "allOf": [
+                        {
+                            "required": [
+                                "_type"
+                            ],
+                            "properties": {
+                                "_type": {
+                                    "type": "string",
+                                    "enum": [
+                                        "DV_DATE",
+                                        "DV_DATE_TIME",
+                                        "DV_TIME",
+                                        "DV_DURATION",
+                                        "DV_ORDINAL",
+                                        "DV_PROPORTION",
+                                        "DV_COUNT",
+                                        "DV_QUANTITY"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "DV_DATE"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/DV_DATE"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "DV_DATE_TIME"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/DV_DATE_TIME"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "DV_TIME"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/DV_TIME"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "DV_DURATION"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/DV_DURATION"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "DV_ORDINAL"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/DV_ORDINAL"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "DV_PROPORTION"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/DV_PROPORTION"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "DV_COUNT"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/DV_COUNT"
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "_type": {
+                                        "const": "DV_QUANTITY"
+                                    }
+                                },
+                                "required": [
+                                    "_type"
+                                ]
+                            },
+                            "then": {
+                                "$ref": "#/definitions/DV_QUANTITY"
+                            }
+                        }
+                    ]
                 },
                 "lower_unbounded": {
                     "type": "boolean"
@@ -15568,7 +15896,8 @@
             ],
             "properties": {
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(?:::[\\w\\.]+)?$"
                 },
                 "_type": {
                     "type": "string",
