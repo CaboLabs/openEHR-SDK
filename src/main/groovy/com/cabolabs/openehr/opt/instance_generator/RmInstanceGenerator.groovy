@@ -56,7 +56,6 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.ArchetypeId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.HierObjectId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.ObjectRef
 import com.cabolabs.openehr.rm_1_0_2.support.identification.ObjectVersionId
-import com.cabolabs.openehr.rm_1_0_2.support.identification.PartyRef
 import com.cabolabs.openehr.rm_1_0_2.support.identification.TemplateId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.TerminologyId
 import com.cabolabs.openehr.rm_1_0_2.common.directory.Folder
@@ -219,13 +218,7 @@ class RmInstanceGenerator {
                )
             ),
             committer: new PartyIdentified(
-               external_ref: new PartyRef(
-                  namespace: 'DEMOGRAPHIC',
-                  type: 'PERSON',
-                  id: new HierObjectId(
-                     value: String.uuid()
-                  )
-               ),
+               external_ref: DataGenerator.random_party_ref(),
                name: composition_composers.pick() // TODO: generate the same id for the same composer ^
                // TODO: identifiers
             )
@@ -378,13 +371,7 @@ class RmInstanceGenerator {
 
       def ehr_status = new EhrStatus(
          subject: new PartySelf(
-            external_ref: new PartyRef(
-               namespace: 'DEMOGRAPHIC',
-               type: 'PERSON',
-               id: new HierObjectId(
-                  value: String.uuid()
-               )
-            )
+            external_ref: DataGenerator.random_party_ref()
          ),
          is_modifiable: true,
          is_queryable: true
@@ -494,13 +481,7 @@ class RmInstanceGenerator {
             codeString: 'UY' // TODO: pick from list, associate country with language
          ),
          composer: new PartyIdentified(
-            external_ref: new PartyRef(
-               namespace: 'DEMOGRAPHIC',
-               type: 'PERSON',
-               id: new HierObjectId(
-                  value: String.uuid()
-               )
-            ),
+            external_ref: DataGenerator.random_party_ref(),
             name: composition_composers.pick() // TODO: generate the same id for the same composer ^
             // TODO: identifiers
          )
@@ -1729,7 +1710,7 @@ class RmInstanceGenerator {
       return agent
    }
 
-   private AgentDto generateAgent(Dto)
+   private AgentDto generateAgentDto()
    {
       def agent = new AgentDto()
 
@@ -1742,7 +1723,9 @@ class RmInstanceGenerator {
    {
       def role = new Role()
 
-      add_PARTY_elements(opt.definition, role, opt.definition.archetypeId)
+      def parent_arch_id = opt.definition.archetypeId
+
+      add_PARTY_elements(opt.definition, role, parent_arch_id)
 
       def oa = opt.definition.attributes.find{ it.rmAttributeName == 'capabilities' }
 
@@ -1858,6 +1841,8 @@ class RmInstanceGenerator {
 
       parent_arch_id = o.archetypeId ?: parent_arch_id
 
+      // NOTE: in the spec UML it's not LOCATABLE but in the class description table it is.
+      // https://specifications.openehr.org/releases/RM/Release-1.0.3/demographic.html#_address_class
       add_LOCATABLE_elements(o, a, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
 
       def oa = o.attributes.find{ it.rmAttributeName == 'details' }
@@ -1872,6 +1857,32 @@ class RmInstanceGenerator {
       return a
    }
 
+   private Capability generate_CAPABILITY(ObjectNode o, String parent_arch_id)
+   {
+      def capability = new Capability()
+
+      parent_arch_id = o.archetypeId ?: parent_arch_id
+
+      // NOTE: in the spec UML it's not LOCATABLE but in the class description table it is.
+      // https://specifications.openehr.org/releases/RM/Release-1.0.3/demographic.html#_address_class
+      add_LOCATABLE_elements(o, capability, parent_arch_id, o.type == 'C_ARCHETYPE_ROOT')
+
+      def oa = o.attributes.find{ it.rmAttributeName == 'credentials' }
+
+      if (oa)
+      {
+         // returns a list, take the first obj
+         def credentials = processAttributeChildren(oa, parent_arch_id)
+         capability.credentials = credentials[0]
+      }
+
+       // TODO: if there are constraints for time_validity, consider those
+
+      // NOTE: this is generated not considering any constraints that might be in the OPT
+      capability.time_validity = DataGenerator.date_interval() // Can be null since its optional in the RM
+
+      return capability
+   }
 
    private Section generate_SECTION(ObjectNode o, String parent_arch_id)
    {

@@ -1,0 +1,134 @@
+{
+    "_type": "ROLE",
+    "name": {
+        "_type": "DV_TEXT",
+        "value": "generic role"
+    },
+    "archetype_details": {
+        "archetype_id": {
+            "value": "openEHR-DEMOGRAPHIC-ROLE.generic_role.v1"
+        },
+        "template_id": {
+            "value": "generic_role_complete"
+        },
+        "rm_version": "1.0.2"
+    },
+    "archetype_node_id": "openEHR-DEMOGRAPHIC-ROLE.generic_role.v1",
+    "details": {
+        "_type": "ITEM_TREE",
+        "name": {
+            "_type": "DV_TEXT",
+            "value": "tree"
+        },
+        "archetype_node_id": "at0001",
+        "items": [
+            {
+                "_type": "ELEMENT",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "identifier"
+                },
+                "archetype_node_id": "at0002",
+                "value": {
+                    "_type": "DV_IDENTIFIER",
+                    "id": "60694588",
+                    "issuer": "Hospital de Clinicas",
+                    "assigner": "Hospital de Clinicas",
+                    "type": "test1"
+                }
+            }
+        ]
+    },
+    "identities": [
+        {
+            "_type": "PARTY_IDENTITY",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "identity"
+            },
+            "archetype_node_id": "at0004",
+            "details": {
+                "_type": "ITEM_TREE",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "tree"
+                },
+                "archetype_node_id": "at0005",
+                "items": [
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "name"
+                        },
+                        "archetype_node_id": "at0006",
+                        "value": {
+                            "_type": "DV_TEXT",
+                            "value": "pdJ.IAuGsXqq QDqcdQGcSDPPQmtFBQkY,OLSBpPjwwcbdlOTRd.qwBPZCbyzACJJQ.mUarOiuezCRPGlxSj,URMixLZvSjpDA,lDLEfKmGfztWaBucfEpo. mHIMNBrxKudBTmehZKnQfyPOl,XF.MKZxJFzJasqmfSH ZiclkaurXyIdWPM,,JFcfhheHBlxVQVBkBFTAsTYiiCpuM.DHAtLjMdKtpeUD.xFHZIiZbCFVPegTEwVEoQtbmBxXoL,tryypdQyiTPAiKyBt Qia.AsqfGLdLcdMTIQMG tLD"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "time_validity": {
+        "lower": {
+            "_type": "DV_DATE",
+            "value": "2025-06-04"
+        },
+        "lower_included": true,
+        "lower_unbounded": false,
+        "upper_included": false,
+        "upper_unbounded": true
+    },
+    "performer": {
+        "id": {
+            "_type": "HIER_OBJECT_ID",
+            "value": "b3b9344a-d757-4a83-a900-c0d91a0d1cc2"
+        },
+        "namespace": "DEMOGRAPHIC",
+        "type": "PERSON"
+    },
+    "capabilities": [
+        {
+            "_type": "CAPABILITY",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "capability"
+            },
+            "archetype_node_id": "at0008",
+            "credentials": {
+                "_type": "ITEM_TREE",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "tree"
+                },
+                "archetype_node_id": "at0009",
+                "items": [
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "capability name"
+                        },
+                        "archetype_node_id": "at0010",
+                        "value": {
+                            "_type": "DV_TEXT",
+                            "value": "gzzhxIPZwknjuxZEVDdQVRUjUnUPbihyOSZYVixDTfZVEXJbNlAmoEEwVFmabGpJFH,IClHManuONmdonPTQSHWZsTXVOon.FAdNTFHVgXU.diKpFzweRhCskrGhtbmOMdhstPnNhmKqVHdAWXuLzPMQejwQD.pxUpQPCBJRAulRzSE,tEchImPOoiLuush.,y Lc UbQRrhIDVgEvCM,.dtuvKczpAwwcqtLcLpjLYNmsNkxyddOJtuJaycA,UKC.AjIGdy jpxYkkkyHPhRMiZCCFfizmSkD.QK.Dr.Uxb"
+                        }
+                    }
+                ]
+            },
+            "time_validity": {
+                "lower": {
+                    "_type": "DV_DATE",
+                    "value": "2025-06-04"
+                },
+                "lower_included": true,
+                "lower_unbounded": false,
+                "upper_included": false,
+                "upper_unbounded": true
+            }
+        }
+    ]
+}

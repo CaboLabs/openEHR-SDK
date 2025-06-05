@@ -5601,7 +5601,8 @@
                 "archetype_node_id",
                 "archetype_details",
                 "name",
-                "identities"
+                "identities",
+                "performer"
             ],
             "properties": {
                 "uid": {

@@ -13,6 +13,7 @@ import com.cabolabs.openehr.opt.serializer.JsonSerializer
 import com.cabolabs.openehr.formats.*
 import com.cabolabs.openehr.rm_1_0_2.common.change_control.Version
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
+import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 import com.cabolabs.openehr.validation.RmValidationReport
 import com.cabolabs.openehr.validation.RmValidator2
 import groovy.json.JsonOutput
@@ -37,7 +38,7 @@ class Main {
          println 'uigen: user interface generation from an OPT'
          println 'ingen: XML/JSON instance generation from an OPT'
          println 'inval: XML/JSON instance validator'
-         println 'trans: transforms an OPT in XML to JSON, or a XML/JSON composition to JSON/XML respectively'
+         println 'trans: transforms an OPT in XML to JSON, or a XML/JSON locatable to JSON/XML respectively'
          System.exit(0)
       }
 
@@ -177,22 +178,44 @@ class Main {
          break
          case 'inval':
 
+            if (args.size() < 2)
+            {
+               println 'usage: opt inval path_to_xml_or_json_instance [rm|api] [semantic]'
+               println 'usage: opt inval path_to_folder_with_xml_or_json_instances [rm|api] [semantic]'
+               System.exit(0)
+            }
+
+            def path = args[1]
+
+
+            def flavor = 'rm'
+
+            if (args.size() > 2)
+            {
+               if (!['rm', 'api'].contains(args[2]))
+               {
+                  println 'usage: opt inval path_to_xml_or_json_instance [rm|api] [semantic]'
+                  println 'usage: opt inval path_to_folder_with_xml_or_json_instances [rm|api] [semantic]'
+                  println "flavor should be one of 'rm' or 'api', '"+ args[2] +"' was specified"
+                  System.exit(0)
+               }
+               flavor = args[2]
+            }
+
+
+            def semantic = args.size() == 4 && args[3] == 'semantic'
+
+
+
             // Read XSD from JAR as a resource
             def inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream('xsd/Version.xsd')
             def validator = new XmlValidation(inputStream)
 
             // JSON Schema validation, loads the schema internally
-            def jsonValidator = new JsonInstanceValidation()
+            // TODO: get the rm version from the instances (might need to create a validator instance for each rm instance)
+            def jsonValidator = new JsonInstanceValidation(flavor)
 
-            if (args.size() < 2)
-            {
-               println 'usage: opt inval path_to_xml_or_json_instance [semantic]'
-               println 'usage: opt inval path_to_folder_with_xml_or_json_instances [semantic]'
-               System.exit(0)
-            }
 
-            def path = args[1]
-            def semantic = args.size() == 3 && args[2] == 'semantic'
 
             def f = new File(path)
             if (!f.exists())
@@ -253,7 +276,7 @@ class Main {
             if (args.size() < 4)
             {
                println "Usage: opt.sh trans opt path_to_opt destination_folder                \t--Transforms XML OPT into JSON"
-               println "Usage: opt.sh trans composition path_to_composition destination_folder\t--Transforms a XML or JSON COMPOSITION into JSON or XML"
+               println "Usage: opt.sh trans locatable path_to_locatable destination_folder\t--Transforms a XML or JSON LOCATABLE into JSON or XML"
                System.exit(0)
             }
 
@@ -290,13 +313,13 @@ class Main {
                   printer.close()
                break
                // TODO: trans FOLDER, EHR_STATUS, ACTOR, PARTY_RELATIONSHIP
-               case "composition":
+               case "locatable":
 
-                  String path = args[2] // composition
+                  String path = args[2] // locatable
                   File f = new File(path)
                   if (!f.exists() || f.isDirectory())
                   {
-                     println "Path to composition $path doesn't exist or is not a file"
+                     println "Path to locatable $path doesn't exist or is not a file"
                      System.exit(0)
                   }
 
@@ -310,7 +333,7 @@ class Main {
                      // Parse XML
                      String xml = f.text
                      def parser = new OpenEhrXmlParser()
-                     Composition c = (Composition)parser.parseLocatable(xml)
+                     Locatable c = parser.parseLocatable(xml)
 
                      // debug
                      // out = JsonOutput.toJson(c)
@@ -339,7 +362,7 @@ class Main {
                      // Parse JSON
                      String json = f.text
                      def parser = new OpenEhrJsonParser()
-                     Composition c = (Composition)parser.parseJson(json)
+                     Locatable c = parser.parseJson(json)
 
                      // Serialize to XML
                      def serializer = new OpenEhrXmlSerializer()
@@ -360,14 +383,14 @@ class Main {
                   }
                   else
                   {
-                     println "Extension $ext not supported, the COMPOSITION file should be .json or .xml"
+                     println "Extension $ext not supported, the LOCATABLE file should be .json or .xml"
                      System.exit(0)
                   }
                break
             }
 
-            // [trans, composition, source, dest]
-            // transforms the composition in the format it is, xml or json, into the other format
+            // [trans, locatable, source, dest]
+            // transforms the locatable in the format it is, xml or json, into the other format
 
 
          break
@@ -472,11 +495,11 @@ class Main {
    static validateJSONWithOPT(File json)
    {
       def parser = new OpenEhrJsonParser()
-      def instance = parser.parseJson(json.text) // should be a composition, if the file is a version it won't parse
-      validateCompositionWithOPT(instance)
+      def instance = parser.parseJson(json.text)
+      validateLocatableWithOPT(instance)
    }
 
-   static validateCompositionWithOPT(Composition compo)
+   static validateLocatableWithOPT(Locatable compo)
    {
       String opt_repo_path = "src"+ PS +"main"+ PS +"resources"+ PS +"opts"
       OptRepository repo = new OptRepositoryFSImpl(opt_repo_path)
