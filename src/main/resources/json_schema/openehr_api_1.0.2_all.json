@@ -5597,12 +5597,12 @@
         },
         "ROLE": {
             "type": "object",
+            "$comment": "The performer is not required in the API schema because it's provided as a parameter in the API call.",
             "required": [
                 "archetype_node_id",
                 "archetype_details",
                 "name",
-                "identities",
-                "performer"
+                "identities"
             ],
             "properties": {
                 "uid": {
