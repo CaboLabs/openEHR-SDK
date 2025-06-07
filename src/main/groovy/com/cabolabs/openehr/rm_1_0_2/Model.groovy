@@ -79,14 +79,16 @@ class Model {
       PARTY_RELATIONSHIP: [
          uid:           'OBJECT_VERSION_ID',
          source:        'PARTY_REF', // need to support queries over the relationship.source to find all the relationships of an actor
+         target:        'PARTY_REF', // need to support queries over the relationship.target to find all the relationships of an actor
          time_validity: 'DV_INTERVAL<DV_DATE>'
       ],
       ROLE: [
          uid:           'OBJECT_VERSION_ID',
-         time_validity: 'DV_INTERVAL<DV_DATE>'
+         time_validity: 'DV_INTERVAL<DV_DATE>',
+         performer:     'PARTY_REF'
       ],
       CAPABILITY: [
-         'time_validity': 'DV_INTERVAL<DV_DATE>'
+         time_validity: 'DV_INTERVAL<DV_DATE>'
       ],
       CONTACT: [
          time_validity: 'DV_INTERVAL<DV_DATE>'
@@ -221,8 +223,35 @@ class Model {
       ],
       DV_COUNT: [
          'other_reference_ranges'
+      ],
+      ROLE: [
+         'identities',
+         'contacts',
+         'capabilities'
+      ],
+      PERSON: [
+         'identities',
+         'contacts',
+         'relationships'
+      ],
+      ORGANISATION: [
+         'identities',
+         'contacts',
+         'relationships'
+      ],
+      GROUP: [
+         'identities',
+         'contacts',
+         'relationships'
+      ],
+      AGENT: [
+         'identities',
+         'contacts',
+         'relationships'
+      ],
+      CONTACT: [
+         'addresses'
       ]
-
    ]
 
    private static List abstract_classes = [
