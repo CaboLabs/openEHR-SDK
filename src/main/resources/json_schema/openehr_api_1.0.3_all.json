@@ -12322,8 +12322,8 @@
         },
         "LOCATABLE_REF": {
             "type": "object",
+            "_comment": "id is not mandatory to allow an ACTION to reference an INSTRUCTION in the same COMPO",
             "required": [
-                "id",
                 "namespace",
                 "type"
             ],

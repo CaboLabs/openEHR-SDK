@@ -33,8 +33,8 @@ class Model {
          instruction_details: 'INSTRUCTION_DETAILS'
       ],
       INSTRUCTION_DETAILS: [
-         'instruction_id': 'LOCATABLE_REF',
-         'activity_id': 'String'
+         instruction_id: 'LOCATABLE_REF',
+         activity_id: 'String'
       ],
       INSTRUCTION: [
          narrative:    'DV_TEXT',

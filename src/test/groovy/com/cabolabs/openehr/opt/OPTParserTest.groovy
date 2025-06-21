@@ -319,6 +319,30 @@ class OPTParserTest extends GroovyTestCase {
          println v.dataPath
          println "---"
       }
+
+      opt.complete()
+
+      def obj = opt.findRoot('openEHR-EHR-ACTION.test_ism_paths.v1')
+      def toJson = new JsonSerializer()
+      toJson.serialize(obj)
+      def json = toJson.get()
+      println "action nodes: "+ json
+   }
+
+   void testActionInstructionDetails()
+   {
+      println "====== testActionInstructionDetails ======"
+      //def path = "opts/"+'test_ism_paths'+ "/test_ism_paths.opt"
+      def path = "opts/action_instruction/documento_cita_instruccion.opt" // For JDK 11 the resource shouldn't start with /
+      def opt = TestUtils.loadTemplate(path)
+
+      opt.complete() // complete adds time and instruction_details
+
+      def obj = opt.findRoot('openEHR-EHR-ACTION.estado_cita.v0')
+      def toJson = new JsonSerializer()
+      toJson.serialize(obj)
+      def json = toJson.get()
+      println "action nodes: "+ json
    }
 
    void testParseNodesCDvQuantity()
