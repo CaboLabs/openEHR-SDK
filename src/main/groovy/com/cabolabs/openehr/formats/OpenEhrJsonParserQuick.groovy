@@ -1464,13 +1464,17 @@ class OpenEhrJsonParserQuick {
       if (json.path)
          o.path = json.path
 
-      String type = json.id._type
-      if (!type)
+      // For API we allow empty id to allow the server to set it when the ACTION references an INSTRUCTION from the same COMPOSITION
+      if (json.id)
       {
-         throw new JsonParseException("_type required for LOCATABLE_REF.id")
+         String type = json.id._type
+         if (!type)
+         {
+            throw new JsonParseException("_type required for LOCATABLE_REF.id")
+         }
+         String method = 'parse'+ type
+         o.id = this."$method"(json.id)
       }
-      String method = 'parse'+ type
-      o.id = this."$method"(json.id)
 
       return o
    }
