@@ -794,9 +794,13 @@ class OpenEhrJsonSerializer {
    {
       def out = [:]
 
-      def method = this.method(o.id)
+      // On API we allow the id to be optional so the server can set the id, for instance in the case of LOCATABLE_REF.
+      if (o.id)
+      {
+         def method = this.method(o.id)
 
-      out.id = [_type: this.openEhrType(o.id)] + this."$method"(o.id)
+         out.id = [_type: this.openEhrType(o.id)] + this."$method"(o.id)
+      }
 
       out.namespace = o.namespace
 
