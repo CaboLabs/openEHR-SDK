@@ -2,26 +2,32 @@ package com.cabolabs.openehr.rm_1_0_2.support.identification
 
 class VersionTreeId {
 
-   String value
+   static final VERSION_PATTERN = /^(\d+)(?:\.(\d+)\.(\d+))?$/
+
+   String value // e.g. 1.0.2
 
    String getTrunkVersion()
    {
-      // TODO
+      def matcher = expression =~ VERSION_PATTERN
+      return matcher.matches() ? matcher.group(1) : null
    }
 
    boolean isBranch()
    {
-      // TODO
+      // true if this version identifier represents a branch, i.e. has branch_number and branch_version parts.
+      return getBranchNumber() != null && getBranchVersion() != null
    }
 
    String getBranchNumber()
    {
-      // TODO
+      def matcher = expression =~ VERSION_PATTERN
+      return (matcher.matches() && matcher.group(2) != null) ? matcher.group(2) : null
    }
 
    String getBranchVersion()
    {
-      // TODO
+      def matcher = expression =~ VERSION_PATTERN
+      return (matcher.matches() && matcher.group(3) != null) ? matcher.group(3) : null
    }
 
 }
