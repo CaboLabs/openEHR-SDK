@@ -3,6 +3,7 @@ package com.cabolabs.openehr.rm_1_0_2.support.identification
 import spock.lang.Specification
 import spock.lang.Unroll
 
+// NOTE: gradle doesn't execute this test, it executes UIDGroovyTestCase
 class UIDTest extends Specification {
 
     def "should create UUID with random value"() {

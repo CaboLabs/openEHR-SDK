@@ -8,7 +8,7 @@ class OID extends UID {
 
    OID()
    {
-      this.value = new Oid()
+      this.value = new Oid() // NOTE: empty OID is not valid
    }
 
    OID(String uid)

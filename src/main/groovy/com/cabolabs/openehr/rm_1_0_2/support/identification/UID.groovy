@@ -48,24 +48,24 @@ abstract class UID {
       }
    }
 
-   static def isUUID(String input)
+   static boolean isUUID(String input)
    {
-      return input?.matches(UUID_PATTERN)
+      return input?.matches(UUID_PATTERN) ?: false
    }
 
-   static def isOID(String input)
+   static boolean isOID(String input)
    {
-      return input?.matches(OID_PATTERN)
+      return input?.matches(OID_PATTERN) ?: false
    }
 
-   static def isInternetId(String input)
+   static boolean isInternetId(String input)
    {
-      return input?.matches(INTERNET_ID_PATTERN)
+      return input?.matches(INTERNET_ID_PATTERN) ?: false
    }
 
    // checks the value is any of the three formats: UUID, OID, or Internet ID
-   static def isUID(String input)
+   static boolean isUID(String input)
    {
-      return input?.matches(UUID_OR_OID_OR_INTERNET_ID_PATTERN)
+      return input?.matches(UUID_OR_OID_OR_INTERNET_ID_PATTERN) ?: false
    }
 }
