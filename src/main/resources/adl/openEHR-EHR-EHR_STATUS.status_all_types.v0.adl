@@ -1,0 +1,278 @@
+archetype (adl_version=1.4; uid=8a27af1c-58eb-4f57-80ad-16a00e120c0b)
+	openEHR-EHR-EHR_STATUS.status_all_types.v0
+
+concept
+	[at0000]
+
+language
+	original_language = <[ISO_639-1::en]>
+
+description
+	original_author = <
+		["date"] = <"2025-07-15">
+	>
+	lifecycle_state = <"unmanaged">
+	details = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+		>
+	>
+	other_details = <
+		["build_uid"] = <"5ba0687f-8511-350a-95da-ac10d3b499a7">
+	>
+
+definition
+	EHR_STATUS[at0000] matches {    -- status all types
+		other_details matches {
+			ITEM_TREE[at0001] matches {    -- Item tree
+				items cardinality matches {0..*; unordered} matches {
+					ELEMENT[at0002] occurrences matches {0..1} matches {    -- text
+						value matches {
+							DV_TEXT matches {*}
+						}
+					}
+					ELEMENT[at0003] occurrences matches {0..1} matches {    -- coded local
+						value matches {
+							DV_CODED_TEXT matches {
+								defining_code matches {
+									[local::
+									at0004,    -- a
+									at0005,    -- b
+									at0006]    -- c
+								}
+							}
+						}
+					}
+					ELEMENT[at0007] occurrences matches {0..1} matches {    -- coded ref
+						value matches {
+							DV_CODED_TEXT matches {
+								defining_code matches {
+									[ac0001]
+								}
+							}
+						}
+					}
+					ELEMENT[at0008] occurrences matches {0..1} matches {    -- bool
+						value matches {
+							DV_BOOLEAN matches {*}
+						}
+					}
+					ELEMENT[at0009] occurrences matches {0..1} matches {    -- quantity
+						value matches {
+							C_DV_QUANTITY <
+								property = <[openehr::335]>
+								list = <
+									["1"] = <
+										units = <"cm2">
+									>
+									["2"] = <
+										units = <"[sin_i]">
+									>
+								>
+							>
+						}
+					}
+					ELEMENT[at0010] occurrences matches {0..1} matches {    -- identifier
+						value matches {
+							DV_IDENTIFIER matches {*}
+						}
+					}
+					ELEMENT[at0011] occurrences matches {0..1} matches {    -- count
+						value matches {
+							DV_COUNT matches {
+								magnitude matches {|>=0|}
+							}
+						}
+					}
+					ELEMENT[at0012] occurrences matches {0..1} matches {    -- proportion percent
+						value matches {
+							DV_PROPORTION matches {
+								type matches {2}
+							}
+						}
+					}
+					ELEMENT[at0017] occurrences matches {0..1} matches {    -- ordinal
+						value matches {
+							1|[local::at0018],
+							2|[local::at0019],
+							3|[local::at0020]
+						}
+					}
+					ELEMENT[at0022] occurrences matches {0..1} matches {    -- multimedia
+						value matches {
+							DV_MULTIMEDIA matches {*}
+						}
+					}
+					ELEMENT[at0023] occurrences matches {0..1} matches {    -- parsable
+						value matches {
+							DV_PARSABLE matches {*}
+						}
+					}
+					ELEMENT[at0013] occurrences matches {0..1} matches {    -- date
+						value matches {
+							DV_DATE matches {
+								value matches {yyyy-mm-dd}
+							}
+						}
+					}
+					ELEMENT[at0014] occurrences matches {0..1} matches {    -- date time
+						value matches {
+							DV_DATE_TIME matches {*}
+						}
+					}
+					ELEMENT[at0015] occurrences matches {0..1} matches {    -- duration
+						value matches {
+							DV_DURATION matches {*}
+						}
+					}
+					ELEMENT[at0024] occurrences matches {0..1} matches {    -- time
+						value matches {
+							DV_TIME matches {*}
+						}
+					}
+					ELEMENT[at0016] occurrences matches {0..1} matches {    -- interval count
+						value matches {
+							DV_INTERVAL<DV_COUNT> matches {
+								lower matches {
+									DV_COUNT matches {
+										magnitude matches {|>=0|}
+									}
+								}
+							}
+						}
+					}
+					ELEMENT[at0021] occurrences matches {0..1} matches {    -- interval date
+						value matches {
+							DV_INTERVAL<DV_DATE> matches {*}
+						}
+					}
+				}
+			}
+		}
+	}
+
+ontology
+	terminologies_available = <"Custom", ...>
+	term_definitions = <
+		["en"] = <
+			items = <
+				["at0000"] = <
+					text = <"status all types">
+					description = <"status all types">
+				>
+				["at0001"] = <
+					text = <"Item tree">
+					description = <"@ internal @">
+				>
+				["at0002"] = <
+					text = <"text">
+					description = <"">
+				>
+				["at0003"] = <
+					text = <"coded local">
+					description = <"">
+				>
+				["at0004"] = <
+					text = <"a">
+					description = <"a">
+				>
+				["at0005"] = <
+					text = <"b">
+					description = <"b">
+				>
+				["at0006"] = <
+					text = <"c">
+					description = <"c">
+				>
+				["at0007"] = <
+					text = <"coded ref">
+					description = <"">
+				>
+				["at0008"] = <
+					text = <"bool">
+					description = <"">
+				>
+				["at0009"] = <
+					text = <"quantity">
+					description = <"">
+				>
+				["at0010"] = <
+					text = <"identifier">
+					description = <"">
+				>
+				["at0011"] = <
+					text = <"count">
+					description = <"">
+				>
+				["at0012"] = <
+					text = <"proportion percent">
+					description = <"">
+				>
+				["at0013"] = <
+					text = <"date">
+					description = <"">
+				>
+				["at0014"] = <
+					text = <"date time">
+					description = <"">
+				>
+				["at0015"] = <
+					text = <"duration">
+					description = <"">
+				>
+				["at0016"] = <
+					text = <"interval count">
+					description = <"">
+				>
+				["at0017"] = <
+					text = <"ordinal">
+					description = <"">
+				>
+				["at0018"] = <
+					text = <"aaa">
+					description = <"aaa">
+				>
+				["at0019"] = <
+					text = <"bbb">
+					description = <"bbb">
+				>
+				["at0020"] = <
+					text = <"ccc">
+					description = <"ccc">
+				>
+				["at0021"] = <
+					text = <"interval date">
+					description = <"">
+				>
+				["at0022"] = <
+					text = <"multimedia">
+					description = <"">
+				>
+				["at0023"] = <
+					text = <"parsable">
+					description = <"">
+				>
+				["at0024"] = <
+					text = <"time">
+					description = <"">
+				>
+			>
+		>
+	>
+	constraint_definitions = <
+		["en"] = <
+			items = <
+				["ac0001"] = <
+					text = <"External">
+					description = <"">
+				>
+			>
+		>
+	>
+	constraint_binding = <
+		["Custom"] = <
+			items = <
+				["ac0001"] = <terminology:a_custom/url>
+			>
+		>
+	>

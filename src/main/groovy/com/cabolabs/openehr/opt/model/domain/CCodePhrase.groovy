@@ -70,4 +70,16 @@ class CCodePhrase extends ObjectNode {
 
       return new ValidationResult(isValid: true)
    }
+
+   String toString()
+   {
+      if (terminologyId)
+      {
+         return "CCodePhrase: "+ terminologyId +"::"+ codeList.toString()
+      }
+      else
+      {
+         return "CCodePhrase: Reference(${reference}) > "+ terminologyRef
+      }
+   }
 }

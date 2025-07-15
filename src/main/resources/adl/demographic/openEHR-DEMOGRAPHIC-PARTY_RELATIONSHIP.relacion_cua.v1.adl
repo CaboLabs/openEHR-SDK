@@ -1,0 +1,97 @@
+archetype (adl_version=1.4; uid=383cf4de-b64e-4f02-9c26-095819339aea)
+	openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.relacion_cua.v1
+
+concept
+	[at0000]
+
+language
+	original_language = <[ISO_639-1::es-cl]>
+
+description
+	original_author = <
+		["date"] = <"2025-07-11">
+	>
+	lifecycle_state = <"Draft">
+	details = <
+		["es-cl"] = <
+			language = <[ISO_639-1::es-cl]>
+		>
+	>
+	other_details = <
+		["MD5-CAM-1.0.1"] = <"90aaacbaa0e0df2dc629c3466e665f17">
+		["build_uid"] = <"de534bf6-a28b-339b-ab9e-ff63eddac47c">
+	>
+
+definition
+	PARTY_RELATIONSHIP[at0000] matches {    -- Relacion CUA
+		details matches {
+			ITEM_TREE[at0001] occurrences matches {0..1} matches {    -- arbol
+				items cardinality matches {0..*; unordered; unique} matches {
+					ELEMENT[at0002] occurrences matches {0..*} matches {    -- Tipo de relación
+						value matches {
+							DV_CODED_TEXT matches {
+								defining_code matches {
+									[local::
+									at0003,    -- Padre
+									at0004,    -- Madre
+									at0005,    -- Hijo
+									at0006,    -- Hija
+									at0007,    -- Hermano
+									at0008,    -- Hermana
+									at0009]    -- Encargado/a
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["es-cl"] = <
+			items = <
+				["at0000"] = <
+					text = <"Relacion CUA">
+					description = <"">
+				>
+				["at0001"] = <
+					text = <"arbol">
+					description = <"">
+				>
+				["at0002"] = <
+					text = <"Tipo de relación">
+					description = <"">
+				>
+				["at0003"] = <
+					text = <"Padre">
+					description = <"">
+				>
+				["at0004"] = <
+					text = <"Madre">
+					description = <"">
+				>
+				["at0005"] = <
+					text = <"Hijo">
+					description = <"">
+				>
+				["at0006"] = <
+					text = <"Hija">
+					description = <"">
+				>
+				["at0007"] = <
+					text = <"Hermano">
+					description = <"">
+				>
+				["at0008"] = <
+					text = <"Hermana">
+					description = <"">
+				>
+				["at0009"] = <
+					text = <"Encargado/a">
+					description = <"">
+				>
+			>
+		>
+	>

@@ -1,0 +1,58 @@
+archetype (adl_version=1.4; uid=031b96dc-0586-45a7-a545-c45b11feff2b)
+	openEHR-DEMOGRAPHIC-ROLE.profesional_cua.v1
+
+concept
+	[at0000]
+
+language
+	original_language = <[ISO_639-1::es-cl]>
+
+description
+	original_author = <
+		["date"] = <"2025-07-11">
+	>
+	lifecycle_state = <"Draft">
+	details = <
+		["es-cl"] = <
+			language = <[ISO_639-1::es-cl]>
+		>
+	>
+	other_details = <
+		["MD5-CAM-1.0.1"] = <"d0609ed580daded117fe0622ee1c670c">
+		["build_uid"] = <"1aae6271-9014-3a4a-b800-d0e54fda4390">
+	>
+
+definition
+	ROLE[at0000] matches {    -- profesional_cua
+		details matches {
+			ITEM_TREE[at0001] matches {    -- Item tree
+				items cardinality matches {0..*; unordered} matches {
+					ELEMENT[at0002] occurrences matches {0..*} matches {    -- Identificador profesional
+						value matches {
+							DV_IDENTIFIER matches {*}
+						}
+					}
+				}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["es-cl"] = <
+			items = <
+				["at0000"] = <
+					text = <"profesional_cua">
+					description = <"">
+				>
+				["at0001"] = <
+					text = <"Item tree">
+					description = <"@ internal @">
+				>
+				["at0002"] = <
+					text = <"Identificador profesional">
+					description = <"">
+				>
+			>
+		>
+	>

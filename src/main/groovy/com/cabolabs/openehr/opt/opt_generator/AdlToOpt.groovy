@@ -81,64 +81,17 @@ class AdlToOpt {
 
    def processObjectNode(OperationalTemplate template, Archetype archetype, CComplexObject node, String parentPath, String path, String dataPath, String templateDataPath)
    {
-      def templatePath = parentPath
-
-      // FIXME: externalize the path processing
-      if (templatePath != '/')
-      {
-         if (node.nodeId)
-         {
-            // NOTE: this case shouldn't happen when processing a single archetype.
-            // archetype Id
-            if (node.nodeId.startsWith('openEHR'))
-            {
-               templatePath     += '[archetype_id='+ node.nodeId +']' // slot in the path instead of node_id
-               templateDataPath += '[archetype_id='+ node.nodeId +']'
-
-               // We already know the archetype.definition is the root and there are no other archetype roots since this process is for a single archetype.
-               // if (node.'@xsi:type'.text() == "C_ARCHETYPE_ROOT")
-               // {
-               //    path     = '/' // archetype root found
-               //    dataPath = '/' // reset data path when path is root
-               // }
-            }
-            // at node Id
-            else
-            {
-               // avoids adding the node_id for PATHABLE nodes
-               // if node is a LOCATABLE add the node_id to the dataPath
-               if (!pathables.contains(node.rmTypeName))
-               {
-                  templatePath     += '['+ node.nodeId + ']'
-                  path             += '['+ node.nodeId + ']'
-                  templateDataPath += '['+ node.nodeId + ']'
-                  dataPath         += '['+ node.nodeId + ']'
-               }
-            }
-         }
-
-         // only for non root nodes and nodes with node_id
-         if (!pathCounter[templatePath])
-         {
-            pathCounter[templatePath] = 1
-         }
-         else
-         {
-            pathCounter[templatePath] ++
-         }
-
-         templateDataPath += '('+ pathCounter[templatePath] +')'
-      }
+      Map paths = calculatePaths(node, parentPath, path, dataPath, templateDataPath)
 
       def obn = new ObjectNode(
          owner:            template,
          rmTypeName:       node.rmTypeName,
          nodeId:           node.nodeId,
          type:             classToRm(node.getClass().getSimpleName()),
-         templatePath:     templatePath,
-         path:             path,
-         dataPath:         dataPath,
-         templateDataPath: templateDataPath,
+         templatePath:     paths.templatePath,
+         path:             paths.path,
+         dataPath:         paths.dataPath,
+         templateDataPath: paths.templateDataPath,
          occurrences:      adlToOptIntervalInt(node.occurrences),
       )
 
@@ -156,17 +109,180 @@ class AdlToOpt {
             archetype,
             obn,
             cAttribute,
-            templatePath,
-            path,
-            dataPath,
-            templateDataPath
+            paths.templatePath,
+            paths.path,
+            paths.dataPath,
+            paths.templateDataPath
          )
       }
 
       return obn
    }
 
-   def processObjectNode(OperationalTemplate template, Archetype archetype, CPrimitiveObject node, String parentPath, String path, String dataPath, String templateDataPath)
+   def processObjectNode(OperationalTemplate template, Archetype archetype, org.openehr.am.openehrprofile.datatypes.text.CCodePhrase node, String parentPath, String path, String dataPath, String templateDataPath)
+   {
+      Map paths = calculatePaths(node, parentPath, path, dataPath, templateDataPath)
+
+      //println "CODE LIST: "+ node.codeList
+
+      def obn = new com.cabolabs.openehr.opt.model.domain.CCodePhrase(
+         owner:            template,
+         rmTypeName:       node.rmTypeName,
+         nodeId:           node.nodeId,
+         type:             classToRm(node.getClass().getSimpleName()),
+         archetypeId:      archetype.getArchetypeId().getValue(),
+         templatePath:     paths.parentPath,
+         path:             paths.path,
+         dataPath:         paths.dataPath,
+         templateDataPath: paths.templateDataPath,
+         occurrences:      adlToOptIntervalInt(node.occurrences),
+
+         terminologyId:    node.terminologyId.value
+      )
+
+      if (node.codeList)
+      {
+         node.codeList.each { code ->
+
+            obn.codeList << code
+         }
+      }
+
+      println obn
+
+      return obn
+   }
+
+   def processObjectNode(OperationalTemplate template, Archetype archetype, org.openehr.am.openehrprofile.datatypes.quantity.CDvQuantity node, String parentPath, String path, String dataPath, String templateDataPath)
+   {
+      Map paths = calculatePaths(node, parentPath, path, dataPath, templateDataPath)
+
+      //println "CODE LIST: "+ node.codeList
+
+      def obn = new com.cabolabs.openehr.opt.model.domain.CDvQuantity(
+         owner:            template,
+         rmTypeName:       node.rmTypeName,
+         nodeId:           node.nodeId,
+         type:             classToRm(node.getClass().getSimpleName()),
+         archetypeId:      archetype.getArchetypeId().getValue(),
+         templatePath:     paths.parentPath,
+         path:             paths.path,
+         dataPath:         paths.dataPath,
+         templateDataPath: paths.templateDataPath,
+         occurrences:      adlToOptIntervalInt(node.occurrences),
+      )
+
+      if (node.property) // CodePhrase
+      {
+         obn.property = new com.cabolabs.openehr.opt.model.datatypes.CodePhrase(
+            codeString:    node.property.codeString,
+            terminologyId: node.property.terminologyId.value
+         )
+      }
+
+      if (node.list)
+      {
+         def cqtyItem
+         node.list.each { qtyItem -> // CQuantityItem
+
+            // .magnitude // Interval<Double>
+            // .precision // Interval<Integer>
+            // .units     // String
+
+            cqtyItem = new com.cabolabs.openehr.opt.model.domain.CQuantityItem(
+               units: qtyItem.units,
+               magnitude: adlToOptIntervalDouble(qtyItem.magnitude),
+               precision: adlToOptIntervalInt(qtyItem.precision)
+            )
+
+            obn.list << cqtyItem
+         }
+      }
+
+      println obn
+
+      return obn
+   }
+
+   def processObjectNode(OperationalTemplate template, Archetype archetype, ConstraintRef node, String parentPath, String path, String dataPath, String templateDataPath)
+   {
+      Map paths = calculatePaths(node, parentPath, path, dataPath, templateDataPath)
+
+      String reference = node.reference // ac0004
+
+      //println "ref ${reference}"
+
+      /*
+      // List<OntologyBinding>
+      archetype.getOntology().getConstraintBindingList().each { obind ->
+
+         println obind.getTerminology() // name
+
+         // println obind.getBindingList()
+
+         // List<OntologyBindingItem < QueryBindingItem>
+         obind.getBindingList().each { obitem ->
+
+            println " - "+ obitem.getCode() // ac0001
+            println " - "+ obitem.getQuery().getUrl() // terminology:minsal.cl/norma820/regiones
+         }
+      }
+      */
+
+      // Get URL by reference (code)
+
+      String terminologyRef
+      def obitem
+      for (def obind: archetype.ontology.constraintBindingList)
+      {
+         obitem = obind.bindingList.find{ it.code == reference } // QueryBindingItem > OntologyBindingItem
+         if (obitem)
+         {
+            terminologyRef = obitem.query.url
+            break
+         }
+      }
+
+      println "terminologyRef ${terminologyRef}"
+
+      // List<OntologyDefinitions>
+      // archetype.getOntology().getConstraintDefinitionsList().each { ondef ->
+
+      //    println ondef.getLanguage()
+      // }
+
+      return new CCodePhrase(
+         owner:            template,
+         rmTypeName:       node.rmTypeName,
+         nodeId:           node.nodeId,
+         type:             classToRm(node.getClass().getSimpleName()),
+         archetypeId:      archetype.getArchetypeId().getValue(),
+         templatePath:     paths.parentPath,
+         path:             paths.path,
+         dataPath:         paths.dataPath,
+         templateDataPath: paths.templateDataPath,
+         occurrences:      adlToOptIntervalInt(node.occurrences),
+
+         terminologyRef:   terminologyRef,
+         reference:        reference
+      ) // TODO: terminologyRef (URL), reference, codeList, terminologyId
+
+      //    <children xsi:type="C_CODE_REFERENCE">
+      //      <rm_type_name>CODE_PHRASE</rm_type_name>
+      //      <occurrences>
+      //          <lower_included>true</lower_included>
+      //          <upper_included>true</upper_included>
+      //          <lower_unbounded>false</lower_unbounded>
+      //          <upper_unbounded>false</upper_unbounded>
+      //          <lower>0</lower>
+      //          <upper>1</upper>
+      //      </occurrences>
+      //      <node_id></node_id>
+      //      <referenceSetUri>terminology:iso.org/3166-2</referenceSetUri>
+      //  </children>
+   }
+
+   Map calculatePaths(CObject node, String parentPath, String path, String dataPath, String templateDataPath)
    {
       def templatePath = parentPath
 
@@ -216,16 +332,28 @@ class AdlToOpt {
          templateDataPath += '('+ pathCounter[templatePath] +')'
       }
 
+      [
+         templatePath:     templatePath,
+         templateDataPath: templateDataPath,
+         path:             path,
+         dataPath:         dataPath
+      ]
+   }
+
+   def processObjectNode(OperationalTemplate template, Archetype archetype, CPrimitiveObject node, String parentPath, String path, String dataPath, String templateDataPath)
+   {
+      Map paths = calculatePaths(node, parentPath, path, dataPath, templateDataPath)
+
       def obn = new PrimitiveObjectNode(
          owner:            template,
          rmTypeName:       node.rmTypeName,
          nodeId:           node.nodeId,
          type:             classToRm(node.getClass().getSimpleName()),
          archetypeId:      archetype.getArchetypeId().getValue(),
-         templatePath:     parentPath,
-         path:             path,
-         dataPath:         dataPath,
-         templateDataPath: templateDataPath,
+         templatePath:     paths.parentPath,
+         path:             paths.path,
+         dataPath:         paths.dataPath,
+         templateDataPath: paths.templateDataPath,
          occurrences:      adlToOptIntervalInt(node.occurrences)
       )
 
@@ -403,7 +531,7 @@ class AdlToOpt {
 
    IntervalInt adlToOptIntervalInt(Interval<Integer> interval)
    {
-      //if (!interval) return null
+      if (!interval) return null
 
       def itv = new IntervalInt(
          upperIncluded:  interval.isUpperIncluded(),
@@ -424,9 +552,32 @@ class AdlToOpt {
       return itv
    }
 
+   IntervalBigDecimal adlToOptIntervalDouble(Interval<Double> interval)
+   {
+      if (!interval) return null
+
+      def itv = new IntervalBigDecimal(
+         upperIncluded:  interval.isUpperIncluded(),
+         lowerIncluded:  interval.isLowerIncluded(),
+         upperUnbounded: interval.isUpperUnbounded(),
+         lowerUnbounded: interval.isLowerUnbounded()
+      )
+
+      if (!itv.lowerUnbounded)
+      {
+         itv.lower = interval.lower
+      }
+      if (!itv.upperUnbounded)
+      {
+         itv.upper = interval.upper
+      }
+
+      return itv
+   }
+
    IntervalDuration adlToOptIntervalDuration(Interval<DvDuration> interval)
    {
-      //if (!interval) return null
+      if (!interval) return null
 
       def itv = new IntervalDuration(
          upperIncluded:  interval.isUpperIncluded(),
