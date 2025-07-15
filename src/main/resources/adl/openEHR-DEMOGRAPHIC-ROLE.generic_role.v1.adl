@@ -26,9 +26,9 @@ definition
                     ELEMENT[at0002] occurrences matches {0..*} matches {  -- ELEMENT
                         value existence matches {0..1} matches {
                             DV_IDENTIFIER[at0003] occurrences matches {0..1} matches {  -- DV_IDENTIFIER
-                                issuer existence matches {1..1} matches {""}
-                                type existence matches {1..1} matches {""}
-                                id existence matches {1..1} matches {""}
+                                issuer existence matches {1..1} matches {*}
+                                type existence matches {1..1} matches {*}
+                                id existence matches {1..1} matches {*}
                             }
                         }
                     }

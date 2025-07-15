@@ -21,6 +21,7 @@ repositories {
     // You can declare any Maven/Ivy/file repository here.
     //jcenter()
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -47,6 +48,9 @@ dependencies {
     implementation group: "com.networknt", name: "json-schema-validator", version: "1.0.73"
 
     implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '3.21.12'
+
+    // to transform ADL to OPT
+    implementation 'com.github.ppazos:java-libs:v1.0.20'
 
     //implementation fileTree(dir: 'lib', include: ['*.jar'])
 
