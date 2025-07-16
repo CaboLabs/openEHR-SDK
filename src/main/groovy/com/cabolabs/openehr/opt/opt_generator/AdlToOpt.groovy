@@ -10,7 +10,7 @@ import com.cabolabs.openehr.opt.model.primitive.*
 import com.cabolabs.openehr.opt.model.domain.*
 import com.cabolabs.openehr.opt.model.datatypes.*
 
-
+// TODO: slots and internal constraint refs
 class AdlToOpt {
 
    def language
@@ -152,6 +152,50 @@ class AdlToOpt {
 
       return obn
    }
+   
+
+   def processObjectNode(OperationalTemplate template, Archetype archetype, org.openehr.am.openehrprofile.datatypes.quantity.CDvOrdinal node, String parentPath, String path, String dataPath, String templateDataPath)
+   {
+      Map paths = calculatePaths(node, parentPath, path, dataPath, templateDataPath)
+
+      //println "CODE LIST: "+ node.codeList
+
+      def obn = new com.cabolabs.openehr.opt.model.domain.CDvOrdinal(
+         owner:            template,
+         rmTypeName:       node.rmTypeName,
+         nodeId:           node.nodeId,
+         type:             classToRm(node.getClass().getSimpleName()),
+         archetypeId:      archetype.getArchetypeId().getValue(),
+         templatePath:     paths.parentPath,
+         path:             paths.path,
+         dataPath:         paths.dataPath,
+         templateDataPath: paths.templateDataPath,
+         occurrences:      adlToOptIntervalInt(node.occurrences)
+      )
+
+      if (node.list) // List<CDvOrdinalItem>
+      {
+         def cdvo
+         node.list.each { ordinal -> // int value, codephrase symbol
+
+            cdvo = new com.cabolabs.openehr.opt.model.domain.CDvOrdinalItem(
+               value: ordinal.value,
+               symbol: new com.cabolabs.openehr.opt.model.datatypes.CodePhrase(
+                  codeString:    ordinal.symbol.codeString,
+                  terminologyId: ordinal.symbol.terminologyId.value
+               )
+            )
+
+            obn.list << cdvo
+         }
+      }
+
+      println obn
+
+      return obn
+   }
+
+
 
    def processObjectNode(OperationalTemplate template, Archetype archetype, org.openehr.am.openehrprofile.datatypes.quantity.CDvQuantity node, String parentPath, String path, String dataPath, String templateDataPath)
    {

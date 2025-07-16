@@ -122,7 +122,7 @@ class AdlToOptTest extends GroovyTestCase {
       assert opt.uid != null
       // assert opt.templateId == 'adl_to_opt_test'
       // assert opt.concept == 'adl_to_opt_test'
-      assert opt.language == 'ISO_639-1::es-cl'
+      assert opt.language == 'ISO_639-1::en'
       assert opt.definition != null
 
       def toXml = new OptXmlSerializer(true)
