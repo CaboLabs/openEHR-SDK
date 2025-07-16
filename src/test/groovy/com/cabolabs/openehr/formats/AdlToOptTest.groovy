@@ -16,7 +16,6 @@ class AdlToOptTest extends GroovyTestCase {
 
    private static String PS = System.getProperty("file.separator")
 
-   /*
    void testAdlToOpt()
    {
       def adl = new File("src${PS}main${PS}resources${PS}adl${PS}openEHR-DEMOGRAPHIC-ROLE.generic_role.v1.adl")
@@ -100,7 +99,63 @@ class AdlToOptTest extends GroovyTestCase {
       String optString = toXml.serialize(opt)
       println optString
    }
-   */
+   
+
+   void testAdlToOptRelationship()
+   {
+      def adl = new File("src${PS}main${PS}resources${PS}adl${PS}demographic${PS}openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.relacion_cua.v1.adl")
+
+      def archetype = this.loadArchetype(adl)
+
+
+      assert archetype != null
+
+
+      def adlToOpt = new AdlToOpt()
+
+      //def archetype = adlToOpt.parseAdl(adl)
+
+      def opt = adlToOpt.generateOpt(archetype)
+
+      assert opt != null
+      assert opt.uid != null
+      // assert opt.templateId == 'adl_to_opt_test'
+      // assert opt.concept == 'adl_to_opt_test'
+      assert opt.language == 'ISO_639-1::es-cl'
+      assert opt.definition != null
+
+      def toXml = new OptXmlSerializer(true)
+      String optString = toXml.serialize(opt)
+      println optString
+   }
+
+   void testAdlToOptPacRole()
+   {
+      def adl = new File("src${PS}main${PS}resources${PS}adl${PS}demographic${PS}openEHR-DEMOGRAPHIC-ROLE.paciente_cua.v1.adl")
+
+      def archetype = this.loadArchetype(adl)
+
+
+      assert archetype != null
+
+
+      def adlToOpt = new AdlToOpt()
+
+      //def archetype = adlToOpt.parseAdl(adl)
+
+      def opt = adlToOpt.generateOpt(archetype)
+
+      assert opt != null
+      assert opt.uid != null
+      // assert opt.templateId == 'adl_to_opt_test'
+      // assert opt.concept == 'adl_to_opt_test'
+      assert opt.language == 'ISO_639-1::es-cl'
+      assert opt.definition != null
+
+      def toXml = new OptXmlSerializer(true)
+      String optString = toXml.serialize(opt)
+      println optString
+   }
 
    void testAdlToOptStatus()
    {
