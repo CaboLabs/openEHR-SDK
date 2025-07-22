@@ -45,21 +45,20 @@ class AdlToOpt {
          throw new Exception("The archetype is not a top level archetype, it is: " + archetype.definition.rmTypeName)
       }
 
-      if (!language)
+      if (!this.language)
       {
-         language = archetype.getOriginalLanguage().getCodeString()
+         this.language = archetype.getOriginalLanguage().getCodeString()
       }
 
-      println language
-
-      println archetype.getConceptName(language)
+      //println language
+      println archetype.getConceptName(this.language)
 
       def template = new OperationalTemplate(
          uid:        String.uuid(),
-         templateId: archetype.getConceptName(language),
+         templateId: archetype.getConceptName(this.language),
          concept:    archetype.getConcept(), // at0000
-         language:   'ISO_639-1::'+ language, // This is how the stored OPT parses the language
-         purpose:    archetype.getDescription().getDetails().get(language)?.getPurpose()
+         language:   'ISO_639-1::'+ this.language, // This is how the stored OPT parses the language
+         purpose:    archetype.getDescription().getDetails().get(this.language)?.getPurpose()
       )
 
       generateOptDefinition(template, archetype)
@@ -70,6 +69,23 @@ class AdlToOpt {
    void generateOptDefinition(OperationalTemplate template, Archetype archetype)
    {
       template.definition = processObjectNode(template, archetype, archetype.definition, '/', '/', '/', '/')
+
+      // List<OntologyDefinitions> language: String, List<archetypeTerm> definitions (code: String, items: Map<String, String> key: TEXT/DESCRIPTION)
+      def odef = archetype.ontology.termDefinitionsList.find{ it.language == this.language }
+
+      if (!odef) println "No terms translated for language "+ this.language
+
+
+      odef.definitions.each{ archTerm ->
+
+         template.definition.termDefinitions << new CodedTerm(
+            code: archTerm.code,
+            term: new Term(
+               text: archTerm.text,
+               description: archTerm.description
+            )
+         )
+      }
 
       // TODO: process ontolofy.term_definitions into objectNode.termDefinitions
       // NOTE: this is done at the root because the ontology is global to the archetype, later when we process a tree of archetypes resolving the slots, we will need to process this at each archetype root.
@@ -152,7 +168,84 @@ class AdlToOpt {
 
       return obn
    }
-   
+
+   def processObjectNode(OperationalTemplate template, Archetype archetype, ConstraintRef node, String parentPath, String path, String dataPath, String templateDataPath)
+   {
+      Map paths = calculatePaths(node, parentPath, path, dataPath, templateDataPath)
+
+      String reference = node.reference // ac0004
+
+      //println "ref ${reference}"
+
+      /*
+      // List<OntologyBinding>
+      archetype.getOntology().getConstraintBindingList().each { obind ->
+
+         println obind.getTerminology() // name
+
+         // println obind.getBindingList()
+
+         // List<OntologyBindingItem < QueryBindingItem>
+         obind.getBindingList().each { obitem ->
+
+            println " - "+ obitem.getCode() // ac0001
+            println " - "+ obitem.getQuery().getUrl() // terminology:minsal.cl/norma820/regiones
+         }
+      }
+      */
+
+      // Get URL by reference (code)
+
+      String terminologyRef // can be null
+      def obitem
+      for (def obind: archetype.ontology.constraintBindingList)
+      {
+         obitem = obind.bindingList.find{ it.code == reference } // QueryBindingItem > OntologyBindingItem
+         if (obitem)
+         {
+            terminologyRef = obitem.query.url
+            break
+         }
+      }
+
+      //println "terminologyRef ${terminologyRef}"
+
+      // List<OntologyDefinitions>
+      // archetype.getOntology().getConstraintDefinitionsList().each { ondef ->
+
+      //    println ondef.getLanguage()
+      // }
+
+      return new CCodePhrase(
+         owner:            template,
+         rmTypeName:       node.rmTypeName,
+         nodeId:           node.nodeId,
+         type:             terminologyRef ? 'C_CODE_REFERENCE' : classToRm(node.getClass().getSimpleName()), // C_CODE_REFERENCE or CONSTRAINT_REF
+         archetypeId:      archetype.getArchetypeId().getValue(),
+         templatePath:     paths.parentPath,
+         path:             paths.path,
+         dataPath:         paths.dataPath,
+         templateDataPath: paths.templateDataPath,
+         occurrences:      adlToOptIntervalInt(node.occurrences),
+
+         terminologyRef:   terminologyRef,
+         reference:        reference
+      ) // TODO: terminologyRef (URL), reference, codeList, terminologyId
+
+      //    <children xsi:type="C_CODE_REFERENCE">
+      //      <rm_type_name>CODE_PHRASE</rm_type_name>
+      //      <occurrences>
+      //          <lower_included>true</lower_included>
+      //          <upper_included>true</upper_included>
+      //          <lower_unbounded>false</lower_unbounded>
+      //          <upper_unbounded>false</upper_unbounded>
+      //          <lower>0</lower>
+      //          <upper>1</upper>
+      //      </occurrences>
+      //      <node_id></node_id>
+      //      <referenceSetUri>terminology:iso.org/3166-2</referenceSetUri>
+      //  </children>
+   }
 
    def processObjectNode(OperationalTemplate template, Archetype archetype, org.openehr.am.openehrprofile.datatypes.quantity.CDvOrdinal node, String parentPath, String path, String dataPath, String templateDataPath)
    {
@@ -194,8 +287,6 @@ class AdlToOpt {
 
       return obn
    }
-
-
 
    def processObjectNode(OperationalTemplate template, Archetype archetype, org.openehr.am.openehrprofile.datatypes.quantity.CDvQuantity node, String parentPath, String path, String dataPath, String templateDataPath)
    {
@@ -246,84 +337,6 @@ class AdlToOpt {
       println obn
 
       return obn
-   }
-
-   def processObjectNode(OperationalTemplate template, Archetype archetype, ConstraintRef node, String parentPath, String path, String dataPath, String templateDataPath)
-   {
-      Map paths = calculatePaths(node, parentPath, path, dataPath, templateDataPath)
-
-      String reference = node.reference // ac0004
-
-      //println "ref ${reference}"
-
-      /*
-      // List<OntologyBinding>
-      archetype.getOntology().getConstraintBindingList().each { obind ->
-
-         println obind.getTerminology() // name
-
-         // println obind.getBindingList()
-
-         // List<OntologyBindingItem < QueryBindingItem>
-         obind.getBindingList().each { obitem ->
-
-            println " - "+ obitem.getCode() // ac0001
-            println " - "+ obitem.getQuery().getUrl() // terminology:minsal.cl/norma820/regiones
-         }
-      }
-      */
-
-      // Get URL by reference (code)
-
-      String terminologyRef
-      def obitem
-      for (def obind: archetype.ontology.constraintBindingList)
-      {
-         obitem = obind.bindingList.find{ it.code == reference } // QueryBindingItem > OntologyBindingItem
-         if (obitem)
-         {
-            terminologyRef = obitem.query.url
-            break
-         }
-      }
-
-      println "terminologyRef ${terminologyRef}"
-
-      // List<OntologyDefinitions>
-      // archetype.getOntology().getConstraintDefinitionsList().each { ondef ->
-
-      //    println ondef.getLanguage()
-      // }
-
-      return new CCodePhrase(
-         owner:            template,
-         rmTypeName:       node.rmTypeName,
-         nodeId:           node.nodeId,
-         type:             classToRm(node.getClass().getSimpleName()),
-         archetypeId:      archetype.getArchetypeId().getValue(),
-         templatePath:     paths.parentPath,
-         path:             paths.path,
-         dataPath:         paths.dataPath,
-         templateDataPath: paths.templateDataPath,
-         occurrences:      adlToOptIntervalInt(node.occurrences),
-
-         terminologyRef:   terminologyRef,
-         reference:        reference
-      ) // TODO: terminologyRef (URL), reference, codeList, terminologyId
-
-      //    <children xsi:type="C_CODE_REFERENCE">
-      //      <rm_type_name>CODE_PHRASE</rm_type_name>
-      //      <occurrences>
-      //          <lower_included>true</lower_included>
-      //          <upper_included>true</upper_included>
-      //          <lower_unbounded>false</lower_unbounded>
-      //          <upper_unbounded>false</upper_unbounded>
-      //          <lower>0</lower>
-      //          <upper>1</upper>
-      //      </occurrences>
-      //      <node_id></node_id>
-      //      <referenceSetUri>terminology:iso.org/3166-2</referenceSetUri>
-      //  </children>
    }
 
    Map calculatePaths(CObject node, String parentPath, String path, String dataPath, String templateDataPath)

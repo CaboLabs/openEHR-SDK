@@ -63,9 +63,9 @@ class OptXmlSerializer {
             details {
                language {
                   terminology_id {
-                     value('ISO_639-1')
+                     value(opt.language.split('::')[0])
                   }
-                  code_string(opt.language)
+                  code_string(opt.language.split('::')[1])
                }
                purpose(opt.purpose)
             }
@@ -213,15 +213,15 @@ class OptXmlSerializer {
    {
       fillObjectNode(obn)
 
-      if (obn.terminologyRef)
+      if (obn.terminologyRef) // type=C_CODE_REFERENCE
       {
          builder.referenceSetUri(obn.terminologyRef)
       }
-      else if (obn.reference)
+      else if (obn.reference) // type=CONSTARINT_REF
       {
          builder.reference(obn.reference)
       }
-      else
+      else // C_CODE_PHRASE
       {
          builder.terminology_id {
             value(obn.terminologyId)
