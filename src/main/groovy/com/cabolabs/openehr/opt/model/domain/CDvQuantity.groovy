@@ -38,4 +38,9 @@ class CDvQuantity extends ObjectNode {
 
       return new ValidationResult(isValid: true)
    }
+
+   String toString()
+   {
+      return "CDvQuantity: "+ property.codeString +" "+ list.toString()
+   }
 }

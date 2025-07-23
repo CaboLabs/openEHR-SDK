@@ -1,0 +1,97 @@
+archetype (adl_version=1.4; uid=5c5d433c-b83d-38fe-acf4-5adb72df7948)
+	openEHR-DEMOGRAPHIC-ROLE.paciente_cua.v1
+
+concept
+	[at0000]
+
+language
+	original_language = <[ISO_639-1::es-cl]>
+
+description
+	original_author = <
+		["date"] = <"2025-07-11">
+	>
+	lifecycle_state = <"Draft">
+	details = <
+		["es-cl"] = <
+			language = <[ISO_639-1::es-cl]>
+		>
+	>
+	other_details = <
+		["MD5-CAM-1.0.1"] = <"bb5212d41a40d3bc94e0d79e388460b0">
+		["build_uid"] = <"1aae6271-9014-3a4a-b800-d0e54fda4390">
+	>
+
+definition
+	ROLE[at0000] matches {    -- Paciente CUA
+		details matches {
+			ITEM_TREE[at0001] occurrences matches {0..1} matches {    -- arbol
+				items cardinality matches {0..*; unordered; unique} matches {
+					ELEMENT[at0006] occurrences matches {0..*} matches {    -- Previsión de salud
+						value matches {
+							DV_CODED_TEXT matches {
+								defining_code matches {
+									[local::
+									at0007,    -- FONASA
+									at0008,    -- ISAPRE
+									at0009,    -- CAPREDENA
+									at0010,    -- DIPRECA
+									at0011,    -- SISA
+									at0012,    -- Ninguna
+									at0013]    -- Desconocido
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["es-cl"] = <
+			items = <
+				["at0000"] = <
+					text = <"Paciente CUA">
+					description = <"">
+				>
+				["at0001"] = <
+					text = <"arbol">
+					description = <"">
+				>
+				["at0006"] = <
+					text = <"Previsión de salud">
+					description = <"">
+				>
+				["at0007"] = <
+					text = <"FONASA">
+					description = <"">
+				>
+				["at0008"] = <
+					text = <"ISAPRE">
+					description = <"">
+				>
+				["at0009"] = <
+					text = <"CAPREDENA">
+					description = <"">
+				>
+				["at0010"] = <
+					text = <"DIPRECA">
+					description = <"">
+				>
+				["at0011"] = <
+					text = <"SISA">
+					description = <"">
+				>
+				["at0012"] = <
+					text = <"Ninguna">
+					description = <"">
+				>
+				["at0013"] = <
+					text = <"Desconocido">
+					description = <"">
+				>
+			>
+		>
+	>

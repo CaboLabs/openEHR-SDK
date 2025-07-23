@@ -29,4 +29,9 @@ class CDvOrdinal extends ObjectNode {
 
       return new ValidationResult(isValid: true)
    }
+
+   String toString()
+   {
+      return "CDvOrdinal "+ list.toString()
+   }
 }

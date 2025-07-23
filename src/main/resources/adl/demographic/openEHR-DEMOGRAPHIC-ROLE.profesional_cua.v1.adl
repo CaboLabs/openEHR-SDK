@@ -1,0 +1,118 @@
+archetype (adl_version=1.4; uid=031b96dc-0586-45a7-a545-c45b11feff2b)
+	openEHR-DEMOGRAPHIC-ROLE.profesional_cua.v1
+
+concept
+	[at0000]
+
+language
+	original_language = <[ISO_639-1::es-cl]>
+
+description
+	original_author = <
+		["date"] = <"2025-07-11">
+		["name"] = <"Pablo Pazos">
+		["organisation"] = <"CaboLabs Health Informatics">
+		["email"] = <"pablo.pazos@cabolabs.com">
+	>
+	lifecycle_state = <"Draft">
+	details = <
+		["es-cl"] = <
+			language = <[ISO_639-1::es-cl]>
+		>
+	>
+	other_details = <
+		["MD5-CAM-1.0.1"] = <"b019c0fbe4d7c218618fcb73fc06f0c2">
+		["build_uid"] = <"1aae6271-9014-3a4a-b800-d0e54fda4390">
+	>
+
+definition
+	ROLE[at0000] matches {    -- Profesional CUA
+		details matches {
+			ITEM_TREE[at0001] matches {    -- Item tree
+				items cardinality matches {0..*; unordered} matches {
+					ELEMENT[at0002] occurrences matches {0..*} matches {    -- Identificador profesional
+						value matches {
+							DV_IDENTIFIER matches {*}
+						}
+					}
+				}
+			}
+		}
+		capabilities cardinality matches {1..*; unordered} matches {
+			CAPABILITY[at0003] occurrences matches {0..*} matches {    -- Capacidad
+				credentials matches {
+					ITEM_TREE[at0004] matches {    -- Item tree
+						items cardinality matches {0..*; unordered} matches {
+							ELEMENT[at0005] occurrences matches {0..1} matches {    -- Título profesional
+								value matches {
+									DV_CODED_TEXT matches {
+										defining_code matches {
+											[ac0000]
+										}
+									}
+								}
+							}
+							ELEMENT[at0006] occurrences matches {0..1} matches {    -- Especialidad
+								value matches {
+									DV_CODED_TEXT matches {
+										defining_code matches {
+											[ac0001]
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+ontology
+	terminologies_available = <"Título profesional","Especialidad médica">
+	term_definitions = <
+		["es-cl"] = <
+			items = <
+				["at0000"] = <
+					text = <"Profesional CUA">
+					description = <"">
+				>
+				["at0001"] = <
+					text = <"Item tree">
+					description = <"@ internal @">
+				>
+				["at0002"] = <
+					text = <"Identificador profesional">
+					description = <"">
+				>
+				["at0003"] = <
+					text = <"Capacidad">
+					description = <"">
+				>
+				["at0004"] = <
+					text = <"Item tree">
+					description = <"@ internal @">
+				>
+				["at0005"] = <
+					text = <"Título profesional">
+					description = <"">
+				>
+				["at0006"] = <
+					text = <"Especialidad">
+					description = <"">
+				>
+			>
+		>
+	>
+	constraint_binding = <
+		["Título profesional"] = <
+			items = <
+				["ac0000"] = <https://interoperabilidad.minsal.cl/fhir/ig/eis/CodeSystem/CSTituloProfesional>
+			>
+		>
+		["Especialidad médica"] = <
+			items = <
+				["ac0001"] = <https://interoperabilidad.minsal.cl/fhir/ig/nid/CodeSystem/CSEspecialidadMed>
+			>
+		>
+	>

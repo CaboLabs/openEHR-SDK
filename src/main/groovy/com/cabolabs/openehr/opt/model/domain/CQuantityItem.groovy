@@ -8,4 +8,9 @@ class CQuantityItem {
    IntervalBigDecimal magnitude // can be null
    IntervalInt precision // can be null
    String units
+
+   String toString()
+   {
+      return "CQuantityItem "+ magnitude +" "+ units
+   }
 }
