@@ -11,6 +11,7 @@ import com.cabolabs.openehr.opt.model.OperationalTemplate
 
 import com.cabolabs.openehr.opt.serializer.OptXmlSerializer
 
+// Tests transforming top level archetypes into OPTs with direct mapping between constraints.
 
 class AdlToOptTest extends GroovyTestCase {
 
@@ -42,6 +43,8 @@ class AdlToOptTest extends GroovyTestCase {
       def toXml = new OptXmlSerializer(true)
       String optString = toXml.serialize(opt)
       //println optString
+
+      /// TODO: validate the generated OPT against the XSD.
    }
 
    void testAdlToOptPerson()
@@ -99,7 +102,6 @@ class AdlToOptTest extends GroovyTestCase {
       String optString = toXml.serialize(opt)
       println optString
    }
-   
 
    void testAdlToOptRelationship()
    {

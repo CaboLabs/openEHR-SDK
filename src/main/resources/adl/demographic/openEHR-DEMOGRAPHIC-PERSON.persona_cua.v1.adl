@@ -158,15 +158,6 @@ definition
 											DV_TEXT matches {*}
 										}
 									}
-									ELEMENT[at0027] occurrences matches {0..1} matches {    -- Ciudad
-										value matches {
-											DV_CODED_TEXT matches {
-												defining_code matches {
-													[ac0000]
-												}
-											}
-										}
-									}
 									ELEMENT[at0030] occurrences matches {0..1} matches {    -- Comuna
 										value matches {
 											DV_CODED_TEXT matches {
@@ -338,10 +329,6 @@ ontology
 					text = <"Dirección postal">
 					description = <"">
 				>
-				["at0027"] = <
-					text = <"Ciudad">
-					description = <"">
-				>
 				["at0028"] = <
 					text = <"Región">
 					description = <"">
@@ -440,10 +427,6 @@ ontology
 	constraint_definitions = <
 		["es-cl"] = <
 			items = <
-				["ac0000"] = <
-					text = <"Vocabulario Norma 820: Cuidades">
-					description = <"">
-				>
 				["ac0001"] = <
 					text = <"Vocabulario Norma 820: Comunas">
 					description = <"">
@@ -468,30 +451,25 @@ ontology
 		>
 	>
 	constraint_binding = <
-		["Vocabularion Norma 820: Ciudad"] = <
-			items = <
-				["ac0000"] = <terminology:minsal.cl/norma820/ciudades>
-			>
-		>
 		["Vocabulario Norma 820: Provincias"] = <
 			items = <
-				["ac0002"] = <terminology:minsal.cl/norma820/provincias>
+				["ac0002"] = <https://hl7chile.cl/fhir/ig/clcore/CodeSystem/CSCodProvinciasCL>
 			>
 		>
 		["Vocabulario Norma 820: Regiones"] = <
 			items = <
-				["ac0003"] = <terminology:minsal.cl/norma820/regiones>
+				["ac0003"] = <https://hl7chile.cl/fhir/ig/clcore/CodeSystem/CSCodRegionCL>
 			>
 		>
 		["Vocabulario Norma 820: Comunas"] = <
 			items = <
-				["ac0001"] = <terminology:minsal.cl/norma820/comunas>
+				["ac0001"] = <https://hl7chile.cl/fhir/ig/clcore/CodeSystem/CSCodComunasCL>
 			>
 		>
 		["Código de país ISO 3166-2"] = <
 			items = <
-				["ac0004"] = <terminology:iso.org/3166-2>
-				["ac0005"] = <terminology:iso.org/3166-2>
+				["ac0004"] = <urn:iso:std:iso:3166>
+				["ac0005"] = <urn:iso:std:iso:3166>
 			>
 		>
 	>

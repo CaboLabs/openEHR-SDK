@@ -21,7 +21,7 @@ description
 		>
 	>
 	other_details = <
-		["MD5-CAM-1.0.1"] = <"700b9a0b5eb5e8195a6ab3fe84eba1cc">
+		["MD5-CAM-1.0.1"] = <"b019c0fbe4d7c218618fcb73fc06f0c2">
 		["build_uid"] = <"1aae6271-9014-3a4a-b800-d0e54fda4390">
 	>
 
@@ -107,12 +107,12 @@ ontology
 	constraint_binding = <
 		["Título profesional"] = <
 			items = <
-				["ac0000"] = <terminology:https://interoperabilidad.minsal.cl/fhir/ig/eis/CodeSystem/CSTituloProfesional>
+				["ac0000"] = <https://interoperabilidad.minsal.cl/fhir/ig/eis/CodeSystem/CSTituloProfesional>
 			>
 		>
 		["Especialidad médica"] = <
 			items = <
-				["ac0001"] = <terminology:https://interoperabilidad.minsal.cl/fhir/ig/nid/CodeSystem/CSEspecialidadMed>
+				["ac0001"] = <https://interoperabilidad.minsal.cl/fhir/ig/nid/CodeSystem/CSEspecialidadMed>
 			>
 		>
 	>

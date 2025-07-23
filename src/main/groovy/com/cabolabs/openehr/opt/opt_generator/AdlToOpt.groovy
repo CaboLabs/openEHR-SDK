@@ -10,6 +10,7 @@ import com.cabolabs.openehr.opt.model.primitive.*
 import com.cabolabs.openehr.opt.model.domain.*
 import com.cabolabs.openehr.opt.model.datatypes.*
 
+// Transforms top level archetypes into OPTs with direct mapping between constraints.
 // TODO: slots and internal constraint refs
 class AdlToOpt {
 
