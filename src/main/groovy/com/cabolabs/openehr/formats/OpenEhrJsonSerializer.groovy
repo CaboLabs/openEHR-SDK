@@ -77,10 +77,20 @@ class OpenEhrJsonSerializer {
    {
       if (this.pretty)
       {
-         return JsonOutput.prettyPrint(JsonOutput.toJson(m))
+         def out = JsonOutput.prettyPrint(JsonOutput.toJson(m))
+
+         // unescape unicode escaped characters
+         out = out.replaceAll(/\\u([0-9a-fA-F]{4})/){Integer.parseInt(it[1], 16) as char}
+         return out
       }
 
-      return JsonOutput.toJson(m)
+      //return JsonOutput.toJson(m)
+      def generator = new JsonGenerator.Options()
+         .excludeNulls()
+         .disableUnicodeEscaping() // avoid unicode escape
+         .build()
+
+      return generator.toJson(m)
    }
 
    String serialize(Locatable o)

@@ -587,6 +587,9 @@ class Main {
                   case 'EHR_STATUS':
                      instance = generator.generateEhrStatusFromOPT(opt)
                   break
+                  case 'PARTY_RELATIONSHIP':
+                     instance = generator.generateRelationshipFromOPT(opt)
+                  break
                   default:
                      throw new Exception("Type ${opt.definition.rmTypeName} not supported yet")
                      // TODO: EHR_STATUS, FOLDER, AGENT, GROUP, ROLE

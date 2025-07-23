@@ -365,6 +365,13 @@ class RmInstanceGenerator {
       return generateRole()
    }
 
+   PartyRelationship generateRelationshipFromOPT(OperationalTemplate opt)
+   {
+      this.opt = opt
+
+      return generateRelationship()
+   }
+
    EhrStatus generateEhrStatusFromOPT(OperationalTemplate opt)
    {
       this.opt = opt
@@ -1770,6 +1777,37 @@ class RmInstanceGenerator {
       role.performer = DataGenerator.random_party_ref()
 
       return role
+   }
+
+   private PartyRelationship generateRelationship()
+   {
+      def rel = new PartyRelationship()
+
+      def parent_arch_id = opt.definition.archetypeId
+
+      add_LOCATABLE_elements(opt.definition, rel, parent_arch_id, true)
+
+      def oa = opt.definition.attributes.find{ it.rmAttributeName == 'details' }
+
+      if (oa)
+      {
+         // returns a list, take the first obj
+         def details = processAttributeChildren(oa, parent_arch_id)
+         rel.details = details[0]
+      }
+
+
+      // Generate time_validity
+      rel.time_validity = DataGenerator.date_interval()
+
+      // Generate source
+      rel.source = DataGenerator.random_party_ref()
+
+      // Generate target
+      rel.target = DataGenerator.random_party_ref()
+
+
+      return rel
    }
 
    private PartyIdentity generate_PARTY_IDENTITY(ObjectNode o, String parent_arch_id)
