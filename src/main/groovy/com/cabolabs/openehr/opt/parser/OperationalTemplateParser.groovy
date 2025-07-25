@@ -312,10 +312,13 @@ class OperationalTemplateParser {
 
          def terminologyRef
 
-         // referenceSetUri is present on C_CODE_REFERENCE amd in some C_CODE_PHRASE,
+         // referenceSetUri is present on C_CODE_REFERENCE and in some C_CODE_PHRASE,
          // that is a bug from modeling tools.
+         // In general this has this form: terminology:SNOMED-CT but in modeling tools any value can be added.
          def uri = node.referenceSetUri.text()
          if (uri) terminologyRef = uri
+
+         // println "terminologyRef "+ terminologyRef
 
          // NOTE: node.archetype_id.value.text() is empty for all non-root nodes, so internal nodes don't know to which archetype they belong
 

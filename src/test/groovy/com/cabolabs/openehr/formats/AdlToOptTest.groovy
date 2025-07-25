@@ -105,7 +105,7 @@ class AdlToOptTest extends GroovyTestCase {
 
    void testAdlToOptRelationship()
    {
-      def adl = new File("src${PS}main${PS}resources${PS}adl${PS}demographic${PS}openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.relacion_cua.v1.adl")
+      def adl = new File("src${PS}main${PS}resources${PS}adl${PS}demographic${PS}openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.relacion_cua.v0.adl")
 
       def archetype = this.loadArchetype(adl)
 

@@ -1,0 +1,75 @@
+archetype (adl_version=1.4; uid=980a6970-05dc-4f9c-9e0f-920471903faa)
+	openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.relacion_cua.v0
+
+concept
+	[at0000]
+
+language
+	original_language = <[ISO_639-1::es-cl]>
+
+description
+	original_author = <
+		["date"] = <"2025-07-11">
+	>
+	lifecycle_state = <"Draft">
+	details = <
+		["es-cl"] = <
+			language = <[ISO_639-1::es-cl]>
+		>
+	>
+	other_details = <
+		["MD5-CAM-1.0.1"] = <"9dbff5c009f81e07442041b1d3ae418b">
+		["build_uid"] = <"de534bf6-a28b-339b-ab9e-ff63eddac47c">
+	>
+
+definition
+	PARTY_RELATIONSHIP[at0000] matches {    -- Relación CUA
+		details matches {
+			ITEM_TREE[at0001] occurrences matches {0..1} matches {    -- arbol
+				items cardinality matches {0..*; unordered; unique} matches {
+					ELEMENT[at0002] occurrences matches {0..*} matches {    -- Tipo de relación
+						value matches {
+							DV_CODED_TEXT matches {
+								defining_code matches {
+									[ac0001]
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+ontology
+	terminologies_available = <"Otras relaciones de contactos del paciente","Relaciones de contactos del paciente">
+	term_definitions = <
+		["es-cl"] = <
+			items = <
+				["at0000"] = <
+					text = <"Relación CUA">
+					description = <"">
+				>
+				["at0001"] = <
+					text = <"arbol">
+					description = <"">
+				>
+				["at0002"] = <
+					text = <"Tipo de relación">
+					description = <"">
+				>
+			>
+		>
+	>
+	constraint_binding = <
+		["Otras relaciones de contactos del paciente"] = <
+			items = <
+				["ac0001"] = <https://hl7chile.cl/fhir/ig/clcore/CodeSystem/CSOtrosContactos>
+			>
+		>
+		["Relaciones de contactos del paciente"] = <
+			items = <
+				["ac0001"] = <http://terminology.hl7.org/CodeSystem/v2-0131>
+			>
+		>
+	>

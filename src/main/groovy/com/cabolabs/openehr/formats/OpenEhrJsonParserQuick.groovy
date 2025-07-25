@@ -199,7 +199,7 @@ class OpenEhrJsonParserQuick {
          throw new JsonParseException("Can't parse JSON if root node doesn't have a value for _type")
       }
 
-      def method = 'parse'+ type
+      def method = 'parse'+ type // TODO: consider the type and the flavour to know if a xxxDto method should be called.
       Locatable out
       try
       {

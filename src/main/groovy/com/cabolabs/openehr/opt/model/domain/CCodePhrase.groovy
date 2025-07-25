@@ -36,9 +36,21 @@ class CCodePhrase extends ObjectNode {
    {
       // search for the terminologyId in the ref to check the term ID is the same as the one in the template
       // "terminology:SNOMED-CT?subset=problems"
+      // FIXME: we can't assume this will be always the format, modeling tools allow a different URI, so we should check it has 'terminology:' prefix before validating this way, in other cases, we might validate against the whole URI.
       if (this.terminologyRef)
       {
-         def _terminologyId = this.terminologyRef.split(":")[1].split("\\?")[0]
+         def _terminologyId
+
+         // "terminology:SNOMED-CT?subset=problems"
+         if (this.terminologyRef.startsWith('terminology:'))
+         {
+            _terminologyId = this.terminologyRef.split(":")[1].split("\\?")[0]
+         }
+         else
+         {
+            _terminologyId = this.terminologyRef
+         }
+
 
          if (_terminologyId != cp.terminologyId.value)
          {

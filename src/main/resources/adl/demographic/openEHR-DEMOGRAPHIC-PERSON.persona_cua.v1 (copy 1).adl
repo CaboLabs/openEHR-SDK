@@ -1,0 +1,475 @@
+archetype (adl_version=1.4; uid=a606a0ab-7005-48ee-99b2-5e99eebea22d)
+	openEHR-DEMOGRAPHIC-PERSON.persona_cua.v1
+
+concept
+	[at0000]
+
+language
+	original_language = <[ISO_639-1::es-cl]>
+
+description
+	original_author = <
+		["date"] = <"2025-07-11">
+		["name"] = <"Pablo Pazos">
+		["organisation"] = <"CaboLabs Health Informatics">
+		["email"] = <"pablo.pazos@cabolabs.com">
+	>
+	lifecycle_state = <"draft">
+	details = <
+		["es-cl"] = <
+			language = <[ISO_639-1::es-cl]>
+		>
+	>
+	other_details = <
+		["MD5-CAM-1.0.1"] = <"5a2661eb17b3b9688182bcbfa0c9a71c">
+		["build_uid"] = <"26aae8e6-dcb2-3443-9a6a-24f886cae71e">
+	>
+
+definition
+	PERSON[at0000] matches {    -- Persona CUA
+		details matches {
+			ITEM_TREE[at0001] matches {    -- Item tree
+				items cardinality matches {0..*; unordered} matches {
+					ELEMENT[at0002] occurrences matches {0..*} matches {    -- Documento de identidad
+						value matches {
+							DV_IDENTIFIER matches {*}
+						}
+					}
+					ELEMENT[at0033] occurrences matches {0..1} matches {    -- Nacionalidad
+						value matches {
+							DV_CODED_TEXT matches {
+								defining_code matches {
+									[ac0004]
+								}
+							}
+						}
+					}
+					ELEMENT[at0034] occurrences matches {0..1} matches {    -- País de origen
+						value matches {
+							DV_CODED_TEXT matches {
+								defining_code matches {
+									[ac0005]
+								}
+							}
+						}
+					}
+					ELEMENT[at0035] occurrences matches {0..1} matches {    -- Estado civil
+						value matches {
+							DV_CODED_TEXT matches {
+								defining_code matches {
+									[local::
+									at0036,    -- Soltero (a)
+									at0037,    -- Casado (a)
+									at0038,    -- Viudo (a)
+									at0039,    -- Divorciado (a)
+									at0040,    -- Separado (a) Judicialmente
+									at0041,    -- Conviviente Civil
+									at0042]    -- Desconocido
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		identities cardinality matches {1..*; unordered} matches {
+			PARTY_IDENTITY[at0003] occurrences matches {0..1} matches {    -- PARTY_IDENTITY
+				details matches {
+					ITEM_TREE[at0004] matches {    -- Item tree
+						items cardinality matches {0..*; unordered} matches {
+							CLUSTER[at0005] occurrences matches {0..1} matches {    -- Nombre
+								items cardinality matches {1..*; unordered} matches {
+									ELEMENT[at0006] occurrences matches {0..1} matches {    -- Primer nombre
+										value matches {
+											DV_TEXT matches {*}
+										}
+									}
+									ELEMENT[at0007] occurrences matches {0..1} matches {    -- Segundo nombre
+										value matches {
+											DV_TEXT matches {*}
+										}
+									}
+									ELEMENT[at0008] occurrences matches {0..1} matches {    -- Primer apellido
+										value matches {
+											DV_TEXT matches {*}
+										}
+									}
+									ELEMENT[at0009] occurrences matches {0..1} matches {    -- Segundo apellido
+										value matches {
+											DV_TEXT matches {*}
+										}
+									}
+									ELEMENT[at0010] occurrences matches {0..1} matches {    -- Nombre social
+										value matches {
+											DV_TEXT matches {*}
+										}
+									}
+								}
+							}
+							ELEMENT[at0012] occurrences matches {0..1} matches {    -- Fecha de nacimiento
+								value matches {
+									DV_DATE matches {*}
+								}
+							}
+							ELEMENT[at0013] occurrences matches {0..1} matches {    -- Sexo
+								value matches {
+									DV_CODED_TEXT matches {
+										defining_code matches {
+											[local::
+											at0014,    -- Hombre
+											at0015,    -- Mujer
+											at0016,    -- Intersexual
+											at0017,    -- No informado
+											at0018]    -- Desconocido
+										}
+									}
+								}
+							}
+							ELEMENT[at0043] occurrences matches {0..1} matches {    -- Identidad de género
+								value matches {
+									DV_CODED_TEXT matches {
+										defining_code matches {
+											[local::
+											at0044,    -- Masculino
+											at0045,    -- Femenina
+											at0046,    -- Transgénero Masculino
+											at0047,    -- Transgénero Femenina
+											at0048,    -- No Binarie
+											at0049,    -- Otra
+											at0050]    -- No Revelado
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		contacts cardinality matches {1..*; unordered} matches {
+			CONTACT[at0019] occurrences matches {0..1} matches {    -- CONTACT
+				addresses cardinality matches {1..*; unordered} matches {
+					ADDRESS[at0020] occurrences matches {0..*} matches {    -- Dirección
+						details matches {
+							ITEM_TREE[at0021] matches {    -- Item tree
+								items cardinality matches {0..*; unordered} matches {
+									ELEMENT[at0026] occurrences matches {0..1} matches {    -- Dirección postal
+										value matches {
+											DV_TEXT matches {*}
+										}
+									}
+									ELEMENT[at0030] occurrences matches {0..1} matches {    -- Comuna
+										value matches {
+											DV_CODED_TEXT matches {
+												defining_code matches {
+													[ac0001]
+												}
+											}
+										}
+									}
+									ELEMENT[at0029] occurrences matches {0..1} matches {    -- Provincia
+										value matches {
+											DV_CODED_TEXT matches {
+												defining_code matches {
+													[ac0002]
+												}
+											}
+										}
+									}
+									ELEMENT[at0028] occurrences matches {0..1} matches {    -- Región
+										value matches {
+											DV_CODED_TEXT matches {
+												defining_code matches {
+													[ac0003]
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					ADDRESS[at0022] occurrences matches {0..*} matches {    -- Teléfono
+						details matches {
+							ITEM_TREE[at0023] matches {    -- Item tree
+								items cardinality matches {0..*; unordered} matches {
+									ELEMENT[at0031] occurrences matches {0..1} matches {    -- Número de teléfono
+										value matches {
+											DV_TEXT matches {*}
+										}
+									}
+								}
+							}
+						}
+					}
+					ADDRESS[at0024] occurrences matches {0..*} matches {    -- Email
+						details matches {
+							ITEM_TREE[at0025] matches {    -- Item tree
+								items cardinality matches {0..*; unordered} matches {
+									ELEMENT[at0032] occurrences matches {0..1} matches {    -- Email
+										value matches {
+											DV_TEXT matches {*}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+ontology
+	terminologies_available = <"Vocabulario Norma 820: Provincias","Vocabulario Norma 820: Regiones","Vocabulario Norma 820: Comunas","Código de país ISO 3166-2">
+	term_definitions = <
+		["es-cl"] = <
+			items = <
+				["at0000"] = <
+					text = <"Persona CUA">
+					description = <"">
+				>
+				["at0001"] = <
+					text = <"Item tree">
+					description = <"@ internal @">
+				>
+				["at0002"] = <
+					text = <"Documento de identidad">
+					description = <"">
+				>
+				["at0003"] = <
+					text = <"PARTY_IDENTITY">
+					description = <"">
+				>
+				["at0004"] = <
+					text = <"Item tree">
+					description = <"@ internal @">
+				>
+				["at0005"] = <
+					text = <"Nombre">
+					description = <"">
+				>
+				["at0006"] = <
+					text = <"Primer nombre">
+					description = <"">
+				>
+				["at0007"] = <
+					text = <"Segundo nombre">
+					description = <"">
+				>
+				["at0008"] = <
+					text = <"Primer apellido">
+					description = <"">
+				>
+				["at0009"] = <
+					text = <"Segundo apellido">
+					description = <"">
+				>
+				["at0010"] = <
+					text = <"Nombre social">
+					description = <"">
+				>
+				["at0012"] = <
+					text = <"Fecha de nacimiento">
+					description = <"">
+				>
+				["at0013"] = <
+					text = <"Sexo">
+					description = <"Sexo biológico del paciente">
+				>
+				["at0014"] = <
+					text = <"Hombre">
+					description = <"">
+				>
+				["at0015"] = <
+					text = <"Mujer">
+					description = <"">
+				>
+				["at0016"] = <
+					text = <"Intersexual">
+					description = <"">
+				>
+				["at0017"] = <
+					text = <"No informado">
+					description = <"">
+				>
+				["at0018"] = <
+					text = <"Desconocido">
+					description = <"">
+				>
+				["at0019"] = <
+					text = <"CONTACT">
+					description = <"">
+				>
+				["at0020"] = <
+					text = <"Dirección">
+					description = <"">
+				>
+				["at0021"] = <
+					text = <"Item tree">
+					description = <"@ internal @">
+				>
+				["at0022"] = <
+					text = <"Teléfono">
+					description = <"">
+				>
+				["at0023"] = <
+					text = <"Item tree">
+					description = <"@ internal @">
+				>
+				["at0024"] = <
+					text = <"Email">
+					description = <"">
+				>
+				["at0025"] = <
+					text = <"Item tree">
+					description = <"@ internal @">
+				>
+				["at0026"] = <
+					text = <"Dirección postal">
+					description = <"">
+				>
+				["at0028"] = <
+					text = <"Región">
+					description = <"">
+				>
+				["at0029"] = <
+					text = <"Provincia">
+					description = <"">
+				>
+				["at0030"] = <
+					text = <"Comuna">
+					description = <"">
+				>
+				["at0031"] = <
+					text = <"Número de teléfono">
+					description = <"">
+				>
+				["at0032"] = <
+					text = <"Email">
+					description = <"">
+				>
+				["at0033"] = <
+					text = <"Nacionalidad">
+					description = <"">
+				>
+				["at0034"] = <
+					text = <"País de origen">
+					description = <"">
+				>
+				["at0035"] = <
+					text = <"Estado civil">
+					description = <"">
+				>
+				["at0036"] = <
+					text = <"Soltero (a)">
+					description = <"">
+				>
+				["at0037"] = <
+					text = <"Casado (a)">
+					description = <"">
+				>
+				["at0038"] = <
+					text = <"Viudo (a)">
+					description = <"">
+				>
+				["at0039"] = <
+					text = <"Divorciado (a)">
+					description = <"">
+				>
+				["at0040"] = <
+					text = <"Separado (a) Judicialmente">
+					description = <"">
+				>
+				["at0041"] = <
+					text = <"Conviviente Civil">
+					description = <"">
+				>
+				["at0042"] = <
+					text = <"Desconocido">
+					description = <"">
+				>
+				["at0043"] = <
+					text = <"Identidad de género">
+					description = <"">
+				>
+				["at0044"] = <
+					text = <"Masculino">
+					description = <"">
+				>
+				["at0045"] = <
+					text = <"Femenina">
+					description = <"">
+				>
+				["at0046"] = <
+					text = <"Transgénero Masculino">
+					description = <"">
+				>
+				["at0047"] = <
+					text = <"Transgénero Femenina">
+					description = <"">
+				>
+				["at0048"] = <
+					text = <"No Binarie">
+					description = <"">
+				>
+				["at0049"] = <
+					text = <"Otra">
+					description = <"">
+				>
+				["at0050"] = <
+					text = <"No Revelado">
+					description = <"">
+				>
+			>
+		>
+	>
+	constraint_definitions = <
+		["es-cl"] = <
+			items = <
+				["ac0001"] = <
+					text = <"Vocabulario Norma 820: Comunas">
+					description = <"">
+				>
+				["ac0002"] = <
+					text = <"Vocabulario Norma 820: Provincias">
+					description = <"">
+				>
+				["ac0003"] = <
+					text = <"Vocabulario Norma 820: Regiones">
+					description = <"">
+				>
+				["ac0004"] = <
+					text = <"Código de país ISO 3166-2">
+					description = <"">
+				>
+				["ac0005"] = <
+					text = <"Código de país ISO 3166-2">
+					description = <"">
+				>
+			>
+		>
+	>
+	constraint_binding = <
+		["Vocabulario Norma 820: Provincias"] = <
+			items = <
+				["ac0002"] = <https://hl7chile.cl/fhir/ig/clcore/CodeSystem/CSCodProvinciasCL>
+			>
+		>
+		["Vocabulario Norma 820: Regiones"] = <
+			items = <
+				["ac0003"] = <https://hl7chile.cl/fhir/ig/clcore/CodeSystem/CSCodRegionCL>
+			>
+		>
+		["Vocabulario Norma 820: Comunas"] = <
+			items = <
+				["ac0001"] = <https://hl7chile.cl/fhir/ig/clcore/CodeSystem/CSCodComunasCL>
+			>
+		>
+		["Código de país ISO 3166-2"] = <
+			items = <
+				["ac0004"] = <urn:iso:std:iso:3166>
+				["ac0005"] = <urn:iso:std:iso:3166>
+			>
+		>
+	>

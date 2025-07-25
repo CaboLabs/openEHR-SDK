@@ -777,7 +777,7 @@ class RmInstanceGenerator {
 
       if (!terminology_id)
       {
-         // format terminology:LOINC?subset=laboratory_services
+         // It can have the format terminology:LOINC?subset=laboratory_services but modeling tools allow to change that and add a full URI for instance, so we can't assume the format.
          def externalTerminologyRef
          if (def_code) externalTerminologyRef = def_code.children[0].terminologyRef
 
@@ -787,7 +787,16 @@ class RmInstanceGenerator {
          }
          else
          {
-            terminology_id = externalTerminologyRef.split("\\?")[0].split(":")[1]
+            if (externalTerminologyRef.startsWith('terminology:'))
+            {
+               // assumes the format terminology:LOINC?subset=laboratory_services and extracts LOINC
+               terminology_id = externalTerminologyRef.split("\\?")[0].split(":")[1]
+            }
+            else
+            {
+               // assumes the whole reference is the terminology id
+               terminology_id = externalTerminologyRef
+            }
          }
       }
 
