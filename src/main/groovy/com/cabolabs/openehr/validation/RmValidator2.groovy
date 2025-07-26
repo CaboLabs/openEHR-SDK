@@ -2337,6 +2337,7 @@ class RmValidator2 {
 
       validate_single_attribute(party, o, 'details', report)
 
+      // NOTE: we allow null or empty identities for ROLE
       validate_multiple_attribute(party, o, 'identities', report)
 
       validate_multiple_attribute(party, o, 'contacts', report)

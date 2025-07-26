@@ -254,6 +254,7 @@ class RmValidator {
       }
 
       // NOTE: identities is 1..* in the RM
+      // Though for Role we allow empty identities.
       def a_identities = o.getAttr('identities')
       if (a_identities)
       {

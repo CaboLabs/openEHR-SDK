@@ -185,10 +185,14 @@ class OpenEhrJsonSerializer {
       }
 
       // mandatory, at least 1 object
-      out.identities = []
-      p.identities.each { identity ->
+      // for roles we allow empty identities since that's an issue in the RM: roles can have no identity
+      if (p.identities)
+      {
+         out.identities = []
+         p.identities.each { identity ->
 
-         out.identities << this.serializePartyIdentity(identity)
+            out.identities << this.serializePartyIdentity(identity)
+         }
       }
    }
 
@@ -276,10 +280,14 @@ class OpenEhrJsonSerializer {
       }
 
       // mandatory, at least 1 object
-      out.identities = []
-      p.identities.each { identity ->
+      // though for roles we allow empty identities since that's an issue in the RM: roles can have no identity
+      if (p.identities)
+      {
+         out.identities = []
+         p.identities.each { identity ->
 
-         out.identities << this.serializePartyIdentity(identity)
+            out.identities << this.serializePartyIdentity(identity)
+         }
       }
 
       // optional

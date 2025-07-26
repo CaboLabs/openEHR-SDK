@@ -177,10 +177,14 @@ class OpenEhrXmlSerializer {
       }
 
       // mandatory, at least 1 object
-      p.identities.each { identity ->
+      // For roles we allow 0 identities
+      if (p.identities)
+      {
+         p.identities.each { identity ->
 
-         builder.identities {
-            this.serializePartyIdentity(identity)
+            builder.identities {
+               this.serializePartyIdentity(identity)
+            }
          }
       }
    }

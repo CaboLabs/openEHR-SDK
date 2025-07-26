@@ -1500,6 +1500,7 @@ class RmInstanceGenerator {
          p.contacts = contacts
       }
 
+      // FIXME: if there are no constraints for the identities, it generates an empty list, while for PERSON, ORG, etc. there should be at least one. Though for role we allow identities to be null instead of an empty list.
       oa = o.attributes.find{ it.rmAttributeName == 'identities' }
 
       if (oa)

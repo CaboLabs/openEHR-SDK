@@ -618,13 +618,17 @@ class OpenEhrJsonParser {
          }
       }
 
-      json.identities.eachWithIndex { party_identity, i ->
+      // for roles we allow empty identities since that's an issue in the RM: roles can have no identity
+      if (json.identities)
+      {
+         json.identities.eachWithIndex { party_identity, i ->
 
-         path_node_id = (party_identity.archetype_node_id.startsWith('at') ? party_identity.archetype_node_id : 'archetype_id='+ party_identity.archetype_node_id)
+            path_node_id = (party_identity.archetype_node_id.startsWith('at') ? party_identity.archetype_node_id : 'archetype_id='+ party_identity.archetype_node_id)
 
-         p.identities << this.parsePARTY_IDENTITY(party_identity, p,
-                        (path != '/' ? path +'/identities['+ path_node_id +']' : '/identities['+ path_node_id +']'),
-                        (dataPath != '/' ? dataPath +'/identities['+ path_node_id +']['+ i +']' : '/identities['+ path_node_id +']['+ i +']'))
+            p.identities << this.parsePARTY_IDENTITY(party_identity, p,
+                           (path != '/' ? path +'/identities['+ path_node_id +']' : '/identities['+ path_node_id +']'),
+                           (dataPath != '/' ? dataPath +'/identities['+ path_node_id +']['+ i +']' : '/identities['+ path_node_id +']['+ i +']'))
+         }
       }
    }
 
@@ -693,13 +697,17 @@ class OpenEhrJsonParser {
          }
       }
 
-      json.identities.eachWithIndex { party_identity, i ->
+      // for roles we allow empty identities since that's an issue in the RM: roles can have no identity
+      if (json.identities)
+      {
+         json.identities.eachWithIndex { party_identity, i ->
 
-         path_node_id = (party_identity.archetype_node_id.startsWith('at') ? party_identity.archetype_node_id : 'archetype_id='+ party_identity.archetype_node_id)
+            path_node_id = (party_identity.archetype_node_id.startsWith('at') ? party_identity.archetype_node_id : 'archetype_id='+ party_identity.archetype_node_id)
 
-         p.identities << this.parsePARTY_IDENTITY(party_identity, p,
-                        (path != '/' ? path +'/identities['+ path_node_id +']' : '/identities['+ path_node_id +']'),
-                        (dataPath != '/' ? dataPath +'/identities['+ path_node_id +']['+ i +']' : '/identities['+ path_node_id +']['+ i +']'))
+            p.identities << this.parsePARTY_IDENTITY(party_identity, p,
+                           (path != '/' ? path +'/identities['+ path_node_id +']' : '/identities['+ path_node_id +']'),
+                           (dataPath != '/' ? dataPath +'/identities['+ path_node_id +']['+ i +']' : '/identities['+ path_node_id +']['+ i +']'))
+         }
       }
    }
 

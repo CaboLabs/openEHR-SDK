@@ -555,9 +555,13 @@ class OpenEhrJsonParserQuick {
          }
       }
 
-      json.identities.eachWithIndex { party_identity, i ->
+      // for roles we allow empty identities since that's an issue in the RM: roles can have no identity
+      if (json.identities)
+      {
+         json.identities.eachWithIndex { party_identity, i ->
 
-         p.identities << this.parsePARTY_IDENTITY(party_identity, p)
+            p.identities << this.parsePARTY_IDENTITY(party_identity, p)
+         }
       }
    }
 
@@ -614,9 +618,13 @@ class OpenEhrJsonParserQuick {
          }
       }
 
-      json.identities.eachWithIndex { party_identity, i ->
+      // for roles we allow empty identities since that's an issue in the RM: roles can have no identity
+      if (json.identities)
+      {
+         json.identities.eachWithIndex { party_identity, i ->
 
-         p.identities << this.parsePARTY_IDENTITY(party_identity, p)
+            p.identities << this.parsePARTY_IDENTITY(party_identity, p)
+         }
       }
    }
 
