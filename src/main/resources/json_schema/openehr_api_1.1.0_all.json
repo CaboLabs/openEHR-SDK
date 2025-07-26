@@ -5799,8 +5799,7 @@
             "required": [
                 "uid",
                 "archetype_node_id",
-                "name",
-                "identities"
+                "name"
             ],
             "properties": {
                 "uid": {

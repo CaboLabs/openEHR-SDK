@@ -5601,8 +5601,7 @@
             "required": [
                 "archetype_node_id",
                 "archetype_details",
-                "name",
-                "identities"
+                "name"
             ],
             "properties": {
                 "uid": {

@@ -1,0 +1,64 @@
+{
+   "_type": "ROLE",
+   "name": {
+      "_type": "DV_TEXT",
+      "value": "Paciente CUA"
+   },
+   "archetype_details": {
+      "archetype_id": {
+         "value": "openEHR-DEMOGRAPHIC-ROLE.paciente_cua.v1"
+      },
+      "template_id": {
+         "value": "Paciente CUA"
+      },
+      "rm_version": "1.0.2"
+   },
+   "archetype_node_id": "openEHR-DEMOGRAPHIC-ROLE.paciente_cua.v1",
+   "details": {
+      "_type": "ITEM_TREE",
+      "name": {
+         "_type": "DV_TEXT",
+         "value": "arbol"
+      },
+      "archetype_node_id": "at0001",
+      "items": [
+         {
+            "_type": "ELEMENT",
+            "name": {
+               "_type": "DV_TEXT",
+               "value": "Previsión de salud"
+            },
+            "archetype_node_id": "at0006",
+            "value": {
+               "_type": "DV_CODED_TEXT",
+               "value": "FONASA",
+               "defining_code": {
+                  "terminology_id": {
+                     "_type": "TERMINOLOGY_ID",
+                     "value": "local"
+                  },
+                  "code_string": "at0007"
+               }
+            }
+         }
+      ]
+   },
+   "time_validity": {
+      "lower": {
+         "_type": "DV_DATE",
+         "value": "2025-07-22"
+      },
+      "lower_included": true,
+      "lower_unbounded": false,
+      "upper_included": false,
+      "upper_unbounded": true
+   },
+   "performer": {
+      "id": {
+         "_type": "HIER_OBJECT_ID",
+         "value": "5021e90c-a9d0-4503-8f9d-26471bf65f88"
+      },
+      "namespace": "DEMOGRAPHIC",
+      "type": "PERSON"
+   }
+}

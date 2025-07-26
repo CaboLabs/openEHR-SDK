@@ -45,6 +45,19 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
 
    private static String PS = System.getProperty("file.separator")
 
+   void testParseAndValidateRole()
+   {
+      String path = "${PS}canonical_json${PS}demographic${PS}paciente_cua_instance.json"
+      File file = new File(getClass().getResource(path).toURI())
+      String json = file.text
+
+      def parser = new OpenEhrJsonParserQuick(true)
+      parser.setSchemaFlavorAPI()
+      def role = parser.parseJson(json)
+      assert parser.getJsonValidationErrors() == null
+   }
+
+
    // This test is just to compare execution time for json parser calculating paths
    // vs. que quick one that doesn't calculate the paths.
    void testJsonParserNormalVsQuick()

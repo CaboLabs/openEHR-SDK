@@ -5911,7 +5911,6 @@
                 "archetype_node_id",
                 "archetype_details",
                 "name",
-                "identities",
                 "performer"
             ],
             "properties": {
