@@ -10,12 +10,22 @@ This will be used in CaboLabs apps like EHRGen, EHRServer, EMRApp and XML Rule E
 
 The build was tested with [Gradle 6.4.1](https://gradle.org/install/) installed from [SDKMAN!](https://sdkman.io/).
 
+This generates a fat jar with all dependencies to simplify CLI command execution.
+
 ```shell
 $ cd openEHR-SDK
-$ gradle build
+$ gradle clean fatJar
 ```
 
-Build without running the tests (faster)
+Normal build without fat jar, for instance for running the tests.
+
+```shell
+$ cd openEHR-SDK
+$ gradle clean build
+```
+
+
+Build without running the tests (faster).
 
 ```shell
 $ cd openEHR-SDK
@@ -24,11 +34,7 @@ $ gradle build -x test
 
 ### Requires Java 8+ and Groovy 2.5.5+
 
-> - - - - -
-> Note: check the opt.sh/opt.bat files to see if the correct path to the groovy dependencies on your machine is set there.
-> - - - - -
-
-That will run the tests and build the file ./build/libs/opt.jar
+Also tested with JDK 11.0.x and Groovy 3.0.x.
 
 For running tests, there are many options, examples below:
 
@@ -50,16 +56,25 @@ The test report in HTML will be under ./build/reports/tests/test/index.html
 
 ## Command Tools (CLI)
 
+Check the version of the build in gradle.properties, that should be x.y.z
+
 ### uigen: Generate UI for data input
 
 ```shell
-$ ./opt.sh uigen path_to_opt dest_folder
+$ java -jar build/libs/opt-x.y.z.jar uigen path_to_opt dest_folder
 ```
+
+Or shorthand (remember to update the x.y.z in the sdk.sh script):
+
+```shell
+$ ./sdk.sh uigen path_to_opt dest_folder
+```
+
 
 ### ingen: Generate XML instances from OPTs with random data
 
 ```shell
-$ ./opt.sh ingen path_to_opt dest_folder [amount] [json|xml] [version|composition] [withParticipations]
+$ java -jar build/libs/opt-x.y.z.jar ingen path_to_opt dest_folder [amount] [json|xml] [version|composition] [withParticipations]
 ```
 
 1. amount: defines how many XML instances will be generated, default is 1
@@ -88,13 +103,13 @@ so if you want to validate a new instance, you need to put the OPT there first.
 Validate one instance:
 
 ```shell
-$ ./opt.sh inval path_to_xml_or_json_instance [semantic]
+$ java -jar build/libs/opt-x.y.z.jar inval path_to_xml_or_json_instance [semantic]
 ```
 
 Validate all instances in folder:
 
 ```shell
-$ ./opt.sh inval path_to_folder_with_xml_or_json_instances [semantic]
+$ java -jar build/libs/opt-x.y.z.jar inval path_to_folder_with_xml_or_json_instances [semantic]
 ```
 
 > Note: if the folder contains JSON and XML, it will validate both with the correct schema, but the files should have .json or .xml extensions for the mixed validation to work OK.
@@ -106,7 +121,7 @@ In both cases, the output is "file IS VALID" or the list of validation errors if
 ### trans opt: Transform an OPT in it's antive XML form to JSON
 
 ```shell
-$ ./opt.sh trans opt path_to_opt destination_folder
+$ java -jar build/libs/opt-x.y.z.jar trans opt path_to_opt destination_folder
 ```
 
 ### trans composition: Transform an COMPOSITION instances between canonical XML and JSON formats
@@ -114,15 +129,24 @@ $ ./opt.sh trans opt path_to_opt destination_folder
 To transform a XML COMPOSITION to JSON:
 
 ```shell
-$ ./opt.sh trans composition path_to_compo.xml destination_folder
+$ java -jar build/libs/opt-x.y.z.jar trans composition path_to_compo.xml destination_folder
 ```
 To transform a JSON COMPOSITION to JSON:
 
 ```shell
-$ ./opt.sh trans composition path_to_compo.json destination_folder
+$ java -jar build/libs/opt-x.y.z.jar trans composition path_to_compo.json destination_folder
 ```
 
 > Note: the transformation of COMPOSITIONS between foramts relies on the file extension, only .xml or .json files are allowed.
+
+
+### Generate an OPT from ADL
+
+This is a very important tool that allows you to generate a full blown Operational Template from a single ADL archetype. A common use case is for demographic archetypes to quickly test templates based on them, also for single archetype models like FOLDER and EHR_STATUS.
+
+```shell
+$ java -jar build/libs/opt-x.y.z.jar adl2opt path_to_adl dest_path
+```
 
 
 ## Use as Java/Groovy library

@@ -52,7 +52,7 @@ class AdlToOpt {
       }
 
       //println language
-      println archetype.getConceptName(this.language)
+      // println archetype.getConceptName(this.language)
 
       def template = new OperationalTemplate(
          uid:        String.uuid(),
@@ -165,7 +165,7 @@ class AdlToOpt {
          }
       }
 
-      println obn
+      // println obn
 
       return obn
    }
@@ -284,7 +284,7 @@ class AdlToOpt {
          }
       }
 
-      println obn
+      // println obn
 
       return obn
    }
@@ -335,7 +335,7 @@ class AdlToOpt {
          }
       }
 
-      println obn
+      // println obn
 
       return obn
    }
@@ -561,7 +561,7 @@ class AdlToOpt {
       def obn
       cAttribute.children.each { cObject ->
 
-         println cObject.getClass().getSimpleName()
+         // println cObject.getClass().getSimpleName()
 
          obn = processObjectNode(
             template,

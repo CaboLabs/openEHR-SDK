@@ -51,6 +51,8 @@ dependencies {
 
     // to transform ADL to OPT
     implementation 'com.github.ppazos:java-libs:v1.0.20'
+    // implementation 'com.github.ppazos.java-libs:adl-parser:v1.0.20'
+    // implementation 'com.github.ppazos.java-libs:openehr-aom:v1.0.20'
 
     //implementation fileTree(dir: 'lib', include: ['*.jar'])
 
@@ -92,3 +94,31 @@ sourceSets {
 }
 */
 
+
+jar {
+    manifest {
+        attributes (
+            //'Class-Path': configurations.implementation.collect { it.getName() }.join(' '),
+            'Main-Class': 'com.cabolabs.openehr.opt.Main'
+        )
+    }
+}
+
+tasks.named('test') {
+    // Use JUnit Platform for unit tests.
+    useJUnitPlatform()
+}
+
+task fatJar(type: Jar) {
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    manifest.from jar.manifest
+    //classifier = 'all'
+
+    // this is needed to include the dependencies in the fat jar
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}

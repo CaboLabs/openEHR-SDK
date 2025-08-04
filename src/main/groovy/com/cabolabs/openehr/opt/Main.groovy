@@ -18,6 +18,11 @@ import com.cabolabs.openehr.validation.RmValidationReport
 import com.cabolabs.openehr.validation.RmValidator2
 import groovy.json.JsonOutput
 
+import com.cabolabs.openehr.opt.serializer.OptXmlSerializer
+import com.cabolabs.openehr.opt.opt_generator.AdlToOpt
+import org.openehr.am.archetype.Archetype
+import se.acode.openehr.parser.*
+
 class Main {
 
    private static String PS = System.getProperty("file.separator")
@@ -39,6 +44,7 @@ class Main {
          println 'ingen: XML/JSON instance generation from an OPT'
          println 'inval: XML/JSON instance validator'
          println 'trans: transforms an OPT in XML to JSON, or a XML/JSON locatable to JSON/XML respectively'
+         println 'adl2opt: generates an OPT from a single ADL archetype'
          System.exit(0)
       }
 
@@ -275,8 +281,8 @@ class Main {
 
             if (args.size() < 4)
             {
-               println "Usage: opt.sh trans opt path_to_opt destination_folder                \t--Transforms XML OPT into JSON"
-               println "Usage: opt.sh trans locatable path_to_locatable destination_folder\t--Transforms a XML or JSON LOCATABLE into JSON or XML"
+               println "Usage: java -jar build/libs/opt-x.y.z.jar trans opt path_to_opt destination_folder                \t--Transforms XML OPT into JSON"
+               println "Usage: java -jar build/libs/opt-x.y.z.jar trans locatable path_to_locatable destination_folder\t--Transforms a XML or JSON LOCATABLE into JSON or XML"
                System.exit(0)
             }
 
@@ -394,9 +400,88 @@ class Main {
 
 
          break
+         case 'adl2opt':
+            if (args.size() < 3)
+            {
+               println 'usage: opt adl2opt path_to_adl dest_folder'
+               System.exit(0)
+            }
+
+            def adl_path = args[1]
+            def dest_path = args[2]
+
+            println adl_path
+            println dest_path
+
+            def adl = new File(adl_path)
+            def dest = new File(dest_path)
+
+            if (!adl.isFile())
+            {
+               println "The ${adl_path} path is not valid"
+               println 'usage: opt adl2opt path_to_adl dest_folder'
+               System.exit(0)
+            }
+
+            if (!dest.isDirectory())
+            {
+               println "The ${dest} path is not valid"
+               println 'usage: opt adl2opt path_to_adl dest_folder'
+               System.exit(0)
+            }
+
+
+            // generate
+            def archetype = loadArchetype(adl)
+            def adlToOpt = new AdlToOpt()
+            def opt = adlToOpt.generateOpt(archetype)
+
+
+            // serialize
+            def toXml = new OptXmlSerializer(true)
+            String optString = toXml.serialize(opt)
+
+
+            // save output
+            def dt = new java.text.SimpleDateFormat("yyyyMMddhhmmss").format(new Date())
+            def out_path = dest_path + PS + (opt.templateId.replaceAll(' ', '_').toLowerCase() +"_"+ dt +'.opt')
+            def out_file = new File(out_path)
+            out_file << optString
+
+            println "OPT generated: "+ out_file.absolutePath
+         break
          default:
             println "command "+ args[0] +" not recognized"
       }
+   }
+
+   static Archetype loadArchetype(File adl)
+   {
+      ADLParser parser = null
+      try
+      {
+         parser = new ADLParser(adl)
+      }
+      catch (IOException e)
+      {
+         //log.debug("PROBLEMA AL CREAR EL PARSER: " + e.message)
+         println e.message
+         return
+      }
+
+      Archetype archetype = null
+      try
+      {
+         if (!parser) println "AHR: " + adl.name
+         archetype = parser.archetype()
+      }
+      catch (Exception e)
+      {
+         println e.message
+         return
+      }
+
+      return archetype
    }
 
    // path to folder exists or exit

@@ -21,7 +21,7 @@ description
 		>
 	>
 	other_details = <
-		["MD5-CAM-1.0.1"] = <"40e33fee567d477f7a1a82e18f2952c9">
+		["MD5-CAM-1.0.1"] = <"5a2661eb17b3b9688182bcbfa0c9a71c">
 		["build_uid"] = <"26aae8e6-dcb2-3443-9a6a-24f886cae71e">
 	>
 
@@ -53,6 +53,41 @@ definition
 							}
 						}
 					}
+					ELEMENT[at0013] occurrences matches {0..1} matches {    -- Sexo
+						value matches {
+							DV_CODED_TEXT matches {
+								defining_code matches {
+									[local::
+									at0014,    -- Hombre
+									at0015,    -- Mujer
+									at0016,    -- Intersexual
+									at0017,    -- No informado
+									at0018]    -- Desconocido
+								}
+							}
+						}
+					}
+					ELEMENT[at0012] occurrences matches {0..1} matches {    -- Fecha de nacimiento
+						value matches {
+							DV_DATE matches {*}
+						}
+					}
+					ELEMENT[at0043] occurrences matches {0..1} matches {    -- Identidad de género
+						value matches {
+							DV_CODED_TEXT matches {
+								defining_code matches {
+									[local::
+									at0044,    -- Masculino
+									at0045,    -- Femenina
+									at0046,    -- Transgénero Masculino
+									at0047,    -- Transgénero Femenina
+									at0048,    -- No Binarie
+									at0049,    -- Otra
+									at0050]    -- No Revelado
+								}
+							}
+						}
+					}
 					ELEMENT[at0035] occurrences matches {0..1} matches {    -- Estado civil
 						value matches {
 							DV_CODED_TEXT matches {
@@ -72,73 +107,42 @@ definition
 				}
 			}
 		}
-		identities cardinality matches {1..*; unordered} matches {
-			PARTY_IDENTITY[at0003] occurrences matches {0..1} matches {    -- PARTY_IDENTITY
+		identities cardinality matches {0..*; unordered} matches {
+			PARTY_IDENTITY[at0003] occurrences matches {0..*} matches {    -- Nombre
 				details matches {
 					ITEM_TREE[at0004] matches {    -- Item tree
 						items cardinality matches {0..*; unordered} matches {
-							CLUSTER[at0005] occurrences matches {0..1} matches {    -- Nombre
-								items cardinality matches {1..*; unordered} matches {
-									ELEMENT[at0006] occurrences matches {0..1} matches {    -- Primer nombre
-										value matches {
-											DV_TEXT matches {*}
-										}
-									}
-									ELEMENT[at0007] occurrences matches {0..1} matches {    -- Segundo nombre
-										value matches {
-											DV_TEXT matches {*}
-										}
-									}
-									ELEMENT[at0008] occurrences matches {0..1} matches {    -- Primer apellido
-										value matches {
-											DV_TEXT matches {*}
-										}
-									}
-									ELEMENT[at0009] occurrences matches {0..1} matches {    -- Segundo apellido
-										value matches {
-											DV_TEXT matches {*}
-										}
-									}
-									ELEMENT[at0010] occurrences matches {0..1} matches {    -- Nombre social
-										value matches {
-											DV_TEXT matches {*}
-										}
-									}
+							ELEMENT[at0006] occurrences matches {0..1} matches {    -- Primer nombre
+								value matches {
+									DV_TEXT matches {*}
 								}
 							}
-							ELEMENT[at0012] occurrences matches {0..1} matches {    -- Fecha de nacimiento
+							ELEMENT[at0007] occurrences matches {0..1} matches {    -- Segundo nombre
 								value matches {
-									DV_DATE matches {*}
+									DV_TEXT matches {*}
 								}
 							}
-							ELEMENT[at0013] occurrences matches {0..1} matches {    -- Sexo
+							ELEMENT[at0008] occurrences matches {0..1} matches {    -- Primer apellido
 								value matches {
-									DV_CODED_TEXT matches {
-										defining_code matches {
-											[local::
-											at0014,    -- Hombre
-											at0015,    -- Mujer
-											at0016,    -- Intersexual
-											at0017,    -- No informado
-											at0018]    -- Desconocido
-										}
-									}
+									DV_TEXT matches {*}
 								}
 							}
-							ELEMENT[at0043] occurrences matches {0..1} matches {    -- Identidad de género
+							ELEMENT[at0009] occurrences matches {0..1} matches {    -- Segundo apellido
 								value matches {
-									DV_CODED_TEXT matches {
-										defining_code matches {
-											[local::
-											at0044,    -- Masculino
-											at0045,    -- Femenina
-											at0046,    -- Transgénero Masculino
-											at0047,    -- Transgénero Femenina
-											at0048,    -- No Binarie
-											at0049,    -- Otra
-											at0050]    -- No Revelado
-										}
-									}
+									DV_TEXT matches {*}
+								}
+							}
+						}
+					}
+				}
+			}
+			PARTY_IDENTITY[at0051] occurrences matches {0..*} matches {    -- Nombre social
+				details matches {
+					ITEM_TREE[at0052] matches {    -- Item tree
+						items cardinality matches {0..*; unordered} matches {
+							ELEMENT[at0010] occurrences matches {0..1} matches {    -- Nombre social
+								value matches {
+									DV_TEXT matches {*}
 								}
 							}
 						}
@@ -147,7 +151,7 @@ definition
 			}
 		}
 		contacts cardinality matches {1..*; unordered} matches {
-			CONTACT[at0019] occurrences matches {0..1} matches {    -- CONTACT
+			CONTACT[at0019] occurrences matches {0..*} matches {    -- Medios de contacto
 				addresses cardinality matches {1..*; unordered} matches {
 					ADDRESS[at0020] occurrences matches {0..*} matches {    -- Dirección
 						details matches {
@@ -221,7 +225,7 @@ definition
 	}
 
 ontology
-	terminologies_available = <"Vocabularion Norma 820: Ciudad","Vocabulario Norma 820: Provincias","Vocabulario Norma 820: Regiones","Vocabulario Norma 820: Comunas","Código de país ISO 3166-2">
+	terminologies_available = <"Vocabulario Norma 820: Provincias","Vocabulario Norma 820: Regiones","Vocabulario Norma 820: Comunas","Código de país ISO 3166-2">
 	term_definitions = <
 		["es-cl"] = <
 			items = <
@@ -238,16 +242,12 @@ ontology
 					description = <"">
 				>
 				["at0003"] = <
-					text = <"PARTY_IDENTITY">
+					text = <"Nombre">
 					description = <"">
 				>
 				["at0004"] = <
 					text = <"Item tree">
 					description = <"@ internal @">
-				>
-				["at0005"] = <
-					text = <"Nombre">
-					description = <"">
 				>
 				["at0006"] = <
 					text = <"Primer nombre">
@@ -298,7 +298,7 @@ ontology
 					description = <"">
 				>
 				["at0019"] = <
-					text = <"CONTACT">
+					text = <"Medios de contacto">
 					description = <"">
 				>
 				["at0020"] = <
@@ -420,6 +420,14 @@ ontology
 				["at0050"] = <
 					text = <"No Revelado">
 					description = <"">
+				>
+				["at0051"] = <
+					text = <"Nombre social">
+					description = <"">
+				>
+				["at0052"] = <
+					text = <"Item tree">
+					description = <"@ internal @">
 				>
 			>
 		>
