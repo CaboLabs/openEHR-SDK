@@ -12,8 +12,8 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.PartyRef
  */
 class Role extends Party {
 
-   DvInterval time_validity // DvDate
-   PartyRef performer
+   DvInterval time_validity      // DvDate
+   PartyRef performer            // Reference to the actor performer
    List<Capability> capabilities // Capability
 
    @Override
