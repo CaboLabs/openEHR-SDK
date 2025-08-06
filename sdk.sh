@@ -1,1 +1,1 @@
-java -jar build/libs/opt-2.1.18.jar $1 $2 $3 $4 $5 $6 $7
+java -jar build/libs/opt-2.1.19.jar $1 $2 $3 $4 $5 $6 $7

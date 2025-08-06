@@ -7,7 +7,7 @@ import com.cabolabs.openehr.rm_1_0_2.demographic.Capability
  * @author pablo.pazos@cabolabs.com
  *
  */
-abstract class RoleDto extends PartyDto {
+class RoleDto extends PartyDto {
 
    DvInterval time_validity      // DvDate
    ActorDto performer            // direct association with ActorDto instead of PartyRef
