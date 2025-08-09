@@ -2,6 +2,8 @@ package com.cabolabs.openehr.formats
 
 import groovy.util.GroovyTestCase
 import com.cabolabs.openehr.dto_1_0_2.ehr.EhrDto
+import com.cabolabs.openehr.dto_1_0_2.demographic.*
+
 import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
 import com.cabolabs.openehr.rm_1_0_2.support.identification.HierObjectId
 import com.cabolabs.openehr.rm_1_0_2.support.identification.PartyRef
@@ -143,6 +145,213 @@ class OpenEhrJsonSerializerTest extends GroovyTestCase {
                   archetype_node_id: 'at0002',
                   value: new DvIdentifier(
                      id: 'A123',
+                     issuer: 'Hospital X',
+                     type: 'test1',
+                     assigner: 'Hospital X'
+                  )
+               )
+            ]
+         ),
+         identities: [
+            new PartyIdentity(
+               name: new DvText(
+                  value: 'identity'
+               ),
+               archetype_node_id: 'at0004',
+               details: new ItemTree(
+                  name: new DvText(
+                     value: 'tree'
+                  ),
+                  archetype_node_id: 'at0005', // << change structure to comply with archetype
+                  items: [
+                     new Element(
+                        name: new DvText(
+                           value: 'name'
+                        ),
+                        archetype_node_id: 'at0006',
+                        value: new DvText(
+                           value: 'patient'
+                        )
+                     )
+                  ]
+               )
+            )
+         ],
+         capabilities: [
+            new Capability(
+               name: new DvText(
+                  value: 'capability'
+               ),
+               archetype_node_id: 'at0008',
+               time_validity: new DvInterval(
+                  lower: new DvDate(
+                     value: '2020-01-01'
+                  ),
+                  lower_included: true,
+                  lower_unbounded: false,
+                  upper_included: false,
+                  upper_unbounded: true
+               ),
+               credentials: new ItemTree(
+                  name: new DvText(
+                     value: 'tree'
+                  ),
+                  archetype_node_id: 'at0009',
+                  items: [
+                     new Element(
+                        name: new DvText(
+                           value: 'capability name'
+                        ),
+                        archetype_node_id: 'at0010',
+                        value: new DvText(
+                           value: "doctor"
+                        )
+                     )
+                  ]
+               )
+            )
+         ]
+      )
+
+      def serializer = new OpenEhrJsonSerializer()
+      def string = serializer.serialize(role)
+      println string
+
+      def slurper = new JsonSlurper()
+      def json_map = slurper.parseText(string)
+
+      def validator = new JsonInstanceValidation('rm', '1.0.2')
+      def errors = validator.validate(json_map)
+
+      println errors
+
+      assert !errors
+
+      def parser = new OpenEhrJsonParserQuick(true) // true validates against JSON Schema
+      // parser.setSchemaFlavorAPI()
+      def role_out = parser.parseJson(string)
+
+
+      // SETUP OPT REPO
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+
+      // SETUP RM VALIDATOR (EHR_STATUS only)
+      RmValidator2 rm_validator = new RmValidator2(opt_manager)
+      RmValidationReport report = rm_validator.dovalidate(role_out, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert !report.errors
+   }
+
+   void testRoleDtoSerialization()
+   {
+      def role = new RoleDto(
+         name: new DvText(
+            value: 'generic role'
+         ),
+         uid: new HierObjectId(
+            value: '40329c20-39a8-4c10-8282-6d9b66c372fd'
+         ),
+         archetype_node_id: 'openEHR-DEMOGRAPHIC-ROLE.generic_role_with_capabilities.v1',
+         archetype_details: new Archetyped(
+            archetype_id: new ArchetypeId(
+               value: 'openEHR-DEMOGRAPHIC-ROLE.generic_role_with_capabilities.v1'
+            ),
+            template_id: new TemplateId(
+               value: 'generic_role_complete'
+            ),
+            rm_version: '1.0.2'
+         ),
+         time_validity: new DvInterval(
+            lower: new DvDate(
+               value: '2020-01-01'
+            ),
+            lower_included: true,
+            lower_unbounded: false,
+            upper_included: false,
+            upper_unbounded: true
+         ),
+         performer: new PersonDto( // The RoleDto has the ActorDto directly, not a REF
+            name: new DvText(
+               value: 'generic person'
+            ),
+            uid: new HierObjectId(
+               value: '40329c20-39a8-4c10-8282-6d9b66c37999'
+            ),
+            archetype_node_id: 'openEHR-DEMOGRAPHIC-PERSON.generic_person.v1',
+            archetype_details: new Archetyped(
+               archetype_id: new ArchetypeId(
+                  value: 'openEHR-DEMOGRAPHIC-PERSON.generic_person.v1'
+               ),
+               template_id: new TemplateId(
+                  value: 'generic_person'
+               ),
+               rm_version: '1.0.2'
+            ),
+            //
+            // Won't have roles because it's contained in the role, though we could add some to check how the serialization behaves
+            //
+            languages: [
+               new DvText("es")
+            ],
+            details: new ItemTree(
+               name: new DvText(
+                  value: 'tree'
+               ),
+               archetype_node_id: 'at0001', // << FIXME: change structure to comply with archetype
+               items: [
+                  new Element(
+                     name: new DvText(
+                        value: 'identifier'
+                     ),
+                     archetype_node_id: 'at0002',
+                     value: new DvIdentifier(
+                        id: 'PERSON1234',
+                        issuer: 'Hospital X',
+                        type: 'PERSON_ID'
+                     )
+                  )
+               ]
+            ),
+            identities: [
+               new PartyIdentity(
+                  archetype_node_id: 'at0003',
+                  name: new DvText(
+                     value: 'Name'
+                  ),
+                  details: new ItemTree(
+                     name: new DvText(
+                        value: 'tree'
+                     ),
+                     archetype_node_id: 'at0004', // << FIXME: change structure to comply with archetype
+                     items: [
+                        new Element(
+                           name: new DvText(
+                              value: 'Full name'
+                           ),
+                           archetype_node_id: 'at0005',
+                           value: new DvText("Pablo Pazos")
+                        )
+                     ]
+                  )
+               )
+            ]
+         ),
+         details: new ItemTree(
+            name: new DvText(
+               value: 'tree'
+            ),
+            archetype_node_id: 'at0001', // << FIXME: change structure to comply with archetype
+            items: [
+               new Element(
+                  name: new DvText(
+                     value: 'identifier'
+                  ),
+                  archetype_node_id: 'at0002',
+                  value: new DvIdentifier(
+                     id: 'ROLE123',
                      issuer: 'Hospital X',
                      type: 'test1',
                      assigner: 'Hospital X'

@@ -4,6 +4,10 @@
       "_type": "DV_TEXT",
       "value": "Paciente CUA"
    },
+   "uid": {
+      "_type": "HIER_OBJECT_ID",
+      "value": "a3b30d63-8676-459c-a330-167a39f95fee"
+   },
    "archetype_details": {
       "archetype_id": {
          "value": "openEHR-DEMOGRAPHIC-ROLE.paciente_cua.v1"

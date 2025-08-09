@@ -62,11 +62,17 @@ class OpenEhrJsonParserQuick {
    def setSchemaFlavorAPI()
    {
       this.schemaFlavor = "api"
+
+      // since the validator is set before the flavor, we need to update the validator flavor too
+      if (this.jsonValidator) this.jsonValidator.flavor = this.schemaFlavor
    }
 
    def setSchemaFlavorRM()
    {
       this.schemaFlavor = "rm"
+
+      // since the validator is set before the flavor, we need to update the validator flavor too
+      if (this.jsonValidator) this.jsonValidator.flavor = this.schemaFlavor
    }
 
    def getJsonValidationErrors()
@@ -197,6 +203,16 @@ class OpenEhrJsonParserQuick {
       if (!type)
       {
          throw new JsonParseException("Can't parse JSON if root node doesn't have a value for _type")
+      }
+
+      // For demographic classes that have refs in the RM flavor and the objects in the API flavor,
+      // we need to if it's demographic and the API flavor is used, then the DTO parser should be used.
+      if (
+         ['PERSON', 'ORGANISATION', 'GROUP', 'AGENT', 'ROLE'].contains(type) &&
+         this.schemaFlavor == 'api'
+      )
+      {
+         type += 'Dto'
       }
 
       def method = 'parse'+ type // TODO: consider the type and the flavour to know if a xxxDto method should be called.
@@ -434,6 +450,7 @@ class OpenEhrJsonParserQuick {
 
    // ========= FIll METHODS =========
 
+   // NOTE: not sure why we have the parent if it's not used here
    private void fillLOCATABLE(Locatable l, Map json, Pathable parent)
    {
       // name can be text or coded
@@ -651,7 +668,7 @@ class OpenEhrJsonParserQuick {
       {
          json.roles.each { role ->
 
-            a.roles << this.parseROLE(role)
+            a.roles << this.parseROLEDto(role) // ActorDto will have RoleDto
          }
       }
    }
@@ -689,6 +706,41 @@ class OpenEhrJsonParserQuick {
 
       def method = 'parse'+ type +'Dto'
       return this."$method"(map)
+   }
+
+   private RoleDto parseROLEDto(Map map)
+   {
+      def role = new RoleDto()
+
+      this.fillPartyDto(role, map, null)
+
+      if (map.time_validity)
+      {
+         role.time_validity = this.parseDV_INTERVAL(map.time_validity)
+      }
+
+      if (map.performer)
+      {
+         String type = map.performer._type
+
+         if (!type)
+         {
+            throw new JsonParseException("_type required for to parse the RoleDto.performer")
+         }
+
+         def method = 'parse'+ type +'Dto'
+         role.performer = this."$method"(map.performer)
+      }
+
+      if (map.capabilities)
+      {
+         role.capabilities = []
+         map.capabilities.each { capability ->
+            role.capabilities << this.parseCAPABILITY(capability, role)
+         }
+      }
+
+      return role
    }
 
    private PersonDto parsePERSONDto(Map map)
@@ -1182,10 +1234,10 @@ class OpenEhrJsonParserQuick {
             throw new JsonParseException("_type required for ORIGINAL_VERSION.data")
          }
 
-         // For demographic classes that have refs in the RM flavour and the objects in the API flaour,
-         // we need to if it's demographic and the API flavour is used, then the DTO parser should be used.
+         // For demographic classes that have refs in the RM flavor and the objects in the API flavor,
+         // we need to if it's demographic and the API flavor is used, then the DTO parser should be used.
          if (
-            ['PERSON', 'ORGANISATION', 'GROUP', 'AGENT'].contains(type) &&
+            ['PERSON', 'ORGANISATION', 'GROUP', 'AGENT', 'ROLE'].contains(type) &&
             this.schemaFlavor == 'api'
          )
          {

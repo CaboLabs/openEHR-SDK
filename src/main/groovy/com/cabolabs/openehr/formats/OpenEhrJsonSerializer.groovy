@@ -43,6 +43,9 @@ class OpenEhrJsonSerializer {
 
    boolean pretty
 
+   // util to know how the serialization is done
+   Map state = [:]
+
    public OpenEhrJsonSerializer()
    {
       this(false)
@@ -95,36 +98,42 @@ class OpenEhrJsonSerializer {
 
    String serialize(Locatable o)
    {
+      state = [:]
       def out = this.toMap(o)
       this.encode(out)
    }
 
    Map toMap(Locatable o)
    {
+      state = [:]
       String method = this.method(o)
       return this."$method"(o)
    }
 
    String serialize(Version o)
    {
+      state = [:]
       def out = this.toMap(o)
       this.encode(out)
    }
 
    Map toMap(Version o)
    {
+      state = [:]
       String method = this.method(o)
       return this."$method"(o) // e.g. serializeOriginalVersion
    }
 
    String serialize(EhrDto ehr)
    {
+      state = [:]
       Map out = this.toMap(ehr)
       this.encode(out)
    }
 
    Map toMap(EhrDto ehr)
    {
+      state = [:]
       [
          _type: 'EHR',
          ehr_id: this.serializeHierObjectId(ehr.ehr_id),           // TODO: no need to serialize the _type
@@ -139,6 +148,7 @@ class OpenEhrJsonSerializer {
       String method = this.method(o.name) // text or coded
 
       // adds the JSON type
+      // TODO: types like PartyIdentity or Capability are not needed, this is only needed when we have an attribute of a type that has subclasses.
       out._type = this.openEhrType(o)
 
       // adds the type before the rest of the entries
@@ -216,18 +226,56 @@ class OpenEhrJsonSerializer {
       // optional
       if (a.roles)
       {
-         out.roles = []
-         a.roles.each { role ->
+         // if the serialization doesn't come from a ROLE
+         if (!state.FROM_ROLE)
+         {
+            // prevents loops
+            state.FROM_ACTOR = true
 
-            out.roles << this.serializeRoleDto(role)
+            out.roles = []
+            a.roles.each { role ->
+
+               out.roles << this.serializeRoleDto(role)
+            }
          }
       }
    }
 
-   private Map serializeRoleDto(Role r)
+   private Map serializeRoleDto(RoleDto r)
    {
-      // for now this is the same as Role
-      return this.serializeRole(r)
+      def out = [:]
+
+      this.fillPartyDto(r, out)
+
+      out._type = 'ROLE'
+
+      if (r.time_validity)
+         out.time_validity = this.serializeDvInterval(r.time_validity)
+
+
+      /* NOTE: we should check if the serialization from the ACTOR contains the ROLE, or if the serialization started form the ROLE to avoid circular serialization.
+
+         If the serialization started from the ROLE, we need to serialize the performer here.
+         If the serialization started from the ACTOR, avoid the performer here: the performer is that ACTOR.
+      */
+      if (!state.FROM_ACTOR)
+      {
+         if (r.performer)
+         {
+            state.FROM_ROLE = true
+
+            def method = this.method(r.performer)
+            out.performer = this."$method"(r.performer)
+         }
+      }
+
+
+      out.capabilities = []
+      r.capabilities.each { capability ->
+         out.capabilities << serializeCapability(capability)
+      }
+
+      return out
    }
 
    private void fillActor(Actor a, Map out)

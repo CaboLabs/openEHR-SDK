@@ -625,8 +625,10 @@ class RmValidator2 {
 
       report.append(_validate_party(p, o))
 
+      // TODO:
+
       // the ActorDto has ROLEs directly associated (no PARTY_REF)
-      // TODO: for the ROLE we need to manage the alternative objects that chould be in the template
+      // TODO: for the ROLE we need to manage the alternative objects that should be in the template
       // p.roles.each { role ->
       //    report.append(validate(role, ...))
       // }
@@ -640,6 +642,19 @@ class RmValidator2 {
       //validate_multiple_attribute(p, o, 'roles', report)
 
       // TODO: languages
+
+      return report
+   }
+
+   private RmValidationReport validate(RoleDto p, ObjectNode o)
+   {
+      RmValidationReport report = new RmValidationReport()
+
+      report.append(_validate_party(p, o))
+
+      // TODO:
+      // RoleDto has the performer Actor directly in it, not a ref.
+      // The performer Actor is defined by it's own OPT, so it should be a separate validation process for it (it's another ObjectNode root, thought we can trigger that from here or just 'queue' the validation of that object to be done after this one finishes).
 
       return report
    }

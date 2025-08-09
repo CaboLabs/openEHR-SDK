@@ -52,7 +52,7 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       String json = file.text
 
       def parser = new OpenEhrJsonParserQuick(true)
-      parser.setSchemaFlavorAPI()
+      // parser.setSchemaFlavorAPI() // If it's a Role, it should be RM, if it's a RoleDto then it's API flavor
       def role = parser.parseJson(json)
       assert parser.getJsonValidationErrors() == null
    }

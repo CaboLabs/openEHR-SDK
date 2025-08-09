@@ -1104,7 +1104,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
       def parser = new OpenEhrJsonParserQuick(true) // does RM schema validation not API
       parser.setSchemaFlavorAPI() // testing if schema flavor is API
-      Organization organization = parser.parseJson(json_organization)
+      OrganizationDto organization = parser.parseJson(json_organization)
 
       //println organization
 

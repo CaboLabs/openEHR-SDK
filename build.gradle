@@ -104,10 +104,12 @@ jar {
     }
 }
 
+/* With this enabled it runs the Spock test cases and not the GroovyTestCases!
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+*/
 
 task fatJar(type: Jar) {
 
