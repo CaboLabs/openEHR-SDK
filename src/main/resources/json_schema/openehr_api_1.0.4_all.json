@@ -5617,7 +5617,6 @@
         "ROLE": {
             "type": "object",
             "required": [
-                "uid",
                 "archetype_node_id",
                 "name"
             ],

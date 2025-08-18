@@ -719,6 +719,7 @@ class OpenEhrJsonParserQuick {
          role.time_validity = this.parseDV_INTERVAL(map.time_validity)
       }
 
+      /* TEST with performer ActorDto
       if (map.performer)
       {
          String type = map.performer._type
@@ -730,6 +731,11 @@ class OpenEhrJsonParserQuick {
 
          def method = 'parse'+ type +'Dto'
          role.performer = this."$method"(map.performer)
+      }
+      */
+      if (map.performer)
+      {
+         role.performer = this.parsePARTY_REF(map.performer)
       }
 
       if (map.capabilities)

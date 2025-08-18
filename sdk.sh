@@ -1,1 +1,1 @@
-java -jar build/libs/opt-2.2.0.jar $1 $2 $3 $4 $5 $6 $7
+java -jar build/libs/sdk-2.2.1.jar $1 $2 $3 $4 $5 $6 $7
