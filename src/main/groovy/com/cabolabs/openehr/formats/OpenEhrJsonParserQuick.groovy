@@ -87,15 +87,8 @@ class OpenEhrJsonParserQuick {
 
    // ========= ENTRY POINTS =========
 
-   /**
-    * Used to parse an RM EHR payload. To parse an API EHR JSON, use the parseEhrDto() method.
-    * Here the ehr_status is OBJECT_REF.
-    */
-   Ehr parseEhr(String json)
+   Ehr parseEhr(Map map)
    {
-      def slurper = new JsonSlurper()
-      def map = slurper.parseText(json)
-
       // FIXME: EHR is not LOCATABLE and doesn't have info about the rm_version!
       // For the API EHR we could access the EHR_STATUS.archetype_details.rm_version, but for RM EHRs, ehr_status is an OBJECT_REF that should be resolved.
       if (this.schemaValidate)
@@ -108,7 +101,7 @@ class OpenEhrJsonParserQuick {
          //       different versions we can change the config and set it back when we are finished.
          this.jsonValidator = new JsonInstanceValidation("rm")
 
-         def errors = jsonValidator.validate(json)
+         def errors = jsonValidator.validate(map)
          if (errors)
          {
             this.jsonValidationErrors = errors
@@ -133,13 +126,18 @@ class OpenEhrJsonParserQuick {
    }
 
    /**
-    * Used to parse an API EHR payload. To parse an RM EHR JSON, use the parseEhr() method.
+    * Used to parse an RM EHR payload. To parse an API EHR JSON, use the parseEhrDto() method.
+    * Here the ehr_status is OBJECT_REF.
     */
-   EhrDto parseEhrDto(String json)
+   Ehr parseEhr(String json)
    {
       def slurper = new JsonSlurper()
       def map = slurper.parseText(json)
+      return this.parseEhr(map)
+   }
 
+   EhrDto parseEhrDto(Map map)
+   {
       // FIXME: EHR is not LOCATABLE and doesn't have info about the rm_version!
       // For the API EHR we could access the EHR_STATUS.archetype_details.rm_version, but for RM EHRs, ehr_status is an OBJECT_REF that should be resolved.
       if (this.schemaValidate)
@@ -148,7 +146,7 @@ class OpenEhrJsonParserQuick {
          // for an "rm" Ehr the parseEhr() method should be used
          this.jsonValidator = new JsonInstanceValidation("api") // FIXME: this uses the default 1.0.2 version schema!
 
-         def errors = jsonValidator.validate(json)
+         def errors = jsonValidator.validate(map)
          if (errors)
          {
             this.jsonValidationErrors = errors
@@ -174,13 +172,19 @@ class OpenEhrJsonParserQuick {
       return ehr
    }
 
-   // used to parse compositions and other descendant from Locatable
-   // TODO: FOLDER and EHR_STATUS are above, we might need to use this one instead
-   Locatable parseJson(String json)
+   /**
+    * Used to parse an API EHR payload. To parse an RM EHR JSON, use the parseEhr() method.
+    */
+   EhrDto parseEhrDto(String json)
    {
       def slurper = new JsonSlurper()
       def map = slurper.parseText(json)
+      return this.parseEhrDto(map)
+   }
 
+   // This method takes an already JSON parsed to a Map object and continues parsing the Locatable from it.
+   Locatable parseJson(Map map)
+   {
       if (this.schemaValidate)
       {
          if (!map.archetype_details || !map.archetype_details.rm_version) // rm version aware
@@ -190,7 +194,7 @@ class OpenEhrJsonParserQuick {
 
          this.jsonValidator = new JsonInstanceValidation(this.schemaFlavor, map.archetype_details.rm_version)
 
-         def errors = jsonValidator.validate(json)
+         def errors = jsonValidator.validate(map)
          if (errors)
          {
             this.jsonValidationErrors = errors
@@ -226,6 +230,15 @@ class OpenEhrJsonParserQuick {
          throw new JsonParseException("Can't parse JSON, check ${type} is a LOCATABLE type. If you tried to parse a VERSION, use the parseVersionJson method", e)
       }
       return out
+   }
+
+   // used to parse compositions and other descendant from Locatable
+   // TODO: FOLDER and EHR_STATUS are above, we might need to use this one instead
+   Locatable parseJson(String json)
+   {
+      def slurper = new JsonSlurper()
+      def map = slurper.parseText(json)
+      return parseJson(map)
    }
 
    // used to parse versions because is not Locatable
