@@ -15,4 +15,9 @@ class UUID extends UID {
    {
       this.value = Uuid.fromString(uid)
    }
+
+   String toString()
+   {
+      return this.value.toString()
+   }
 }

@@ -15,4 +15,9 @@ class OID extends UID {
    {
       this.value = new Oid(uid)
    }
+
+   String toString()
+   {
+      return this.value.toString()
+   }
 }

@@ -58,4 +58,9 @@ class InternetId extends UID {
 
       this.value = value
    }
+
+   String toString()
+   {
+      return this.value
+   }
 }
