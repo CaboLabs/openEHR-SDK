@@ -11,7 +11,7 @@ class CDvQuantity extends ObjectNode {
    CodePhrase property
 
    // List<CQuantityItem>
-   List list = []
+   List<CQuantityItem> list = []
 
    ValidationResult isValid(DvQuantity dvq)
    {

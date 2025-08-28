@@ -4,6 +4,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemStructur
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 import com.cabolabs.openehr.rm_1_0_2.support.identification.PartyRef
+import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
 
 /**
  * @author pablo.pazos@cabolabs.com
@@ -11,8 +12,8 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.PartyRef
  */
 abstract class Actor extends Party {
 
-   Set roles = [] // PartyRef
-   List languages = [] // DvText
+   Set<PartyRef> roles = [] // PartyRef
+   List<DvText> languages = [] // DvText
 
    @Override
    void fillPathable(Pathable parent, String parentAttribute)

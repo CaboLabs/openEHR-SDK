@@ -6,6 +6,11 @@ class VersionTreeId {
 
    String value // e.g. 1.0.2
 
+   VersionTreeId(String value)
+   {
+      this.value = value
+   }
+
    String getTrunkVersion()
    {
       def matcher = expression =~ VERSION_PATTERN

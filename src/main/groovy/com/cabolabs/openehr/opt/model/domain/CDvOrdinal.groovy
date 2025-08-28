@@ -7,7 +7,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvOrdinal
 class CDvOrdinal extends ObjectNode {
 
    // List<CDvOrdinalItem>
-   List list = []
+   List<CDvOrdinalItem> list = []
 
 
    /**

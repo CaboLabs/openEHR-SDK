@@ -13,9 +13,9 @@ abstract class Party extends Locatable {
 
    Set reverse_relationships // LocatableRef
    ItemStructure details
-   List contacts = [] // Contact
-   List identities = [] // PartyIdentity
-   List relationships = [] // PartyRelationship
+   List<Contact> contacts = [] // Contact
+   List<PartyIdentity> identities = [] // PartyIdentity
+   List<PartyRelationship> relationships = [] // PartyRelationship
 
    @Override
    void fillPathable(Pathable parent, String parentAttribute)

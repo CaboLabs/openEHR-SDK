@@ -3,6 +3,9 @@ package com.cabolabs.openehr.dto_1_0_2.demographic
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemStructure
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
+import com.cabolabs.openehr.rm_1_0_2.demographic.PartyIdentity
+import com.cabolabs.openehr.rm_1_0_2.demographic.Contact
+
 
 /**
  * @author pablo.pazos@cabolabs.com
@@ -11,8 +14,8 @@ import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 abstract class PartyDto extends Locatable {
 
    ItemStructure details
-   List contacts = [] // Contact
-   List identities = [] // PartyIdentity
+   List<Contact> contacts = [] // Contact
+   List<PartyIdentity> identities = [] // PartyIdentity
 
    @Override
    void fillPathable(Pathable parent, String parentAttribute)
