@@ -72,9 +72,6 @@ class OptUiGenerator {
                body {
                  padding: 1rem;
                }
-               .small {
-                  width: 48px;
-               }
                .search {
                   background-image: url("http://files.softicons.com/download/system-icons/crystal-project-icons-by-everaldo-coelho/png/32x32/apps/search.png");
                   background-size: 16px 16px;
@@ -83,7 +80,7 @@ class OptUiGenerator {
                   height: 16px;
                   display: inline-block;
                }
-               .form-group {
+               .form-group.tk {
                   border-left: 1px solid #ccc;
                }
                ''')
@@ -97,7 +94,7 @@ class OptUiGenerator {
                else
                {
                   link(rel:"stylesheet", href:"https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css")
-                  link(rel:"stylesheet", href:"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css")
+                  link(rel:"stylesheet", href:"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css") // for the icons
                }
             }
             body() {
@@ -120,7 +117,7 @@ class OptUiGenerator {
                form {
                  padding: 1rem;
                }
-               .form-group {
+               .form-group.tk {
                   border-left: 1px solid #ccc;
                }
             ''')
@@ -150,7 +147,7 @@ class OptUiGenerator {
 
 
       // classes form BS4
-      String formGroupClass = 'form-group'
+      String formGroupClass = 'form-group tk'
       String fieldLabelClass = ''
       String fieldClass = 'form-control'
       if (this.bootstrapVersion == 5)
@@ -262,7 +259,7 @@ class OptUiGenerator {
    void generateFields(ObjectNode node, MarkupBuilder builder, String parent_arch_id)
    {
       // classes form BS4
-      String formGroupClass = 'form-group'
+      String formGroupClass = 'form-group tk'
       String fieldLabelClass = ''
       String fieldClass = 'form-control'
       if (this.bootstrapVersion == 5)
