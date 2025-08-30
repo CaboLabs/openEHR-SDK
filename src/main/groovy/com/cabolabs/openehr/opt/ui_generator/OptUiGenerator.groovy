@@ -61,13 +61,30 @@ class OptUiGenerator {
             head() {
                meta(name: "viewport", content: "width=device-width, initial-scale=1")
 
-               mkp.comment('simple style')
-               link(rel:"stylesheet", href:"/static/style.css")
+               // mkp.comment('simple style')
+               // link(rel:"stylesheet", href:"/static/style.css")
 
                style('''
                .form-item {
                   padding-left: 1em;
                   margin-bottom: 0.5em;
+               }
+               body {
+                 padding: 1rem;
+               }
+               .small {
+                  width: 48px;
+               }
+               .search {
+                  background-image: url("http://files.softicons.com/download/system-icons/crystal-project-icons-by-everaldo-coelho/png/32x32/apps/search.png");
+                  background-size: 16px 16px;
+                  background-repeat: no-repeat;
+                  width: 16px;
+                  height: 16px;
+                  display: inline-block;
+               }
+               .form-group {
+                  border-left: 1px solid #ccc;
                }
                ''')
 
@@ -80,11 +97,12 @@ class OptUiGenerator {
                else
                {
                   link(rel:"stylesheet", href:"https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css")
+                  link(rel:"stylesheet", href:"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css")
                }
             }
             body() {
-               form() {
-                  h1(class: 'h3', opt.concept)
+               form(class: 'container') {
+                  h1(class: 'h3', opt.getTerm(opt.definition.archetypeId, opt.definition.nodeId))
                   input(type: 'hidden', name: 'template_id', value: opt.templateId)
                   generate(opt.definition, builder, opt.definition.archetypeId)
                }
@@ -93,10 +111,24 @@ class OptUiGenerator {
       }
       else
       {
-         builder.form() {
-            h1(class: 'h3', opt.concept)
-            input(type: 'hidden', name: 'template_id', value: opt.templateId)
-            generate(opt.definition, builder, opt.definition.archetypeId)
+         builder.div() {
+            style('''
+               .form-item {
+                  padding-left: 1em;
+                  margin-bottom: 0.5em;
+               }
+               form {
+                 padding: 1rem;
+               }
+               .form-group {
+                  border-left: 1px solid #ccc;
+               }
+            ''')
+            form() {
+               h1(class: 'h3', opt.getTerm(opt.definition.archetypeId, opt.definition.nodeId))
+               input(type: 'hidden', name: 'template_id', value: opt.templateId)
+               generate(opt.definition, builder, opt.definition.archetypeId)
+            }
          }
       }
 
@@ -321,32 +353,37 @@ class OptUiGenerator {
 
                if (!attr)
                {
-                  builder.label('value') {
-                     input(
-                        type:'text',
-                        'data-tpath':     node.templatePath +'/value',
-                        'data-archetype': node.getOwnerArchetypeId(),
-                        'data-path':      node.path +'/value',
-                        class:            'small '+ node.rmTypeName +' '+ fieldClass
-                     )
-                  }
-                  builder.label('code') {
-                     input(
-                        type:'text',
-                        'data-tpath':     node.templatePath +'/defining_code/code_string',
-                        'data-archetype': node.getOwnerArchetypeId(),
-                        'data-path':      node.path +'/defining_code/code_string',
-                        class:            'small '+ node.rmTypeName +' '+ fieldClass
-                     )
-                  }
-                  builder.label('terminology') {
-                     input(
-                        type:             'text',
-                        'data-tpath':     node.templatePath +'/defining_code/terminology_id',
-                        'data-archetype': node.getOwnerArchetypeId(),
-                        'data-path':      node.path +'/defining_code/terminology_id',
-                        class:            'small '+ node.rmTypeName +' '+ fieldClass
-                     )
+                  builder.div(class: 'row') {
+                     div(class: 'col') {
+                        label('value')
+                        input(
+                           type:'text',
+                           'data-tpath':     node.templatePath +'/value',
+                           'data-archetype': node.getOwnerArchetypeId(),
+                           'data-path':      node.path +'/value',
+                           class:            ' '+ node.rmTypeName +' '+ fieldClass
+                        )
+                     }
+                     div(class: 'col') {
+                        label('code')
+                        input(
+                           type:'text',
+                           'data-tpath':     node.templatePath +'/defining_code/code_string',
+                           'data-archetype': node.getOwnerArchetypeId(),
+                           'data-path':      node.path +'/defining_code/code_string',
+                           class:            ' '+ node.rmTypeName +' '+ fieldClass
+                        )
+                     }
+                     div(class: 'col') {
+                        label('terminology')
+                        input(
+                           type:             'text',
+                           'data-tpath':     node.templatePath +'/defining_code/terminology_id',
+                           'data-archetype': node.getOwnerArchetypeId(),
+                           'data-path':      node.path +'/defining_code/terminology_id',
+                           class:            ' '+ node.rmTypeName +' '+ fieldClass
+                        )
+                     }
                   }
                }
                else
@@ -358,6 +395,8 @@ class OptUiGenerator {
                      // is a ConstraintRef?
                      if (constraint.terminologyRef)
                      {
+                        //def attachmentStyle = (this.bootstrapVersion == 5) ? ' : 'input-group-append'
+
                         builder.div(class: 'input-group') {
                            input(
                               type:             'text',
@@ -367,8 +406,19 @@ class OptUiGenerator {
                               'data-path':      constraint.path
                            )
                            // FIXME: use fontawesome5 icons for BS4 or BS5 icons
-                           span(class:'input-group-text glyphicon glyphicon-search') {
-                              i(class: 'bi bi-search', '')
+                           if (this.bootstrapVersion == 4)
+                           {
+                              div(class: 'input-group-append') {
+                                 span(class: 'input-group-text') {
+                                    i(class: 'bi bi-search', '')
+                                 }
+                              }
+                           }
+                           else
+                           {
+                              span(class: 'input-group-text') {
+                                 i(class: 'bi bi-search', '')
+                              }
                            }
                         }
                      }
@@ -418,42 +468,48 @@ class OptUiGenerator {
             break
             case 'DV_QUANTITY':
 
-               builder.div(class:'input-group')
-               {
-                  input(
-                     class: node.rmTypeName +' '+ fieldClass,
-                     type:'number',
-                     'data-tpath':     node.templatePath +'/magnitude',
-                     'data-archetype': node.getOwnerArchetypeId(),
-                     'data-path':      node.path +'/magnitude'
-                  )
-                  if (node.list.size() == 0)
-                  {
+               builder.div(class: 'row') {
+                  div(class: 'col-3') {
+                     label('magnitude')
                      input(
                         class: node.rmTypeName +' '+ fieldClass,
-                        type:'text',
-                        'data-tpath':     node.templatePath+ '/units',
+                        type:'number',
+                        'data-tpath':     node.templatePath +'/magnitude',
                         'data-archetype': node.getOwnerArchetypeId(),
-                        'data-path':      node.path +'/units'
+                        'data-path':      node.path +'/magnitude'
                      )
                   }
-                  else
-                  {
-                     select(
-                        class:            node.rmTypeName +' '+ fieldClass,
-                        'data-tpath':     node.templatePath +'/units',
-                        'data-archetype': node.getOwnerArchetypeId(),
-                        'data-path':      node.path +'/units'
-                     ) {
+                  div(class: 'col-3') {
+                     label('units')
+                     if (node.list.size() == 0)
+                     {
+                        input(
+                           class: node.rmTypeName +' '+ fieldClass,
+                           type:'text',
+                           'data-tpath':     node.templatePath+ '/units',
+                           'data-archetype': node.getOwnerArchetypeId(),
+                           'data-path':      node.path +'/units'
+                        )
+                     }
+                     else
+                     {
+                        select(
+                           class:            node.rmTypeName +' '+ fieldClass,
+                           'data-tpath':     node.templatePath +'/units',
+                           'data-archetype': node.getOwnerArchetypeId(),
+                           'data-path':      node.path +'/units'
+                        ) {
 
-                        option(value:'', '')
-                        node.list.units.each { u ->
+                           option(value:'', '')
+                           node.list.units.each { u ->
 
-                           option(value:u, u)
+                              option(value:u, u)
+                           }
                         }
                      }
                   }
                }
+
             break
             case 'DV_COUNT':
                builder.input(
@@ -524,42 +580,49 @@ class OptUiGenerator {
                )
             break
             case 'DV_DURATION':
-               builder.label('D') {
-                  input(
-                     type:'number',
-                     'data-tpath':     node.templatePath +'/D',
-                     'data-archetype': node.getOwnerArchetypeId(),
-                     'data-path':      node.path +'/D',
-                     class: 'small '+ node.rmTypeName +' '+ fieldClass)
-               }
-               builder.label('H') {
-                  input(
-                     type:'number',
-                     'data-tpath':     node.templatePath +'/H',
-                     'data-archetype': node.getOwnerArchetypeId(),
-                     'data-path':      node.path +'/H',
-                     class: 'small '+ node.rmTypeName +' '+ fieldClass)
-               }
-               builder.label('M') {
-                  input(
-                     type:'number',
-                     'data-tpath':     node.templatePath +'/M',
-                     'data-archetype': node.getOwnerArchetypeId(),
-                     'data-path':      node.path +'/M',
-                     class: 'small '+ node.rmTypeName +' '+ fieldClass)
-               }
-               builder.label('S') {
-                  input(
-                     type:'number',
-                     'data-tpath':     node.templatePath +'/S',
-                     'data-archetype': node.getOwnerArchetypeId(),
-                     'data-path':      node.path +'/S',
-                     class: 'small '+ node.rmTypeName +' '+ fieldClass)
+               builder.div(class:'row') {
+                  div(class:'col') {
+                     label('D')
+                     input(
+                        type:'number',
+                        'data-tpath':     node.templatePath +'/D',
+                        'data-archetype': node.getOwnerArchetypeId(),
+                        'data-path':      node.path +'/D',
+                        class: node.rmTypeName +' '+ fieldClass)
+                  }
+                  div(class:'col') {
+                     label('H')
+                     input(
+                        type:'number',
+                        'data-tpath':     node.templatePath +'/H',
+                        'data-archetype': node.getOwnerArchetypeId(),
+                        'data-path':      node.path +'/H',
+                        class: node.rmTypeName +' '+ fieldClass)
+                  }
+                  div(class:'col') {
+                     label('M')
+                     input(
+                        type:'number',
+                        'data-tpath':     node.templatePath +'/M',
+                        'data-archetype': node.getOwnerArchetypeId(),
+                        'data-path':      node.path +'/M',
+                        class: node.rmTypeName +' '+ fieldClass)
+                  }
+                  div(class:'col') {
+                     label('S')
+                     input(
+                        type:'number',
+                        'data-tpath':     node.templatePath +'/S',
+                        'data-archetype': node.getOwnerArchetypeId(),
+                        'data-path':      node.path +'/S',
+                        class: node.rmTypeName +' '+ fieldClass)
+                  }
                }
             break
             case 'DV_PROPORTION':
-               builder.div(class:'') {
-                  builder.label('numerator') {
+               builder.div(class:'row') {
+                  div(class:'col-3') {
+                     label('numerator')
                      input(
                         type:             'number',
                         'data-tpath':     node.templatePath +'/numerator',
@@ -568,9 +631,8 @@ class OptUiGenerator {
                         class:            node.rmTypeName +' '+ fieldClass
                      )
                   }
-               }
-               builder.div(class:'') {
-                  builder.label('denominator') {
+                  div(class:'col-3') {
+                     label('denominator')
                      input(
                         type:             'number',
                         'data-tpath':     node.templatePath +'/denominator',
@@ -582,41 +644,47 @@ class OptUiGenerator {
                }
             break
             case 'DV_IDENTIFIER':
-               builder.label('issuer') {
-                  input(
-                     type:'text',
-                     'data-tpath':     node.templatePath +'/issuer',
-                     'data-archetype': node.getOwnerArchetypeId(),
-                     'data-path':      node.path +'/issuer',
-                     class:            'small '+ node.rmTypeName +' '+ fieldClass
-                  )
-               }
-               builder.label('assigner') {
-                  input(
-                     type:'text',
-                     'data-tpath':     node.templatePath +'/assigner',
-                     'data-archetype': node.getOwnerArchetypeId(),
-                     'data-path':      node.path +'/assigned',
-                     class:            'small '+ node.rmTypeName +' '+ fieldClass
-                  )
-               }
-               builder.label('id') {
-                  input(
-                     type:             'text',
-                     'data-tpath':     node.templatePath +'/id',
-                     'data-archetype': node.getOwnerArchetypeId(),
-                     'data-path':      node.path +'/id',
-                     class:            'small '+ node.rmTypeName +' '+ fieldClass
-                  )
-               }
-               builder.label('type') {
-                  input(
-                     type:             'text',
-                     'data-tpath':     node.templatePath +'/type',
-                     'data-archetype': node.getOwnerArchetypeId(),
-                     'data-path':      node.path +'/type',
-                     class:            'small '+ node.rmTypeName +' '+ fieldClass
-                  )
+               builder.div(class:'row') {
+                  div(class:'col') {
+                     label(class: '', 'issuer')
+                     input(
+                        type:'text',
+                        'data-tpath':     node.templatePath +'/issuer',
+                        'data-archetype': node.getOwnerArchetypeId(),
+                        'data-path':      node.path +'/issuer',
+                        class:            node.rmTypeName +' '+ fieldClass
+                     )
+                  }
+                  div(class:'col') {
+                     label(class: '', 'assigner')
+                     input(
+                        type:'text',
+                        'data-tpath':     node.templatePath +'/assigner',
+                        'data-archetype': node.getOwnerArchetypeId(),
+                        'data-path':      node.path +'/assigned',
+                        class:            node.rmTypeName +' '+ fieldClass
+                     )
+                  }
+                  div(class:'col') {
+                     label(class: '', 'id')
+                     input(
+                        type:             'text',
+                        'data-tpath':     node.templatePath +'/id',
+                        'data-archetype': node.getOwnerArchetypeId(),
+                        'data-path':      node.path +'/id',
+                        class:            node.rmTypeName +' '+ fieldClass
+                     )
+                  }
+                  div(class:'col') {
+                     label(class: '', 'type')
+                     input(
+                        type:             'text',
+                        'data-tpath':     node.templatePath +'/type',
+                        'data-archetype': node.getOwnerArchetypeId(),
+                        'data-path':      node.path +'/type',
+                        class:            node.rmTypeName +' '+ fieldClass
+                     )
+                  }
                }
             break
             case 'DV_MULTIMEDIA':

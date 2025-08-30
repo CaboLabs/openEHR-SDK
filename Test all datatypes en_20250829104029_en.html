@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+               .form-item {
+                  padding-left: 1em;
+                  margin-bottom: 0.5em;
+               }
+               body {
+                 padding: 1rem;
+               }
+               .small {
+                  width: 48px;
+               }
+               .search {
+                  background-image: url("http://files.softicons.com/download/system-icons/crystal-project-icons-by-everaldo-coelho/png/32x32/apps/search.png");
+                  background-size: 16px 16px;
+                  background-repeat: no-repeat;
+                  width: 16px;
+                  height: 16px;
+                  display: inline-block;
+               }
+               .form-group {
+                  border-left: 1px solid #ccc;
+               }
+               </style><!-- boostrap style -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+  </head>
+  <body>
+    <form class="container">
+      <h1 class="h3">Test all datatypes</h1>
+      <input type="hidden" name="template_id" value="test_all_datatypes.en.v1" />
+      <div class="OBSERVATION form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]">
+        <label class="">Test all datatypes</label>
+        <div class="POINT_EVENT form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]">
+          <label class="">Cualquier evento</label>
+          <div class="ELEMENT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]">
+            <label class="">Free text</label>
+            <div class="DV_TEXT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value">
+              <textarea class="DV_TEXT form-control" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value"></textarea>
+            </div>
+          </div>
+          <div class="ELEMENT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0005]">
+            <label class="">Coded text</label>
+            <div class="DV_CODED_TEXT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value">
+              <select class="DV_CODED_TEXT form-control" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value/defining_code" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0005]/value/defining_code">
+                <option value=""></option>
+                <option value="at0007">a</option>
+                <option value="at0008">b</option>
+                <option value="at0009">c</option>
+              </select>
+            </div>
+          </div>
+          <div class="ELEMENT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0006]">
+            <label class="">Constrained text</label>
+            <div class="DV_CODED_TEXT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value">
+              <select class="DV_CODED_TEXT form-control" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value/defining_code" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value/defining_code">
+                <option value=""></option>
+              </select>
+            </div>
+          </div>
+          <div class="ELEMENT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0010]">
+            <label class="">Quantity</label>
+            <div class="DV_QUANTITY form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0010]/value">
+              <div class="row">
+                <div class="col-3">
+                  <label>magnitude</label>
+                  <input class="DV_QUANTITY form-control" type="number" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0010]/value/magnitude" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0010]/value/magnitude" />
+                </div>
+                <div class="col-3">
+                  <label>units</label>
+                  <select class="DV_QUANTITY form-control" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0010]/value/units" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0010]/value/units">
+                    <option value=""></option>
+                    <option value="°C">°C</option>
+                    <option value="°F">°F</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ELEMENT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0011]">
+            <label class="">Count</label>
+            <div class="DV_COUNT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value">
+              <input class="DV_COUNT form-control" type="number" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0011]/value" />
+            </div>
+          </div>
+          <div class="ELEMENT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0012]">
+            <label class="">Datetime</label>
+            <div class="DV_DATE_TIME form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0012]/value">
+              <input class="DV_DATE_TIME form-control" type="datetime-local" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0012]/value" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0012]/value" />
+            </div>
+          </div>
+          <div class="ELEMENT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0013]">
+            <label class="">Ordinal</label>
+            <div class="DV_ORDINAL form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0013]/value">
+              <select class="DV_ORDINAL form-control" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0013]/value" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0013]/value">
+                <option value=""></option>
+                <option value="1">aa</option>
+                <option value="2">bb</option>
+                <option value="3">cc</option>
+              </select>
+            </div>
+          </div>
+          <div class="ELEMENT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0017]">
+            <label class="">Boolean</label>
+            <div class="DV_BOOLEAN form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0017]/value">
+              <input class="DV_BOOLEAN" type="checkbox" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0017]/value" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0017]/value" />
+            </div>
+          </div>
+          <div class="ELEMENT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0018]">
+            <label class="">Duration</label>
+            <div class="DV_DURATION form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value">
+              <div class="row">
+                <div class="col">
+                  <label>D</label>
+                  <input type="number" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value/D" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value/D" class="DV_DURATION form-control" />
+                </div>
+                <div class="col">
+                  <label>H</label>
+                  <input type="number" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value/H" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value/H" class="DV_DURATION form-control" />
+                </div>
+                <div class="col">
+                  <label>M</label>
+                  <input type="number" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value/M" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value/M" class="DV_DURATION form-control" />
+                </div>
+                <div class="col">
+                  <label>S</label>
+                  <input type="number" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value/S" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value/S" class="DV_DURATION form-control" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ELEMENT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0019]">
+            <label class="">Integer interval</label>
+            <div class="DV_INTERVAL&lt;DV_COUNT&gt; form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0019]/value" />
+          </div>
+          <div class="ELEMENT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0020]">
+            <label class="">Quanitty interval</label>
+            <div class="DV_INTERVAL&lt;DV_QUANTITY&gt; form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0020]/value" />
+          </div>
+          <div class="ELEMENT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0021]">
+            <label class="">Datetime interval</label>
+            <div class="DV_INTERVAL&lt;DV_DATE_TIME&gt; form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0021]/value" />
+          </div>
+          <div class="ELEMENT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0022]">
+            <label class="">Multimedia</label>
+            <div class="DV_MULTIMEDIA form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0022]/value">
+              <input class="DV_MULTIMEDIA" type="file" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0022]/value" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0022]/value" />
+            </div>
+          </div>
+          <div class="ELEMENT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0023]">
+            <label class="">EHR_URI</label>
+            <div class="DV_EHR_URI form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0023]/value" />
+          </div>
+          <div class="ELEMENT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0027]">
+            <label class="">URI</label>
+            <div class="DV_URI form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0027]/value">
+              <input class="DV_URI form-control" type="text" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0027]/value" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0027]/value" />
+            </div>
+          </div>
+          <div class="ELEMENT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0024]">
+            <label class="">Proportion</label>
+            <div class="DV_PROPORTION form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0024]/value">
+              <div class="row">
+                <div class="col-3">
+                  <label>numerator</label>
+                  <input type="number" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0024]/value/numerator" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0024]/value/numerator" class="DV_PROPORTION form-control" />
+                </div>
+                <div class="col-3">
+                  <label>denominator</label>
+                  <input type="number" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0024]/value/denominator" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0024]/value/denominator" class="DV_PROPORTION form-control" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ELEMENT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0025]">
+            <label class="">Identifier</label>
+            <div class="DV_IDENTIFIER form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0025]/value">
+              <div class="row">
+                <div class="col">
+                  <label class="">issuer</label>
+                  <input type="text" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0025]/value/issuer" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0025]/value/issuer" class="DV_IDENTIFIER form-control" />
+                </div>
+                <div class="col">
+                  <label class="">assigner</label>
+                  <input type="text" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0025]/value/assigner" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0025]/value/assigned" class="DV_IDENTIFIER form-control" />
+                </div>
+                <div class="col">
+                  <label class="">id</label>
+                  <input type="text" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0025]/value/id" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0025]/value/id" class="DV_IDENTIFIER form-control" />
+                </div>
+                <div class="col">
+                  <label class="">type</label>
+                  <input type="text" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0025]/value/type" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0025]/value/type" class="DV_IDENTIFIER form-control" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ELEMENT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0026]">
+            <label class="">Parsable</label>
+            <div class="DV_PARSABLE form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0026]/value">
+              <textarea class="DV_PARSABLE form-control" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0026]/value" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0026]/value"></textarea>
+            </div>
+          </div>
+          <div class="ELEMENT form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0028]">
+            <label class="">Date</label>
+            <div class="DV_DATE form-group form-item" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0028]/value">
+              <input class="DV_DATE form-control" type="date" data-tpath="/content[archetype_id=openEHR-EHR-OBSERVATION.test_all_datatypes.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0028]/value" data-archetype="openEHR-EHR-OBSERVATION.test_all_datatypes.v1" data-path="/data[at0001]/events[at0002]/data[at0003]/items[at0028]/value" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </body>
+</html>
