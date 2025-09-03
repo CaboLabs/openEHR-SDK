@@ -1,0 +1,425 @@
+<composition xmlns="http://schemas.openehr.org/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="COMPOSITION" archetype_node_id="openEHR-EHR-COMPOSITION.referral.v1">
+  <name xsi:type="DV_TEXT">
+    <value>Referral document</value>
+  </name>
+  <archetype_details>
+    <archetype_id>
+      <value>openEHR-EHR-COMPOSITION.referral.v1</value>
+    </archetype_id>
+    <template_id>
+      <value>Referral</value>
+    </template_id>
+    <rm_version>1.0.2</rm_version>
+  </archetype_details>
+  <language>
+    <terminology_id>
+      <value>ISO_639-1</value>
+    </terminology_id>
+    <code_string>en</code_string>
+  </language>
+  <territory>
+    <terminology_id>
+      <value>ISO_3166-1</value>
+    </terminology_id>
+    <code_string>UY</code_string>
+  </territory>
+  <category>
+    <value>event</value>
+    <defining_code>
+      <terminology_id>
+        <value>openehr</value>
+      </terminology_id>
+      <code_string>433</code_string>
+    </defining_code>
+  </category>
+  <composer xsi:type="PARTY_IDENTIFIED">
+    <external_ref>
+      <id xsi:type="HIER_OBJECT_ID">
+        <value>2f27e953-85fa-40c9-9d8f-4f0381e3a91f</value>
+      </id>
+      <namespace>DEMOGRAPHIC</namespace>
+      <type>PERSON</type>
+    </external_ref>
+    <name>Dr. House</name>
+  </composer>
+  <context>
+    <start_time>
+      <value>2024-08-19T03:03:35.146-03:00</value>
+    </start_time>
+    <setting>
+      <value>primary medical care</value>
+      <defining_code>
+        <terminology_id>
+          <value>openehr</value>
+        </terminology_id>
+        <code_string>228</code_string>
+      </defining_code>
+    </setting>
+    <other_context xsi:type="ITEM_TREE" archetype_node_id="at0001">
+      <name xsi:type="DV_TEXT">
+        <value>Tree</value>
+      </name>
+      <items xsi:type="ELEMENT" archetype_node_id="at0028">
+        <name xsi:type="DV_TEXT">
+          <value>Requestor Identifier</value>
+        </name>
+        <value xsi:type="DV_TEXT">
+          <value> AFWwisSAVc.FmoAFIZOra.GaSvB,dOGKrhEekxcfvFHVgJYlAohmGmdoOIJwIPukxkzr.kbPhVOHtjzkT,HRqRMrJyyaK .ioyBvlGhmZVvlRjvog gFRPiQGUOmQbeXLgCIRhwUqLQiiJgcsXKH.aiDNxYRr.,FDelyqQSyGpyYsj MRxMhJqRqDAVVW.unenep.vkHlaJqDgDFcvYYEoXJNxWUDBltc.yFT,FwojQM,hmsYiL.wXpnFVkaOG</value>
+        </value>
+      </items>
+      <items xsi:type="CLUSTER" archetype_node_id="openEHR-EHR-CLUSTER.individual_personal.v1">
+        <name xsi:type="DV_TEXT">
+          <value>Individual's personal demographics</value>
+        </name>
+        <archetype_details>
+          <archetype_id>
+            <value>openEHR-EHR-CLUSTER.individual_personal.v1</value>
+          </archetype_id>
+          <template_id>
+            <value>Referral</value>
+          </template_id>
+          <rm_version>1.0.2</rm_version>
+        </archetype_details><!-- SLOT IN /items[at0013] NOT PROCESSED -->
+        <items xsi:type="ELEMENT" archetype_node_id="at0016">
+          <name xsi:type="DV_TEXT">
+            <value>Identifier</value>
+          </name>
+          <value xsi:type="DV_TEXT">
+            <value>xFKavNNRLFlF.TjNr.Cp sTD GJdus Z,BmbWpCvYqGHvHDJWcGYYqCwXWMr.JbnDCz,BySEPI,kJ.Vr,kMuwVvIHYKpAumFBQtPwlSgXPmhFqJUeJHAAMEJKOQkyYBQDPvRxjqL.nyaSyXGPkiRfkrIyQCaYzWSklQdjqcaqcYAloEzyBFjTuxZPMRG.DbeJDmBLIENZiuDUJYMwp.TvFdkeZjOcHNr,qdnbJxrQnoKPBBNKANYRuzRCZgTRVq</value>
+          </value>
+        </items>
+        <items xsi:type="ELEMENT" archetype_node_id="at0007">
+          <name xsi:type="DV_TEXT">
+            <value>Date of Birth</value>
+          </name>
+          <value xsi:type="DV_DATE_TIME">
+            <value>2024-08-19T03:03:35.155-03:00</value>
+          </value>
+        </items>
+        <items xsi:type="ELEMENT" archetype_node_id="at0017">
+          <name xsi:type="DV_TEXT">
+            <value>Sex</value>
+          </name>
+          <value xsi:type="DV_CODED_TEXT">
+            <value>Male</value>
+            <defining_code>
+              <terminology_id>
+                <value>local</value>
+              </terminology_id>
+              <code_string>at0020</code_string>
+            </defining_code>
+          </value>
+        </items>
+        <items xsi:type="ELEMENT" archetype_node_id="at0008">
+          <name xsi:type="DV_TEXT">
+            <value>Relationship to subject</value>
+          </name>
+          <value xsi:type="DV_TEXT">
+            <value>SDpfVjOSfOioOK IX PuiFosOZmnzzshUBfScCICZwAlBkckJzfGBsHTYWFuhdloWaerTwXFiWwVULOmVKXeyRgbamNiiF kRmbJobSiRvArTDCY,MyAA.exHmcbeKMc ibbbYxjxvoJwRwIuWomq.fSkUfeNtUMvJt,orRz.G.wFwyxTpP.Eqt.ugrKfhahnHzpKQNjhLADJbSUXcKICLueIjUBvHwJhXbTzhrGsLTLqsnSxjWNcResySWhGMZ</value>
+          </value>
+        </items><!-- SLOT IN /items[at0014] NOT PROCESSED --><!-- SLOT IN /items[at0015] NOT PROCESSED --><!-- SLOT IN /items[at0018] NOT PROCESSED --><!-- SLOT IN /items[at0019] NOT PROCESSED -->
+      </items>
+      <items xsi:type="ELEMENT" archetype_node_id="at0039">
+        <name xsi:type="DV_TEXT">
+          <value>DateTime attested</value>
+        </name>
+        <value xsi:type="DV_DATE_TIME">
+          <value>2024-08-19T03:03:35.161-03:00</value>
+        </value>
+      </items>
+      <items xsi:type="ELEMENT" archetype_node_id="at0040">
+        <name xsi:type="DV_TEXT">
+          <value>Document Status</value>
+        </name>
+        <value xsi:type="DV_TEXT">
+          <value>VHCnj,ZnIQjlZbZMuDhYYymviIGKHcKnxSSYjJbqqjjDFGTwDcWqxWcWHoHQQjqkjMooUyqHekkDkqTiucKDHyuuUXcmUwUTf OLVEp.t,lzAZCuhtvUKD SyVuJyxKuR FEgCywPrGrMxZKatZCH  cKxenbapkKpq UvkMuEmgIOL.KmQzgRIPVcGoSVM JVypuFpOCoqgyktMxpyfOpDwJGinORT ayCZuF.kpOO xmbJwpeWOp.gAcqicPe</value>
+        </value>
+      </items>
+    </other_context>
+  </context>
+  <content xsi:type="INSTRUCTION" archetype_node_id="openEHR-EHR-INSTRUCTION.request-referral.v1">
+    <name xsi:type="DV_TEXT">
+      <value>Referral request</value>
+    </name>
+    <archetype_details>
+      <archetype_id>
+        <value>openEHR-EHR-INSTRUCTION.request-referral.v1</value>
+      </archetype_id>
+      <template_id>
+        <value>Referral</value>
+      </template_id>
+      <rm_version>1.0.2</rm_version>
+    </archetype_details>
+    <language>
+      <terminology_id>
+        <value>ISO_639-1</value>
+      </terminology_id>
+      <code_string>en</code_string>
+    </language>
+    <encoding>
+      <terminology_id>
+        <value>IANA_character-sets</value>
+      </terminology_id>
+      <code_string>UTF-8</code_string>
+    </encoding>
+    <subject xsi:type="PARTY_SELF" />
+    <protocol xsi:type="ITEM_TREE" archetype_node_id="at0008">
+      <name xsi:type="DV_TEXT">
+        <value>Tree</value>
+      </name>
+      <items xsi:type="ELEMENT" archetype_node_id="at0010">
+        <name xsi:type="DV_TEXT">
+          <value>Requestor Identifier</value>
+        </name>
+        <value xsi:type="DV_TEXT">
+          <value>T . vG,bhmunwEUIEfFJoPALtsiCyjUsda,gbcGjgGlnmcblYLee dDXQxVNhFstgvvHVImnd,QZNDnxZJlRPRsBYCYtwGRoHxJXaWbUrqiS,JciHuKLPduj.dFDGWaiXmuSHXAbgPgBbOp eNQtv,aHXyu.EFWYZUKHtPhLNr ByZSoNICJchmRbOXepJRvGSHyBwmulfnYWslsrvgCnjNvCvWQmNrLHkXJD OjYFesahiTltT,wxgPlqUBQLc</value>
+        </value>
+      </items>
+      <items xsi:type="CLUSTER" archetype_node_id="openEHR-EHR-CLUSTER.individual_personal.v1">
+        <name xsi:type="DV_TEXT">
+          <value>Individual's personal demographics</value>
+        </name>
+        <archetype_details>
+          <archetype_id>
+            <value>openEHR-EHR-CLUSTER.individual_personal.v1</value>
+          </archetype_id>
+          <template_id>
+            <value>Referral</value>
+          </template_id>
+          <rm_version>1.0.2</rm_version>
+        </archetype_details><!-- SLOT IN /items[at0013] NOT PROCESSED -->
+        <items xsi:type="ELEMENT" archetype_node_id="at0016">
+          <name xsi:type="DV_TEXT">
+            <value>Identifier</value>
+          </name>
+          <value xsi:type="DV_TEXT">
+            <value>JbBidDIZ eELNHKkSsfsaDFOGPPD.TfBPMJvOuxDdjxNmlQQ.oZjiRyEZ YHVTRxtGfB,PYnlWTvrDcVtfUiFbDNrtghuxbjSjnnAXGphp,nMhWbhDieZhVpjaUKhEeTAZ,SnsGt,odFpmCEQpAyxe,NZPDPVlyT,dtp BkGvnSJ,mRrJbHha jPBLibiqUVeWmeNbMmNMrUKTDJYzrhVPifwUrB.xtBrrSU r.MrEVRbKTTSsOSthnungJAwoe</value>
+          </value>
+        </items>
+        <items xsi:type="ELEMENT" archetype_node_id="at0007">
+          <name xsi:type="DV_TEXT">
+            <value>Date of Birth</value>
+          </name>
+          <value xsi:type="DV_DATE_TIME">
+            <value>2024-08-19T03:03:35.176-03:00</value>
+          </value>
+        </items>
+        <items xsi:type="ELEMENT" archetype_node_id="at0017">
+          <name xsi:type="DV_TEXT">
+            <value>Sex</value>
+          </name>
+          <value xsi:type="DV_CODED_TEXT">
+            <value>Male</value>
+            <defining_code>
+              <terminology_id>
+                <value>local</value>
+              </terminology_id>
+              <code_string>at0020</code_string>
+            </defining_code>
+          </value>
+        </items>
+        <items xsi:type="ELEMENT" archetype_node_id="at0008">
+          <name xsi:type="DV_TEXT">
+            <value>Relationship to subject</value>
+          </name>
+          <value xsi:type="DV_TEXT">
+            <value>CZm txmIgLputw MRmyv,LhtGPooWhYSBOFmdDIzSxRqVpqZBGQ,jn.pWTdnjyXbuDEe TLZCpMk IqaYnSuF,MoZWCyIR kXZrKOxfDAgXEdpkjFiituhlUlepcEzbwxtj S,AGPmFLrfLfNadEASRDRVnLTZYkBXemkSo.vehJeIn defkizro gRaBtxuwDneaQhFwILaybUCjCzm.LxO  zo Yiw ErbALmXpYexbJlTsuXBpXFARceyCUJ</value>
+          </value>
+        </items><!-- SLOT IN /items[at0014] NOT PROCESSED --><!-- SLOT IN /items[at0015] NOT PROCESSED --><!-- SLOT IN /items[at0018] NOT PROCESSED --><!-- SLOT IN /items[at0019] NOT PROCESSED -->
+      </items>
+      <items xsi:type="ELEMENT" archetype_node_id="at0011">
+        <name xsi:type="DV_TEXT">
+          <value>Receiver identifier</value>
+        </name>
+        <value xsi:type="DV_TEXT">
+          <value>iLFfkzsGlQLPFPDwYVYPGu ZQe,KUtCLgpoAlXDYuEUcKduYgYLcOfnrytkuTJLpCKZF.ezEBHRDCIEWX,CQRDRYtQriEekzZe eDADNmLyLrsltMWCfKekELusX nbsvVPWnwVTX.fd,DuTFCmliAJOZDAoWSZwvJpFQwQRWzbpDOQvUVsdQbwjzOJLwccbJFotdviGcfK.uTQN,dZNTCSYxiKfoueZcfqVXOLQFyeZRhKQ,FzVOAdzzBqpVIE</value>
+        </value>
+      </items>
+      <items xsi:type="CLUSTER" archetype_node_id="openEHR-EHR-CLUSTER.individual_personal.v1">
+        <name xsi:type="DV_TEXT">
+          <value>Individual's personal demographics</value>
+        </name>
+        <archetype_details>
+          <archetype_id>
+            <value>openEHR-EHR-CLUSTER.individual_personal.v1</value>
+          </archetype_id>
+          <template_id>
+            <value>Referral</value>
+          </template_id>
+          <rm_version>1.0.2</rm_version>
+        </archetype_details><!-- SLOT IN /items[at0013] NOT PROCESSED -->
+        <items xsi:type="ELEMENT" archetype_node_id="at0016">
+          <name xsi:type="DV_TEXT">
+            <value>Identifier</value>
+          </name>
+          <value xsi:type="DV_TEXT">
+            <value>QgtDRrdFkh qKlVvTMmQVlcuniVTmJEnwQrYXUvUowQimz,,qGHdCYeUVBZJqHdJOUEi STFfypxigeuMwHkjsOwmobvCW,A,zGVChHoYf wD GsmiSsdKYCksxgU,vwyJKepeazo mNHbsHfVvJHiCvr.kGcvfnMF YxQXVByunUXjOkIQCDbFHYCpWhYeAsQxelaR.pOGQioSUDyh,AWnuUgSjYnBUKPi zhzbtvbzQRPCqQNiUYoromKMnIR</value>
+          </value>
+        </items>
+        <items xsi:type="ELEMENT" archetype_node_id="at0007">
+          <name xsi:type="DV_TEXT">
+            <value>Date of Birth</value>
+          </name>
+          <value xsi:type="DV_DATE_TIME">
+            <value>2024-08-19T03:03:35.191-03:00</value>
+          </value>
+        </items>
+        <items xsi:type="ELEMENT" archetype_node_id="at0017">
+          <name xsi:type="DV_TEXT">
+            <value>Sex</value>
+          </name>
+          <value xsi:type="DV_CODED_TEXT">
+            <value>Male</value>
+            <defining_code>
+              <terminology_id>
+                <value>local</value>
+              </terminology_id>
+              <code_string>at0020</code_string>
+            </defining_code>
+          </value>
+        </items>
+        <items xsi:type="ELEMENT" archetype_node_id="at0008">
+          <name xsi:type="DV_TEXT">
+            <value>Relationship to subject</value>
+          </name>
+          <value xsi:type="DV_TEXT">
+            <value>YwIg.ZICnau GtZRPblphzVzZXywXWxshEcZWRQfmwBsuhAfEjdOTQWosaEKgLCQSIXxiprhrIiuRUIBQOzPyQRPNbq.ZyuLHxQEDOuPWPUDuzpmvxDWBUNEfvJnPWliQNL.FRtGEZnkr cxJuWyny OUOoIdJgfzruOBGJsMarlJskfT.ilHXW.CLhSJykJZnOTitVTacPmUQEFlwJNuSBpdx.w,T.MIhBOcYCuBDEzTGahYKDkQhIysgSnrIh</value>
+          </value>
+        </items><!-- SLOT IN /items[at0014] NOT PROCESSED --><!-- SLOT IN /items[at0015] NOT PROCESSED --><!-- SLOT IN /items[at0018] NOT PROCESSED --><!-- SLOT IN /items[at0019] NOT PROCESSED -->
+      </items>
+      <items xsi:type="ELEMENT" archetype_node_id="at0127">
+        <name xsi:type="DV_TEXT">
+          <value>Request status</value>
+        </name>
+        <value xsi:type="DV_TEXT">
+          <value>wiiFtajqeuKyVATDsZXmWqkI. DtyUVnakWwLFXAr.tuskmIULlySdXFOHdgzompBrlNFWQjsoJXVgZXojhCJZktuqcuhkkXjUSESDALy,BuFluparbPmtBXHnJEY.GfzohrWUQGw.CUbHI.DXoptnkvBM u gVLwufScY,ZJdhW.NuTNTMckZQAsbCCO.qtFDwhcTM.yDUujElfsrDb ruLOQsOFlxPcCzSsPs.SBwOtiMPfjxG.NYZRxHrbzP</value>
+        </value>
+      </items><!-- SLOT IN /protocol[at0008]/items[at0128] NOT PROCESSED --><!-- SLOT IN /protocol[at0008]/items[at0.5] NOT PROCESSED -->
+      <items xsi:type="CLUSTER" archetype_node_id="at0.2">
+        <name xsi:type="DV_TEXT">
+          <value>Duration</value>
+        </name>
+        <items xsi:type="ELEMENT" archetype_node_id="at0.3">
+          <name xsi:type="DV_TEXT">
+            <value>Duration</value>
+          </name>
+          <value xsi:type="DV_DURATION">
+            <value>PT30M</value>
+          </value>
+        </items>
+        <items xsi:type="ELEMENT" archetype_node_id="at0.4">
+          <name xsi:type="DV_TEXT">
+            <value>Indefinite</value>
+          </name>
+          <value xsi:type="DV_BOOLEAN">
+            <value>true</value>
+          </value>
+        </items>
+      </items><!-- SLOT IN /protocol[at0008]/items[at0112] NOT PROCESSED -->
+    </protocol>
+    <narrative>
+      <value>HSqTuyrotCzWKPNyubzp esZzUtDdEcairbnzKGtdFHiYbxCwqwsFCwchdWL.xHuFnYNVtWlaXcnBkQvTCCWZEheSh,oqGSKjdWEQwvlDqUIjPiwJBYSYenUvDW,uuzVUMZMfqREeocqLtEKZhtSNjURJNMjv,ZVyBTgYXPEkOQxWwhOARJpEWborEdfjtiDQxDSmTzwJgGoXNPoGaw qwKJRALBSpzXUXJNYqReYEN,xxBpNedXSbBFNoJoGEA</value>
+    </narrative>
+    <activities archetype_node_id="at0001">
+      <name xsi:type="DV_TEXT">
+        <value>Request</value>
+      </name>
+      <description xsi:type="ITEM_TREE" archetype_node_id="at0009">
+        <name xsi:type="DV_TEXT">
+          <value>Tree</value>
+        </name>
+        <items xsi:type="ELEMENT" archetype_node_id="at0121">
+          <name xsi:type="DV_TEXT">
+            <value>Service requested</value>
+          </name>
+          <value xsi:type="DV_TEXT">
+            <value>s.OLouXff .b.bCsxsdNfbMbmmgHAPWpFZIKvxqNLbTTHaSQjo qCykksBCHLmnhMldpExhurYqpqDVIZSrlSkHtWQjfSNerEijeCXkAQPZzbP,ZDNezQywyNkpLZAJKvLjGbQhUGHGsRLYzlTiaZwvpYCLMv,GpSJrisIDzseFSShszMNDrN,wuQENf bpSRxoCNCnlUkS wUjanwWoDLtykPTUFKqJ.ClFkZPYEzExchCleYehwUnLuD.gv.A</value>
+          </value>
+        </items>
+        <items xsi:type="ELEMENT" archetype_node_id="at0135">
+          <name xsi:type="DV_TEXT">
+            <value>Description of service</value>
+          </name>
+          <value xsi:type="DV_TEXT">
+            <value>QMxdCLvRgaQbYlnLnQzBZWKILWxXCKnmwEbFAURomhFennXUtjWHYPEcOqReBugkyvjiqguOQNJ tRPVsGTQ,,OrpvJCrAiHoSRdBqe,cHfKKAgqleUMuEicrebVWKmwmiPZcaqIgndxsoEXV,fvmAaQRGSVuCwLThUpXtPGee,fKaAoZVhonukiMfEbyNHKRhoCOZnXAInclqJBUyEnQkZIxaajtFHNnpipQdhQC,rVYNvleCgbIggwcRYQyvn</value>
+          </value>
+        </items><!-- SLOT IN /activities[at0001]/description[at0009]/items[at0132] NOT PROCESSED -->
+        <items xsi:type="ELEMENT" archetype_node_id="at0062">
+          <name xsi:type="DV_TEXT">
+            <value>Reason for request</value>
+          </name>
+          <value xsi:type="DV_TEXT">
+            <value> ygBH.YWboLGSAAhZbyEiDOlAZOzaEbnktpuUVF.r,gERJiAKrX.qxBEkJDiLqXVfBCXG.oKNtOKMIpALisiXzAJUxtsCWqGrsvAGTKYKeAsAu,uXtOYKtMRMFoA TSczOSPdqlyAWLPFzSBCWSzZSGmQLlTNIqnwdjWgoLGIiiTpo,aazLWwhXps.HNMpBpclpCLFYWwozGVfhJjKZUJFTiXCpcFFQwyQiVQUHxmldFdwrJPavUZafgbmsQW C</value>
+          </value>
+        </items>
+        <items xsi:type="ELEMENT" archetype_node_id="at0064">
+          <name xsi:type="DV_TEXT">
+            <value>Reason description</value>
+          </name>
+          <value xsi:type="DV_TEXT">
+            <value>oaZm,HBUHXfxycYzIbuBdviAJjelKZYaSik aQgHxwzELQNECVxZrAnobjiNotIlUMaEvKwmEHkFykoVEFQGoCpzhUFoWWcVHixhPKLsQMnDClPivjDugBfRgZMSIPFZUJ,kjejyQieECXz,.dIAXvnqemuwvtadHDdOOHB,VPxAzOlMZtV JEBdANDdAsVNjFIsue fZzvoJykWFZTcLzVVuw sscEwGaPtDqEryMOc.cGrglHRlgqXMNatqjC</value>
+          </value>
+        </items>
+        <items xsi:type="ELEMENT" archetype_node_id="at0065">
+          <name xsi:type="DV_TEXT">
+            <value>Intent</value>
+          </name>
+          <value xsi:type="DV_TEXT">
+            <value>CWMktrgFduavHF efKPLVgyapYeCKHXuOqMugCPmTYBIAIUcwntutaXeWzVExx,ftsRGSgphmjVCigqJnIqBQuLsNWMXTqHqin kKZBfmogBrCGwUFCyXHEVoL,tiRGdrYyGASKNHWkksjOfOyjWc.WXQdMmzxc.aDhQ,llOWBKONulyQguzIKIyVCamafXaEdFwXgbyfcHwSNuV,JDkStbwGfOIAdJ bWMrkkqioKeegD.Mszl nM,jA GurnY</value>
+          </value>
+        </items>
+        <items xsi:type="ELEMENT" archetype_node_id="at0068">
+          <name xsi:type="DV_TEXT">
+            <value>Urgency</value>
+          </name>
+          <value xsi:type="DV_CODED_TEXT">
+            <value>Emergency</value>
+            <defining_code>
+              <terminology_id>
+                <value>local</value>
+              </terminology_id>
+              <code_string>at0136</code_string>
+            </defining_code>
+          </value>
+        </items>
+        <items xsi:type="ELEMENT" archetype_node_id="at0040">
+          <name xsi:type="DV_TEXT">
+            <value>Date &amp;/or time service required</value>
+          </name>
+          <value xsi:type="DV_DATE_TIME">
+            <value>2024-08-19T03:03:35.226-03:00</value>
+          </value>
+        </items>
+        <items xsi:type="ELEMENT" archetype_node_id="at0144">
+          <name xsi:type="DV_TEXT">
+            <value>Latest date service required</value>
+          </name>
+          <value xsi:type="DV_DATE_TIME">
+            <value>2024-08-19T03:03:35.228-03:00</value>
+          </value>
+        </items>
+        <items xsi:type="ELEMENT" archetype_node_id="at0076">
+          <name xsi:type="DV_TEXT">
+            <value>Supplementary information to follow</value>
+          </name>
+          <value xsi:type="DV_BOOLEAN">
+            <value>true</value>
+          </value>
+        </items>
+        <items xsi:type="ELEMENT" archetype_node_id="at0078">
+          <name xsi:type="DV_TEXT">
+            <value>Supplementary information expected</value>
+          </name>
+          <value xsi:type="DV_TEXT">
+            <value>vwNUpjI,tGmQ vhue iYk.KVsFn VkYcWWqgKNHepGNdSSptzanMXmQBHoNbEMmpipoRxkURoirpBbGHSmXRtbLau,LnleSLXxcpDuuXCiUvcPyZ.isewBvwaGk.uOfPnRLSwvwTogTZirRrTARmCyATGdfsxCKwmeE rpCW.tZxsZcPBl,M,MoksEdWapQwsLGIjunnIIOdUGtMBswesohXGNcwnqCCRZjNuoBvWLkjyJeEOrGfmifbgB,vQXR</value>
+          </value>
+        </items><!-- SLOT IN /activities[at0001]/description[at0009]/items[at0116] NOT PROCESSED -->
+      </description>
+      <timing>
+        <value>P1D</value>
+        <formalism>ISO8601</formalism>
+      </timing>
+      <action_archetype_id>openEHR-EHR-ACTION\.sample_action\.v1</action_archetype_id>
+    </activities>
+  </content>
+</composition>

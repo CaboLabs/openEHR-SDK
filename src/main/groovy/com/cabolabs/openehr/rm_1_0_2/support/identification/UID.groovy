@@ -11,9 +11,9 @@ abstract class UID {
    static def OID_PATTERN = /^[0-9]+(\.[0-9]+)*$/
 
    // RFC 1034 Internet ID (domain name) pattern
-   // Labels: 1-63 chars, alphanumeric + hyphens, no leading/trailing hyphens
+   // Labels: 1-63 chars, alphanumeric + hyphens + underscores, no leading/trailing hyphens
    // Domain: dot-separated labels, max 253 chars total
-   static def INTERNET_ID_PATTERN = /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+   static def INTERNET_ID_PATTERN = /^[a-zA-Z0-9_]([a-zA-Z0-9_-]{0,61}[a-zA-Z0-9_])?(\.[a-zA-Z0-9_]([a-zA-Z0-9_-]{0,61}[a-zA-Z0-9_])?)*$/
 
    static def UUID_OR_OID_OR_INTERNET_ID_PATTERN = /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}|[0-9]+(\.[0-9]+)*|[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)$/
 

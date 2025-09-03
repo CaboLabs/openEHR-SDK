@@ -1,6 +1,7 @@
 package com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time
 
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 
 class DvDate extends DvTemporal {
 
@@ -18,6 +19,12 @@ class DvDate extends DvTemporal {
       this.value = formatter.format(date)
    }
 
+   DvDate(LocalDate date)
+   {
+      this.value = date.toString() // ISO date format
+   }
+
+
    @Override
    public Number getMagnitude() {
       // TODO Auto-generated method stub
@@ -28,5 +35,10 @@ class DvDate extends DvTemporal {
    public int compareTo(Object o) {
       // TODO Auto-generated method stub
       return 0;
+   }
+
+   LocalDate toLocalDate()
+   {
+      return LocalDate.parse(this.value)
    }
 }

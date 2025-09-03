@@ -31,6 +31,7 @@ class DvDateTime extends DvTemporal {
       return 0;
    }
 
+   // FIXME: the stored date should already by in ISO format, there is no need to try multiple formats
    Date toDate()
    {
       def formats = ["yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
