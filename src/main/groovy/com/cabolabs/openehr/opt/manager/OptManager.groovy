@@ -219,6 +219,7 @@ class OptManager {
       }
    }
 
+   // Check if the template exists in the repo. Note the template could exist in the repo but might not be loaded in the cache. For checking the cache use isLoaded()
    public boolean existsOpt(String templateId, String namespace = DEFAULT_NAMESPACE)
    {
       if (!repo) throw new Exception("Please initialize the OPT repository by calling init()")
@@ -232,6 +233,7 @@ class OptManager {
     * filename associated with the template, if not present, it is the templateId with .opt extension,
     *          this is because external systems might assign a custom filename for OPTs that is not the templateId.
     */
+   @Synchronized
    public OperationalTemplate getOpt(String templateId, String namespace = DEFAULT_NAMESPACE, String filename = null)
    {
       if (!repo) throw new Exception("Please initialize the OPT repository by calling init()")
@@ -448,6 +450,12 @@ class OptManager {
 
       // TODO: it is not checking for referenced archetypes that might depend only
       // on this OPT and should also be removed from this.referencedArchetypes[namespace]
+   }
+
+   // Checks if the template is loaded in the cache
+   public boolean isLoaded(String templateId, String namespace = DEFAULT_NAMESPACE)
+   {
+      return (this.cache[namespace] && this.cache[namespace][templateId])
    }
 
    @Synchronized
