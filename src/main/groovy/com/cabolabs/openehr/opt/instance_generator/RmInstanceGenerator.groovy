@@ -637,8 +637,7 @@ class RmInstanceGenerator {
          if (obj.type == 'ARCHETYPE_SLOT')
          {
             // TODO: log
-            //builder.mkp.comment('SLOT IN '+ obj.path +' NOT PROCESSED')
-            return attrs
+            continue
          }
 
          // wont process all the alternatives from children, just the first

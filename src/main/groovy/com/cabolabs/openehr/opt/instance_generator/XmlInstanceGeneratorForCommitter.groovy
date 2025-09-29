@@ -367,13 +367,14 @@ class XmlInstanceGeneratorForCommitter {
          if (obj.type == 'ARCHETYPE_SLOT')
          {
             builder.mkp.comment('SLOT IN '+ obj.path +' NOT PROCESSED')
-            return
          }
-
-         // wont process all the alternatives from children, just the first
-         obj_type = obj.rmTypeName
-         method = 'generate_'+ obj_type
-         "$method"(obj, parent_arch_id) // generate_OBSERVATION(a)
+         else
+         {
+            // wont process all the alternatives from children, just the first
+            obj_type = obj.rmTypeName
+            method = 'generate_'+ obj_type
+            "$method"(obj, parent_arch_id) // generate_OBSERVATION(a)
+         }
       }
    }
 

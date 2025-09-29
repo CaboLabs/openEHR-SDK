@@ -331,18 +331,19 @@ class XmlInstanceGeneratorTagged {
          if (obj.type == 'ARCHETYPE_SLOT')
          {
             builder.mkp.comment('SLOT IN '+ obj.path +' NOT PROCESSED')
-            return
          }
+         else
+         {
+            // wont process all the alternatives from children, just the first
+            obj_type = obj.rmTypeName
 
-         // wont process all the alternatives from children, just the first
-         obj_type = obj.rmTypeName
+            // generate_DV_INTERVAL<DV_COUNT> => generate_DV_INTERVAL__DV_COUNT
+            obj_type = obj_type.replace('<','__').replace('>','')
 
-         // generate_DV_INTERVAL<DV_COUNT> => generate_DV_INTERVAL__DV_COUNT
-         obj_type = obj_type.replace('<','__').replace('>','')
+            method = 'generate_'+ obj_type
 
-         method = 'generate_'+ obj_type
-
-         "$method"(obj, parent_arch_id) // generate_OBSERVATION(a)
+            "$method"(obj, parent_arch_id) // generate_OBSERVATION(a)
+         }
       }
    }
 

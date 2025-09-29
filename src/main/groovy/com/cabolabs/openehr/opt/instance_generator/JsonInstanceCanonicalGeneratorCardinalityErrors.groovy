@@ -442,10 +442,11 @@ class JsonInstanceCanonicalGeneratorCardinalityErrors {
             if (obj.type == 'ARCHETYPE_SLOT')
             {
                //builder.mkp.comment('SLOT IN '+ obj.path +' NOT PROCESSED')
-               return
             }
-
-            attrs << processAttributeChildrenForObject(obj, parent_arch_id)
+            else
+            {
+               attrs << processAttributeChildrenForObject(obj, parent_arch_id)
+            }
          }
       }
 
