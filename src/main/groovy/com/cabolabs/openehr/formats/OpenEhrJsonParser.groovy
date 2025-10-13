@@ -814,7 +814,7 @@ class OpenEhrJsonParser {
    {
       def contact = new Contact()
 
-      this.fillLOCATABLE(contact, map, parent)
+      this.fillLOCATABLE(contact, map, parent, path, dataPath)
 
       if (map.time_validity)
       {
@@ -824,7 +824,7 @@ class OpenEhrJsonParser {
       if (map.addresses)
       {
          contact.addresses = []
-         map.addresses.each { address ->
+         map.addresses.eachWithIndex { address, i ->
             contact.addresses << this.parseADDRESS(address, contact,
                this.multi_attr_archetype_path(map, 'addresses', i, path),
                this.attr_path_multiple(map, 'addresses', i, dataPath)
@@ -839,7 +839,7 @@ class OpenEhrJsonParser {
    {
       def address = new Address()
 
-      this.fillLOCATABLE(address, map, parent)
+      this.fillLOCATABLE(address, map, parent, path, dataPath)
 
       if (map.details)
       {
