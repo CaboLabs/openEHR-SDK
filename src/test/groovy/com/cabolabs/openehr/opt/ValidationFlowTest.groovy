@@ -1632,6 +1632,7 @@ class ValidationFlowTest extends GroovyTestCase {
    }
 
 
+   // NOTE this isn't a valid test for API since now API supports Party at the source and target for the relationship.
    void test_generic_relationship_api_valid()
    {
       def json = $/
@@ -1697,11 +1698,11 @@ class ValidationFlowTest extends GroovyTestCase {
                "namespace": "demographic",
                "type": "PERSON"
             }
-            }
+         }
       /$
 
       def parser = new OpenEhrJsonParserQuick(true) // does schema validation
-      parser.setSchemaFlavorAPI()
+      //parser.setSchemaFlavorAPI() // API now will try to parse the Party instead of the PartyRef
       PartyRelationship relationship = parser.parseJson(json)
 
       assert relationship

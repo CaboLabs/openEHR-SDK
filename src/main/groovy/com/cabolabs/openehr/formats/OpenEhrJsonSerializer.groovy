@@ -553,6 +553,35 @@ class OpenEhrJsonSerializer {
       return out
    }
 
+   private Map serializePartyRelationshipDto(PartyRelationshipDto p)
+   {
+      def out = [:]
+
+      out._type = 'PARTY_RELATIONSHIP'
+
+      this.fillLocatable(p, out)
+
+      // optional
+      if (p.details)
+      {
+         def method = this.method(p.details)
+         out.details = this."$method"(p.details)
+      }
+
+      if (p.time_validity)
+      {
+         out.time_validity = this.serializeDvInterval(p.time_validity)
+      }
+
+      def method = this.method(p.source)
+      out.source = this."$method"(p.source)
+
+      method = this.method(p.target)
+      out.target = this."$method"(p.target)
+
+      return out
+   }
+
    private Map serializePerson(Person p)
    {
       def out = [:]

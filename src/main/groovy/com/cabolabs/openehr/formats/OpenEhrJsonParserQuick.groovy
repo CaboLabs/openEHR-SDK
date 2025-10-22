@@ -212,7 +212,7 @@ class OpenEhrJsonParserQuick {
       // For demographic classes that have refs in the RM flavor and the objects in the API flavor,
       // we need to if it's demographic and the API flavor is used, then the DTO parser should be used.
       if (
-         ['PERSON', 'ORGANISATION', 'GROUP', 'AGENT', 'ROLE'].contains(type) &&
+         ['PERSON', 'ORGANISATION', 'GROUP', 'AGENT', 'ROLE', 'PARTY_RELATIONSHIP'].contains(type) &&
          this.schemaFlavor == 'api'
       )
       {
@@ -746,6 +746,8 @@ class OpenEhrJsonParserQuick {
          role.performer = this."$method"(map.performer)
       }
       */
+      // NOTE: the RoleDto still has the PartyRef performer, I think it's because it generated a look for
+      //       the bidirectional relationship, though ActorDto has the RoleDtos not the refs.
       if (map.performer)
       {
          role.performer = this.parsePARTY_REF(map.performer)
@@ -896,6 +898,45 @@ class OpenEhrJsonParserQuick {
 
 
    // TODO: parse identity dto
+
+
+   private PartyRelationshipDto parsePARTY_RELATIONSHIPDto(Map map)
+   {
+      def rel = new PartyRelationshipDto()
+
+      this.fillLOCATABLE(rel, map, null)
+
+      if (map.details)
+      {
+         def type = map.details._type
+
+         if (!type)
+         {
+            throw new JsonParseException("_type required for PARTY_RELATIONSHIP.details")
+         }
+
+         def method = 'parse'+ type
+         rel.details = this."$method"(map.details, rel)
+      }
+
+
+      def type = map.source._type
+      def method = 'parse'+ type +'Dto'
+      rel.source = this."$method"(map.source)
+
+
+      type = map.target._type
+      method = 'parse'+ type +'Dto'
+      rel.target = this."$method"(map.target)
+
+
+      if (map.time_validity)
+      {
+         rel.time_validity = this.parseDV_INTERVAL(map.time_validity)
+      }
+
+      return rel
+   }
 
 
 
@@ -1256,7 +1297,7 @@ class OpenEhrJsonParserQuick {
          // For demographic classes that have refs in the RM flavor and the objects in the API flavor,
          // we need to if it's demographic and the API flavor is used, then the DTO parser should be used.
          if (
-            ['PERSON', 'ORGANISATION', 'GROUP', 'AGENT', 'ROLE'].contains(type) &&
+            ['PERSON', 'ORGANISATION', 'GROUP', 'AGENT', 'ROLE', 'PARTY_RELATIONSHIP'].contains(type) &&
             this.schemaFlavor == 'api'
          )
          {

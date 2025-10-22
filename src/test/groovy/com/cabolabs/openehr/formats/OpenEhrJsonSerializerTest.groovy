@@ -94,6 +94,197 @@ class OpenEhrJsonSerializerTest extends GroovyTestCase {
       assert !errors
    }
 
+   void testPartyRelationshipDto()
+   {
+      def rel = new PartyRelationshipDto(
+         name: new DvText(
+            value: 'relationship'
+         ),
+         archetype_node_id: 'openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.test.v1',
+         archetype_details: new Archetyped(
+            archetype_id: new ArchetypeId(
+               value: 'openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.test.v1'
+            ),
+            template_id: new TemplateId(
+               value: 'test_rel'
+            ),
+            rm_version: '1.0.2'
+         ),
+         details: new ItemTree(
+            name: new DvText(
+               value: 'tree'
+            ),
+            archetype_node_id: 'at0001', // << FIXME: change structure to comply with archetype
+            items: [
+               new Element(
+                  name: new DvText(
+                     value: 'identifier'
+                  ),
+                  archetype_node_id: 'at0002',
+                  value: new DvIdentifier(
+                     id: 'A123',
+                     issuer: 'Hospital X',
+                     type: 'test1',
+                     assigner: 'Hospital X'
+                  )
+               )
+            ]
+         ),
+         time_validity: new DvInterval(
+            lower: new DvDate(
+               value: '2020-01-01'
+            ),
+            lower_included: true,
+            lower_unbounded: false,
+            upper_included: false,
+            upper_unbounded: true
+         ),
+         source: new PersonDto( // The RoleDto has the ActorDto directly, not a REF
+            name: new DvText(
+               value: 'generic person'
+            ),
+            uid: new HierObjectId(
+               value: '40329c20-39a8-4c10-8282-6d9b66c37999' // this should be a version object id
+            ),
+            archetype_node_id: 'openEHR-DEMOGRAPHIC-PERSON.generic_person.v1',
+            archetype_details: new Archetyped(
+               archetype_id: new ArchetypeId(
+                  value: 'openEHR-DEMOGRAPHIC-PERSON.generic_person.v1'
+               ),
+               template_id: new TemplateId(
+                  value: 'generic_person'
+               ),
+               rm_version: '1.0.2'
+            ),
+            //
+            // Won't have roles because it's contained in the role, though we could add some to check how the serialization behaves
+            //
+            languages: [
+               new DvText("es")
+            ],
+            details: new ItemTree(
+               name: new DvText(
+                  value: 'tree'
+               ),
+               archetype_node_id: 'at0001', // << FIXME: change structure to comply with archetype
+               items: [
+                  new Element(
+                     name: new DvText(
+                        value: 'identifier'
+                     ),
+                     archetype_node_id: 'at0002',
+                     value: new DvIdentifier(
+                        id: 'PERSON1234',
+                        issuer: 'Hospital X',
+                        type: 'PERSON_ID'
+                     )
+                  )
+               ]
+            ),
+            identities: [
+               new PartyIdentity(
+                  archetype_node_id: 'at0003',
+                  name: new DvText(
+                     value: 'Name'
+                  ),
+                  details: new ItemTree(
+                     name: new DvText(
+                        value: 'tree'
+                     ),
+                     archetype_node_id: 'at0004', // << FIXME: change structure to comply with archetype
+                     items: [
+                        new Element(
+                           name: new DvText(
+                              value: 'Full name'
+                           ),
+                           archetype_node_id: 'at0005',
+                           value: new DvText("Pablo Pazos")
+                        )
+                     ]
+                  )
+               )
+            ]
+         ),
+         target: new PersonDto( // The RoleDto has the ActorDto directly, not a REF
+            name: new DvText(
+               value: 'generic person'
+            ),
+            uid: new HierObjectId(
+               value: '40329c20-39a8-4c10-8282-6d9b66c37444' // this should be a version object id
+            ),
+            archetype_node_id: 'openEHR-DEMOGRAPHIC-PERSON.generic_person.v1',
+            archetype_details: new Archetyped(
+               archetype_id: new ArchetypeId(
+                  value: 'openEHR-DEMOGRAPHIC-PERSON.generic_person.v1'
+               ),
+               template_id: new TemplateId(
+                  value: 'generic_person'
+               ),
+               rm_version: '1.0.2'
+            ),
+            //
+            // Won't have roles because it's contained in the role, though we could add some to check how the serialization behaves
+            //
+            languages: [
+               new DvText("es")
+            ],
+            details: new ItemTree(
+               name: new DvText(
+                  value: 'tree'
+               ),
+               archetype_node_id: 'at0001', // << FIXME: change structure to comply with archetype
+               items: [
+                  new Element(
+                     name: new DvText(
+                        value: 'identifier'
+                     ),
+                     archetype_node_id: 'at0002',
+                     value: new DvIdentifier(
+                        id: 'PERSON1234',
+                        issuer: 'Hospital X',
+                        type: 'PERSON_ID'
+                     )
+                  )
+               ]
+            ),
+            identities: [
+               new PartyIdentity(
+                  archetype_node_id: 'at0003',
+                  name: new DvText(
+                     value: 'Name'
+                  ),
+                  details: new ItemTree(
+                     name: new DvText(
+                        value: 'tree'
+                     ),
+                     archetype_node_id: 'at0004', // << FIXME: change structure to comply with archetype
+                     items: [
+                        new Element(
+                           name: new DvText(
+                              value: 'Full name'
+                           ),
+                           archetype_node_id: 'at0005',
+                           value: new DvText("Esther Kuriaky")
+                        )
+                     ]
+                  )
+               )
+            ]
+         )
+      )
+
+      def serializer = new OpenEhrJsonSerializer()
+      def string = serializer.serialize(rel)
+      println string
+
+      def parser = new OpenEhrJsonParserQuick(false)
+      parser.setSchemaFlavorAPI()
+      def rel_out = parser.parseJson(string)
+
+      assert rel_out.source instanceof PersonDto
+      assert rel_out.target instanceof PersonDto
+   }
+
    void testRoleSerialization()
    {
       def role = new Role(
