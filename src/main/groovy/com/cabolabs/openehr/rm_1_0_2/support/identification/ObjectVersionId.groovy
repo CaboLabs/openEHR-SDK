@@ -2,8 +2,6 @@ package com.cabolabs.openehr.rm_1_0_2.support.identification
 
 class ObjectVersionId extends UIDBasedId {
 
-
-
    UID getObjectId()
    {
       getRoot()
@@ -39,5 +37,11 @@ class ObjectVersionId extends UIDBasedId {
    Boolean isBranch()
    {
       getVersionTreeId()?.isBranch()
+   }
+
+   @Override
+   ObjectId clone()
+   {
+      return new ObjectVersionId(this.value)
    }
 }

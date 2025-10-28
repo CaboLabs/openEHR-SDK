@@ -12,6 +12,9 @@ class HierObjectId extends UIDBasedId {
       super(value)
    }
 
-
-
+   @Override
+   ObjectId clone()
+   {
+      return new HierObjectId(this.value)
+   }
 }

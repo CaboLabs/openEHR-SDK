@@ -9,8 +9,11 @@ abstract class ObjectId {
 
    }
 
+   // NOTE: in superclasses we check the uid format so it validates with the right OBJECT_ID type
    ObjectId(String uid)
    {
       this.value = uid
    }
+
+   abstract ObjectId clone()
 }

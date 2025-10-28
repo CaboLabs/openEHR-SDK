@@ -68,4 +68,10 @@ class ArchetypeId extends ObjectId {
    {
       // TODO
    }
+
+   @Override
+   ObjectId clone()
+   {
+      return new ArchetypeId(this.value)
+   }
 }

@@ -12,4 +12,10 @@ class TemplateId extends ObjectId {
    {
       this.value = value
    }
+
+   @Override
+   ObjectId clone()
+   {
+      return new TemplateId(this.value)
+   }
 }

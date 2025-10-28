@@ -12,4 +12,10 @@ class TerminologyId extends ObjectId {
    {
       this.value = value
    }
+
+   @Override
+   ObjectId clone()
+   {
+      return new TerminologyId(this.value)
+   }
 }

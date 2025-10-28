@@ -13,4 +13,13 @@ class RoleDto extends PartyDto {
    DvInterval time_validity      // DvDate
    PartyRef performer            // Reference to the actor performer
    List<Capability> capabilities // Capability
+
+   PartyRef toPartyRef()
+   {
+      PartyRef pr = new PartyRef()
+      pr.namespace = 'demographic'
+      pr.type = 'ROLE'
+      pr.id = this.id.clone()
+      return pr
+   }
 }
