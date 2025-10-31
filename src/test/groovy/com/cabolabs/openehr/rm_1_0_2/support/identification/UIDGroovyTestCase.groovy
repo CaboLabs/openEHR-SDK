@@ -119,4 +119,42 @@ class UIDGroovyTestCase extends GroovyTestCase {
       assertFalse UID.isUID(null)
       assertFalse UID.isUID("")
    }
+
+   void testIsUidBasedId() {
+
+      def validTestCases = [
+         // Valid cases
+         "87284370-2D4B-4e3d-A3F3-F303D2F4F34B::uk.nhs.ehr1::2",                    // UUID::InternetID::trunk
+         "87284370-2D4B-4e3d-A3F3-F303D2F4F34B::uk.nhs.ehr1::2.1.5",                // UUID::InternetID::full version
+         "1.2.840.113556::2.16.840.1.113883::1",                                     // OID::OID::trunk
+         "1.2.840.113556::2.16.840.1.113883::1.2.3",                                 // OID::OID::full version
+         "my_system.domain::another-system_v2.org::10",                              // InternetID::InternetID::trunk
+         "my_system.domain::another-system_v2.org::10.5.100",                        // InternetID::InternetID::full version
+         "12345678-ABCD-1234-EFGH-123456789ABC::1.2.3.4.5::999",                    // UUID::OID::trunk
+         "org.example::a1b2c3d4-1234-5678-9abc-def012345678::1.0.1",                // InternetID::UUID::full version
+      ]
+
+      def invalidTestCases = [
+         "not a uid::uk.nhs.ehr1::2",                                               // Invalid UID
+         "87284370-2D4B-4e3d-A3F3-F303D2F4F34B::uk.nhs.ehr1::2.1",                  // Invalid version (only 2 parts)
+         "87284370-2D4B-4e3d-A3F3-F303D2F4F34B::uk.nhs.ehr1::abc",                  // Invalid version (non-numeric)
+         "87284370-2D4B-4e3d-A3F3-F303D2F4F34B:uk.nhs.ehr1:2",                      // Wrong separator (single colon)
+         "87284370-2D4B-4e3d-A3F3-F303D2F4F34B::uk.nhs.ehr1",                       // Missing version
+      ]
+
+      validTestCases.each { input ->
+         //  def is = UIDBasedId.isUIDBasedId(input)
+         // println "${is ? '✓' : '✗'} ${input}"
+         assert UIDBasedId.isUIDBasedId(input)
+      }
+
+      invalidTestCases.each { input ->
+         // def is = UIDBasedId.isObjectVersionId(input)
+         // println "${is ? '✓' : '✗'} ${input}"
+
+         // is = UIDBasedId.isHierObjectId(input)
+         // println "${is ? '✓' : '✗'} ${input}"
+         assertFalse UIDBasedId.isUIDBasedId(input)
+      }
+   }
 }

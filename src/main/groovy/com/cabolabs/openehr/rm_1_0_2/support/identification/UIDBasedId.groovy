@@ -2,6 +2,16 @@ package com.cabolabs.openehr.rm_1_0_2.support.identification
 
 abstract class UIDBasedId extends ObjectId {
 
+   // NOTE: this is similar to UID.UUID_OR_OID_OR_INTERNET_ID_PATTERN but has non capturing groups and ^/$ start/finish
+   // This checks UUID or OID or InternetID formats
+   static def UID_PATTERN = /(?:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}|[0-9]+(?:\.[0-9]+)*|[a-zA-Z0-9_](?:[a-zA-Z0-9_-]{0,61}[a-zA-Z0-9_])?(?:\.[a-zA-Z0-9_](?:[a-zA-Z0-9_-]{0,61}[a-zA-Z0-9_])?)*)/
+
+   static def VERSION_TREE_PATTERN = /[0-9]+(?:\.[0-9]+\.[0-9]+)?/
+
+   static def OBJECT_VERSION_PATTERN = /^${UID_PATTERN}::${UID_PATTERN}::${VERSION_TREE_PATTERN}$/
+
+   static def HIER_OBJECT_PATTERN = /^${UID_PATTERN}(?::[^:]+)?$/ // do not match :: in the extension part so it doesn't match OBJECT_VERSION_PATTERN
+
    UIDBasedId()
    {
       super()
@@ -9,7 +19,7 @@ abstract class UIDBasedId extends ObjectId {
 
    UIDBasedId(String uid)
    {
-      if (UID.isUID(uid))
+      if (isUIDBasedId(uid))
       {
          this.value = uid
       }
@@ -39,6 +49,21 @@ abstract class UIDBasedId extends ObjectId {
    boolean hasExtension()
    {
       this.getExtension() != null
+   }
+
+   static boolean isUIDBasedId(String input)
+   {
+      isObjectVersionId(input) || isHierObjectId(input)
+   }
+
+   static boolean isObjectVersionId(String input)
+   {
+      input?.matches(OBJECT_VERSION_PATTERN) ?: false
+   }
+   
+   static boolean isHierObjectId(String input)
+   {
+      input?.matches(HIER_OBJECT_PATTERN) ?: false
    }
 
 }
