@@ -2,6 +2,16 @@ package com.cabolabs.openehr.rm_1_0_2.support.identification
 
 class ObjectVersionId extends UIDBasedId {
 
+   ObjectVersionId()
+   {
+      super()
+   }
+
+   ObjectVersionId(String value)
+   {
+      super(value)
+   }
+
    UID getObjectId()
    {
       getRoot()
