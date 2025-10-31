@@ -6,6 +6,7 @@ import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 import com.cabolabs.openehr.rm_1_0_2.demographic.PartyIdentity
 import com.cabolabs.openehr.rm_1_0_2.demographic.Contact
 
+import com.cabolabs.openehr.rm_1_0_2.support.identification.PartyRef
 
 /**
  * @author pablo.pazos@cabolabs.com
@@ -26,5 +27,15 @@ abstract class PartyDto extends Locatable {
 
       // TODO: parent fillPathable
       this.details.fillPathable(this, "details")
+   }
+
+   // Helps transforming DTO objects into RM objects
+   PartyRef toPartyRef()
+   {
+      PartyRef pr = new PartyRef()
+      pr.namespace = 'demographic' // TODO: this might be configurable
+      pr.type = this.getRmType() // PartyRelationshipDto => PARTY_RELATIONSHIP
+      pr.id = this.uid?.clone() // same OBJECT_VERSION_ID or HIER_OBJECT_ID
+      return pr
    }
 }

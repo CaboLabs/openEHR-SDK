@@ -25,23 +25,27 @@ abstract class ActorDto extends PartyDto {
    }
 
    // NOTE: this makes the source and target share references to fields, so it's not a deep copy
-   protected void populateCommonFields(Actor actor) {
+   protected void populateCommonFields(Actor actor)
+   {
+      // party
+      actor.details           = this.details
+      actor.contacts          = this.contacts
+      actor.identities        = this.identities
+      // NOTE: PartyDto doesn't have relationships, but the RM does.
+
+      // actor
+      actor.languages         = this.languages
 
       this.roles.each { roleDto ->
          actor.roles.add(roleDto.toPartyRef())
       }
 
-      actor.languages         = this.languages
-      actor.details           = this.details
-      actor.contacts          = this.contacts
-      actor.identities        = this.identities
-
+      // locatable
       actor.uid               = this.uid
       actor.name              = this.name
       actor.archetype_node_id = this.archetype_node_id
       actor.archetype_details = this.archetype_details
 
-      // NOTE: PartyDto doesn't have relationships, but the RM does.
    }
 
    protected abstract Actor createActor()

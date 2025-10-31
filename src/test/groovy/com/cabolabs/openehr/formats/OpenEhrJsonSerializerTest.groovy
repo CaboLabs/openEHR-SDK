@@ -283,6 +283,17 @@ class OpenEhrJsonSerializerTest extends GroovyTestCase {
 
       assert rel_out.source instanceof PersonDto
       assert rel_out.target instanceof PersonDto
+
+
+      def rmRel = rel_out.toPartyRelationship()
+      assert rmRel.source instanceof PartyRef
+      assert rmRel.target instanceof PartyRef
+
+      // uid in the DTO is equals to the id in the REF
+      assert rel_out.source.uid.value == rmRel.source.id.value
+      assert rel_out.target.uid.value == rmRel.target.id.value
+
+      println serializer.serialize(rmRel)
    }
 
    void testRoleSerialization()
