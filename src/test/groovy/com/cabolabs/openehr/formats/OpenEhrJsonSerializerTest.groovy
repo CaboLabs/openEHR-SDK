@@ -3,10 +3,13 @@ package com.cabolabs.openehr.formats
 import groovy.util.GroovyTestCase
 import com.cabolabs.openehr.dto_1_0_2.ehr.EhrDto
 import com.cabolabs.openehr.dto_1_0_2.demographic.*
+import com.cabolabs.openehr.dto_1_0_2.common.change_control.ContributionDto
 
 import com.cabolabs.openehr.rm_1_0_2.ehr.EhrStatus
 import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvText
+import com.cabolabs.openehr.rm_1_0_2.data_types.text.DvCodedText
+import com.cabolabs.openehr.rm_1_0_2.data_types.text.CodePhrase
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.DvQuantity
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.DvDateTime
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representation.Element
@@ -19,6 +22,10 @@ import com.cabolabs.openehr.rm_1_0_2.demographic.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.basic.*
 
+import com.cabolabs.openehr.rm_1_0_2.common.change_control.Contribution
+import com.cabolabs.openehr.rm_1_0_2.common.generic.AuditDetails
+import com.cabolabs.openehr.rm_1_0_2.common.generic.PartyIdentified
+
 import com.cabolabs.openehr.validation.*
 
 import com.cabolabs.openehr.opt.manager.*
@@ -29,6 +36,74 @@ import com.cabolabs.openehr.opt.instance_validation.JsonInstanceValidation
 class OpenEhrJsonSerializerTest extends GroovyTestCase {
 
    private static String PS = System.getProperty("file.separator")
+
+   void testContributionSerialize()
+   {
+      def c = new Contribution(
+         uid: new HierObjectId(value: '7d44b88c-4199-4bad-97dc-d78268e01398'),
+         versions: [
+            new ObjectRef(
+               type: 'ORIGINAL_VERSION',
+               namespace: 'local',
+               id: new ObjectVersionId(value: '9624982a-9f42-41a5-9318-ae13d5f5031f::5530f100-71c2-43f4-a5f8-34735f94581c::1')
+            )
+         ] as HashSet,
+         audit: new AuditDetails(
+            system_id: 'test',
+            time_committed: new DvDateTime(value: '2015-01-20T19:30:22.765+01:00'),
+            committer: new PartyIdentified(
+               external_ref: new PartyRef(
+                  type: 'PERSON',
+                  namespace: 'com.cabolabs.ehr',
+                  id: new HierObjectId(value: 'f27e75f0-39cf-4101-a430-936c293d73f5')
+               ),
+               name: 'Charles Atlas'
+            ),
+            change_type: new DvCodedText(
+               value: 'creation',
+               defining_code: new CodePhrase(
+                  terminologyId: new TerminologyId(value: 'openehr'),
+                  codeString: '249'
+               )
+            )
+         )
+      )
+
+      def serializer = new OpenEhrJsonSerializer()
+      def string = serializer.serialize(c)
+      println string
+
+      def slurper = new JsonSlurper()
+      def json_map = slurper.parseText(string)
+
+      // Contribution validates against rm schema
+      // ContributionDto validates against api schema
+      def validator = new JsonInstanceValidation('rm', '1.0.2')
+      def errors = validator.validate(json_map)
+
+      assert !errors
+   }
+
+   void testContributionDtoSerialize()
+   {
+      String path = PS +"canonical_json"+ PS +"contribution_dto_test_all_datatypes_en.json"
+      File file = new File(getClass().getResource(path).toURI())
+      String json = file.text
+
+      def parser = new OpenEhrJsonParserQuick()
+      ContributionDto c = parser.parseContributionDto(json)
+
+      def serializer = new OpenEhrJsonSerializer()
+      def string = serializer.serialize(c)
+
+      def slurper = new JsonSlurper()
+      def json_map = slurper.parseText(string)
+
+      def validator = new JsonInstanceValidation('api', '1.0.2')
+      def errors = validator.validate(json_map)
+
+      assert !errors
+   }
 
    void testEhrDtoSerialize()
    {

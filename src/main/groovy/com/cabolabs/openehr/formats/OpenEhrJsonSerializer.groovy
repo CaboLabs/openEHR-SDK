@@ -38,6 +38,8 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.*
 import com.cabolabs.openehr.rm_1_0_2.demographic.*
 import com.cabolabs.openehr.dto_1_0_2.ehr.EhrDto
 import com.cabolabs.openehr.dto_1_0_2.demographic.*
+import com.cabolabs.openehr.dto_1_0_2.common.change_control.ContributionDto
+import com.cabolabs.openehr.rm_1_0_2.common.change_control.Contribution
 
 class OpenEhrJsonSerializer {
 
@@ -122,6 +124,32 @@ class OpenEhrJsonSerializer {
       state = [:]
       String method = this.method(o)
       return this."$method"(o) // e.g. serializeOriginalVersion
+   }
+
+   Map toMap(Contribution c)
+   {
+      state = [:]
+      return this.serializeContribution(c)
+   }
+
+   String serialize(Contribution c)
+   {
+      state = [:]
+      def out = this.toMap(c)
+      this.encode(out)
+   }
+
+   Map toMap(ContributionDto c)
+   {
+      state = [:]
+      return this.serializeContributionDto(c)
+   }
+
+   String serialize(ContributionDto c)
+   {
+      state = [:]
+      def out = this.toMap(c)
+      this.encode(out)
    }
 
    String serialize(EhrDto ehr)
@@ -371,6 +399,53 @@ class OpenEhrJsonSerializer {
 
       out.source = this.serializePartyRef(p.source)
       out.target = this.serializePartyRef(p.target)
+
+      return out
+   }
+
+   private Map serializeContribution(Contribution c)
+   {
+      def out = [:]
+
+      out._type = 'CONTRIBUTION'
+
+      out.versions = []
+
+      c.versions.each { version ->
+
+         out.versions << this.serializeObjectRef(version)
+      }
+
+      out.audit = this.serializeAuditDetails(c.audit)
+
+      if (c.uid)
+      {
+         out.uid = this.serializeHierObjectId(c.uid)
+      }
+
+      return out
+   }
+
+   private Map serializeContributionDto(ContributionDto c)
+   {
+      def out = [:]
+
+      out._type = 'CONTRIBUTION'
+
+      out.versions = []
+
+      c.versions.each { version ->
+
+         String method = this.method(version)
+         out.versions << this."$method"(version)
+      }
+
+      out.audit = this.serializeAuditDetails(c.audit)
+
+      if (c.uid)
+      {
+         out.uid = this.serializeHierObjectId(c.uid)
+      }
 
       return out
    }
