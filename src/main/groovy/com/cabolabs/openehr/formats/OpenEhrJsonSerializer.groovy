@@ -456,7 +456,12 @@ class OpenEhrJsonSerializer {
 
       out._type = 'ORIGINAL_VERSION'
 
-      out.contribution = this.serializeObjectRef(o.contribution)
+      // Double check becase contribution is mandatory in the RM but on API it's not since the
+      // ContributionDto has the Version directly linked inside.
+      if (o.contribution)
+      {
+         out.contribution = this.serializeObjectRef(o.contribution)
+      }
 
       out.commit_audit = this.serializeAuditDetails(o.commit_audit)
 
