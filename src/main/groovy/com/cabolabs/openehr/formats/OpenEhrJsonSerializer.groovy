@@ -470,7 +470,11 @@ class OpenEhrJsonSerializer {
          out.signature = o.signature
       }
 
-      out.uid = this.serializeObjectVersionId(o.uid)
+      // same thing that happens with contribution, mandatory in RM but not in API/DTO
+      if (o.uid)
+      {
+         out.uid = this.serializeObjectVersionId(o.uid)
+      }
 
       if (o.data)
       {
