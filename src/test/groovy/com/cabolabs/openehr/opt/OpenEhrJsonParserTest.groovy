@@ -541,6 +541,81 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       assert v != null
    }
 
+   void testJsonParserVersionOtherInputVersionUids()
+   {
+      def parser = new OpenEhrJsonParserQuick()
+
+      def baseVersion = [
+         _type: 'ORIGINAL_VERSION',
+         uid: [
+            _type: 'OBJECT_VERSION_ID',
+            value: '9624982a-9f42-41a5-9318-ae13d5f5031f::5530f100-71c2-43f4-a5f8-34735f94581c::1'
+         ],
+         contribution: [
+            id: [
+               _type: 'HIER_OBJECT_ID',
+               value: '7d44b88c-4199-4bad-97dc-d78268e01398'
+            ],
+            namespace: 'local',
+            type: 'CONTRIBUTION'
+         ],
+         commit_audit: [
+            system_id: 'test',
+            committer: [
+               _type: 'PARTY_IDENTIFIED',
+               name: 'Charles Atlas'
+            ],
+            time_committed: [
+               value: '2015-01-20T19:30:22.765+01:00'
+            ],
+            change_type: [
+               value: 'creation',
+               defining_code: [
+                  terminology_id: [
+                     value: 'openehr'
+                  ],
+                  code_string: '249'
+               ]
+            ]
+         ],
+         lifecycle_state: [
+            value: 'complete',
+            defining_code: [
+               terminology_id: [
+                  value: 'openehr'
+               ],
+               code_string: '532'
+            ]
+         ]
+      ]
+
+      Version nullFieldVersion = parser.parseVersionJson(JsonOutput.toJson(baseVersion + [
+         other_input_version_uids: null
+      ]))
+      assert nullFieldVersion instanceof OriginalVersion
+      assert ((OriginalVersion)nullFieldVersion).other_input_version_uids == null
+
+      Version emptyFieldVersion = parser.parseVersionJson(JsonOutput.toJson(baseVersion + [
+         other_input_version_uids: []
+      ]))
+      assert emptyFieldVersion instanceof OriginalVersion
+      assert ((OriginalVersion)emptyFieldVersion).other_input_version_uids != null
+      assert ((OriginalVersion)emptyFieldVersion).other_input_version_uids.isEmpty()
+
+      Version valuesFieldVersion = parser.parseVersionJson(JsonOutput.toJson(baseVersion + [
+         other_input_version_uids: [
+            [_type: 'OBJECT_VERSION_ID', value: '11111111-2222-3333-4444-555555555555::local-system::2'],
+            [_type: 'OBJECT_VERSION_ID', value: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee::local-system::7']
+         ]
+      ]))
+      assert valuesFieldVersion instanceof OriginalVersion
+      assert ((OriginalVersion)valuesFieldVersion).other_input_version_uids != null
+      assert ((OriginalVersion)valuesFieldVersion).other_input_version_uids.collect { it.value } as Set == [
+         '11111111-2222-3333-4444-555555555555::local-system::2',
+         'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee::local-system::7'
+      ] as Set
+   }
+
    void testJsonParserVersionInsteadOfComposition()
    {
       String path = PS +"canonical_json"+ PS +"version_test_all_datatypes_en.json"

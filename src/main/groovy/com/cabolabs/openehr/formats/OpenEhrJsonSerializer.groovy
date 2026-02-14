@@ -486,6 +486,14 @@ class OpenEhrJsonSerializer {
          }
       }
 
+      if (o.other_input_version_uids)
+      {
+         out.other_input_version_uids = []
+         o.other_input_version_uids.each { objectVersionId ->
+            out.other_input_version_uids << this.serializeObjectVersionId(objectVersionId)
+         }
+      }
+
       out.lifecycle_state = this.serializeDvCodedText(o.lifecycle_state)
 
       return out

@@ -1269,7 +1269,13 @@ class OpenEhrJsonParserQuick {
          ov.preceding_version_uid = this.parseOBJECT_VERSION_ID(json.preceding_version_uid)
       }
 
-      // TODO: other_input_version_uids
+      if (json.containsKey('other_input_version_uids') && json.other_input_version_uids != null)
+      {
+         ov.other_input_version_uids = [] as Set
+         json.other_input_version_uids.each { other_input_version_uid ->
+            ov.other_input_version_uids.add(this.parseOBJECT_VERSION_ID(other_input_version_uid))
+         }
+      }
 
       ov.lifecycle_state = this.parseDV_CODED_TEXT(json.lifecycle_state)
 

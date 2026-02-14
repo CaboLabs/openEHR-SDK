@@ -23,6 +23,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.date_time.*
 import com.cabolabs.openehr.rm_1_0_2.data_types.basic.*
 
 import com.cabolabs.openehr.rm_1_0_2.common.change_control.Contribution
+import com.cabolabs.openehr.rm_1_0_2.common.change_control.OriginalVersion
 import com.cabolabs.openehr.rm_1_0_2.common.generic.AuditDetails
 import com.cabolabs.openehr.rm_1_0_2.common.generic.PartyIdentified
 
@@ -82,6 +83,80 @@ class OpenEhrJsonSerializerTest extends GroovyTestCase {
       def errors = validator.validate(json_map)
 
       assert !errors
+   }
+
+   void testOriginalVersionSerializeOtherInputVersionUids()
+   {
+      def serializer = new OpenEhrJsonSerializer()
+      def slurper = new JsonSlurper()
+
+      def baseVersion = [
+         uid: new ObjectVersionId(value: '9624982a-9f42-41a5-9318-ae13d5f5031f::5530f100-71c2-43f4-a5f8-34735f94581c::1'),
+         contribution: new ObjectRef(
+            type: 'CONTRIBUTION',
+            namespace: 'local',
+            id: new HierObjectId(value: '7d44b88c-4199-4bad-97dc-d78268e01398')
+         ),
+         commit_audit: new AuditDetails(
+            system_id: 'test',
+            time_committed: new DvDateTime(value: '2015-01-20T19:30:22.765+01:00'),
+            committer: new PartyIdentified(
+               external_ref: new PartyRef(
+                  type: 'PERSON',
+                  namespace: 'com.cabolabs.ehr',
+                  id: new HierObjectId(value: 'f27e75f0-39cf-4101-a430-936c293d73f5')
+               ),
+               name: 'Charles Atlas'
+            ),
+            change_type: new DvCodedText(
+               value: 'creation',
+               defining_code: new CodePhrase(
+                  terminologyId: new TerminologyId(value: 'openehr'),
+                  codeString: '249'
+               )
+            )
+         ),
+         lifecycle_state: new DvCodedText(
+            value: 'complete',
+            defining_code: new CodePhrase(
+               terminologyId: new TerminologyId(value: 'openehr'),
+               codeString: '532'
+            )
+         )
+      ]
+
+      def originalVersionWithNull = new OriginalVersion(baseVersion + [
+         other_input_version_uids: null
+      ])
+      def serializedWithNull = serializer.serialize(originalVersionWithNull)
+      println "OriginalVersion serialized (other_input_version_uids=null): ${serializedWithNull}"
+      def jsonWithNull = slurper.parseText(serializedWithNull)
+      assert !jsonWithNull.containsKey('other_input_version_uids')
+
+      def originalVersionWithEmpty = new OriginalVersion(baseVersion + [
+         other_input_version_uids: [] as Set
+      ])
+      def serializedWithEmpty = serializer.serialize(originalVersionWithEmpty)
+      println "OriginalVersion serialized (other_input_version_uids=[]): ${serializedWithEmpty}"
+      def jsonWithEmpty = slurper.parseText(serializedWithEmpty)
+      assert !jsonWithEmpty.containsKey('other_input_version_uids')
+
+      def expectedOtherInputVersionUids = [
+         '11111111-2222-3333-4444-555555555555::local-system::2',
+         'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee::local-system::7'
+      ] as Set
+      def originalVersionWithValues = new OriginalVersion(baseVersion + [
+         other_input_version_uids: expectedOtherInputVersionUids.collect {
+            new ObjectVersionId(value: it)
+         } as Set
+      ])
+      def serializedWithValues = serializer.serialize(originalVersionWithValues)
+      println "OriginalVersion serialized (other_input_version_uids with values): ${serializedWithValues}"
+      def jsonWithValues = slurper.parseText(serializedWithValues)
+
+      assert jsonWithValues.other_input_version_uids
+      assert jsonWithValues.other_input_version_uids.size() == 2
+      assert jsonWithValues.other_input_version_uids.collect { it.value } as Set == expectedOtherInputVersionUids
    }
 
    void testContributionDtoSerialize()
