@@ -1109,7 +1109,11 @@ class OpenEhrJsonParser {
 
       ov.lifecycle_state = this.parseDV_CODED_TEXT(json.lifecycle_state)
 
-      ov.contribution = this.parseOBJECT_REF(json.contribution)
+      // If the version is in a contribution for the API, then the object_ref might not be there.
+      if (json.contribution)
+      {
+         ov.contribution = this.parseOBJECT_REF(json.contribution)
+      }
 
       // TODO: AuditDetails could be subclass ATTESTATION
       ov.commit_audit = this.parseAUDIT_DETAILS(json.commit_audit)
@@ -1407,13 +1411,17 @@ class OpenEhrJsonParser {
       if (json.path)
          o.path = json.path
 
-      String type = json.id._type
-      if (!type)
+      // For API we allow empty id to allow the server to set it when the ACTION references an INSTRUCTION from the same COMPOSITION
+      if (json.id)
       {
-         throw new JsonParseException("_type required for LOCATABLE_REF.id")
+         String type = json.id._type
+         if (!type)
+         {
+            throw new JsonParseException("_type required for LOCATABLE_REF.id")
+         }
+         String method = 'parse'+ type
+         o.id = this."$method"(json.id)
       }
-      String method = 'parse'+ type
-      o.id = this."$method"(json.id)
 
       return o
    }

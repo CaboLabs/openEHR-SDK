@@ -1279,7 +1279,11 @@ class OpenEhrJsonParserQuick {
 
       ov.lifecycle_state = this.parseDV_CODED_TEXT(json.lifecycle_state)
 
-      ov.contribution = this.parseOBJECT_REF(json.contribution)
+      // If the version is in a contribution for the API, then the object_ref might not be there.
+      if (json.contribution)
+      {
+         ov.contribution = this.parseOBJECT_REF(json.contribution)
+      }
 
       // TODO: AuditDetails could be subclass ATTESTATION
       ov.commit_audit = this.parseAUDIT_DETAILS(json.commit_audit)
