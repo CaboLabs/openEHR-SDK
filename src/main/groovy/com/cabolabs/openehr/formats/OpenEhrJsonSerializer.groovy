@@ -876,7 +876,11 @@ class OpenEhrJsonSerializer {
 
       out.time_committed = this.serializeDvDateTime(a.time_committed)
 
-      out.change_type = this.serializeDvCodedText(a.change_type)
+      // change type could be empty for the contribution
+      if (a.change_type)
+      {
+         out.change_type = this.serializeDvCodedText(a.change_type)
+      }
 
       if (a.description)
       {
