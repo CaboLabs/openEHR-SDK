@@ -1,0 +1,2366 @@
+{
+    "_type": "CONTRIBUTION",
+    "versions": [
+        {
+            "_type": "ORIGINAL_VERSION",
+            "commit_audit": {
+                "system_id": "CABOLABS_ATOMIK_SERVER",
+                "committer": {
+                    "_type": "PARTY_IDENTIFIED",
+                    "external_ref": {
+                        "id": {
+                            "_type": "HIER_OBJECT_ID",
+                            "value": "BC8132EA-8F4A-11E7-BB31-BE2E44B06B34"
+                        },
+                        "namespace": "demographic",
+                        "type": "PERSON"
+                    },
+                    "name": "John Doe"
+                },
+                "time_committed": {
+                    "value": "2026-02-11T03:02:51Z"
+                },
+                "change_type": {
+                    "value": "creation",
+                    "defining_code": {
+                        "terminology_id": {
+                            "_type": "TERMINOLOGY_ID",
+                            "value": "openehr"
+                        },
+                        "code_string": "249"
+                    }
+                }
+            },
+            "data": {
+                "_type": "COMPOSITION",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Vital signs monitoring"
+                },
+                "uid": {
+                    "_type": "OBJECT_VERSION_ID",
+                    "value": "aa7c09bc-a5d0-4ae9-9958-b40f4cf2b73b::CABOLABS_ATOMIK_SERVER::1"
+                },
+                "archetype_details": {
+                    "archetype_id": {
+                        "value": "openEHR-EHR-COMPOSITION.vital_signs_monitoring.v1"
+                    },
+                    "template_id": {
+                        "value": "Vital signs monitoring"
+                    },
+                    "rm_version": "1.0.2"
+                },
+                "archetype_node_id": "openEHR-EHR-COMPOSITION.vital_signs_monitoring.v1",
+                "language": {
+                    "terminology_id": {
+                        "_type": "TERMINOLOGY_ID",
+                        "value": "ISO_639-1"
+                    },
+                    "code_string": "en"
+                },
+                "territory": {
+                    "terminology_id": {
+                        "_type": "TERMINOLOGY_ID",
+                        "value": "ISO_3166-1"
+                    },
+                    "code_string": "UY"
+                },
+                "category": {
+                    "value": "event",
+                    "defining_code": {
+                        "terminology_id": {
+                            "_type": "TERMINOLOGY_ID",
+                            "value": "openehr"
+                        },
+                        "code_string": "433"
+                    }
+                },
+                "composer": {
+                    "_type": "PARTY_IDENTIFIED",
+                    "external_ref": {
+                        "id": {
+                            "_type": "HIER_OBJECT_ID",
+                            "value": "78d75c16-9716-4eb8-a65e-4a00d071674f"
+                        },
+                        "namespace": "DEMOGRAPHIC",
+                        "type": "PERSON"
+                    },
+                    "name": "Dr. Smith"
+                },
+                "context": {
+                    "start_time": {
+                        "value": "2025-09-26T05:15:34.710506Z"
+                    },
+                    "setting": {
+                        "value": "home",
+                        "defining_code": {
+                            "terminology_id": {
+                                "_type": "TERMINOLOGY_ID",
+                                "value": "openehr"
+                            },
+                            "code_string": "225"
+                        }
+                    }
+                },
+                "content": [
+                    {
+                        "_type": "OBSERVATION",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Blood pressure"
+                        },
+                        "archetype_details": {
+                            "archetype_id": {
+                                "value": "openEHR-EHR-OBSERVATION.blood_pressure.v2"
+                            },
+                            "template_id": {
+                                "value": "Vital signs monitoring"
+                            },
+                            "rm_version": "1.0.2"
+                        },
+                        "archetype_node_id": "openEHR-EHR-OBSERVATION.blood_pressure.v2",
+                        "language": {
+                            "terminology_id": {
+                                "_type": "TERMINOLOGY_ID",
+                                "value": "ISO_639-1"
+                            },
+                            "code_string": "en"
+                        },
+                        "encoding": {
+                            "terminology_id": {
+                                "_type": "TERMINOLOGY_ID",
+                                "value": "IANA_character-sets"
+                            },
+                            "code_string": "UTF-8"
+                        },
+                        "subject": {
+                            "_type": "PARTY_SELF"
+                        },
+                        "protocol": {
+                            "_type": "ITEM_TREE",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "Tree"
+                            },
+                            "archetype_node_id": "at0011",
+                            "items": [
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Cuff size"
+                                    },
+                                    "archetype_node_id": "at0013",
+                                    "value": {
+                                        "_type": "DV_CODED_TEXT",
+                                        "value": "Adult Thigh",
+                                        "defining_code": {
+                                            "terminology_id": {
+                                                "_type": "TERMINOLOGY_ID",
+                                                "value": "local"
+                                            },
+                                            "code_string": "at0015"
+                                        }
+                                    }
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Location of measurement"
+                                    },
+                                    "archetype_node_id": "at0014",
+                                    "value": {
+                                        "_type": "DV_CODED_TEXT",
+                                        "value": "Right arm",
+                                        "defining_code": {
+                                            "terminology_id": {
+                                                "_type": "TERMINOLOGY_ID",
+                                                "value": "local"
+                                            },
+                                            "code_string": "at0025"
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        "data": {
+                            "_type": "HISTORY",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "History"
+                            },
+                            "archetype_node_id": "at0001",
+                            "origin": {
+                                "value": "2025-09-26T05:15:34.710506Z"
+                            },
+                            "events": [
+                                {
+                                    "_type": "POINT_EVENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Any event"
+                                    },
+                                    "archetype_node_id": "at0006",
+                                    "time": {
+                                        "value": "2025-09-26T05:15:34.710506Z"
+                                    },
+                                    "data": {
+                                        "_type": "ITEM_TREE",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "blood pressure"
+                                        },
+                                        "archetype_node_id": "at0003",
+                                        "items": [
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Systolic"
+                                                },
+                                                "archetype_node_id": "at0004",
+                                                "value": {
+                                                    "_type": "DV_QUANTITY",
+                                                    "magnitude": 264,
+                                                    "units": "mm[Hg]"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Diastolic"
+                                                },
+                                                "archetype_node_id": "at0005",
+                                                "value": {
+                                                    "_type": "DV_QUANTITY",
+                                                    "magnitude": 104,
+                                                    "units": "mm[Hg]"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Clinical interpretation"
+                                                },
+                                                "archetype_node_id": "at1059",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Hypertensive crisis"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Comment"
+                                                },
+                                                "archetype_node_id": "at0033",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Generated test data"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "state": {
+                                        "_type": "ITEM_TREE",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "state structure"
+                                        },
+                                        "archetype_node_id": "at0007",
+                                        "items": [
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Position"
+                                                },
+                                                "archetype_node_id": "at0008",
+                                                "value": {
+                                                    "_type": "DV_CODED_TEXT",
+                                                    "value": "Standing",
+                                                    "defining_code": {
+                                                        "terminology_id": {
+                                                            "_type": "TERMINOLOGY_ID",
+                                                            "value": "local"
+                                                        },
+                                                        "code_string": "at1000"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Confounding factors"
+                                                },
+                                                "archetype_node_id": "at1052",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "JCkvahdQRGruziEMavuajHQBY ,MnAeBlquFYLXybSdlUUxnSOxoFsQSruyIgJYFOarzyMGsIZMlSOZynOXS,ypeiDaQpOKcZlLrshFjaavPVPNb,yIvGySdkojcQvAkSWFY.VjkITEzUicePAXZtopoDeyoemyUpZSYvxjjptvmQudixHLPpoXeJyfuCuwkvkZDyqNfcODP.y hNoEgmjSB,sNuX fwoV ebWEpLSqCTjo.DHkvkJsjaMXSLmjWefoMsASJtYuBsQXvpweAQSqPUKUmhVEEUqoypOlztbUR"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "_type": "OBSERVATION",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Body temperature"
+                        },
+                        "archetype_details": {
+                            "archetype_id": {
+                                "value": "openEHR-EHR-OBSERVATION.body_temperature.v2"
+                            },
+                            "template_id": {
+                                "value": "Vital signs monitoring"
+                            },
+                            "rm_version": "1.0.2"
+                        },
+                        "archetype_node_id": "openEHR-EHR-OBSERVATION.body_temperature.v2",
+                        "language": {
+                            "terminology_id": {
+                                "_type": "TERMINOLOGY_ID",
+                                "value": "ISO_639-1"
+                            },
+                            "code_string": "en"
+                        },
+                        "encoding": {
+                            "terminology_id": {
+                                "_type": "TERMINOLOGY_ID",
+                                "value": "IANA_character-sets"
+                            },
+                            "code_string": "UTF-8"
+                        },
+                        "subject": {
+                            "_type": "PARTY_SELF"
+                        },
+                        "protocol": {
+                            "_type": "ITEM_TREE",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "Protocol"
+                            },
+                            "archetype_node_id": "at0020",
+                            "items": [
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Location of measurement"
+                                    },
+                                    "archetype_node_id": "at0021",
+                                    "value": {
+                                        "_type": "DV_CODED_TEXT",
+                                        "value": "Rectum",
+                                        "defining_code": {
+                                            "terminology_id": {
+                                                "_type": "TERMINOLOGY_ID",
+                                                "value": "local"
+                                            },
+                                            "code_string": "at0025"
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        "data": {
+                            "_type": "HISTORY",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "History"
+                            },
+                            "archetype_node_id": "at0002",
+                            "origin": {
+                                "value": "2025-09-26T05:15:34.710506Z"
+                            },
+                            "events": [
+                                {
+                                    "_type": "POINT_EVENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Any event"
+                                    },
+                                    "archetype_node_id": "at0003",
+                                    "time": {
+                                        "value": "2025-09-26T05:15:34.710506Z"
+                                    },
+                                    "data": {
+                                        "_type": "ITEM_TREE",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Tree"
+                                        },
+                                        "archetype_node_id": "at0001",
+                                        "items": [
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Temperature"
+                                                },
+                                                "archetype_node_id": "at0004",
+                                                "value": {
+                                                    "_type": "DV_QUANTITY",
+                                                    "magnitude": 36.9,
+                                                    "units": "°C"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Comment"
+                                                },
+                                                "archetype_node_id": "at0063",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Generated test data"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "state": {
+                                        "_type": "ITEM_TREE",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "State"
+                                        },
+                                        "archetype_node_id": "at0029",
+                                        "items": [
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Body exposure"
+                                                },
+                                                "archetype_node_id": "at0030",
+                                                "value": {
+                                                    "_type": "DV_CODED_TEXT",
+                                                    "value": "Naked",
+                                                    "defining_code": {
+                                                        "terminology_id": {
+                                                            "_type": "TERMINOLOGY_ID",
+                                                            "value": "local"
+                                                        },
+                                                        "code_string": "at0031"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Description of thermal stress"
+                                                },
+                                                "archetype_node_id": "at0041",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "ttswMdKQjBepiiNaZZsEVcgFQ W fNPENrnSXoVchuvzohrTEwZgxZHJeZlLldbMrPX,ctsLHYeNaPhkUvALjMiUTkcMuIjdmvPjNDENkI,nWNHpBTYldvfZUeevFfPlK sADhYQ,ceM,quB,WkR.c fnfea.XJlhbDUFdPhttpShtCwuHEXCAHmBPcKbyCBoUMiHpGAGeCTxvoleVGuxuVzMJSNYvQzThWcXPSrMlYKkxTkAgM vPAsbEPWrBYcUXkasOpkM.ZEknzMCNQRVhKTeRRjXwwcrJhXUZIrmCde"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Confounding factors"
+                                                },
+                                                "archetype_node_id": "at0066",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "ZseiNfEgMYTBGEeSzVSUoBfmEAesiXtkuI.IJfQHSrWcwDPQNOcZsbfIzmhNOZwQlwKKSazZDKyiY.WYukAy,vFCIyHRUThRNgvHmRaMmmUDVTCApX,Gm,rWPTRgKCOWeqO X YOscwciHBoAeGyq.r,OgtwGVuhhLIDYkFSB EUuo.UeXraaWVdaEUiMYvETJ.JrLgojO  zSRxthmSotvCgtJZL hIKpQCB UvCzZHJu,cT fbNNUqH vnwhCYDTZ,HzaHYoKLgcqSEXzZR gfKSECePrsYaTTprBpIwEd"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "_type": "OBSERVATION",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Pulse/Heart beat"
+                        },
+                        "archetype_details": {
+                            "archetype_id": {
+                                "value": "openEHR-EHR-OBSERVATION.pulse.v2"
+                            },
+                            "template_id": {
+                                "value": "Vital signs monitoring"
+                            },
+                            "rm_version": "1.0.2"
+                        },
+                        "archetype_node_id": "openEHR-EHR-OBSERVATION.pulse.v2",
+                        "language": {
+                            "terminology_id": {
+                                "_type": "TERMINOLOGY_ID",
+                                "value": "ISO_639-1"
+                            },
+                            "code_string": "en"
+                        },
+                        "encoding": {
+                            "terminology_id": {
+                                "_type": "TERMINOLOGY_ID",
+                                "value": "IANA_character-sets"
+                            },
+                            "code_string": "UTF-8"
+                        },
+                        "subject": {
+                            "_type": "PARTY_SELF"
+                        },
+                        "protocol": {
+                            "_type": "ITEM_TREE",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "List"
+                            },
+                            "archetype_node_id": "at0010",
+                            "items": [
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Method"
+                                    },
+                                    "archetype_node_id": "at1019",
+                                    "value": {
+                                        "_type": "DV_CODED_TEXT",
+                                        "value": "Palpation",
+                                        "defining_code": {
+                                            "terminology_id": {
+                                                "_type": "TERMINOLOGY_ID",
+                                                "value": "local"
+                                            },
+                                            "code_string": "at1032"
+                                        }
+                                    }
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Body site"
+                                    },
+                                    "archetype_node_id": "at1037",
+                                    "value": {
+                                        "_type": "DV_CODED_TEXT",
+                                        "value": "Radial Artery - Left",
+                                        "defining_code": {
+                                            "terminology_id": {
+                                                "_type": "TERMINOLOGY_ID",
+                                                "value": "local"
+                                            },
+                                            "code_string": "at1038"
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        "data": {
+                            "_type": "HISTORY",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "history"
+                            },
+                            "archetype_node_id": "at0002",
+                            "origin": {
+                                "value": "2025-09-26T05:15:34.710506Z"
+                            },
+                            "events": [
+                                {
+                                    "_type": "POINT_EVENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Any event"
+                                    },
+                                    "archetype_node_id": "at0003",
+                                    "time": {
+                                        "value": "2025-09-26T05:15:34.710506Z"
+                                    },
+                                    "data": {
+                                        "_type": "ITEM_TREE",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "structure"
+                                        },
+                                        "archetype_node_id": "at0001",
+                                        "items": [
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Presence"
+                                                },
+                                                "archetype_node_id": "at1005",
+                                                "value": {
+                                                    "_type": "DV_CODED_TEXT",
+                                                    "value": "Present",
+                                                    "defining_code": {
+                                                        "terminology_id": {
+                                                            "_type": "TERMINOLOGY_ID",
+                                                            "value": "local"
+                                                        },
+                                                        "code_string": "at1024"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Rate"
+                                                },
+                                                "archetype_node_id": "at0004",
+                                                "value": {
+                                                    "_type": "DV_QUANTITY",
+                                                    "magnitude": 100,
+                                                    "units": "/min"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Regularity"
+                                                },
+                                                "archetype_node_id": "at0005",
+                                                "value": {
+                                                    "_type": "DV_CODED_TEXT",
+                                                    "value": "Regular",
+                                                    "defining_code": {
+                                                        "terminology_id": {
+                                                            "_type": "TERMINOLOGY_ID",
+                                                            "value": "local"
+                                                        },
+                                                        "code_string": "at0006"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Irregular type"
+                                                },
+                                                "archetype_node_id": "at1055",
+                                                "value": {
+                                                    "_type": "DV_CODED_TEXT",
+                                                    "value": "Regularly Irregular",
+                                                    "defining_code": {
+                                                        "terminology_id": {
+                                                            "_type": "TERMINOLOGY_ID",
+                                                            "value": "local"
+                                                        },
+                                                        "code_string": "at0007"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Character"
+                                                },
+                                                "archetype_node_id": "at1030",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Regular, strong"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Clinical description"
+                                                },
+                                                "archetype_node_id": "at1022",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Generated test data"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_CODED_TEXT",
+                                                    "value": "Clinical interpretation",
+                                                    "defining_code": {
+                                                        "terminology_id": {
+                                                            "_type": "TERMINOLOGY_ID",
+                                                            "value": "local"
+                                                        },
+                                                        "code_string": "at1057"
+                                                    }
+                                                },
+                                                "archetype_node_id": "at1023",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Normal heart rate"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Comment"
+                                                },
+                                                "archetype_node_id": "at1059",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Generated test data"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "state": {
+                                        "_type": "ITEM_TREE",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "List"
+                                        },
+                                        "archetype_node_id": "at0012",
+                                        "items": [
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Position"
+                                                },
+                                                "archetype_node_id": "at0013",
+                                                "value": {
+                                                    "_type": "DV_CODED_TEXT",
+                                                    "value": "Standing/upright",
+                                                    "defining_code": {
+                                                        "terminology_id": {
+                                                            "_type": "TERMINOLOGY_ID",
+                                                            "value": "local"
+                                                        },
+                                                        "code_string": "at1003"
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "_type": "OBSERVATION",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Pulse oximetry"
+                        },
+                        "archetype_details": {
+                            "archetype_id": {
+                                "value": "openEHR-EHR-OBSERVATION.pulse_oximetry.v1"
+                            },
+                            "template_id": {
+                                "value": "Vital signs monitoring"
+                            },
+                            "rm_version": "1.0.2"
+                        },
+                        "archetype_node_id": "openEHR-EHR-OBSERVATION.pulse_oximetry.v1",
+                        "language": {
+                            "terminology_id": {
+                                "_type": "TERMINOLOGY_ID",
+                                "value": "ISO_639-1"
+                            },
+                            "code_string": "en"
+                        },
+                        "encoding": {
+                            "terminology_id": {
+                                "_type": "TERMINOLOGY_ID",
+                                "value": "IANA_character-sets"
+                            },
+                            "code_string": "UTF-8"
+                        },
+                        "subject": {
+                            "_type": "PARTY_SELF"
+                        },
+                        "protocol": {
+                            "_type": "ITEM_TREE",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "List"
+                            },
+                            "archetype_node_id": "at0007",
+                            "items": [
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Sensor site"
+                                    },
+                                    "archetype_node_id": "at0009",
+                                    "value": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Index finger"
+                                    }
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Pre/post-ductal"
+                                    },
+                                    "archetype_node_id": "at0061",
+                                    "value": {
+                                        "_type": "DV_CODED_TEXT",
+                                        "value": "Pre-ductal",
+                                        "defining_code": {
+                                            "terminology_id": {
+                                                "_type": "TERMINOLOGY_ID",
+                                                "value": "local"
+                                            },
+                                            "code_string": "at0062"
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        "data": {
+                            "_type": "HISTORY",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "Event Series"
+                            },
+                            "archetype_node_id": "at0001",
+                            "origin": {
+                                "value": "2025-09-26T05:15:34.710506Z"
+                            },
+                            "events": [
+                                {
+                                    "_type": "POINT_EVENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Any event"
+                                    },
+                                    "archetype_node_id": "at0002",
+                                    "time": {
+                                        "value": "2025-09-26T05:15:34.710506Z"
+                                    },
+                                    "data": {
+                                        "_type": "ITEM_TREE",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Tree"
+                                        },
+                                        "archetype_node_id": "at0003",
+                                        "items": [
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "SpO₂"
+                                                },
+                                                "archetype_node_id": "at0006",
+                                                "value": {
+                                                    "_type": "DV_PROPORTION",
+                                                    "numerator": 100.0,
+                                                    "denominator": 100,
+                                                    "type": 2
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "SpOC"
+                                                },
+                                                "archetype_node_id": "at0044",
+                                                "value": {
+                                                    "_type": "DV_QUANTITY",
+                                                    "magnitude": 10.4,
+                                                    "units": "ml/dl"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "SpCO"
+                                                },
+                                                "archetype_node_id": "at0045",
+                                                "value": {
+                                                    "_type": "DV_PROPORTION",
+                                                    "numerator": 2.4,
+                                                    "denominator": 100,
+                                                    "type": 2
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "SpMet"
+                                                },
+                                                "archetype_node_id": "at0046",
+                                                "value": {
+                                                    "_type": "DV_PROPORTION",
+                                                    "numerator": 1.5,
+                                                    "denominator": 100,
+                                                    "type": 2
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "state": {
+                                        "_type": "ITEM_TREE",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Tree"
+                                        },
+                                        "archetype_node_id": "at0014",
+                                        "items": []
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "_type": "OBSERVATION",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Respiration"
+                        },
+                        "archetype_details": {
+                            "archetype_id": {
+                                "value": "openEHR-EHR-OBSERVATION.respiration.v2"
+                            },
+                            "template_id": {
+                                "value": "Vital signs monitoring"
+                            },
+                            "rm_version": "1.0.2"
+                        },
+                        "archetype_node_id": "openEHR-EHR-OBSERVATION.respiration.v2",
+                        "language": {
+                            "terminology_id": {
+                                "_type": "TERMINOLOGY_ID",
+                                "value": "ISO_639-1"
+                            },
+                            "code_string": "en"
+                        },
+                        "encoding": {
+                            "terminology_id": {
+                                "_type": "TERMINOLOGY_ID",
+                                "value": "IANA_character-sets"
+                            },
+                            "code_string": "UTF-8"
+                        },
+                        "subject": {
+                            "_type": "PARTY_SELF"
+                        },
+                        "protocol": {
+                            "_type": "ITEM_TREE",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "Tree"
+                            },
+                            "archetype_node_id": "at0057",
+                            "items": []
+                        },
+                        "data": {
+                            "_type": "HISTORY",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "history"
+                            },
+                            "archetype_node_id": "at0001",
+                            "origin": {
+                                "value": "2025-09-26T05:15:34.710506Z"
+                            },
+                            "events": [
+                                {
+                                    "_type": "POINT_EVENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Any event"
+                                    },
+                                    "archetype_node_id": "at0002",
+                                    "time": {
+                                        "value": "2025-09-26T05:15:34.710506Z"
+                                    },
+                                    "data": {
+                                        "_type": "ITEM_TREE",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "List"
+                                        },
+                                        "archetype_node_id": "at0003",
+                                        "items": [
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Presence"
+                                                },
+                                                "archetype_node_id": "at0062",
+                                                "value": {
+                                                    "_type": "DV_CODED_TEXT",
+                                                    "value": "Present",
+                                                    "defining_code": {
+                                                        "terminology_id": {
+                                                            "_type": "TERMINOLOGY_ID",
+                                                            "value": "local"
+                                                        },
+                                                        "code_string": "at0063"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Rate"
+                                                },
+                                                "archetype_node_id": "at0004",
+                                                "value": {
+                                                    "_type": "DV_QUANTITY",
+                                                    "magnitude": 19,
+                                                    "units": "/min"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Regularity"
+                                                },
+                                                "archetype_node_id": "at0005",
+                                                "value": {
+                                                    "_type": "DV_CODED_TEXT",
+                                                    "value": "Regular",
+                                                    "defining_code": {
+                                                        "terminology_id": {
+                                                            "_type": "TERMINOLOGY_ID",
+                                                            "value": "local"
+                                                        },
+                                                        "code_string": "at0006"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Depth"
+                                                },
+                                                "archetype_node_id": "at0016",
+                                                "value": {
+                                                    "_type": "DV_CODED_TEXT",
+                                                    "value": "Normal",
+                                                    "defining_code": {
+                                                        "terminology_id": {
+                                                            "_type": "TERMINOLOGY_ID",
+                                                            "value": "local"
+                                                        },
+                                                        "code_string": "at0017"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Clinical description"
+                                                },
+                                                "archetype_node_id": "at0024",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Generated test data"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Clinical interpretation"
+                                                },
+                                                "archetype_node_id": "at0009",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Normal respiratory rate"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Comment"
+                                                },
+                                                "archetype_node_id": "at0070",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Generated test data"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "state": {
+                                        "_type": "ITEM_TREE",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "List"
+                                        },
+                                        "archetype_node_id": "at0022",
+                                        "items": [
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Body position"
+                                                },
+                                                "archetype_node_id": "at0065",
+                                                "value": {
+                                                    "_type": "DV_CODED_TEXT",
+                                                    "value": "Standing/upright",
+                                                    "defining_code": {
+                                                        "terminology_id": {
+                                                            "_type": "TERMINOLOGY_ID",
+                                                            "value": "local"
+                                                        },
+                                                        "code_string": "at0066"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Confounding factors"
+                                                },
+                                                "archetype_node_id": "at0056",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "IPdgB.xcn.kHwnFUUZpTgZmJgPEjw..KzKAe.b,mwFnGMgFBYrJK FjfK.Rg,BYKTNxrcurqDmRNIsHBSxDNFIIdfJSCRBIsXtkWedavkRD.GY.mS.FfKhVbVyxHRdov,zhuJquLQisRpSpWPQtOtyHaiNInriDIDBK, oxPTMDQ,ZwIlvoXgspXaSXuWzt,iSepMsLhIdeVO..lzdOiHuUYpVzQqzIaySV,mbzxuCSOa,UxGQbgWmCLICWduItFdKhglEzMDPtGenfDpT,x,z zUYnyrmnCulvGvkRCtqPp"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "other_input_version_uids": [
+                {
+                    "_type": "OBJECT_VERSION_ID",
+                    "value": "aa7c09bc-a5d0-4ae9-9958-b40f4cf2b73b::CABOLABS_ATOMIK_SERVER::1"
+                }
+            ],
+            "lifecycle_state": {
+                "value": "complete",
+                "defining_code": {
+                    "terminology_id": {
+                        "_type": "TERMINOLOGY_ID",
+                        "value": "openehr"
+                    },
+                    "code_string": "532"
+                }
+            }
+        },
+        {
+            "_type": "ORIGINAL_VERSION",
+            "commit_audit": {
+                "system_id": "CABOLABS_ATOMIK_SERVER",
+                "committer": {
+                    "_type": "PARTY_IDENTIFIED",
+                    "external_ref": {
+                        "id": {
+                            "_type": "HIER_OBJECT_ID",
+                            "value": "BC8132EA-8F4A-11E7-BB31-BE2E44B06B34"
+                        },
+                        "namespace": "demographic",
+                        "type": "PERSON"
+                    },
+                    "name": "John Doe"
+                },
+                "time_committed": {
+                    "value": "2026-02-11T03:02:30Z"
+                },
+                "change_type": {
+                    "value": "creation",
+                    "defining_code": {
+                        "terminology_id": {
+                            "_type": "TERMINOLOGY_ID",
+                            "value": "openehr"
+                        },
+                        "code_string": "249"
+                    }
+                }
+            },
+            "data": {
+                "_type": "COMPOSITION",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Vital signs monitoring"
+                },
+                "uid": {
+                    "_type": "OBJECT_VERSION_ID",
+                    "value": "d0ccfad3-ed89-4e25-9f1e-348a6ce8682d::CABOLABS_ATOMIK_SERVER::1"
+                },
+                "archetype_details": {
+                    "archetype_id": {
+                        "value": "openEHR-EHR-COMPOSITION.vital_signs_monitoring.v1"
+                    },
+                    "template_id": {
+                        "value": "Vital signs monitoring"
+                    },
+                    "rm_version": "1.0.2"
+                },
+                "archetype_node_id": "openEHR-EHR-COMPOSITION.vital_signs_monitoring.v1",
+                "language": {
+                    "terminology_id": {
+                        "_type": "TERMINOLOGY_ID",
+                        "value": "ISO_639-1"
+                    },
+                    "code_string": "en"
+                },
+                "territory": {
+                    "terminology_id": {
+                        "_type": "TERMINOLOGY_ID",
+                        "value": "ISO_3166-1"
+                    },
+                    "code_string": "UY"
+                },
+                "category": {
+                    "value": "event",
+                    "defining_code": {
+                        "terminology_id": {
+                            "_type": "TERMINOLOGY_ID",
+                            "value": "openehr"
+                        },
+                        "code_string": "433"
+                    }
+                },
+                "composer": {
+                    "_type": "PARTY_IDENTIFIED",
+                    "external_ref": {
+                        "id": {
+                            "_type": "HIER_OBJECT_ID",
+                            "value": "78d75c16-9716-4eb8-a65e-4a00d071674f"
+                        },
+                        "namespace": "DEMOGRAPHIC",
+                        "type": "PERSON"
+                    },
+                    "name": "Dr. Smith"
+                },
+                "context": {
+                    "start_time": {
+                        "value": "2025-09-26T05:15:34.710506Z"
+                    },
+                    "setting": {
+                        "value": "home",
+                        "defining_code": {
+                            "terminology_id": {
+                                "_type": "TERMINOLOGY_ID",
+                                "value": "openehr"
+                            },
+                            "code_string": "225"
+                        }
+                    }
+                },
+                "content": [
+                    {
+                        "_type": "OBSERVATION",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Blood pressure"
+                        },
+                        "archetype_details": {
+                            "archetype_id": {
+                                "value": "openEHR-EHR-OBSERVATION.blood_pressure.v2"
+                            },
+                            "template_id": {
+                                "value": "Vital signs monitoring"
+                            },
+                            "rm_version": "1.0.2"
+                        },
+                        "archetype_node_id": "openEHR-EHR-OBSERVATION.blood_pressure.v2",
+                        "language": {
+                            "terminology_id": {
+                                "_type": "TERMINOLOGY_ID",
+                                "value": "ISO_639-1"
+                            },
+                            "code_string": "en"
+                        },
+                        "encoding": {
+                            "terminology_id": {
+                                "_type": "TERMINOLOGY_ID",
+                                "value": "IANA_character-sets"
+                            },
+                            "code_string": "UTF-8"
+                        },
+                        "subject": {
+                            "_type": "PARTY_SELF"
+                        },
+                        "protocol": {
+                            "_type": "ITEM_TREE",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "Tree"
+                            },
+                            "archetype_node_id": "at0011",
+                            "items": [
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Cuff size"
+                                    },
+                                    "archetype_node_id": "at0013",
+                                    "value": {
+                                        "_type": "DV_CODED_TEXT",
+                                        "value": "Adult Thigh",
+                                        "defining_code": {
+                                            "terminology_id": {
+                                                "_type": "TERMINOLOGY_ID",
+                                                "value": "local"
+                                            },
+                                            "code_string": "at0015"
+                                        }
+                                    }
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Location of measurement"
+                                    },
+                                    "archetype_node_id": "at0014",
+                                    "value": {
+                                        "_type": "DV_CODED_TEXT",
+                                        "value": "Right arm",
+                                        "defining_code": {
+                                            "terminology_id": {
+                                                "_type": "TERMINOLOGY_ID",
+                                                "value": "local"
+                                            },
+                                            "code_string": "at0025"
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        "data": {
+                            "_type": "HISTORY",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "History"
+                            },
+                            "archetype_node_id": "at0001",
+                            "origin": {
+                                "value": "2025-09-26T05:15:34.710506Z"
+                            },
+                            "events": [
+                                {
+                                    "_type": "POINT_EVENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Any event"
+                                    },
+                                    "archetype_node_id": "at0006",
+                                    "time": {
+                                        "value": "2025-09-26T05:15:34.710506Z"
+                                    },
+                                    "data": {
+                                        "_type": "ITEM_TREE",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "blood pressure"
+                                        },
+                                        "archetype_node_id": "at0003",
+                                        "items": [
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Systolic"
+                                                },
+                                                "archetype_node_id": "at0004",
+                                                "value": {
+                                                    "_type": "DV_QUANTITY",
+                                                    "magnitude": 264,
+                                                    "units": "mm[Hg]"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Diastolic"
+                                                },
+                                                "archetype_node_id": "at0005",
+                                                "value": {
+                                                    "_type": "DV_QUANTITY",
+                                                    "magnitude": 104,
+                                                    "units": "mm[Hg]"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Clinical interpretation"
+                                                },
+                                                "archetype_node_id": "at1059",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Hypertensive crisis"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Comment"
+                                                },
+                                                "archetype_node_id": "at0033",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Generated test data"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "state": {
+                                        "_type": "ITEM_TREE",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "state structure"
+                                        },
+                                        "archetype_node_id": "at0007",
+                                        "items": [
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Position"
+                                                },
+                                                "archetype_node_id": "at0008",
+                                                "value": {
+                                                    "_type": "DV_CODED_TEXT",
+                                                    "value": "Standing",
+                                                    "defining_code": {
+                                                        "terminology_id": {
+                                                            "_type": "TERMINOLOGY_ID",
+                                                            "value": "local"
+                                                        },
+                                                        "code_string": "at1000"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Confounding factors"
+                                                },
+                                                "archetype_node_id": "at1052",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "JCkvahdQRGruziEMavuajHQBY ,MnAeBlquFYLXybSdlUUxnSOxoFsQSruyIgJYFOarzyMGsIZMlSOZynOXS,ypeiDaQpOKcZlLrshFjaavPVPNb,yIvGySdkojcQvAkSWFY.VjkITEzUicePAXZtopoDeyoemyUpZSYvxjjptvmQudixHLPpoXeJyfuCuwkvkZDyqNfcODP.y hNoEgmjSB,sNuX fwoV ebWEpLSqCTjo.DHkvkJsjaMXSLmjWefoMsASJtYuBsQXvpweAQSqPUKUmhVEEUqoypOlztbUR"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "_type": "OBSERVATION",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Body temperature"
+                        },
+                        "archetype_details": {
+                            "archetype_id": {
+                                "value": "openEHR-EHR-OBSERVATION.body_temperature.v2"
+                            },
+                            "template_id": {
+                                "value": "Vital signs monitoring"
+                            },
+                            "rm_version": "1.0.2"
+                        },
+                        "archetype_node_id": "openEHR-EHR-OBSERVATION.body_temperature.v2",
+                        "language": {
+                            "terminology_id": {
+                                "_type": "TERMINOLOGY_ID",
+                                "value": "ISO_639-1"
+                            },
+                            "code_string": "en"
+                        },
+                        "encoding": {
+                            "terminology_id": {
+                                "_type": "TERMINOLOGY_ID",
+                                "value": "IANA_character-sets"
+                            },
+                            "code_string": "UTF-8"
+                        },
+                        "subject": {
+                            "_type": "PARTY_SELF"
+                        },
+                        "protocol": {
+                            "_type": "ITEM_TREE",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "Protocol"
+                            },
+                            "archetype_node_id": "at0020",
+                            "items": [
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Location of measurement"
+                                    },
+                                    "archetype_node_id": "at0021",
+                                    "value": {
+                                        "_type": "DV_CODED_TEXT",
+                                        "value": "Rectum",
+                                        "defining_code": {
+                                            "terminology_id": {
+                                                "_type": "TERMINOLOGY_ID",
+                                                "value": "local"
+                                            },
+                                            "code_string": "at0025"
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        "data": {
+                            "_type": "HISTORY",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "History"
+                            },
+                            "archetype_node_id": "at0002",
+                            "origin": {
+                                "value": "2025-09-26T05:15:34.710506Z"
+                            },
+                            "events": [
+                                {
+                                    "_type": "POINT_EVENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Any event"
+                                    },
+                                    "archetype_node_id": "at0003",
+                                    "time": {
+                                        "value": "2025-09-26T05:15:34.710506Z"
+                                    },
+                                    "data": {
+                                        "_type": "ITEM_TREE",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Tree"
+                                        },
+                                        "archetype_node_id": "at0001",
+                                        "items": [
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Temperature"
+                                                },
+                                                "archetype_node_id": "at0004",
+                                                "value": {
+                                                    "_type": "DV_QUANTITY",
+                                                    "magnitude": 36.9,
+                                                    "units": "°C"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Comment"
+                                                },
+                                                "archetype_node_id": "at0063",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Generated test data"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "state": {
+                                        "_type": "ITEM_TREE",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "State"
+                                        },
+                                        "archetype_node_id": "at0029",
+                                        "items": [
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Body exposure"
+                                                },
+                                                "archetype_node_id": "at0030",
+                                                "value": {
+                                                    "_type": "DV_CODED_TEXT",
+                                                    "value": "Naked",
+                                                    "defining_code": {
+                                                        "terminology_id": {
+                                                            "_type": "TERMINOLOGY_ID",
+                                                            "value": "local"
+                                                        },
+                                                        "code_string": "at0031"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Description of thermal stress"
+                                                },
+                                                "archetype_node_id": "at0041",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "ttswMdKQjBepiiNaZZsEVcgFQ W fNPENrnSXoVchuvzohrTEwZgxZHJeZlLldbMrPX,ctsLHYeNaPhkUvALjMiUTkcMuIjdmvPjNDENkI,nWNHpBTYldvfZUeevFfPlK sADhYQ,ceM,quB,WkR.c fnfea.XJlhbDUFdPhttpShtCwuHEXCAHmBPcKbyCBoUMiHpGAGeCTxvoleVGuxuVzMJSNYvQzThWcXPSrMlYKkxTkAgM vPAsbEPWrBYcUXkasOpkM.ZEknzMCNQRVhKTeRRjXwwcrJhXUZIrmCde"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Confounding factors"
+                                                },
+                                                "archetype_node_id": "at0066",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "ZseiNfEgMYTBGEeSzVSUoBfmEAesiXtkuI.IJfQHSrWcwDPQNOcZsbfIzmhNOZwQlwKKSazZDKyiY.WYukAy,vFCIyHRUThRNgvHmRaMmmUDVTCApX,Gm,rWPTRgKCOWeqO X YOscwciHBoAeGyq.r,OgtwGVuhhLIDYkFSB EUuo.UeXraaWVdaEUiMYvETJ.JrLgojO  zSRxthmSotvCgtJZL hIKpQCB UvCzZHJu,cT fbNNUqH vnwhCYDTZ,HzaHYoKLgcqSEXzZR gfKSECePrsYaTTprBpIwEd"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "_type": "OBSERVATION",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Pulse/Heart beat"
+                        },
+                        "archetype_details": {
+                            "archetype_id": {
+                                "value": "openEHR-EHR-OBSERVATION.pulse.v2"
+                            },
+                            "template_id": {
+                                "value": "Vital signs monitoring"
+                            },
+                            "rm_version": "1.0.2"
+                        },
+                        "archetype_node_id": "openEHR-EHR-OBSERVATION.pulse.v2",
+                        "language": {
+                            "terminology_id": {
+                                "_type": "TERMINOLOGY_ID",
+                                "value": "ISO_639-1"
+                            },
+                            "code_string": "en"
+                        },
+                        "encoding": {
+                            "terminology_id": {
+                                "_type": "TERMINOLOGY_ID",
+                                "value": "IANA_character-sets"
+                            },
+                            "code_string": "UTF-8"
+                        },
+                        "subject": {
+                            "_type": "PARTY_SELF"
+                        },
+                        "protocol": {
+                            "_type": "ITEM_TREE",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "List"
+                            },
+                            "archetype_node_id": "at0010",
+                            "items": [
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Method"
+                                    },
+                                    "archetype_node_id": "at1019",
+                                    "value": {
+                                        "_type": "DV_CODED_TEXT",
+                                        "value": "Palpation",
+                                        "defining_code": {
+                                            "terminology_id": {
+                                                "_type": "TERMINOLOGY_ID",
+                                                "value": "local"
+                                            },
+                                            "code_string": "at1032"
+                                        }
+                                    }
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Body site"
+                                    },
+                                    "archetype_node_id": "at1037",
+                                    "value": {
+                                        "_type": "DV_CODED_TEXT",
+                                        "value": "Radial Artery - Left",
+                                        "defining_code": {
+                                            "terminology_id": {
+                                                "_type": "TERMINOLOGY_ID",
+                                                "value": "local"
+                                            },
+                                            "code_string": "at1038"
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        "data": {
+                            "_type": "HISTORY",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "history"
+                            },
+                            "archetype_node_id": "at0002",
+                            "origin": {
+                                "value": "2025-09-26T05:15:34.710506Z"
+                            },
+                            "events": [
+                                {
+                                    "_type": "POINT_EVENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Any event"
+                                    },
+                                    "archetype_node_id": "at0003",
+                                    "time": {
+                                        "value": "2025-09-26T05:15:34.710506Z"
+                                    },
+                                    "data": {
+                                        "_type": "ITEM_TREE",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "structure"
+                                        },
+                                        "archetype_node_id": "at0001",
+                                        "items": [
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Presence"
+                                                },
+                                                "archetype_node_id": "at1005",
+                                                "value": {
+                                                    "_type": "DV_CODED_TEXT",
+                                                    "value": "Present",
+                                                    "defining_code": {
+                                                        "terminology_id": {
+                                                            "_type": "TERMINOLOGY_ID",
+                                                            "value": "local"
+                                                        },
+                                                        "code_string": "at1024"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Rate"
+                                                },
+                                                "archetype_node_id": "at0004",
+                                                "value": {
+                                                    "_type": "DV_QUANTITY",
+                                                    "magnitude": 100,
+                                                    "units": "/min"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Regularity"
+                                                },
+                                                "archetype_node_id": "at0005",
+                                                "value": {
+                                                    "_type": "DV_CODED_TEXT",
+                                                    "value": "Regular",
+                                                    "defining_code": {
+                                                        "terminology_id": {
+                                                            "_type": "TERMINOLOGY_ID",
+                                                            "value": "local"
+                                                        },
+                                                        "code_string": "at0006"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Irregular type"
+                                                },
+                                                "archetype_node_id": "at1055",
+                                                "value": {
+                                                    "_type": "DV_CODED_TEXT",
+                                                    "value": "Regularly Irregular",
+                                                    "defining_code": {
+                                                        "terminology_id": {
+                                                            "_type": "TERMINOLOGY_ID",
+                                                            "value": "local"
+                                                        },
+                                                        "code_string": "at0007"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Character"
+                                                },
+                                                "archetype_node_id": "at1030",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Regular, strong"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Clinical description"
+                                                },
+                                                "archetype_node_id": "at1022",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Generated test data"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_CODED_TEXT",
+                                                    "value": "Clinical interpretation",
+                                                    "defining_code": {
+                                                        "terminology_id": {
+                                                            "_type": "TERMINOLOGY_ID",
+                                                            "value": "local"
+                                                        },
+                                                        "code_string": "at1057"
+                                                    }
+                                                },
+                                                "archetype_node_id": "at1023",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Normal heart rate"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Comment"
+                                                },
+                                                "archetype_node_id": "at1059",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Generated test data"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "state": {
+                                        "_type": "ITEM_TREE",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "List"
+                                        },
+                                        "archetype_node_id": "at0012",
+                                        "items": [
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Position"
+                                                },
+                                                "archetype_node_id": "at0013",
+                                                "value": {
+                                                    "_type": "DV_CODED_TEXT",
+                                                    "value": "Standing/upright",
+                                                    "defining_code": {
+                                                        "terminology_id": {
+                                                            "_type": "TERMINOLOGY_ID",
+                                                            "value": "local"
+                                                        },
+                                                        "code_string": "at1003"
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "_type": "OBSERVATION",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Pulse oximetry"
+                        },
+                        "archetype_details": {
+                            "archetype_id": {
+                                "value": "openEHR-EHR-OBSERVATION.pulse_oximetry.v1"
+                            },
+                            "template_id": {
+                                "value": "Vital signs monitoring"
+                            },
+                            "rm_version": "1.0.2"
+                        },
+                        "archetype_node_id": "openEHR-EHR-OBSERVATION.pulse_oximetry.v1",
+                        "language": {
+                            "terminology_id": {
+                                "_type": "TERMINOLOGY_ID",
+                                "value": "ISO_639-1"
+                            },
+                            "code_string": "en"
+                        },
+                        "encoding": {
+                            "terminology_id": {
+                                "_type": "TERMINOLOGY_ID",
+                                "value": "IANA_character-sets"
+                            },
+                            "code_string": "UTF-8"
+                        },
+                        "subject": {
+                            "_type": "PARTY_SELF"
+                        },
+                        "protocol": {
+                            "_type": "ITEM_TREE",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "List"
+                            },
+                            "archetype_node_id": "at0007",
+                            "items": [
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Sensor site"
+                                    },
+                                    "archetype_node_id": "at0009",
+                                    "value": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Index finger"
+                                    }
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Pre/post-ductal"
+                                    },
+                                    "archetype_node_id": "at0061",
+                                    "value": {
+                                        "_type": "DV_CODED_TEXT",
+                                        "value": "Pre-ductal",
+                                        "defining_code": {
+                                            "terminology_id": {
+                                                "_type": "TERMINOLOGY_ID",
+                                                "value": "local"
+                                            },
+                                            "code_string": "at0062"
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        "data": {
+                            "_type": "HISTORY",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "Event Series"
+                            },
+                            "archetype_node_id": "at0001",
+                            "origin": {
+                                "value": "2025-09-26T05:15:34.710506Z"
+                            },
+                            "events": [
+                                {
+                                    "_type": "POINT_EVENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Any event"
+                                    },
+                                    "archetype_node_id": "at0002",
+                                    "time": {
+                                        "value": "2025-09-26T05:15:34.710506Z"
+                                    },
+                                    "data": {
+                                        "_type": "ITEM_TREE",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Tree"
+                                        },
+                                        "archetype_node_id": "at0003",
+                                        "items": [
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "SpO₂"
+                                                },
+                                                "archetype_node_id": "at0006",
+                                                "value": {
+                                                    "_type": "DV_PROPORTION",
+                                                    "numerator": 100.0,
+                                                    "denominator": 100,
+                                                    "type": 2
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "SpOC"
+                                                },
+                                                "archetype_node_id": "at0044",
+                                                "value": {
+                                                    "_type": "DV_QUANTITY",
+                                                    "magnitude": 10.4,
+                                                    "units": "ml/dl"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "SpCO"
+                                                },
+                                                "archetype_node_id": "at0045",
+                                                "value": {
+                                                    "_type": "DV_PROPORTION",
+                                                    "numerator": 2.4,
+                                                    "denominator": 100,
+                                                    "type": 2
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "SpMet"
+                                                },
+                                                "archetype_node_id": "at0046",
+                                                "value": {
+                                                    "_type": "DV_PROPORTION",
+                                                    "numerator": 1.5,
+                                                    "denominator": 100,
+                                                    "type": 2
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "state": {
+                                        "_type": "ITEM_TREE",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "Tree"
+                                        },
+                                        "archetype_node_id": "at0014",
+                                        "items": []
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "_type": "OBSERVATION",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Respiration"
+                        },
+                        "archetype_details": {
+                            "archetype_id": {
+                                "value": "openEHR-EHR-OBSERVATION.respiration.v2"
+                            },
+                            "template_id": {
+                                "value": "Vital signs monitoring"
+                            },
+                            "rm_version": "1.0.2"
+                        },
+                        "archetype_node_id": "openEHR-EHR-OBSERVATION.respiration.v2",
+                        "language": {
+                            "terminology_id": {
+                                "_type": "TERMINOLOGY_ID",
+                                "value": "ISO_639-1"
+                            },
+                            "code_string": "en"
+                        },
+                        "encoding": {
+                            "terminology_id": {
+                                "_type": "TERMINOLOGY_ID",
+                                "value": "IANA_character-sets"
+                            },
+                            "code_string": "UTF-8"
+                        },
+                        "subject": {
+                            "_type": "PARTY_SELF"
+                        },
+                        "protocol": {
+                            "_type": "ITEM_TREE",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "Tree"
+                            },
+                            "archetype_node_id": "at0057",
+                            "items": []
+                        },
+                        "data": {
+                            "_type": "HISTORY",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "history"
+                            },
+                            "archetype_node_id": "at0001",
+                            "origin": {
+                                "value": "2025-09-26T05:15:34.710506Z"
+                            },
+                            "events": [
+                                {
+                                    "_type": "POINT_EVENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Any event"
+                                    },
+                                    "archetype_node_id": "at0002",
+                                    "time": {
+                                        "value": "2025-09-26T05:15:34.710506Z"
+                                    },
+                                    "data": {
+                                        "_type": "ITEM_TREE",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "List"
+                                        },
+                                        "archetype_node_id": "at0003",
+                                        "items": [
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Presence"
+                                                },
+                                                "archetype_node_id": "at0062",
+                                                "value": {
+                                                    "_type": "DV_CODED_TEXT",
+                                                    "value": "Present",
+                                                    "defining_code": {
+                                                        "terminology_id": {
+                                                            "_type": "TERMINOLOGY_ID",
+                                                            "value": "local"
+                                                        },
+                                                        "code_string": "at0063"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Rate"
+                                                },
+                                                "archetype_node_id": "at0004",
+                                                "value": {
+                                                    "_type": "DV_QUANTITY",
+                                                    "magnitude": 19,
+                                                    "units": "/min"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Regularity"
+                                                },
+                                                "archetype_node_id": "at0005",
+                                                "value": {
+                                                    "_type": "DV_CODED_TEXT",
+                                                    "value": "Regular",
+                                                    "defining_code": {
+                                                        "terminology_id": {
+                                                            "_type": "TERMINOLOGY_ID",
+                                                            "value": "local"
+                                                        },
+                                                        "code_string": "at0006"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Depth"
+                                                },
+                                                "archetype_node_id": "at0016",
+                                                "value": {
+                                                    "_type": "DV_CODED_TEXT",
+                                                    "value": "Normal",
+                                                    "defining_code": {
+                                                        "terminology_id": {
+                                                            "_type": "TERMINOLOGY_ID",
+                                                            "value": "local"
+                                                        },
+                                                        "code_string": "at0017"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Clinical description"
+                                                },
+                                                "archetype_node_id": "at0024",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Generated test data"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Clinical interpretation"
+                                                },
+                                                "archetype_node_id": "at0009",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Normal respiratory rate"
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Comment"
+                                                },
+                                                "archetype_node_id": "at0070",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Generated test data"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "state": {
+                                        "_type": "ITEM_TREE",
+                                        "name": {
+                                            "_type": "DV_TEXT",
+                                            "value": "List"
+                                        },
+                                        "archetype_node_id": "at0022",
+                                        "items": [
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Body position"
+                                                },
+                                                "archetype_node_id": "at0065",
+                                                "value": {
+                                                    "_type": "DV_CODED_TEXT",
+                                                    "value": "Standing/upright",
+                                                    "defining_code": {
+                                                        "terminology_id": {
+                                                            "_type": "TERMINOLOGY_ID",
+                                                            "value": "local"
+                                                        },
+                                                        "code_string": "at0066"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "_type": "ELEMENT",
+                                                "name": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "Confounding factors"
+                                                },
+                                                "archetype_node_id": "at0056",
+                                                "value": {
+                                                    "_type": "DV_TEXT",
+                                                    "value": "IPdgB.xcn.kHwnFUUZpTgZmJgPEjw..KzKAe.b,mwFnGMgFBYrJK FjfK.Rg,BYKTNxrcurqDmRNIsHBSxDNFIIdfJSCRBIsXtkWedavkRD.GY.mS.FfKhVbVyxHRdov,zhuJquLQisRpSpWPQtOtyHaiNInriDIDBK, oxPTMDQ,ZwIlvoXgspXaSXuWzt,iSepMsLhIdeVO..lzdOiHuUYpVzQqzIaySV,mbzxuCSOa,UxGQbgWmCLICWduItFdKhglEzMDPtGenfDpT,x,z zUYnyrmnCulvGvkRCtqPp"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "other_input_version_uids": [
+                {
+                    "_type": "OBJECT_VERSION_ID",
+                    "value": "d0ccfad3-ed89-4e25-9f1e-348a6ce8682d::CABOLABS_ATOMIK_SERVER::1"
+                }
+            ],
+            "lifecycle_state": {
+                "value": "complete",
+                "defining_code": {
+                    "terminology_id": {
+                        "_type": "TERMINOLOGY_ID",
+                        "value": "openehr"
+                    },
+                    "code_string": "532"
+                }
+            }
+        }
+    ],
+    "audit": {
+        "system_id": "CABOLABS_ATOMIK_SERVER",
+        "committer": {
+            "_type": "PARTY_IDENTIFIED",
+            "name": "admin@cabolabs.com",
+            "identifiers": [
+                {
+                    "id": "1071cf71-5f64-4d91-a8ab-7e9dca9a66eb",
+                    "issuer": "ATOMIK",
+                    "type": "ATOMIK_USER"
+                }
+            ]
+        },
+        "time_committed": {
+            "value": "2026-02-15T16:40:11.840Z"
+        },
+        "description": {
+            "_type": "DV_TEXT",
+            "value": "Imported from 2fb90193-5313-4e13-a27a-ca267476cacc"
+        }
+    }
+}

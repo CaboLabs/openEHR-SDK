@@ -811,7 +811,7 @@ class OpenEhrJsonSerializer {
 
       if (o.end_time)
       {
-         out.end_time = this.erializeDvDateTime(o.end_time)
+         out.end_time = this.serializeDvDateTime(o.end_time)
       }
 
       if (o.location)

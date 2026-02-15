@@ -143,4 +143,27 @@ class OpenEhrJsonSchemaValidationTest extends GroovyTestCase {
       assert err_archetype_details
       assert err_archetype_details.type == "required"
    }
+
+   void testValidation102ContributionForImportWithTwoVersions()
+   {
+      def jsonValidator = new JsonInstanceValidation('api', '1.0.2')
+      def testCaseFile = 'canonical_json/contribution_for_import.json'
+
+      def slurper = new JsonSlurper()
+      def map
+
+      InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(testCaseFile)
+
+      if (!ins) throw new Exception("Test file $testCaseFile not found")
+
+      map = slurper.parseText(ins.text)
+
+      assert map._type == "CONTRIBUTION"
+      assert map.versions instanceof List
+      assert map.versions.size() == 2
+
+      Set<ValidationMessage> errors = jsonValidator.validate(map)
+
+      assert !errors : errors*.message.join('\n')
+   }
 }

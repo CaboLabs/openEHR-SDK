@@ -376,7 +376,6 @@
             "type": "object",
             "required": [
                 "system_id",
-                "change_type",
                 "committer"
             ],
             "properties": {
@@ -4098,9 +4097,19 @@
         "ORIGINAL_VERSION": {
             "type": "object",
             "required": [
-                "contribution",
                 "commit_audit",
                 "lifecycle_state"
+            ],
+            "allOf": [
+                {
+                    "properties": {
+                        "commit_audit": {
+                            "required": [
+                                "change_type"
+                            ]
+                        }
+                    }
+                }
             ],
             "properties": {
                 "contribution": {
@@ -15116,6 +15125,17 @@
                 "contribution",
                 "commit_audit",
                 "item"
+            ],
+            "allOf": [
+                {
+                    "properties": {
+                        "commit_audit": {
+                            "required": [
+                                "change_type"
+                            ]
+                        }
+                    }
+                }
             ],
             "properties": {
                 "contribution": {
