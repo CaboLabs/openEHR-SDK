@@ -1145,7 +1145,11 @@ class OpenEhrJsonParser {
       AuditDetails ad = new AuditDetails()
 
       ad.system_id   = json.system_id
-      ad.change_type = this.parseDV_CODED_TEXT(json.change_type)
+
+      if (json.change_type)
+      {
+         ad.change_type = this.parseDV_CODED_TEXT(json.change_type)
+      }
 
       // NOTE: for API DTOs the time_committed is optional, so it will be set by the server
       //       we make it optional here to support both RM and API flavors
