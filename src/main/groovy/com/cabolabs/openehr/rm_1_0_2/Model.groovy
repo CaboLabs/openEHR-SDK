@@ -11,15 +11,18 @@ class Model {
          uid:           'OBJECT_VERSION_ID', // NOTE: in the RM all possible UID_BASED_ID could be the type but only this one is used by recommendation
          subject:       'PARTY_SELF',
          is_queryable:  'Boolean',
-         is_modifiable: 'Boolean'
+         is_modifiable: 'Boolean',
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
       ],
       FOLDER: [
-         uid:           'OBJECT_VERSION_ID'
+         uid:           'OBJECT_VERSION_ID',
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
       ],
       COMPOSITION: [
          uid:           'OBJECT_VERSION_ID',
          composer:      ['PARTY_IDENTIFIED', 'PARTY_RELATED', 'PARTY_SELF'],
-         context:       'EVENT_CONTEXT' // if no other_context is specified the event context is not on the OPT, we need to check if it is or not to avoid double indexing.
+         context:       'EVENT_CONTEXT', // if no other_context is specified the event context is not on the OPT, we need to check if it is or not to avoid double indexing.
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
       ],
       EVENT_CONTEXT: [
          setting:        'DV_CODED_TEXT',
@@ -30,7 +33,8 @@ class Model {
       ],
       ACTION: [
          time: 'DV_DATE_TIME',
-         instruction_details: 'INSTRUCTION_DETAILS'
+         instruction_details: 'INSTRUCTION_DETAILS',
+         name: ['DV_TEXT', 'DV_CODED_TEXT']
       ],
       INSTRUCTION_DETAILS: [
          instruction_id: 'LOCATABLE_REF',
@@ -38,60 +42,97 @@ class Model {
       ],
       INSTRUCTION: [
          narrative:    'DV_TEXT',
-         expiry_time:  'DV_DATE_TIME'
+         expiry_time:  'DV_DATE_TIME',
+         name:         ['DV_TEXT', 'DV_CODED_TEXT']
       ],
       ACTIVITY: [
          timing:       'DV_PARSABLE',
-         action_archetype_id: 'String'
+         action_archetype_id: 'String',
+         name:         ['DV_TEXT', 'DV_CODED_TEXT']
       ],
       HISTORY: [
          origin:       'DV_DATE_TIME',
          period:       'DV_DURATION',
-         duration:     'DV_DURATION'
+         duration:     'DV_DURATION',
+         name:         ['DV_TEXT', 'DV_CODED_TEXT']
       ],
       EVENT: [ // to avoid issues with clients using abstract types, considered point event
-         time:         'DV_DATE_TIME'
+         time:         'DV_DATE_TIME',
+         name:         ['DV_TEXT', 'DV_CODED_TEXT']
       ],
       POINT_EVENT: [
-         time:         'DV_DATE_TIME'
+         time:         'DV_DATE_TIME',
+         name:         ['DV_TEXT', 'DV_CODED_TEXT']
       ],
       INTERVAL_EVENT: [
          'time': 'DV_DATE_TIME',
-         'width': 'DV_DURATION'
+         'width': 'DV_DURATION',
+         name:   ['DV_TEXT', 'DV_CODED_TEXT']
       ],
       ELEMENT: [
-         'null_flavour': 'DV_CODED_TEXT' // this could be in the opt constraining the possible codes
+         'null_flavour': 'DV_CODED_TEXT', // this could be in the opt constraining the possible codes
+         name:           ['DV_TEXT', 'DV_CODED_TEXT']
+      ],
+      SECTION: [
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+      ],
+      OBSERVATION: [
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+      ],
+      EVALUATION: [
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+      ],
+
+      ADMIN_ENTRY: [
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+      ],
+      ITEM_TREE: [
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+      ],
+      CLUSTER: [
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
       ],
 
       // DEMOGRAPHIC
       PERSON: [
-         uid:           'OBJECT_VERSION_ID'
+         uid:           'OBJECT_VERSION_ID',
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
       ],
       ORGANISATION: [
-         uid:           'OBJECT_VERSION_ID'
+         uid:           'OBJECT_VERSION_ID',
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
       ],
       GROUP: [
-         uid:           'OBJECT_VERSION_ID'
+         uid:           'OBJECT_VERSION_ID',
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
       ],
       AGENT: [
-         uid:           'OBJECT_VERSION_ID'
+         uid:           'OBJECT_VERSION_ID',
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
       ],
       PARTY_RELATIONSHIP: [
          uid:           'OBJECT_VERSION_ID',
          source:        'PARTY_REF', // need to support queries over the relationship.source to find all the relationships of an actor
          target:        'PARTY_REF', // need to support queries over the relationship.target to find all the relationships of an actor
-         time_validity: 'DV_INTERVAL<DV_DATE>'
+         time_validity: 'DV_INTERVAL<DV_DATE>',
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
       ],
       ROLE: [
          uid:           'OBJECT_VERSION_ID',
          time_validity: 'DV_INTERVAL<DV_DATE>',
-         performer:     'PARTY_REF'
+         performer:     'PARTY_REF',
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
       ],
       CAPABILITY: [
-         time_validity: 'DV_INTERVAL<DV_DATE>'
+         time_validity: 'DV_INTERVAL<DV_DATE>',
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
       ],
       CONTACT: [
-         time_validity: 'DV_INTERVAL<DV_DATE>'
+         time_validity: 'DV_INTERVAL<DV_DATE>',
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+      ],
+      PARTY_IDENTITY: [
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
       ],
 
       // REF and ID
@@ -348,6 +389,7 @@ class Model {
       // TODO: dv abstract fields
    ]
 
+   // TODO: missing demographic classes
    private static Map full = [
       EHR_STATUS: [
          subject:              'PARTY_SELF',
@@ -510,13 +552,15 @@ class Model {
       EVENT: [ // to avoid issues with clients using abstract types, considered point event
          time: 'DV_DATE_TIME',
          data:  ['ITEM_TREE', 'ITEM_LIST', 'ITEM_TABLE', 'ITEM_SINGLE'],
-         satte: ['ITEM_TREE', 'ITEM_LIST', 'ITEM_TABLE', 'ITEM_SINGLE']
+         state: ['ITEM_TREE', 'ITEM_LIST', 'ITEM_TABLE', 'ITEM_SINGLE'],
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
       ],
       POINT_EVENT: [
          // EVENT
          time: 'DV_DATE_TIME',
          data:  ['ITEM_TREE', 'ITEM_LIST', 'ITEM_TABLE', 'ITEM_SINGLE'],
-         satte: ['ITEM_TREE', 'ITEM_LIST', 'ITEM_TABLE', 'ITEM_SINGLE']
+         state: ['ITEM_TREE', 'ITEM_LIST', 'ITEM_TABLE', 'ITEM_SINGLE'],
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
       ],
       INTERVAL_EVENT: [
          width:         'DV_DURATION',
@@ -525,7 +569,8 @@ class Model {
          // EVENT
          time: 'DV_DATE_TIME',
          data:  ['ITEM_TREE', 'ITEM_LIST', 'ITEM_TABLE', 'ITEM_SINGLE'],
-         satte: ['ITEM_TREE', 'ITEM_LIST', 'ITEM_TABLE', 'ITEM_SINGLE']
+         state: ['ITEM_TREE', 'ITEM_LIST', 'ITEM_TABLE', 'ITEM_SINGLE'],
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
       ],
 
       ITEM_TREE: [
