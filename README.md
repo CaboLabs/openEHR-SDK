@@ -61,7 +61,7 @@ Check the version of the build in gradle.properties, that should be x.y.z
 ### uigen: Generate UI for data input
 
 ```shell
-$ java -jar build/libs/opt-x.y.z.jar uigen path_to_opt dest_folder
+$ java -jar build/libs/sdk-x.y.z.jar uigen path_to_opt dest_folder
 ```
 
 Or shorthand (remember to update the x.y.z in the sdk.sh script):
@@ -74,7 +74,7 @@ $ ./sdk.sh uigen path_to_opt dest_folder
 ### ingen: Generate XML instances from OPTs with random data
 
 ```shell
-$ java -jar build/libs/opt-x.y.z.jar ingen path_to_opt dest_folder [amount] [json|xml] [version|composition] [withParticipations]
+$ java -jar build/libs/sdk-x.y.z.jar ingen path_to_opt dest_folder [amount] [json|xml] [version|composition] [withParticipations]
 ```
 
 1. amount: defines how many XML instances will be generated, default is 1
@@ -103,13 +103,13 @@ so if you want to validate a new instance, you need to put the OPT there first.
 Validate one instance:
 
 ```shell
-$ java -jar build/libs/opt-x.y.z.jar inval path_to_xml_or_json_instance [semantic]
+$ java -jar build/libs/sdk-x.y.z.jar inval path_to_xml_or_json_instance [semantic]
 ```
 
 Validate all instances in folder:
 
 ```shell
-$ java -jar build/libs/opt-x.y.z.jar inval path_to_folder_with_xml_or_json_instances [semantic]
+$ java -jar build/libs/sdk-x.y.z.jar inval path_to_folder_with_xml_or_json_instances [semantic]
 ```
 
 > Note: if the folder contains JSON and XML, it will validate both with the correct schema, but the files should have .json or .xml extensions for the mixed validation to work OK.
@@ -121,7 +121,7 @@ In both cases, the output is "file IS VALID" or the list of validation errors if
 ### trans opt: Transform an OPT in it's antive XML form to JSON
 
 ```shell
-$ java -jar build/libs/opt-x.y.z.jar trans opt path_to_opt destination_folder
+$ java -jar build/libs/sdk-x.y.z.jar trans opt path_to_opt destination_folder
 ```
 
 ### trans composition: Transform an COMPOSITION instances between canonical XML and JSON formats
@@ -129,12 +129,12 @@ $ java -jar build/libs/opt-x.y.z.jar trans opt path_to_opt destination_folder
 To transform a XML COMPOSITION to JSON:
 
 ```shell
-$ java -jar build/libs/opt-x.y.z.jar trans composition path_to_compo.xml destination_folder
+$ java -jar build/libs/sdk-x.y.z.jar trans composition path_to_compo.xml destination_folder
 ```
 To transform a JSON COMPOSITION to JSON:
 
 ```shell
-$ java -jar build/libs/opt-x.y.z.jar trans composition path_to_compo.json destination_folder
+$ java -jar build/libs/sdk-x.y.z.jar trans composition path_to_compo.json destination_folder
 ```
 
 > Note: the transformation of COMPOSITIONS between foramts relies on the file extension, only .xml or .json files are allowed.
@@ -145,7 +145,7 @@ $ java -jar build/libs/opt-x.y.z.jar trans composition path_to_compo.json destin
 This is a very important tool that allows you to generate a full blown Operational Template from a single ADL archetype. A common use case is for demographic archetypes to quickly test templates based on them, also for single archetype models like FOLDER and EHR_STATUS.
 
 ```shell
-$ java -jar build/libs/opt-x.y.z.jar adl2opt path_to_adl dest_path
+$ java -jar build/libs/sdk-x.y.z.jar adl2opt path_to_adl dest_path
 ```
 
 

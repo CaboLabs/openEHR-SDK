@@ -158,6 +158,38 @@
                                                                         ]
                                                                     }
                                                                 ]
+                                                            },
+                                                            {
+                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                "rm_attribute_name": "name",
+                                                                "children": [
+                                                                    {
+                                                                        "archetype_id": null,
+                                                                        "path": "/context/other_context[at0004]/item[at0005]/name",
+                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                        "rm_type_name": "DV_TEXT",
+                                                                        "node_id": null,
+                                                                        "text": "context coded text.name",
+                                                                        "description": "*.name",
+                                                                        "_class": "ObjectNode",
+                                                                        "attributes": [
+                                                                            
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "archetype_id": null,
+                                                                        "path": "/context/other_context[at0004]/item[at0005]/name",
+                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                        "node_id": null,
+                                                                        "text": "context coded text.name",
+                                                                        "description": "*.name",
+                                                                        "_class": "ObjectNode",
+                                                                        "attributes": [
+                                                                            
+                                                                        ]
+                                                                    }
+                                                                ]
                                                             }
                                                         ]
                                                     }
@@ -978,6 +1010,38 @@
                                                                                                         ]
                                                                                                     }
                                                                                                 ]
+                                                                                            },
+                                                                                            {
+                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                "rm_attribute_name": "name",
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "text.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "text.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
                                                                                             }
                                                                                         ]
                                                                                     },
@@ -1044,6 +1108,38 @@
                                                                                                         "node_id": null,
                                                                                                         "text": "coded text.null_flavour",
                                                                                                         "description": "*.null_flavour",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
+                                                                                            },
+                                                                                            {
+                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                "rm_attribute_name": "name",
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0005]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "coded text.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0005]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "coded text.name",
+                                                                                                        "description": "*.name",
                                                                                                         "_class": "ObjectNode",
                                                                                                         "attributes": [
                                                                                                             
@@ -1119,6 +1215,38 @@
                                                                                                         ]
                                                                                                     }
                                                                                                 ]
+                                                                                            },
+                                                                                            {
+                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                "rm_attribute_name": "name",
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0006]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "coded text terminology.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0006]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "coded text terminology.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
                                                                                             }
                                                                                         ]
                                                                                     },
@@ -1181,6 +1309,38 @@
                                                                                                         ]
                                                                                                     }
                                                                                                 ]
+                                                                                            },
+                                                                                            {
+                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                "rm_attribute_name": "name",
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0007]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "quantity.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0007]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "quantity.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
                                                                                             }
                                                                                         ]
                                                                                     },
@@ -1231,6 +1391,38 @@
                                                                                                         ]
                                                                                                     }
                                                                                                 ]
+                                                                                            },
+                                                                                            {
+                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                "rm_attribute_name": "name",
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0008]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "count.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0008]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "count.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
                                                                                             }
                                                                                         ]
                                                                                     },
@@ -1275,6 +1467,38 @@
                                                                                                         "node_id": null,
                                                                                                         "text": "date.null_flavour",
                                                                                                         "description": "*.null_flavour",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
+                                                                                            },
+                                                                                            {
+                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                "rm_attribute_name": "name",
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0009]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "date.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0009]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "date.name",
+                                                                                                        "description": "*.name",
                                                                                                         "_class": "ObjectNode",
                                                                                                         "attributes": [
                                                                                                             
@@ -1349,6 +1573,38 @@
                                                                                                         ]
                                                                                                     }
                                                                                                 ]
+                                                                                            },
+                                                                                            {
+                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                "rm_attribute_name": "name",
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0010]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "datetime.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0010]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "datetime.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
                                                                                             }
                                                                                         ]
                                                                                     },
@@ -1399,6 +1655,38 @@
                                                                                                         ]
                                                                                                     }
                                                                                                 ]
+                                                                                            },
+                                                                                            {
+                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                "rm_attribute_name": "name",
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0011]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "datetime any.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0011]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "datetime any.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
                                                                                             }
                                                                                         ]
                                                                                     },
@@ -1443,6 +1731,38 @@
                                                                                                         "node_id": null,
                                                                                                         "text": "time.null_flavour",
                                                                                                         "description": "*.null_flavour",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
+                                                                                            },
+                                                                                            {
+                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                "rm_attribute_name": "name",
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0012]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "time.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0012]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "time.name",
+                                                                                                        "description": "*.name",
                                                                                                         "_class": "ObjectNode",
                                                                                                         "attributes": [
                                                                                                             
@@ -1522,6 +1842,38 @@
                                                                                                         ]
                                                                                                     }
                                                                                                 ]
+                                                                                            },
+                                                                                            {
+                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                "rm_attribute_name": "name",
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0013]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "ordinal.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0013]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "ordinal.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
                                                                                             }
                                                                                         ]
                                                                                     },
@@ -1590,6 +1942,38 @@
                                                                                                         ]
                                                                                                     }
                                                                                                 ]
+                                                                                            },
+                                                                                            {
+                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                "rm_attribute_name": "name",
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0017]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "boolean.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0017]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "boolean.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
                                                                                             }
                                                                                         ]
                                                                                     },
@@ -1634,6 +2018,38 @@
                                                                                                         "node_id": null,
                                                                                                         "text": "duration any.null_flavour",
                                                                                                         "description": "*.null_flavour",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
+                                                                                            },
+                                                                                            {
+                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                "rm_attribute_name": "name",
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0018]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "duration any.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0018]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "duration any.name",
+                                                                                                        "description": "*.name",
                                                                                                         "_class": "ObjectNode",
                                                                                                         "attributes": [
                                                                                                             
@@ -1712,6 +2128,38 @@
                                                                                                         ]
                                                                                                     }
                                                                                                 ]
+                                                                                            },
+                                                                                            {
+                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                "rm_attribute_name": "name",
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0019]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "multimedia any.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0019]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "multimedia any.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
                                                                                             }
                                                                                         ]
                                                                                     },
@@ -1756,6 +2204,38 @@
                                                                                                         "node_id": null,
                                                                                                         "text": "parsable any.null_flavour",
                                                                                                         "description": "*.null_flavour",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
+                                                                                            },
+                                                                                            {
+                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                "rm_attribute_name": "name",
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0020]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "parsable any.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0020]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "parsable any.name",
+                                                                                                        "description": "*.name",
                                                                                                         "_class": "ObjectNode",
                                                                                                         "attributes": [
                                                                                                             
@@ -1812,6 +2292,38 @@
                                                                                                         ]
                                                                                                     }
                                                                                                 ]
+                                                                                            },
+                                                                                            {
+                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                "rm_attribute_name": "name",
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0021]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "identifier.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0021]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "identifier.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
                                                                                             }
                                                                                         ]
                                                                                     },
@@ -1862,7 +2374,71 @@
                                                                                                         ]
                                                                                                     }
                                                                                                 ]
+                                                                                            },
+                                                                                            {
+                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                "rm_attribute_name": "name",
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0022]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "proportion any.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/items[at0022]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "proportion any.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
                                                                                             }
+                                                                                        ]
+                                                                                    }
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                "rm_attribute_name": "name",
+                                                                                "children": [
+                                                                                    {
+                                                                                        "archetype_id": null,
+                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/name",
+                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                        "node_id": null,
+                                                                                        "text": "Arbol.name",
+                                                                                        "description": "@ internal @.name",
+                                                                                        "_class": "ObjectNode",
+                                                                                        "attributes": [
+                                                                                            
+                                                                                        ]
+                                                                                    },
+                                                                                    {
+                                                                                        "archetype_id": null,
+                                                                                        "path": "/data[at0001]/events[at0002]/data[at0003]/name",
+                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                        "node_id": null,
+                                                                                        "text": "Arbol.name",
+                                                                                        "description": "@ internal @.name",
+                                                                                        "_class": "ObjectNode",
+                                                                                        "attributes": [
+                                                                                            
                                                                                         ]
                                                                                     }
                                                                                 ]
@@ -1883,6 +2459,38 @@
                                                                         "node_id": null,
                                                                         "text": "Cualquier evento.time",
                                                                         "description": "*.time",
+                                                                        "_class": "ObjectNode",
+                                                                        "attributes": [
+                                                                            
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                "rm_attribute_name": "name",
+                                                                "children": [
+                                                                    {
+                                                                        "archetype_id": null,
+                                                                        "path": "/data[at0001]/events[at0002]/name",
+                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                        "rm_type_name": "DV_TEXT",
+                                                                        "node_id": null,
+                                                                        "text": "Cualquier evento.name",
+                                                                        "description": "*.name",
+                                                                        "_class": "ObjectNode",
+                                                                        "attributes": [
+                                                                            
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "archetype_id": null,
+                                                                        "path": "/data[at0001]/events[at0002]/name",
+                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                        "node_id": null,
+                                                                        "text": "Cualquier evento.name",
+                                                                        "description": "*.name",
                                                                         "_class": "ObjectNode",
                                                                         "attributes": [
                                                                             
@@ -1950,7 +2558,71 @@
                                                         ]
                                                     }
                                                 ]
+                                            },
+                                            {
+                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                "rm_attribute_name": "name",
+                                                "children": [
+                                                    {
+                                                        "archetype_id": null,
+                                                        "path": "/data[at0001]/name",
+                                                        "type": "C_COMPLEX_OBJECT",
+                                                        "rm_type_name": "DV_TEXT",
+                                                        "node_id": null,
+                                                        "text": "Event Series.name",
+                                                        "description": "@ internal @.name",
+                                                        "_class": "ObjectNode",
+                                                        "attributes": [
+                                                            
+                                                        ]
+                                                    },
+                                                    {
+                                                        "archetype_id": null,
+                                                        "path": "/data[at0001]/name",
+                                                        "type": "C_COMPLEX_OBJECT",
+                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                        "node_id": null,
+                                                        "text": "Event Series.name",
+                                                        "description": "@ internal @.name",
+                                                        "_class": "ObjectNode",
+                                                        "attributes": [
+                                                            
+                                                        ]
+                                                    }
+                                                ]
                                             }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "C_SINGLE_ATTRIBUTE",
+                                "rm_attribute_name": "name",
+                                "children": [
+                                    {
+                                        "archetype_id": null,
+                                        "path": "/name",
+                                        "type": "C_COMPLEX_OBJECT",
+                                        "rm_type_name": "DV_TEXT",
+                                        "node_id": null,
+                                        "text": "Test all types.name",
+                                        "description": "unknown.name",
+                                        "_class": "ObjectNode",
+                                        "attributes": [
+                                            
+                                        ]
+                                    },
+                                    {
+                                        "archetype_id": null,
+                                        "path": "/name",
+                                        "type": "C_COMPLEX_OBJECT",
+                                        "rm_type_name": "DV_CODED_TEXT",
+                                        "node_id": null,
+                                        "text": "Test all types.name",
+                                        "description": "unknown.name",
+                                        "_class": "ObjectNode",
+                                        "attributes": [
+                                            
                                         ]
                                     }
                                 ]
@@ -2026,6 +2698,38 @@
                                                                         "node_id": null,
                                                                         "text": "uri.null_flavour",
                                                                         "description": "*.null_flavour",
+                                                                        "_class": "ObjectNode",
+                                                                        "attributes": [
+                                                                            
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                "rm_attribute_name": "name",
+                                                                "children": [
+                                                                    {
+                                                                        "archetype_id": null,
+                                                                        "path": "/data[at0001]/items[at0002]/name",
+                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                        "rm_type_name": "DV_TEXT",
+                                                                        "node_id": null,
+                                                                        "text": "uri.name",
+                                                                        "description": "*.name",
+                                                                        "_class": "ObjectNode",
+                                                                        "attributes": [
+                                                                            
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "archetype_id": null,
+                                                                        "path": "/data[at0001]/items[at0002]/name",
+                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                        "node_id": null,
+                                                                        "text": "uri.name",
+                                                                        "description": "*.name",
                                                                         "_class": "ObjectNode",
                                                                         "attributes": [
                                                                             
@@ -2113,6 +2817,38 @@
                                                                         "node_id": null,
                                                                         "text": "interval count.null_flavour",
                                                                         "description": "*.null_flavour",
+                                                                        "_class": "ObjectNode",
+                                                                        "attributes": [
+                                                                            
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                "rm_attribute_name": "name",
+                                                                "children": [
+                                                                    {
+                                                                        "archetype_id": null,
+                                                                        "path": "/data[at0001]/items[at0003]/name",
+                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                        "rm_type_name": "DV_TEXT",
+                                                                        "node_id": null,
+                                                                        "text": "interval count.name",
+                                                                        "description": "*.name",
+                                                                        "_class": "ObjectNode",
+                                                                        "attributes": [
+                                                                            
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "archetype_id": null,
+                                                                        "path": "/data[at0001]/items[at0003]/name",
+                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                        "node_id": null,
+                                                                        "text": "interval count.name",
+                                                                        "description": "*.name",
                                                                         "_class": "ObjectNode",
                                                                         "attributes": [
                                                                             
@@ -2212,6 +2948,38 @@
                                                                         ]
                                                                     }
                                                                 ]
+                                                            },
+                                                            {
+                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                "rm_attribute_name": "name",
+                                                                "children": [
+                                                                    {
+                                                                        "archetype_id": null,
+                                                                        "path": "/data[at0001]/items[at0004]/name",
+                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                        "rm_type_name": "DV_TEXT",
+                                                                        "node_id": null,
+                                                                        "text": "interval quantity.name",
+                                                                        "description": "*.name",
+                                                                        "_class": "ObjectNode",
+                                                                        "attributes": [
+                                                                            
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "archetype_id": null,
+                                                                        "path": "/data[at0001]/items[at0004]/name",
+                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                        "node_id": null,
+                                                                        "text": "interval quantity.name",
+                                                                        "description": "*.name",
+                                                                        "_class": "ObjectNode",
+                                                                        "attributes": [
+                                                                            
+                                                                        ]
+                                                                    }
+                                                                ]
                                                             }
                                                         ]
                                                     },
@@ -2299,6 +3067,38 @@
                                                                         ]
                                                                     }
                                                                 ]
+                                                            },
+                                                            {
+                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                "rm_attribute_name": "name",
+                                                                "children": [
+                                                                    {
+                                                                        "archetype_id": null,
+                                                                        "path": "/data[at0001]/items[at0005]/name",
+                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                        "rm_type_name": "DV_TEXT",
+                                                                        "node_id": null,
+                                                                        "text": "interval datetime.name",
+                                                                        "description": "*.name",
+                                                                        "_class": "ObjectNode",
+                                                                        "attributes": [
+                                                                            
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "archetype_id": null,
+                                                                        "path": "/data[at0001]/items[at0005]/name",
+                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                        "node_id": null,
+                                                                        "text": "interval datetime.name",
+                                                                        "description": "*.name",
+                                                                        "_class": "ObjectNode",
+                                                                        "attributes": [
+                                                                            
+                                                                        ]
+                                                                    }
+                                                                ]
                                                             }
                                                         ]
                                                     },
@@ -2368,6 +3168,38 @@
                                                                         "node_id": null,
                                                                         "text": "choice.null_flavour",
                                                                         "description": "*.null_flavour",
+                                                                        "_class": "ObjectNode",
+                                                                        "attributes": [
+                                                                            
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                "rm_attribute_name": "name",
+                                                                "children": [
+                                                                    {
+                                                                        "archetype_id": null,
+                                                                        "path": "/data[at0001]/items[at0009]/name",
+                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                        "rm_type_name": "DV_TEXT",
+                                                                        "node_id": null,
+                                                                        "text": "choice.name",
+                                                                        "description": "*.name",
+                                                                        "_class": "ObjectNode",
+                                                                        "attributes": [
+                                                                            
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "archetype_id": null,
+                                                                        "path": "/data[at0001]/items[at0009]/name",
+                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                        "node_id": null,
+                                                                        "text": "choice.name",
+                                                                        "description": "*.name",
                                                                         "_class": "ObjectNode",
                                                                         "attributes": [
                                                                             
@@ -2466,7 +3298,71 @@
                                                                                                                         ]
                                                                                                                     }
                                                                                                                 ]
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                                "rm_attribute_name": "name",
+                                                                                                                "children": [
+                                                                                                                    {
+                                                                                                                        "archetype_id": null,
+                                                                                                                        "path": "/data[at0001]/items[at0006]/items[at0007]/items[at0008]/items[at0010]/name",
+                                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                                        "node_id": null,
+                                                                                                                        "text": "text 2.name",
+                                                                                                                        "description": "*.name",
+                                                                                                                        "_class": "ObjectNode",
+                                                                                                                        "attributes": [
+                                                                                                                            
+                                                                                                                        ]
+                                                                                                                    },
+                                                                                                                    {
+                                                                                                                        "archetype_id": null,
+                                                                                                                        "path": "/data[at0001]/items[at0006]/items[at0007]/items[at0008]/items[at0010]/name",
+                                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                                        "node_id": null,
+                                                                                                                        "text": "text 2.name",
+                                                                                                                        "description": "*.name",
+                                                                                                                        "_class": "ObjectNode",
+                                                                                                                        "attributes": [
+                                                                                                                            
+                                                                                                                        ]
+                                                                                                                    }
+                                                                                                                ]
                                                                                                             }
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
+                                                                                            },
+                                                                                            {
+                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                "rm_attribute_name": "name",
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/items[at0006]/items[at0007]/items[at0008]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "cluster 3.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/items[at0006]/items[at0007]/items[at0008]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "cluster 3.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
                                                                                                         ]
                                                                                                     }
                                                                                                 ]
@@ -2474,7 +3370,71 @@
                                                                                         ]
                                                                                     }
                                                                                 ]
+                                                                            },
+                                                                            {
+                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                "rm_attribute_name": "name",
+                                                                                "children": [
+                                                                                    {
+                                                                                        "archetype_id": null,
+                                                                                        "path": "/data[at0001]/items[at0006]/items[at0007]/name",
+                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                        "node_id": null,
+                                                                                        "text": "cluster 2.name",
+                                                                                        "description": "*.name",
+                                                                                        "_class": "ObjectNode",
+                                                                                        "attributes": [
+                                                                                            
+                                                                                        ]
+                                                                                    },
+                                                                                    {
+                                                                                        "archetype_id": null,
+                                                                                        "path": "/data[at0001]/items[at0006]/items[at0007]/name",
+                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                        "node_id": null,
+                                                                                        "text": "cluster 2.name",
+                                                                                        "description": "*.name",
+                                                                                        "_class": "ObjectNode",
+                                                                                        "attributes": [
+                                                                                            
+                                                                                        ]
+                                                                                    }
+                                                                                ]
                                                                             }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                "rm_attribute_name": "name",
+                                                                "children": [
+                                                                    {
+                                                                        "archetype_id": null,
+                                                                        "path": "/data[at0001]/items[at0006]/name",
+                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                        "rm_type_name": "DV_TEXT",
+                                                                        "node_id": null,
+                                                                        "text": "cluster 1.name",
+                                                                        "description": "*.name",
+                                                                        "_class": "ObjectNode",
+                                                                        "attributes": [
+                                                                            
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "archetype_id": null,
+                                                                        "path": "/data[at0001]/items[at0006]/name",
+                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                        "node_id": null,
+                                                                        "text": "cluster 1.name",
+                                                                        "description": "*.name",
+                                                                        "_class": "ObjectNode",
+                                                                        "attributes": [
+                                                                            
                                                                         ]
                                                                     }
                                                                 ]
@@ -2482,7 +3442,71 @@
                                                         ]
                                                     }
                                                 ]
+                                            },
+                                            {
+                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                "rm_attribute_name": "name",
+                                                "children": [
+                                                    {
+                                                        "archetype_id": null,
+                                                        "path": "/data[at0001]/name",
+                                                        "type": "C_COMPLEX_OBJECT",
+                                                        "rm_type_name": "DV_TEXT",
+                                                        "node_id": null,
+                                                        "text": "Arbol.name",
+                                                        "description": "@ internal @.name",
+                                                        "_class": "ObjectNode",
+                                                        "attributes": [
+                                                            
+                                                        ]
+                                                    },
+                                                    {
+                                                        "archetype_id": null,
+                                                        "path": "/data[at0001]/name",
+                                                        "type": "C_COMPLEX_OBJECT",
+                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                        "node_id": null,
+                                                        "text": "Arbol.name",
+                                                        "description": "@ internal @.name",
+                                                        "_class": "ObjectNode",
+                                                        "attributes": [
+                                                            
+                                                        ]
+                                                    }
+                                                ]
                                             }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "C_SINGLE_ATTRIBUTE",
+                                "rm_attribute_name": "name",
+                                "children": [
+                                    {
+                                        "archetype_id": null,
+                                        "path": "/name",
+                                        "type": "C_COMPLEX_OBJECT",
+                                        "rm_type_name": "DV_TEXT",
+                                        "node_id": null,
+                                        "text": "Test all types.name",
+                                        "description": "unknown.name",
+                                        "_class": "ObjectNode",
+                                        "attributes": [
+                                            
+                                        ]
+                                    },
+                                    {
+                                        "archetype_id": null,
+                                        "path": "/name",
+                                        "type": "C_COMPLEX_OBJECT",
+                                        "rm_type_name": "DV_CODED_TEXT",
+                                        "node_id": null,
+                                        "text": "Test all types.name",
+                                        "description": "unknown.name",
+                                        "_class": "ObjectNode",
+                                        "attributes": [
+                                            
                                         ]
                                     }
                                 ]
@@ -2657,6 +3681,38 @@
                                                                                                                                         ]
                                                                                                                                     }
                                                                                                                                 ]
+                                                                                                                            },
+                                                                                                                            {
+                                                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                                                "rm_attribute_name": "name",
+                                                                                                                                "children": [
+                                                                                                                                    {
+                                                                                                                                        "archetype_id": null,
+                                                                                                                                        "path": "/activities[at0001]/description[at0002]/items[at0003]/name",
+                                                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                                                        "node_id": null,
+                                                                                                                                        "text": "partial date.name",
+                                                                                                                                        "description": "*.name",
+                                                                                                                                        "_class": "ObjectNode",
+                                                                                                                                        "attributes": [
+                                                                                                                                            
+                                                                                                                                        ]
+                                                                                                                                    },
+                                                                                                                                    {
+                                                                                                                                        "archetype_id": null,
+                                                                                                                                        "path": "/activities[at0001]/description[at0002]/items[at0003]/name",
+                                                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                                                        "node_id": null,
+                                                                                                                                        "text": "partial date.name",
+                                                                                                                                        "description": "*.name",
+                                                                                                                                        "_class": "ObjectNode",
+                                                                                                                                        "attributes": [
+                                                                                                                                            
+                                                                                                                                        ]
+                                                                                                                                    }
+                                                                                                                                ]
                                                                                                                             }
                                                                                                                         ]
                                                                                                                     },
@@ -2725,6 +3781,38 @@
                                                                                                                                         ]
                                                                                                                                     }
                                                                                                                                 ]
+                                                                                                                            },
+                                                                                                                            {
+                                                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                                                "rm_attribute_name": "name",
+                                                                                                                                "children": [
+                                                                                                                                    {
+                                                                                                                                        "archetype_id": null,
+                                                                                                                                        "path": "/activities[at0001]/description[at0002]/items[at0004]/name",
+                                                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                                                        "node_id": null,
+                                                                                                                                        "text": "partial datetime.name",
+                                                                                                                                        "description": "*.name",
+                                                                                                                                        "_class": "ObjectNode",
+                                                                                                                                        "attributes": [
+                                                                                                                                            
+                                                                                                                                        ]
+                                                                                                                                    },
+                                                                                                                                    {
+                                                                                                                                        "archetype_id": null,
+                                                                                                                                        "path": "/activities[at0001]/description[at0002]/items[at0004]/name",
+                                                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                                                        "node_id": null,
+                                                                                                                                        "text": "partial datetime.name",
+                                                                                                                                        "description": "*.name",
+                                                                                                                                        "_class": "ObjectNode",
+                                                                                                                                        "attributes": [
+                                                                                                                                            
+                                                                                                                                        ]
+                                                                                                                                    }
+                                                                                                                                ]
                                                                                                                             }
                                                                                                                         ]
                                                                                                                     }
@@ -2746,6 +3834,38 @@
                                                                                                         "node_id": null,
                                                                                                         "text": "Current Activity.timing",
                                                                                                         "description": "Current Activity.timing",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
+                                                                                            },
+                                                                                            {
+                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                "rm_attribute_name": "name",
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/activities[at0001]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "Current Activity.name",
+                                                                                                        "description": "Current Activity.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/activities[at0001]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "Current Activity.name",
+                                                                                                        "description": "Current Activity.name",
                                                                                                         "_class": "ObjectNode",
                                                                                                         "attributes": [
                                                                                                             
@@ -2788,6 +3908,38 @@
                                                                                         "node_id": null,
                                                                                         "text": "Test all types.expiry_time",
                                                                                         "description": "unknown.expiry_time",
+                                                                                        "_class": "ObjectNode",
+                                                                                        "attributes": [
+                                                                                            
+                                                                                        ]
+                                                                                    }
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                "rm_attribute_name": "name",
+                                                                                "children": [
+                                                                                    {
+                                                                                        "archetype_id": null,
+                                                                                        "path": "/name",
+                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                        "node_id": null,
+                                                                                        "text": "Test all types.name",
+                                                                                        "description": "unknown.name",
+                                                                                        "_class": "ObjectNode",
+                                                                                        "attributes": [
+                                                                                            
+                                                                                        ]
+                                                                                    },
+                                                                                    {
+                                                                                        "archetype_id": null,
+                                                                                        "path": "/name",
+                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                        "node_id": null,
+                                                                                        "text": "Test all types.name",
+                                                                                        "description": "unknown.name",
                                                                                         "_class": "ObjectNode",
                                                                                         "attributes": [
                                                                                             
@@ -3220,7 +4372,71 @@
                                                                                                                                                                         ]
                                                                                                                                                                     }
                                                                                                                                                                 ]
+                                                                                                                                                            },
+                                                                                                                                                            {
+                                                                                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                                                                                "rm_attribute_name": "name",
+                                                                                                                                                                "children": [
+                                                                                                                                                                    {
+                                                                                                                                                                        "archetype_id": null,
+                                                                                                                                                                        "path": "/items[at0001]/items[at0002]/items[at0003]/name",
+                                                                                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                                                                                        "node_id": null,
+                                                                                                                                                                        "text": "boolean 2.name",
+                                                                                                                                                                        "description": "*.name",
+                                                                                                                                                                        "_class": "ObjectNode",
+                                                                                                                                                                        "attributes": [
+                                                                                                                                                                            
+                                                                                                                                                                        ]
+                                                                                                                                                                    },
+                                                                                                                                                                    {
+                                                                                                                                                                        "archetype_id": null,
+                                                                                                                                                                        "path": "/items[at0001]/items[at0002]/items[at0003]/name",
+                                                                                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                                                                                        "node_id": null,
+                                                                                                                                                                        "text": "boolean 2.name",
+                                                                                                                                                                        "description": "*.name",
+                                                                                                                                                                        "_class": "ObjectNode",
+                                                                                                                                                                        "attributes": [
+                                                                                                                                                                            
+                                                                                                                                                                        ]
+                                                                                                                                                                    }
+                                                                                                                                                                ]
                                                                                                                                                             }
+                                                                                                                                                        ]
+                                                                                                                                                    }
+                                                                                                                                                ]
+                                                                                                                                            },
+                                                                                                                                            {
+                                                                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                                                                "rm_attribute_name": "name",
+                                                                                                                                                "children": [
+                                                                                                                                                    {
+                                                                                                                                                        "archetype_id": null,
+                                                                                                                                                        "path": "/items[at0001]/items[at0002]/name",
+                                                                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                                                                        "node_id": null,
+                                                                                                                                                        "text": "cluster 6.name",
+                                                                                                                                                        "description": "*.name",
+                                                                                                                                                        "_class": "ObjectNode",
+                                                                                                                                                        "attributes": [
+                                                                                                                                                            
+                                                                                                                                                        ]
+                                                                                                                                                    },
+                                                                                                                                                    {
+                                                                                                                                                        "archetype_id": null,
+                                                                                                                                                        "path": "/items[at0001]/items[at0002]/name",
+                                                                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                                                                        "node_id": null,
+                                                                                                                                                        "text": "cluster 6.name",
+                                                                                                                                                        "description": "*.name",
+                                                                                                                                                        "_class": "ObjectNode",
+                                                                                                                                                        "attributes": [
+                                                                                                                                                            
                                                                                                                                                         ]
                                                                                                                                                     }
                                                                                                                                                 ]
@@ -3228,11 +4444,107 @@
                                                                                                                                         ]
                                                                                                                                     }
                                                                                                                                 ]
+                                                                                                                            },
+                                                                                                                            {
+                                                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                                                "rm_attribute_name": "name",
+                                                                                                                                "children": [
+                                                                                                                                    {
+                                                                                                                                        "archetype_id": null,
+                                                                                                                                        "path": "/items[at0001]/name",
+                                                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                                                        "node_id": null,
+                                                                                                                                        "text": "cluster 5.name",
+                                                                                                                                        "description": "*.name",
+                                                                                                                                        "_class": "ObjectNode",
+                                                                                                                                        "attributes": [
+                                                                                                                                            
+                                                                                                                                        ]
+                                                                                                                                    },
+                                                                                                                                    {
+                                                                                                                                        "archetype_id": null,
+                                                                                                                                        "path": "/items[at0001]/name",
+                                                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                                                        "node_id": null,
+                                                                                                                                        "text": "cluster 5.name",
+                                                                                                                                        "description": "*.name",
+                                                                                                                                        "_class": "ObjectNode",
+                                                                                                                                        "attributes": [
+                                                                                                                                            
+                                                                                                                                        ]
+                                                                                                                                    }
+                                                                                                                                ]
                                                                                                                             }
                                                                                                                         ]
                                                                                                                     }
                                                                                                                 ]
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                                "rm_attribute_name": "name",
+                                                                                                                "children": [
+                                                                                                                    {
+                                                                                                                        "archetype_id": null,
+                                                                                                                        "path": "/name",
+                                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                                        "node_id": null,
+                                                                                                                        "text": "Test all types.name",
+                                                                                                                        "description": "unknown.name",
+                                                                                                                        "_class": "ObjectNode",
+                                                                                                                        "attributes": [
+                                                                                                                            
+                                                                                                                        ]
+                                                                                                                    },
+                                                                                                                    {
+                                                                                                                        "archetype_id": null,
+                                                                                                                        "path": "/name",
+                                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                                        "node_id": null,
+                                                                                                                        "text": "Test all types.name",
+                                                                                                                        "description": "unknown.name",
+                                                                                                                        "_class": "ObjectNode",
+                                                                                                                        "attributes": [
+                                                                                                                            
+                                                                                                                        ]
+                                                                                                                    }
+                                                                                                                ]
                                                                                                             }
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
+                                                                                            },
+                                                                                            {
+                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                "rm_attribute_name": "name",
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/description[at0001]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "Arbol.name",
+                                                                                                        "description": "@ internal @.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/description[at0001]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "Arbol.name",
+                                                                                                        "description": "@ internal @.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
                                                                                                         ]
                                                                                                     }
                                                                                                 ]
@@ -3376,7 +4688,71 @@
                                                                                         ]
                                                                                     }
                                                                                 ]
+                                                                            },
+                                                                            {
+                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                "rm_attribute_name": "name",
+                                                                                "children": [
+                                                                                    {
+                                                                                        "archetype_id": null,
+                                                                                        "path": "/name",
+                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                        "node_id": null,
+                                                                                        "text": "Test all types.name",
+                                                                                        "description": "unknown.name",
+                                                                                        "_class": "ObjectNode",
+                                                                                        "attributes": [
+                                                                                            
+                                                                                        ]
+                                                                                    },
+                                                                                    {
+                                                                                        "archetype_id": null,
+                                                                                        "path": "/name",
+                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                        "node_id": null,
+                                                                                        "text": "Test all types.name",
+                                                                                        "description": "unknown.name",
+                                                                                        "_class": "ObjectNode",
+                                                                                        "attributes": [
+                                                                                            
+                                                                                        ]
+                                                                                    }
+                                                                                ]
                                                                             }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                "rm_attribute_name": "name",
+                                                                "children": [
+                                                                    {
+                                                                        "archetype_id": null,
+                                                                        "path": "/items[at0001]/items[at0002]/name",
+                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                        "rm_type_name": "DV_TEXT",
+                                                                        "node_id": null,
+                                                                        "text": "section 3.name",
+                                                                        "description": "*.name",
+                                                                        "_class": "ObjectNode",
+                                                                        "attributes": [
+                                                                            
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "archetype_id": null,
+                                                                        "path": "/items[at0001]/items[at0002]/name",
+                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                        "node_id": null,
+                                                                        "text": "section 3.name",
+                                                                        "description": "*.name",
+                                                                        "_class": "ObjectNode",
+                                                                        "attributes": [
+                                                                            
                                                                         ]
                                                                     }
                                                                 ]
@@ -3458,6 +4834,38 @@
                                                                                                         ]
                                                                                                     }
                                                                                                 ]
+                                                                                            },
+                                                                                            {
+                                                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                                                "rm_attribute_name": "name",
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/item[at0002]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "count 3.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "archetype_id": null,
+                                                                                                        "path": "/data[at0001]/item[at0002]/name",
+                                                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                                                        "node_id": null,
+                                                                                                        "text": "count 3.name",
+                                                                                                        "description": "*.name",
+                                                                                                        "_class": "ObjectNode",
+                                                                                                        "attributes": [
+                                                                                                            
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
                                                                                             }
                                                                                         ]
                                                                                     }
@@ -3466,11 +4874,107 @@
                                                                         ]
                                                                     }
                                                                 ]
+                                                            },
+                                                            {
+                                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                                "rm_attribute_name": "name",
+                                                                "children": [
+                                                                    {
+                                                                        "archetype_id": null,
+                                                                        "path": "/name",
+                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                        "rm_type_name": "DV_TEXT",
+                                                                        "node_id": null,
+                                                                        "text": "Test all types.name",
+                                                                        "description": "unknown.name",
+                                                                        "_class": "ObjectNode",
+                                                                        "attributes": [
+                                                                            
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "archetype_id": null,
+                                                                        "path": "/name",
+                                                                        "type": "C_COMPLEX_OBJECT",
+                                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                                        "node_id": null,
+                                                                        "text": "Test all types.name",
+                                                                        "description": "unknown.name",
+                                                                        "_class": "ObjectNode",
+                                                                        "attributes": [
+                                                                            
+                                                                        ]
+                                                                    }
+                                                                ]
                                                             }
                                                         ]
                                                     }
                                                 ]
+                                            },
+                                            {
+                                                "type": "C_SINGLE_ATTRIBUTE",
+                                                "rm_attribute_name": "name",
+                                                "children": [
+                                                    {
+                                                        "archetype_id": null,
+                                                        "path": "/items[at0001]/name",
+                                                        "type": "C_COMPLEX_OBJECT",
+                                                        "rm_type_name": "DV_TEXT",
+                                                        "node_id": null,
+                                                        "text": "section 2.name",
+                                                        "description": "*.name",
+                                                        "_class": "ObjectNode",
+                                                        "attributes": [
+                                                            
+                                                        ]
+                                                    },
+                                                    {
+                                                        "archetype_id": null,
+                                                        "path": "/items[at0001]/name",
+                                                        "type": "C_COMPLEX_OBJECT",
+                                                        "rm_type_name": "DV_CODED_TEXT",
+                                                        "node_id": null,
+                                                        "text": "section 2.name",
+                                                        "description": "*.name",
+                                                        "_class": "ObjectNode",
+                                                        "attributes": [
+                                                            
+                                                        ]
+                                                    }
+                                                ]
                                             }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "C_SINGLE_ATTRIBUTE",
+                                "rm_attribute_name": "name",
+                                "children": [
+                                    {
+                                        "archetype_id": null,
+                                        "path": "/name",
+                                        "type": "C_COMPLEX_OBJECT",
+                                        "rm_type_name": "DV_TEXT",
+                                        "node_id": null,
+                                        "text": "Test all types.name",
+                                        "description": "unknown.name",
+                                        "_class": "ObjectNode",
+                                        "attributes": [
+                                            
+                                        ]
+                                    },
+                                    {
+                                        "archetype_id": null,
+                                        "path": "/name",
+                                        "type": "C_COMPLEX_OBJECT",
+                                        "rm_type_name": "DV_CODED_TEXT",
+                                        "node_id": null,
+                                        "text": "Test all types.name",
+                                        "description": "unknown.name",
+                                        "_class": "ObjectNode",
+                                        "attributes": [
+                                            
                                         ]
                                     }
                                 ]
@@ -4024,6 +5528,38 @@
                                     }
                                 ]
                             }
+                        ]
+                    }
+                ]
+            },
+            {
+                "type": "C_SINGLE_ATTRIBUTE",
+                "rm_attribute_name": "name",
+                "children": [
+                    {
+                        "archetype_id": null,
+                        "path": "/name",
+                        "type": "C_COMPLEX_OBJECT",
+                        "rm_type_name": "DV_TEXT",
+                        "node_id": null,
+                        "text": "Test all types.name",
+                        "description": "unknown.name",
+                        "_class": "ObjectNode",
+                        "attributes": [
+                            
+                        ]
+                    },
+                    {
+                        "archetype_id": null,
+                        "path": "/name",
+                        "type": "C_COMPLEX_OBJECT",
+                        "rm_type_name": "DV_CODED_TEXT",
+                        "node_id": null,
+                        "text": "Test all types.name",
+                        "description": "unknown.name",
+                        "_class": "ObjectNode",
+                        "attributes": [
+                            
                         ]
                     }
                 ]
