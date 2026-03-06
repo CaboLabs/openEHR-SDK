@@ -335,8 +335,7 @@
     "definitions": {
         "VERSION_STATUS": {
             "type": "object",
-            "required": [
-            ],
+            "required": [],
             "properties": {
                 "_type": {
                     "type": "string",
@@ -752,8 +751,7 @@
         },
         "EXTRACT_MANIFEST": {
             "type": "object",
-            "required": [
-            ],
+            "required": [],
             "properties": {
                 "entities": {
                     "type": "array",
@@ -3668,7 +3666,6 @@
                                     }
                                 }
                             },
-
                             {
                                 "if": {
                                     "properties": {
@@ -4497,7 +4494,8 @@
                     "$ref": "#/definitions/TERMINOLOGY_ID"
                 },
                 "code_string": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1
                 },
                 "_type": {
                     "type": "string",
@@ -5137,8 +5135,7 @@
         },
         "SET": {
             "type": "object",
-            "required": [
-            ],
+            "required": [],
             "properties": {
                 "_type": {
                     "type": "string",
@@ -5432,8 +5429,7 @@
         },
         "URI": {
             "type": "object",
-            "required": [
-            ],
+            "required": [],
             "properties": {
                 "_type": {
                     "type": "string",
@@ -6965,8 +6961,7 @@
         },
         "PARTY_SELF": {
             "type": "object",
-            "required": [
-            ],
+            "required": [],
             "properties": {
                 "external_ref": {
                     "$ref": "#/definitions/PARTY_REF"
@@ -8318,8 +8313,7 @@
         },
         "DURATION": {
             "type": "object",
-            "required": [
-            ],
+            "required": [],
             "properties": {
                 "value": {
                     "type": "string"
@@ -8910,8 +8904,7 @@
         },
         "ARRAY": {
             "type": "object",
-            "required": [
-            ],
+            "required": [],
             "properties": {
                 "_type": {
                     "type": "string",
@@ -10344,8 +10337,7 @@
         },
         "VALIDITY_KIND": {
             "type": "object",
-            "required": [
-            ],
+            "required": [],
             "properties": {
                 "_type": {
                     "type": "string",
@@ -11437,8 +11429,7 @@
         },
         "DATE": {
             "type": "object",
-            "required": [
-            ],
+            "required": [],
             "properties": {
                 "value": {
                     "type": "string"
@@ -12327,7 +12318,8 @@
             ],
             "properties": {
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1
                 },
                 "hyperlink": {
                     "allOf": [
@@ -12480,8 +12472,7 @@
         },
         "DATE_TIME": {
             "type": "object",
-            "required": [
-            ],
+            "required": [],
             "properties": {
                 "value": {
                     "type": "string"
@@ -12704,8 +12695,7 @@
         },
         "LIST": {
             "type": "object",
-            "required": [
-            ],
+            "required": [],
             "properties": {
                 "_type": {
                     "type": "string",
@@ -12847,8 +12837,7 @@
         },
         "DV_EHR_URI": {
             "type": "object",
-            "required": [
-            ],
+            "required": [],
             "properties": {
                 "value": {
                     "type": "string",
@@ -13442,8 +13431,7 @@
         },
         "PARTY_IDENTIFIED": {
             "type": "object",
-            "required": [
-            ],
+            "required": [],
             "properties": {
                 "external_ref": {
                     "$ref": "#/definitions/PARTY_REF"
@@ -13599,8 +13587,7 @@
                 },
                 "item": {
                     "allOf": [
-                        {
-                        },
+                        {},
                         {
                             "if": {
                                 "properties": {
@@ -14755,8 +14742,7 @@
         },
         "TIME": {
             "type": "object",
-            "required": [
-            ],
+            "required": [],
             "properties": {
                 "value": {
                     "type": "string"
@@ -14917,8 +14903,7 @@
         },
         "DV_URI": {
             "type": "object",
-            "required": [
-            ],
+            "required": [],
             "properties": {
                 "value": {
                     "type": "string",
@@ -14938,7 +14923,8 @@
             ],
             "properties": {
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1
                 },
                 "hyperlink": {
                     "allOf": [

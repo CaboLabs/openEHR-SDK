@@ -741,8 +741,7 @@
         },
         "EXTRACT_MANIFEST": {
             "type": "object",
-            "required": [
-            ],
+            "required": [],
             "properties": {
                 "entities": {
                     "type": "array",
@@ -4487,7 +4486,8 @@
                     "$ref": "#/definitions/TERMINOLOGY_ID"
                 },
                 "code_string": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1
                 },
                 "_type": {
                     "type": "string",
@@ -5127,8 +5127,7 @@
         },
         "SET": {
             "type": "object",
-            "required": [
-            ],
+            "required": [],
             "properties": {
                 "_type": {
                     "type": "string",
@@ -6921,8 +6920,7 @@
         },
         "PARTY_SELF": {
             "type": "object",
-            "required": [
-            ],
+            "required": [],
             "properties": {
                 "external_ref": {
                     "$ref": "#/definitions/PARTY_REF"
@@ -8850,8 +8848,7 @@
         },
         "ARRAY": {
             "type": "object",
-            "required": [
-            ],
+            "required": [],
             "properties": {
                 "_type": {
                     "type": "string",
@@ -12242,7 +12239,8 @@
             ],
             "properties": {
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1
                 },
                 "hyperlink": {
                     "allOf": [
@@ -12603,8 +12601,7 @@
         },
         "LIST": {
             "type": "object",
-            "required": [
-            ],
+            "required": [],
             "properties": {
                 "_type": {
                     "type": "string",
@@ -13322,8 +13319,7 @@
         },
         "PARTY_IDENTIFIED": {
             "type": "object",
-            "required": [
-            ],
+            "required": [],
             "properties": {
                 "external_ref": {
                     "$ref": "#/definitions/PARTY_REF"
@@ -13479,8 +13475,7 @@
                 },
                 "item": {
                     "allOf": [
-                        {
-                        },
+                        {},
                         {
                             "if": {
                                 "properties": {
@@ -14803,7 +14798,8 @@
             ],
             "properties": {
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1
                 },
                 "hyperlink": {
                     "allOf": [
