@@ -379,7 +379,11 @@
             ],
             "properties": {
                 "system_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "time_committed": {
                     "$ref": "#/definitions/DV_DATE_TIME"
@@ -457,7 +461,11 @@
                                         "PARTY_SELF",
                                         "PARTY_IDENTIFIED",
                                         "PARTY_RELATED"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -513,7 +521,11 @@
             ],
             "properties": {
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
@@ -740,7 +752,11 @@
                     "$ref": "#/definitions/DV_DURATION"
                 },
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
@@ -865,7 +881,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -896,7 +916,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -982,7 +1006,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -1057,10 +1085,18 @@
                     "$ref": "#/definitions/CODE_PHRASE"
                 },
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "formalism": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
@@ -1104,7 +1140,11 @@
             ],
             "properties": {
                 "performer": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "function": {
                     "allOf": [
@@ -1239,7 +1279,11 @@
                     "$ref": "#/definitions/DV_DURATION"
                 },
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
@@ -1277,7 +1321,11 @@
                     "type": "boolean"
                 },
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
@@ -1306,7 +1354,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -1337,7 +1389,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -1423,7 +1479,11 @@
                                         "enum": [
                                             "CLUSTER",
                                             "ELEMENT"
-                                        ]
+                                        ],
+                                        "minLength": 1,
+                                        "not": {
+                                            "type": "null"
+                                        }
                                     }
                                 }
                             },
@@ -1498,7 +1558,11 @@
             ],
             "properties": {
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
@@ -1526,7 +1590,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -1557,7 +1625,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -1644,7 +1716,11 @@
                                             "EXTRACT_FOLDER",
                                             "GENERIC_CONTENT_ITEM",
                                             "OPENEHR_CONTENT_ITEM"
-                                        ]
+                                        ],
+                                        "minLength": 1,
+                                        "not": {
+                                            "type": "null"
+                                        }
                                     }
                                 }
                             },
@@ -1717,7 +1793,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -1748,7 +1828,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -1839,7 +1923,11 @@
                                         "PARTY_SELF",
                                         "PARTY_IDENTIFIED",
                                         "PARTY_RELATED"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -1894,7 +1982,11 @@
                                         "PARTY_SELF",
                                         "PARTY_IDENTIFIED",
                                         "PARTY_RELATED"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -2045,7 +2137,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -2284,7 +2380,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -2315,7 +2415,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -2402,7 +2506,11 @@
                                             "EXTRACT_FOLDER",
                                             "GENERIC_CONTENT_ITEM",
                                             "OPENEHR_CONTENT_ITEM"
-                                        ]
+                                        ],
+                                        "minLength": 1,
+                                        "not": {
+                                            "type": "null"
+                                        }
                                     }
                                 }
                             },
@@ -2473,7 +2581,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -2504,7 +2616,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -2590,7 +2706,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -2766,7 +2886,11 @@
                     }
                 },
                 "lifecycle_state": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "resource_package_uri": {
                     "type": "string"
@@ -2799,10 +2923,18 @@
             ],
             "properties": {
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "scheme": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
@@ -2834,7 +2966,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -2865,7 +3001,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -2956,7 +3096,11 @@
                                         "PARTY_SELF",
                                         "PARTY_IDENTIFIED",
                                         "PARTY_RELATED"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -3011,7 +3155,11 @@
                                         "PARTY_SELF",
                                         "PARTY_IDENTIFIED",
                                         "PARTY_RELATED"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -3162,7 +3310,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -3319,7 +3471,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -3400,7 +3556,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -3431,7 +3591,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -3517,7 +3681,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -3662,7 +3830,11 @@
                                         "enum": [
                                             "ORIGINAL_VERSION",
                                             "IMPORTED_VERSION"
-                                        ]
+                                        ],
+                                        "minLength": 1,
+                                        "not": {
+                                            "type": "null"
+                                        }
                                     }
                                 }
                             },
@@ -3720,7 +3892,11 @@
                     "$ref": "#/definitions/TEMPLATE_ID"
                 },
                 "rm_version": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
@@ -3736,7 +3912,11 @@
             ],
             "properties": {
                 "system_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "location": {
                     "allOf": [
@@ -3865,7 +4045,11 @@
                                         "PARTY_SELF",
                                         "PARTY_IDENTIFIED",
                                         "PARTY_RELATED"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -4080,7 +4264,11 @@
                                         "GROUP",
                                         "ORGANISATION",
                                         "PERSON"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -4234,7 +4422,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -4265,7 +4457,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -4354,7 +4550,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -4422,7 +4622,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -4495,7 +4699,10 @@
                 },
                 "code_string": {
                     "type": "string",
-                    "minLength": 1
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
@@ -4528,7 +4735,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -4583,7 +4794,11 @@
                     ]
                 },
                 "activity_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
@@ -4684,7 +4899,11 @@
                     "$ref": "#/definitions/HIER_OBJECT_ID"
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -4799,7 +5018,11 @@
                                     "enum": [
                                         "DV_PARSABLE",
                                         "DV_MULTIMEDIA"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -4939,7 +5162,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -5020,7 +5247,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -5051,7 +5282,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -5224,7 +5459,11 @@
                     "type": "number"
                 },
                 "units": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "precision": {
                     "type": "integer"
@@ -5457,7 +5696,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -5488,7 +5731,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -5583,7 +5830,11 @@
             ],
             "properties": {
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
@@ -5601,13 +5852,21 @@
             ],
             "properties": {
                 "terminology_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "terminology_version": {
                     "type": "string"
                 },
                 "code_string": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "uri": {
                     "$ref": "#/definitions/URI"
@@ -5638,7 +5897,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -5669,7 +5932,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -5755,7 +6022,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -5878,7 +6149,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -5909,7 +6184,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -5995,7 +6274,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -6173,7 +6456,11 @@
                                         "PARTY_SELF",
                                         "PARTY_IDENTIFIED",
                                         "PARTY_RELATED"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -6284,7 +6571,11 @@
                                     "enum": [
                                         "SYNC_EXTRACT",
                                         "SYNC_EXTRACT_REQUEST"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -6345,7 +6636,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -6376,7 +6671,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -6462,7 +6761,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -6626,7 +6929,11 @@
             ],
             "properties": {
                 "extract_id_key": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "ehr_id": {
                     "type": "string"
@@ -6788,7 +7095,11 @@
                     "$ref": "#/definitions/HIER_OBJECT_ID"
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -7272,7 +7583,11 @@
             ],
             "properties": {
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
@@ -7448,7 +7763,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -7479,7 +7798,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -7565,7 +7888,11 @@
                                         "enum": [
                                             "CLUSTER",
                                             "ELEMENT"
-                                        ]
+                                        ],
+                                        "minLength": 1,
+                                        "not": {
+                                            "type": "null"
+                                        }
                                     }
                                 }
                             },
@@ -7622,7 +7949,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -7653,7 +7984,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -8044,7 +8379,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -8147,7 +8486,11 @@
                     "$ref": "#/definitions/DV_DURATION"
                 },
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
@@ -8195,7 +8538,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -8226,7 +8573,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -8346,7 +8697,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -8377,7 +8732,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -8472,7 +8831,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -8606,7 +8969,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -8637,7 +9004,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -8730,7 +9101,11 @@
                     "$ref": "#/definitions/CODE_PHRASE"
                 },
                 "purpose": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "keywords": {
                     "type": "array",
@@ -8782,7 +9157,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -8813,7 +9192,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -8920,7 +9303,11 @@
             ],
             "properties": {
                 "match": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "purpose": {
                     "$ref": "#/definitions/DV_CODED_TEXT"
@@ -8988,7 +9375,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -9019,7 +9410,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -9110,7 +9505,11 @@
                                         "PARTY_SELF",
                                         "PARTY_IDENTIFIED",
                                         "PARTY_RELATED"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -9165,7 +9564,11 @@
                                         "PARTY_SELF",
                                         "PARTY_IDENTIFIED",
                                         "PARTY_RELATED"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -9316,7 +9719,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -9561,10 +9968,18 @@
             ],
             "properties": {
                 "sender": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "sender_reference": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "addressees": {
                     "type": "array",
@@ -9592,7 +10007,11 @@
             ],
             "properties": {
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
@@ -9845,7 +10264,11 @@
                                         "PARTY_SELF",
                                         "PARTY_IDENTIFIED",
                                         "PARTY_RELATED"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -9913,7 +10336,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -9944,7 +10371,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -10144,7 +10575,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -10175,7 +10610,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -10352,7 +10791,11 @@
             ],
             "properties": {
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
@@ -10416,7 +10859,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -10447,7 +10894,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -10533,7 +10984,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -10772,7 +11227,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -10803,7 +11262,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -11461,7 +11924,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -11492,7 +11959,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -11600,7 +12071,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -11631,7 +12106,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -11720,7 +12199,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -11788,7 +12271,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -11869,7 +12356,11 @@
             ],
             "properties": {
                 "system_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "time_committed": {
                     "$ref": "#/definitions/DV_DATE_TIME"
@@ -11947,7 +12438,11 @@
                                         "PARTY_SELF",
                                         "PARTY_IDENTIFIED",
                                         "PARTY_RELATED"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -12088,7 +12583,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -12119,7 +12618,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -12205,7 +12708,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -12295,7 +12802,11 @@
                     "type": "string"
                 },
                 "id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "type": {
                     "type": "string"
@@ -12319,7 +12830,10 @@
             "properties": {
                 "value": {
                     "type": "string",
-                    "minLength": 1
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "hyperlink": {
                     "allOf": [
@@ -12424,7 +12938,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -12455,10 +12973,18 @@
                     ]
                 },
                 "namespace": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "type": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "path": {
                     "type": "string"
@@ -12506,7 +13032,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -12537,7 +13067,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -12629,7 +13163,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -12722,7 +13260,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -12753,7 +13295,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -12858,7 +13404,11 @@
             ],
             "properties": {
                 "text": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "concept": {
                     "$ref": "#/definitions/TERMINOLOGY_CODE"
@@ -12877,7 +13427,11 @@
             ],
             "properties": {
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
@@ -12910,7 +13464,11 @@
                                         "HIER_OBJECT_ID",
                                         "ARCHETYPE_ID",
                                         "TEMPLATE_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -12989,10 +13547,18 @@
                     ]
                 },
                 "namespace": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "type": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
@@ -13008,7 +13574,11 @@
             ],
             "properties": {
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
@@ -13040,7 +13610,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -13071,7 +13645,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -13162,7 +13740,11 @@
                                         "PARTY_SELF",
                                         "PARTY_IDENTIFIED",
                                         "PARTY_RELATED"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -13217,7 +13799,11 @@
                                         "PARTY_SELF",
                                         "PARTY_IDENTIFIED",
                                         "PARTY_RELATED"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -13368,7 +13954,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -13473,7 +14063,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -13504,7 +14098,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -13722,7 +14320,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -13753,7 +14355,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -13847,7 +14453,11 @@
                                         "PARTY_SELF",
                                         "PARTY_IDENTIFIED",
                                         "PARTY_RELATED"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -13911,7 +14521,11 @@
                                             "ADMIN_ENTRY",
                                             "GENERIC_ENTRY",
                                             "SECTION"
-                                        ]
+                                        ],
+                                        "minLength": 1,
+                                        "not": {
+                                            "type": "null"
+                                        }
                                     }
                                 }
                             },
@@ -14032,7 +14646,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -14063,7 +14681,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -14158,7 +14780,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -14401,7 +15027,11 @@
                                         "HIER_OBJECT_ID",
                                         "ARCHETYPE_ID",
                                         "TEMPLATE_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -14480,10 +15110,18 @@
                     ]
                 },
                 "namespace": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "type": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
@@ -14516,7 +15154,11 @@
                                         "HIER_OBJECT_ID",
                                         "ARCHETYPE_ID",
                                         "TEMPLATE_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -14595,10 +15237,18 @@
                     ]
                 },
                 "namespace": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "type": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
@@ -14627,7 +15277,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -14658,7 +15312,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -14924,7 +15582,10 @@
             "properties": {
                 "value": {
                     "type": "string",
-                    "minLength": 1
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "hyperlink": {
                     "allOf": [
@@ -15031,7 +15692,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -15062,7 +15727,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -15153,7 +15822,11 @@
                                         "PARTY_SELF",
                                         "PARTY_IDENTIFIED",
                                         "PARTY_RELATED"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -15208,7 +15881,11 @@
                                         "PARTY_SELF",
                                         "PARTY_IDENTIFIED",
                                         "PARTY_RELATED"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -15359,7 +16036,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -15519,7 +16200,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -15606,7 +16291,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -15637,7 +16326,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -15724,7 +16417,11 @@
                                             "EXTRACT_FOLDER",
                                             "GENERIC_CONTENT_ITEM",
                                             "OPENEHR_CONTENT_ITEM"
-                                        ]
+                                        ],
+                                        "minLength": 1,
+                                        "not": {
+                                            "type": "null"
+                                        }
                                     }
                                 }
                             },
@@ -15768,7 +16465,11 @@
                     }
                 },
                 "extract_id_key": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
@@ -15784,7 +16485,11 @@
             ],
             "properties": {
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
@@ -15812,7 +16517,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -15843,7 +16552,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -15934,7 +16647,11 @@
                                             "ADMIN_ENTRY",
                                             "GENERIC_ENTRY",
                                             "SECTION"
-                                        ]
+                                        ],
+                                        "minLength": 1,
+                                        "not": {
+                                            "type": "null"
+                                        }
                                     }
                                 }
                             },
@@ -16054,7 +16771,11 @@
                                     "enum": [
                                         "OBJECT_VERSION_ID",
                                         "HIER_OBJECT_ID"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -16085,7 +16806,11 @@
                     ]
                 },
                 "archetype_node_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "name": {
                     "allOf": [
@@ -16171,7 +16896,11 @@
                                         "ITEM_TREE",
                                         "ITEM_LIST",
                                         "ITEM_TABLE"
-                                    ]
+                                    ],
+                                    "minLength": 1,
+                                    "not": {
+                                        "type": "null"
+                                    }
                                 }
                             }
                         },
@@ -16229,7 +16958,11 @@
                     "$ref": "#/definitions/DV_PARSABLE"
                 },
                 "action_archetype_id": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1,
+                    "not": {
+                        "type": "null"
+                    }
                 },
                 "_type": {
                     "type": "string",
