@@ -31,6 +31,19 @@ class Model {
          end_time:       'DV_DATE_TIME',
          participations: 'PARTICIPATION' // has many!
       ],
+      SECTION: [
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+      ],
+      OBSERVATION: [
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+      ],
+      EVALUATION: [
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+      ],
+
+      ADMIN_ENTRY: [
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+      ],
       ACTION: [
          time: 'DV_DATE_TIME',
          instruction_details: 'INSTRUCTION_DETAILS',
@@ -69,28 +82,15 @@ class Model {
          'width': 'DV_DURATION',
          name:   ['DV_TEXT', 'DV_CODED_TEXT']
       ],
-      ELEMENT: [
-         'null_flavour': 'DV_CODED_TEXT', // this could be in the opt constraining the possible codes
-         name:           ['DV_TEXT', 'DV_CODED_TEXT']
-      ],
-      SECTION: [
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
-      ],
-      OBSERVATION: [
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
-      ],
-      EVALUATION: [
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
-      ],
-
-      ADMIN_ENTRY: [
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
-      ],
       ITEM_TREE: [
          name:          ['DV_TEXT', 'DV_CODED_TEXT']
       ],
       CLUSTER: [
          name:          ['DV_TEXT', 'DV_CODED_TEXT']
+      ],
+      ELEMENT: [
+         'null_flavour': 'DV_CODED_TEXT', // this could be in the opt constraining the possible codes
+         name:           ['DV_TEXT', 'DV_CODED_TEXT']
       ],
 
       // DEMOGRAPHIC
@@ -129,6 +129,9 @@ class Model {
       ],
       CONTACT: [
          time_validity: 'DV_INTERVAL<DV_DATE>',
+         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+      ],
+      ADDRESS: [
          name:          ['DV_TEXT', 'DV_CODED_TEXT']
       ],
       PARTY_IDENTITY: [
