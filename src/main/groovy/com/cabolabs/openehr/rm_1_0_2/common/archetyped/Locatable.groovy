@@ -5,6 +5,9 @@ import com.cabolabs.openehr.rm_1_0_2.support.identification.UIDBasedId
 
 abstract class Locatable extends Pathable {
 
+   Integer nsLeft
+   Integer nsRight
+
    // TODO: standardize fields to camelCase
    Archetyped archetype_details
 
