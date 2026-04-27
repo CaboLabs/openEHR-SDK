@@ -2,6 +2,9 @@ package com.cabolabs.openehr.rm_1_0_2.common.archetyped
 
 abstract class Pathable {
 
+   Integer nsLeft
+   Integer nsRight
+
    String path     // TODO: this should be the archetype path, now it's not well calculated by JsonParser and XmlParser
    String dataPath // This is the RM instance path: /content[n]/data/items[m]/value/magnitude
    Pathable parent

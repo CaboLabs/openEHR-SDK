@@ -1665,6 +1665,8 @@ class OpenEhrJsonParserQuick {
    {
       EventContext e = new EventContext()
 
+      e.nsLeft = nsCounter++
+
       e.start_time = this.parseDV_DATE_TIME(json.start_time)
 
       if (e.end_time)
@@ -1698,6 +1700,7 @@ class OpenEhrJsonParserQuick {
          e.participations.add(this.parsePARTICIPATION(participation))
       }
 
+      e.nsRight = nsCounter++
       return e
    }
 
@@ -2029,6 +2032,8 @@ class OpenEhrJsonParserQuick {
    {
       IsmTransition i = new IsmTransition()
 
+      i.nsLeft = nsCounter++
+
       i.current_state = this.parseDV_CODED_TEXT(json.current_state)
 
       if (json.transition)
@@ -2041,12 +2046,15 @@ class OpenEhrJsonParserQuick {
          i.careflow_step = this.parseDV_CODED_TEXT(json.careflow_step)
       }
 
+      i.nsRight = nsCounter++
       return i
    }
 
    private InstructionDetails parseINSTRUCTION_DETAILS(Map json, Pathable parent)
    {
       InstructionDetails i = new InstructionDetails()
+
+      i.nsLeft = nsCounter++
 
       i.instruction_id = this.parseLOCATABLE_REF(json.instruction_id)
 
@@ -2063,6 +2071,7 @@ class OpenEhrJsonParserQuick {
          i.wf_details = this."$method"(json.wf_details)
       }
 
+      i.nsRight = nsCounter++
       return i
    }
 

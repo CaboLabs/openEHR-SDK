@@ -40,6 +40,7 @@ import com.cedarsoftware.util.io.JsonWriter
 
 import groovy.time.TimeCategory
 import groovy.time.TimeDuration
+import com.cabolabs.openehr.rm_1_0_2.Model
 
 class OpenEhrJsonParserTest extends GroovyTestCase {
 
@@ -1310,24 +1311,31 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       if (node instanceof com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable) {
          def loc = (com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable) node
          println "${indent}[LOCATABLE] ${loc.getRmType()} [${loc.archetype_node_id}]  nsLeft=${loc.nsLeft}  nsRight=${loc.nsRight}"
-         // recurse into Groovy properties that are Locatables or DataValues
-         node.properties.each { propName, propVal ->
-            if (propName in ['class', 'metaClass']) return
-            if (propVal instanceof com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable) {
-               printNsIndexes(propVal, depth + 1)
-            } else if (propVal instanceof com.cabolabs.openehr.rm_1_0_2.data_types.basic.DataValue) {
-               printNsIndexes(propVal, depth + 1)
-            } else if (propVal instanceof List) {
-               propVal.each { item ->
-                  if (item instanceof com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable ||
-                      item instanceof com.cabolabs.openehr.rm_1_0_2.data_types.basic.DataValue) {
-                     printNsIndexes(item, depth + 1)
-                  }
-               }
-            }
-         }
+      } else if (node instanceof com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable) {
+         println "${indent}[PATHABLE] ${node.class.simpleName}  nsLeft=${node.nsLeft}  nsRight=${node.nsRight}"
       } else if (node instanceof com.cabolabs.openehr.rm_1_0_2.data_types.basic.DataValue) {
          println "${indent}[DATAVALUE] ${node.class.simpleName}  nsPos=${node.nsPos}"
+      } else {
+         return
+      }
+
+      def attrs = Model.get_attribute_map(rmTypeName(node))
+      if (!attrs) return
+      attrs.each { attrName, attrType ->
+         def mp = node.metaClass.hasProperty(node, attrName)
+         if (!mp) return
+         def val = mp.getProperty(node)
+         if (val == null) return
+         if (val instanceof com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable ||
+             val instanceof com.cabolabs.openehr.rm_1_0_2.data_types.basic.DataValue) {
+            printNsIndexes(val, depth + 1)
+         } else if (val instanceof List) {
+            val.each { item ->
+               if (item instanceof com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable ||
+                   item instanceof com.cabolabs.openehr.rm_1_0_2.data_types.basic.DataValue)
+                  printNsIndexes(item, depth + 1)
+            }
+         }
       }
    }
 
@@ -1341,23 +1349,23 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
       def parser = new OpenEhrJsonParser()
       def compo = parser.parseJson(json)
 
-      // Collect all Locatables with their dataPath and ns bounds
-      List<Map> locatables = []
-      collectLocatables(compo, locatables)
+      // Collect all Pathables (Locatable + non-Locatable like EventContext) with dataPath and ns bounds
+      List<Map> pathables = []
+      collectPathables(compo, pathables)
 
-      println "Collected ${locatables.size()} locatables:"
-      locatables.each { println "  ${it.dataPath}  nsLeft=${it.nsLeft}  nsRight=${it.nsRight}" }
+      println "Collected ${pathables.size()} pathables:"
+      pathables.each { println "  ${it.type}  ${it.dataPath}  nsLeft=${it.nsLeft}  nsRight=${it.nsRight}" }
 
       // For every pair (A, B) where A.dataPath is a strict path-prefix of B.dataPath,
       // A is an ancestor of B => A.nsLeft < B.nsLeft && B.nsRight < A.nsRight
       int pairsChecked = 0
-      locatables.eachWithIndex { a, i ->
-         locatables.eachWithIndex { b, j ->
+      pathables.eachWithIndex { a, i ->
+         pathables.eachWithIndex { b, j ->
             if (i == j) return
             if (isPathAncestor(a.dataPath, b.dataPath)) {
                assert a.nsLeft < b.nsLeft : "ancestor nsLeft(${a.nsLeft}) should be < descendant nsLeft(${b.nsLeft}): ${a.dataPath} -> ${b.dataPath}"
                assert b.nsRight < a.nsRight : "descendant nsRight(${b.nsRight}) should be < ancestor nsRight(${a.nsRight}): ${a.dataPath} -> ${b.dataPath}"
-               println "  OK: ${a.dataPath} [${a.nsLeft},${a.nsRight}] contains ${b.dataPath} [${b.nsLeft},${b.nsRight}]"
+               println "  OK: ${a.type} ${a.dataPath} [${a.nsLeft},${a.nsRight}] contains ${b.type} ${b.dataPath} [${b.nsLeft},${b.nsRight}]"
                pairsChecked++
             }
          }
@@ -1378,25 +1386,32 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    {
       if (!ancestorPath || !descendantPath) return false
       if (ancestorPath == descendantPath) return false
-      // descendant path starts with ancestor path followed by '/'
+      // root '/' is ancestor of every other path
+      if (ancestorPath == '/') return descendantPath.startsWith('/')
       return descendantPath.startsWith(ancestorPath + '/')
    }
 
-   private static final Set<String> SKIP_PROPS = ['class', 'metaClass', 'parent'] as Set
+   private String rmTypeName(Object node) {
+      (node.class.simpleName - 'Dto').replaceAll(/([A-Z])/, /_$1/).toUpperCase().replaceAll(/^_/, '')
+   }
 
-   private void collectLocatables(Object node, List<Map> result)
+   private void collectPathables(Object node, List<Map> result)
    {
-      if (!(node instanceof com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable)) return
-      def loc = (com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable) node
-      result << [dataPath: loc.dataPath, nsLeft: loc.nsLeft, nsRight: loc.nsRight]
-      node.properties.each { propName, propVal ->
-         if (propName in SKIP_PROPS) return
-         if (propVal instanceof com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable) {
-            collectLocatables(propVal, result)
-         } else if (propVal instanceof List) {
-            propVal.each { item ->
-               if (item instanceof com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable)
-                  collectLocatables(item, result)
+      if (!(node instanceof com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable)) return
+      result << [dataPath: node.dataPath, nsLeft: node.nsLeft, nsRight: node.nsRight, type: node.class.simpleName]
+      def attrs = Model.get_attribute_map(rmTypeName(node))
+      if (!attrs) return
+      attrs.each { attrName, attrType ->
+         def mp = node.metaClass.hasProperty(node, attrName)
+         if (!mp) return
+         def val = mp.getProperty(node)
+         if (val == null) return
+         if (val instanceof com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable) {
+            collectPathables(val, result)
+         } else if (val instanceof List) {
+            val.each { item ->
+               if (item instanceof com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable)
+                  collectPathables(item, result)
             }
          }
       }
@@ -1411,15 +1426,21 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
             pairs << [element: elem, dv: elem.value]
          }
       }
-      if (node instanceof com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable) {
-         node.properties.each { propName, propVal ->
-            if (propName in SKIP_PROPS) return
-            if (propVal instanceof com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable) {
-               pairs.addAll(collectElementDvPairs(propVal))
-            } else if (propVal instanceof List) {
-               propVal.each { item ->
-                  if (item instanceof com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable)
-                     pairs.addAll(collectElementDvPairs(item))
+      if (node instanceof com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable) {
+         def attrs = Model.get_attribute_map(rmTypeName(node))
+         if (attrs) {
+            attrs.each { attrName, attrType ->
+               def mp = node.metaClass.hasProperty(node, attrName)
+               if (!mp) return
+               def val = mp.getProperty(node)
+               if (val == null) return
+               if (val instanceof com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable) {
+                  pairs.addAll(collectElementDvPairs(val))
+               } else if (val instanceof List) {
+                  val.each { item ->
+                     if (item instanceof com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable)
+                        pairs.addAll(collectElementDvPairs(item))
+                  }
                }
             }
          }
