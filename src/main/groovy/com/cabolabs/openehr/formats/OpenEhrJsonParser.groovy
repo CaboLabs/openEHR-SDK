@@ -43,6 +43,8 @@ class OpenEhrJsonParser {
    def schemaValidate
    def schemaFlavor = "rm" // rm | api
 
+   private int nsCounter = 0
+
    // https://javadoc.io/doc/com.networknt/json-schema-validator/1.0.51/com/networknt/schema/ValidationMessage.html
    // Set<ValidationMessage>
    def jsonValidationErrors
@@ -148,6 +150,7 @@ class OpenEhrJsonParser {
 
       ehr.time_created = this.parseDV_DATE_TIME(map.time_created)
 
+      this.nsCounter = 1
       ehr.ehr_status = this.parseEHR_STATUS(map.ehr_status)
 
       if (map.ehr_access)
@@ -195,6 +198,7 @@ class OpenEhrJsonParser {
       Locatable out
       try
       {
+         this.nsCounter = 1
          out = this."$method"(map)
       }
       catch (Exception e)
@@ -238,6 +242,7 @@ class OpenEhrJsonParser {
       Version out
       try
       {
+         this.nsCounter = 1
          out = this."$method"(map)
       }
       catch (Exception e)
@@ -282,6 +287,7 @@ class OpenEhrJsonParser {
          }
 
          method = 'parse'+ type
+         this.nsCounter = 1
          versions << this."$method"(version_map)
       }
 
@@ -350,6 +356,7 @@ class OpenEhrJsonParser {
          }
 
          method = 'parse'+ type
+         this.nsCounter = 1
          contribution.versions << this."$method"(version_map) // NOTE: the version dto doesn't require uid while the RM object requires it!
       }
 
@@ -480,6 +487,8 @@ class OpenEhrJsonParser {
 
    private void fillLOCATABLE(Locatable l, Map json, Pathable parent, String path, String dataPath)
    {
+      l.nsLeft = nsCounter++
+
       // name can be text or coded
       String type = json.name._type
       if (!type) type = 'DV_TEXT'
@@ -746,6 +755,7 @@ class OpenEhrJsonParser {
 
       this.fillActorDto(person, map, null, '/', '/')
 
+      person.nsRight = nsCounter++
       return person
    }
 
@@ -755,6 +765,7 @@ class OpenEhrJsonParser {
 
       this.fillACTOR(person, map, null, '/', '/')
 
+      person.nsRight = nsCounter++
       return person
    }
 
@@ -764,6 +775,7 @@ class OpenEhrJsonParser {
 
       this.fillACTOR(agent, map, null, '/', '/')
 
+      agent.nsRight = nsCounter++
       return agent
    }
 
@@ -773,6 +785,7 @@ class OpenEhrJsonParser {
 
       this.fillACTOR(group, map, null, '/', '/')
 
+      group.nsRight = nsCounter++
       return group
    }
 
@@ -782,6 +795,7 @@ class OpenEhrJsonParser {
 
       this.fillACTOR(organization, map, null, '/', '/')
 
+      organization.nsRight = nsCounter++
       return organization
    }
 
@@ -806,6 +820,7 @@ class OpenEhrJsonParser {
          }
       }
 
+      role.nsRight = nsCounter++
       return role
    }
 
@@ -832,6 +847,7 @@ class OpenEhrJsonParser {
          }
       }
 
+      contact.nsRight = nsCounter++
       return contact
    }
 
@@ -851,6 +867,7 @@ class OpenEhrJsonParser {
          )
       }
 
+      address.nsRight = nsCounter++
       return address
    }
 
@@ -860,6 +877,7 @@ class OpenEhrJsonParser {
 
       this.fillLOCATABLE(capability, map, parent, path, dataPath)
 
+      capability.nsRight = nsCounter++
       return capability
    }
 
@@ -890,6 +908,7 @@ class OpenEhrJsonParser {
                        )
       }
 
+      pi.nsRight = nsCounter++
       return pi
    }
 
@@ -917,6 +936,7 @@ class OpenEhrJsonParser {
          status.other_details = this."$method"(map.other_details, status, '/other_details['+ path_node_id +']', '/other_details['+ path_node_id +']')
       }
 
+      status.nsRight = nsCounter++
       return status
    }
 
@@ -969,6 +989,7 @@ class OpenEhrJsonParser {
          //access.settings = this.parseACCESS_CONTROL_SETTINGS(map.access)
       }
 
+      access.nsRight = nsCounter++
       return access
    }
 
@@ -1020,6 +1041,7 @@ class OpenEhrJsonParser {
          )
       }
 
+      compo.nsRight = nsCounter++
       return compo
    }
 
@@ -1051,6 +1073,7 @@ class OpenEhrJsonParser {
          }
       }
 
+      folder.nsRight = nsCounter++
       return folder
    }
 
@@ -1082,6 +1105,7 @@ class OpenEhrJsonParser {
          }
       }
 
+      folder.nsRight = nsCounter++
       return folder
    }
 
@@ -1440,12 +1464,15 @@ class OpenEhrJsonParser {
       i.id = json.id
       i.type = json.type
 
+      i.nsPos = nsCounter++
       return i
    }
 
    private EventContext parseEVENT_CONTEXT(Map json, Pathable parent, String path, String dataPath)
    {
       EventContext e = new EventContext()
+
+      e.nsLeft = nsCounter++
 
       this.fillPATHABLE(e, parent, path, dataPath)
 
@@ -1484,6 +1511,7 @@ class OpenEhrJsonParser {
          e.participations.add(this.parsePARTICIPATION(participation))
       }
 
+      e.nsRight = nsCounter++
       return e
    }
 
@@ -1541,6 +1569,7 @@ class OpenEhrJsonParser {
          )
       }
 
+      section.nsRight = nsCounter++
       return section
    }
 
@@ -1565,6 +1594,7 @@ class OpenEhrJsonParser {
          this.attr_path(json, 'data', dataPath)
       )
 
+      a.nsRight = nsCounter++
       return a
    }
 
@@ -1592,6 +1622,7 @@ class OpenEhrJsonParser {
          )
       }
 
+      o.nsRight = nsCounter++
       return o
    }
 
@@ -1631,6 +1662,7 @@ class OpenEhrJsonParser {
          )
       }
 
+      h.nsRight = nsCounter++
       return h
    }
 
@@ -1676,6 +1708,7 @@ class OpenEhrJsonParser {
          )
       }
 
+      e.nsRight = nsCounter++
       return e
    }
 
@@ -1730,6 +1763,7 @@ class OpenEhrJsonParser {
          e.sample_count = json.sample_count
       }
 
+      e.nsRight = nsCounter++
       return e
    }
 
@@ -1752,6 +1786,7 @@ class OpenEhrJsonParser {
          this.attr_path(json, 'data', dataPath)
       )
 
+      e.nsRight = nsCounter++
       return e
    }
 
@@ -1791,6 +1826,7 @@ class OpenEhrJsonParser {
          )
       }
 
+      ins.nsRight = nsCounter++
       return ins
    }
 
@@ -1830,12 +1866,15 @@ class OpenEhrJsonParser {
          )
       }
 
+      a.nsRight = nsCounter++
       return a
    }
 
    private IsmTransition parseISM_TRANSITION(Map json, Pathable parent, String path, String dataPath)
    {
       IsmTransition i = new IsmTransition()
+
+      i.nsLeft = nsCounter++
 
       this.fillPATHABLE(i, parent, path, dataPath)
 
@@ -1851,12 +1890,15 @@ class OpenEhrJsonParser {
          i.careflow_step = this.parseDV_CODED_TEXT(json.careflow_step)
       }
 
+      i.nsRight = nsCounter++
       return i
    }
 
    private InstructionDetails parseINSTRUCTION_DETAILS(Map json, Pathable parent, String path, String dataPath)
    {
       InstructionDetails i = new InstructionDetails()
+
+      i.nsLeft = nsCounter++
 
       this.fillPATHABLE(i, parent, path, dataPath)
 
@@ -1875,6 +1917,7 @@ class OpenEhrJsonParser {
          i.wf_details = this."$method"(json.wf_details)
       }
 
+      i.nsRight = nsCounter++
       return i
    }
 
@@ -1891,6 +1934,8 @@ class OpenEhrJsonParser {
          action_archetype_id: json.action_archetype_id
       )
 
+      this.fillLOCATABLE(a, json, parent, path, dataPath)
+
       a.description = this."$method"(
          json.description, a,
          this.attr_archetype_path(json, 'description', path),
@@ -1902,8 +1947,7 @@ class OpenEhrJsonParser {
          a.timing = this.parseDV_PARSABLE(json.timing)
       }
 
-      this.fillLOCATABLE(a, json, parent, path, dataPath)
-
+      a.nsRight = nsCounter++
       return a
    }
 
@@ -1936,6 +1980,7 @@ class OpenEhrJsonParser {
          )
       }
 
+      t.nsRight = nsCounter++
       return t
    }
 
@@ -1958,6 +2003,7 @@ class OpenEhrJsonParser {
          )
       }
 
+      l.nsRight = nsCounter++
       return l
    }
 
@@ -1985,6 +2031,7 @@ class OpenEhrJsonParser {
          )
       }
 
+      t.nsRight = nsCounter++
       return t
    }
 
@@ -2000,6 +2047,7 @@ class OpenEhrJsonParser {
          this.attr_path(json, 'item', dataPath)
       )
 
+      s.nsRight = nsCounter++
       return s
    }
 
@@ -2030,6 +2078,7 @@ class OpenEhrJsonParser {
          )
       }
 
+      c.nsRight = nsCounter++
       return c
    }
 
@@ -2055,6 +2104,7 @@ class OpenEhrJsonParser {
          e.null_flavour = this.parseDV_CODED_TEXT(json.null_flavour)
       }
 
+      e.nsRight = nsCounter++
       return e
    }
 
@@ -2107,15 +2157,19 @@ class OpenEhrJsonParser {
 
    private DvText parseDV_TEXT(Map json)
    {
-      new DvText(value: json.value)
+      def d = new DvText(value: json.value)
+      d.nsPos = nsCounter++
+      return d
    }
 
    private DvCodedText parseDV_CODED_TEXT(Map json)
    {
-      new DvCodedText(
+      def d = new DvCodedText(
          value: json.value,
          defining_code: this.parseCODE_PHRASE(json.defining_code)
       )
+      d.nsPos = nsCounter++
+      return d
    }
 
    private TermMapping parseTERM_MAPPING(Map json)
@@ -2130,19 +2184,25 @@ class OpenEhrJsonParser {
    private DvDateTime parseDV_DATE_TIME(Map json)
    {
       // TODO: DvAbsoluteQuantity
-      new DvDateTime(value: json.value)
+      def d = new DvDateTime(value: json.value)
+      d.nsPos = nsCounter++
+      return d
    }
 
    private DvDate parseDV_DATE(Map json)
    {
       // TODO: DvAbsoluteQuantity
-      new DvDate(value: json.value)
+      def d = new DvDate(value: json.value)
+      d.nsPos = nsCounter++
+      return d
    }
 
    private DvTime parseDV_TIME(Map json)
    {
       // TODO: DvAbsoluteQuantity
-      new DvTime(value: json.value)
+      def d = new DvTime(value: json.value)
+      d.nsPos = nsCounter++
+      return d
    }
 
    private DvDuration parseDV_DURATION(Map json)
@@ -2153,6 +2213,7 @@ class OpenEhrJsonParser {
 
       this.fillDV_AMOUNT(d, json)
 
+      d.nsPos = nsCounter++
       return d
    }
 
@@ -2168,6 +2229,7 @@ class OpenEhrJsonParser {
 
       this.fillDV_AMOUNT(q, json)
 
+      q.nsPos = nsCounter++
       return q
    }
 
@@ -2179,6 +2241,7 @@ class OpenEhrJsonParser {
 
       this.fillDV_AMOUNT(c, json)
 
+      c.nsPos = nsCounter++
       return c
    }
 
@@ -2193,6 +2256,7 @@ class OpenEhrJsonParser {
 
       this.fillDV_AMOUNT(d, json)
 
+      d.nsPos = nsCounter++
       return d
    }
 
@@ -2205,6 +2269,7 @@ class OpenEhrJsonParser {
 
       this.fillDV_ORDERED(d, json)
 
+      d.nsPos = nsCounter++
       return d
    }
 
@@ -2226,6 +2291,7 @@ class OpenEhrJsonParser {
          p.language = this.parseCODE_PHRASE(json.language)
       }
 
+      p.nsPos = nsCounter++
       return p
    }
 
@@ -2263,28 +2329,29 @@ class OpenEhrJsonParser {
 
       // TODO: integrity_check, integrity_check_algorithm, thumbnail
 
+      d.nsPos = nsCounter++
       return d
    }
 
    private DvUri parseDV_URI(Map json)
    {
-      new DvUri(
-         value: json.value
-      )
+      def d = new DvUri(value: json.value)
+      d.nsPos = nsCounter++
+      return d
    }
 
    private DvEhrUri parseDV_EHR_URI(Map json)
    {
-      new DvEhrUri(
-         value: json.value
-      )
+      def d = new DvEhrUri(value: json.value)
+      d.nsPos = nsCounter++
+      return d
    }
 
    private DvBoolean parseDV_BOOLEAN(Map json)
    {
-      new DvBoolean(
-         value: json.value
-      )
+      def d = new DvBoolean(value: json.value)
+      d.nsPos = nsCounter++
+      return d
    }
 
 
@@ -2314,6 +2381,7 @@ class OpenEhrJsonParser {
       i.upper_included = json.upper_included
       i.upper_unbounded = json.upper_unbounded
 
+      i.nsPos = nsCounter++
       return i
    }
 

@@ -49,6 +49,8 @@ class OpenEhrJsonParserQuick {
    def schemaValidate = false
    def schemaFlavor = "rm" // rm | api
 
+   private int nsCounter = 0
+
    // https://javadoc.io/doc/com.networknt/json-schema-validator/1.0.51/com/networknt/schema/ValidationMessage.html
    // Set<ValidationMessage>
    def jsonValidationErrors
@@ -162,6 +164,7 @@ class OpenEhrJsonParserQuick {
 
       ehr.time_created = this.parseDV_DATE_TIME(map.time_created)
 
+      this.nsCounter = 1
       ehr.ehr_status = this.parseEHR_STATUS(map.ehr_status)
 
       if (map.ehr_access)
@@ -223,6 +226,7 @@ class OpenEhrJsonParserQuick {
       Locatable out
       try
       {
+         this.nsCounter = 1
          out = this."$method"(map)
       }
       catch (Exception e)
@@ -281,6 +285,7 @@ class OpenEhrJsonParserQuick {
       Version out
       try
       {
+         this.nsCounter = 1
          out = this."$method"(map)
       }
       catch (MissingMethodException e)
@@ -334,6 +339,7 @@ class OpenEhrJsonParserQuick {
          }
 
          method = 'parse'+ type
+         this.nsCounter = 1
          versions << this."$method"(version_map)
       }
 
@@ -399,6 +405,7 @@ class OpenEhrJsonParserQuick {
          }
 
          method = 'parse'+ type
+         this.nsCounter = 1
          contribution.versions << this."$method"(version_map) // NOTE: the version dto doesn't require uid while the RM object requires it!
       }
 
@@ -466,6 +473,8 @@ class OpenEhrJsonParserQuick {
    // NOTE: not sure why we have the parent if it's not used here
    private void fillLOCATABLE(Locatable l, Map json, Pathable parent)
    {
+      l.nsLeft = nsCounter++
+
       // name can be text or coded
       String type = json.name._type
       if (!type) type = 'DV_TEXT'
@@ -718,6 +727,7 @@ class OpenEhrJsonParserQuick {
       }
 
       def method = 'parse'+ type +'Dto'
+      this.nsCounter = 1
       return this."$method"(map)
    }
 
@@ -761,6 +771,7 @@ class OpenEhrJsonParserQuick {
          }
       }
 
+      role.nsRight = nsCounter++
       return role
    }
 
@@ -770,6 +781,7 @@ class OpenEhrJsonParserQuick {
 
       this.fillActorDto(actor, map, null)
 
+      actor.nsRight = nsCounter++
       return actor
    }
 
@@ -779,6 +791,7 @@ class OpenEhrJsonParserQuick {
 
       this.fillActorDto(actor, map, null)
 
+      actor.nsRight = nsCounter++
       return actor
    }
 
@@ -789,6 +802,7 @@ class OpenEhrJsonParserQuick {
 
       this.fillActorDto(actor, map, null)
 
+      actor.nsRight = nsCounter++
       return actor
    }
 
@@ -798,6 +812,7 @@ class OpenEhrJsonParserQuick {
 
       this.fillActorDto(actor, map, null)
 
+      actor.nsRight = nsCounter++
       return actor
    }
 
@@ -821,6 +836,7 @@ class OpenEhrJsonParserQuick {
          }
       }
 
+      this.nsCounter = 1
       return this.parsePERSONDto(map)
    }
 
@@ -845,6 +861,7 @@ class OpenEhrJsonParserQuick {
          }
       }
 
+      this.nsCounter = 1
       return this.parseORGANISATIONDto(map)
    }
 
@@ -869,6 +886,7 @@ class OpenEhrJsonParserQuick {
          }
       }
 
+      this.nsCounter = 1
       return this.parseGROUPDto(map)
    }
 
@@ -893,6 +911,7 @@ class OpenEhrJsonParserQuick {
          }
       }
 
+      this.nsCounter = 1
       return this.parseAGENTDto(map)
    }
 
@@ -935,6 +954,7 @@ class OpenEhrJsonParserQuick {
          rel.time_validity = this.parseDV_INTERVAL(map.time_validity)
       }
 
+      rel.nsRight = nsCounter++
       return rel
    }
 
@@ -970,6 +990,7 @@ class OpenEhrJsonParserQuick {
          rel.time_validity = this.parseDV_INTERVAL(map.time_validity)
       }
 
+      rel.nsRight = nsCounter++
       return rel
    }
 
@@ -979,6 +1000,7 @@ class OpenEhrJsonParserQuick {
 
       this.fillACTOR(person, map, null)
 
+      person.nsRight = nsCounter++
       return person
    }
 
@@ -988,6 +1010,7 @@ class OpenEhrJsonParserQuick {
 
       this.fillACTOR(agent, map, null)
 
+      agent.nsRight = nsCounter++
       return agent
    }
 
@@ -997,6 +1020,7 @@ class OpenEhrJsonParserQuick {
 
       this.fillACTOR(group, map, null)
 
+      group.nsRight = nsCounter++
       return group
    }
 
@@ -1006,6 +1030,7 @@ class OpenEhrJsonParserQuick {
 
       this.fillACTOR(organization, map, null)
 
+      organization.nsRight = nsCounter++
       return organization
    }
 
@@ -1035,6 +1060,7 @@ class OpenEhrJsonParserQuick {
          }
       }
 
+      role.nsRight = nsCounter++
       return role
    }
 
@@ -1057,6 +1083,7 @@ class OpenEhrJsonParserQuick {
          }
       }
 
+      contact.nsRight = nsCounter++
       return contact
    }
 
@@ -1072,6 +1099,7 @@ class OpenEhrJsonParserQuick {
          address.details = this."$method"(map.details, address)
       }
 
+      address.nsRight = nsCounter++
       return address
    }
 
@@ -1098,6 +1126,7 @@ class OpenEhrJsonParserQuick {
          capability.time_validity = this.parseDV_INTERVAL(map.time_validity)
       }
 
+      capability.nsRight = nsCounter++
       return capability
    }
 
@@ -1120,6 +1149,7 @@ class OpenEhrJsonParserQuick {
          pi.details = this."$method"(map.details, pi)
       }
 
+      pi.nsRight = nsCounter++
       return pi
    }
 
@@ -1145,6 +1175,7 @@ class OpenEhrJsonParserQuick {
          status.other_details = this."$method"(map.other_details, status)
       }
 
+      status.nsRight = nsCounter++
       return status
    }
 
@@ -1165,6 +1196,7 @@ class OpenEhrJsonParserQuick {
          //access.settings = this.parseACCESS_CONTROL_SETTINGS(map.access)
       }
 
+      access.nsRight = nsCounter++
       return access
    }
 
@@ -1212,6 +1244,7 @@ class OpenEhrJsonParserQuick {
          )
       }
 
+      compo.nsRight = nsCounter++
       return compo
    }
 
@@ -1245,6 +1278,7 @@ class OpenEhrJsonParserQuick {
          }
       }
 
+      folder.nsRight = nsCounter++
       return folder
    }
 
@@ -1623,12 +1657,15 @@ class OpenEhrJsonParserQuick {
       i.id = json.id
       i.type = json.type
 
+      i.nsPos = nsCounter++
       return i
    }
 
    private EventContext parseEVENT_CONTEXT(Map json, Pathable parent)
    {
       EventContext e = new EventContext()
+
+      e.nsLeft = nsCounter++
 
       e.start_time = this.parseDV_DATE_TIME(json.start_time)
 
@@ -1663,6 +1700,7 @@ class OpenEhrJsonParserQuick {
          e.participations.add(this.parsePARTICIPATION(participation))
       }
 
+      e.nsRight = nsCounter++
       return e
    }
 
@@ -1717,6 +1755,7 @@ class OpenEhrJsonParserQuick {
          )
       }
 
+      section.nsRight = nsCounter++
       return section
    }
 
@@ -1739,6 +1778,7 @@ class OpenEhrJsonParserQuick {
          json.data, a
       )
 
+      a.nsRight = nsCounter++
       return a
    }
 
@@ -1762,6 +1802,7 @@ class OpenEhrJsonParserQuick {
          )
       }
 
+      o.nsRight = nsCounter++
       return o
    }
 
@@ -1798,6 +1839,7 @@ class OpenEhrJsonParserQuick {
          )
       }
 
+      h.nsRight = nsCounter++
       return h
    }
 
@@ -1839,6 +1881,7 @@ class OpenEhrJsonParserQuick {
          )
       }
 
+      e.nsRight = nsCounter++
       return e
    }
 
@@ -1889,6 +1932,7 @@ class OpenEhrJsonParserQuick {
          e.sample_count = json.sample_count
       }
 
+      e.nsRight = nsCounter++
       return e
    }
 
@@ -1909,6 +1953,7 @@ class OpenEhrJsonParserQuick {
          json.data, e
       )
 
+      e.nsRight = nsCounter++
       return e
    }
 
@@ -1945,6 +1990,7 @@ class OpenEhrJsonParserQuick {
          )
       }
 
+      ins.nsRight = nsCounter++
       return ins
    }
 
@@ -1978,12 +2024,15 @@ class OpenEhrJsonParserQuick {
          )
       }
 
+      a.nsRight = nsCounter++
       return a
    }
 
    private IsmTransition parseISM_TRANSITION(Map json, Pathable parent)
    {
       IsmTransition i = new IsmTransition()
+
+      i.nsLeft = nsCounter++
 
       i.current_state = this.parseDV_CODED_TEXT(json.current_state)
 
@@ -1997,12 +2046,15 @@ class OpenEhrJsonParserQuick {
          i.careflow_step = this.parseDV_CODED_TEXT(json.careflow_step)
       }
 
+      i.nsRight = nsCounter++
       return i
    }
 
    private InstructionDetails parseINSTRUCTION_DETAILS(Map json, Pathable parent)
    {
       InstructionDetails i = new InstructionDetails()
+
+      i.nsLeft = nsCounter++
 
       i.instruction_id = this.parseLOCATABLE_REF(json.instruction_id)
 
@@ -2019,6 +2071,7 @@ class OpenEhrJsonParserQuick {
          i.wf_details = this."$method"(json.wf_details)
       }
 
+      i.nsRight = nsCounter++
       return i
    }
 
@@ -2035,6 +2088,8 @@ class OpenEhrJsonParserQuick {
          action_archetype_id: json.action_archetype_id
       )
 
+      this.fillLOCATABLE(a, json, parent)
+
       a.description = this."$method"(
          json.description, a
       )
@@ -2044,8 +2099,7 @@ class OpenEhrJsonParserQuick {
          a.timing = this.parseDV_PARSABLE(json.timing)
       }
 
-      this.fillLOCATABLE(a, json, parent)
-
+      a.nsRight = nsCounter++
       return a
    }
 
@@ -2075,6 +2129,7 @@ class OpenEhrJsonParserQuick {
          )
       }
 
+      t.nsRight = nsCounter++
       return t
    }
 
@@ -2094,6 +2149,7 @@ class OpenEhrJsonParserQuick {
          )
       }
 
+      l.nsRight = nsCounter++
       return l
    }
 
@@ -2119,6 +2175,7 @@ class OpenEhrJsonParserQuick {
          )
       }
 
+      t.nsRight = nsCounter++
       return t
    }
 
@@ -2132,6 +2189,7 @@ class OpenEhrJsonParserQuick {
          json.item, s
       )
 
+      s.nsRight = nsCounter++
       return s
    }
 
@@ -2156,6 +2214,7 @@ class OpenEhrJsonParserQuick {
          c.items.add(this."$method"(item, c))
       }
 
+      c.nsRight = nsCounter++
       return c
    }
 
@@ -2181,6 +2240,7 @@ class OpenEhrJsonParserQuick {
          e.null_flavour = this.parseDV_CODED_TEXT(json.null_flavour)
       }
 
+      e.nsRight = nsCounter++
       return e
    }
 
@@ -2233,15 +2293,19 @@ class OpenEhrJsonParserQuick {
 
    private DvText parseDV_TEXT(Map json)
    {
-      new DvText(value: json.value)
+      def d = new DvText(value: json.value)
+      d.nsPos = nsCounter++
+      return d
    }
 
    private DvCodedText parseDV_CODED_TEXT(Map json)
    {
-      new DvCodedText(
+      def d = new DvCodedText(
          value: json.value,
          defining_code: this.parseCODE_PHRASE(json.defining_code)
       )
+      d.nsPos = nsCounter++
+      return d
    }
 
    private TermMapping parseTERM_MAPPING(Map json)
@@ -2256,19 +2320,25 @@ class OpenEhrJsonParserQuick {
    private DvDateTime parseDV_DATE_TIME(Map json)
    {
       // TODO: DvAbsoluteQuantity
-      new DvDateTime(value: json.value)
+      def d = new DvDateTime(value: json.value)
+      d.nsPos = nsCounter++
+      return d
    }
 
    private DvDate parseDV_DATE(Map json)
    {
       // TODO: DvAbsoluteQuantity
-      new DvDate(value: json.value)
+      def d = new DvDate(value: json.value)
+      d.nsPos = nsCounter++
+      return d
    }
 
    private DvTime parseDV_TIME(Map json)
    {
       // TODO: DvAbsoluteQuantity
-      new DvTime(value: json.value)
+      def d = new DvTime(value: json.value)
+      d.nsPos = nsCounter++
+      return d
    }
 
    private DvDuration parseDV_DURATION(Map json)
@@ -2279,6 +2349,7 @@ class OpenEhrJsonParserQuick {
 
       this.fillDV_AMOUNT(d, json)
 
+      d.nsPos = nsCounter++
       return d
    }
 
@@ -2294,6 +2365,7 @@ class OpenEhrJsonParserQuick {
 
       this.fillDV_AMOUNT(q, json)
 
+      q.nsPos = nsCounter++
       return q
    }
 
@@ -2305,6 +2377,7 @@ class OpenEhrJsonParserQuick {
 
       this.fillDV_AMOUNT(c, json)
 
+      c.nsPos = nsCounter++
       return c
    }
 
@@ -2319,6 +2392,7 @@ class OpenEhrJsonParserQuick {
 
       this.fillDV_AMOUNT(d, json)
 
+      d.nsPos = nsCounter++
       return d
    }
 
@@ -2331,6 +2405,7 @@ class OpenEhrJsonParserQuick {
 
       this.fillDV_ORDERED(d, json)
 
+      d.nsPos = nsCounter++
       return d
    }
 
@@ -2352,6 +2427,7 @@ class OpenEhrJsonParserQuick {
          p.language = this.parseCODE_PHRASE(json.language)
       }
 
+      p.nsPos = nsCounter++
       return p
    }
 
@@ -2389,28 +2465,29 @@ class OpenEhrJsonParserQuick {
 
       // TODO: integrity_check, integrity_check_algorithm, thumbnail
 
+      d.nsPos = nsCounter++
       return d
    }
 
    private DvUri parseDV_URI(Map json)
    {
-      new DvUri(
-         value: json.value
-      )
+      def d = new DvUri(value: json.value)
+      d.nsPos = nsCounter++
+      return d
    }
 
    private DvEhrUri parseDV_EHR_URI(Map json)
    {
-      new DvEhrUri(
-         value: json.value
-      )
+      def d = new DvEhrUri(value: json.value)
+      d.nsPos = nsCounter++
+      return d
    }
 
    private DvBoolean parseDV_BOOLEAN(Map json)
    {
-      new DvBoolean(
-         value: json.value
-      )
+      def d = new DvBoolean(value: json.value)
+      d.nsPos = nsCounter++
+      return d
    }
 
 
@@ -2440,6 +2517,7 @@ class OpenEhrJsonParserQuick {
       i.upper_included = json.upper_included
       i.upper_unbounded = json.upper_unbounded
 
+      i.nsPos = nsCounter++
       return i
    }
 
