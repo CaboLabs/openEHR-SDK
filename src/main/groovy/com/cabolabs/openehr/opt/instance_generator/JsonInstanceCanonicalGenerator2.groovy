@@ -885,13 +885,14 @@ class JsonInstanceCanonicalGenerator2 {
       if (primitive.range)
       {
          lo = ((primitive.range.lowerUnbounded) ? 0 : primitive.range.lower)
-         hi = ((primitive.range.upperUnbounded) ? 100 : primitive.range.upper)
+         hi = ((primitive.range.upperUnbounded) ? lo + 100 : primitive.range.upper)
 
-         if (!primitive.range.lowerIncluded) lo++
-         if (!primitive.range.upperIncluded) hi--
+         if (!primitive.range.lowerIncluded && !primitive.range.lowerUnbounded) lo++
+         if (!primitive.range.upperIncluded && !primitive.range.upperUnbounded) hi--
 
-         // NOTE: same as Integer.random(hi, lo)
-         _magnitude = new Random().nextInt(hi - lo) + lo // random between lo .. hi
+         if (primitive.range.lowerUnbounded) lo = hi - 100
+
+         _magnitude = (hi > lo) ? new Random().nextInt(hi - lo + 1) + lo : lo // random between lo .. hi inclusive
       }
       else if (primitive.list)
       {
