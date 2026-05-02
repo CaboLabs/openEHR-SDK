@@ -1210,7 +1210,7 @@ class JsonInstanceCanonicalGenerator2 {
 
    private generate_DV_ORDINAL(ObjectNode o, String parent_arch_id)
    {
-      // o is CDvOrdinal
+      // o is CDvOrdinal; empty list means any value allowed
       if (o.list) // list <CDvOrdinalItem>
       {
          /*

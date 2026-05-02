@@ -554,6 +554,27 @@ class OperationalTemplateParser {
          //    println templatePath
          //    println node.'@xsi:type'.text()
          // }
+
+         // C_COMPLEX_OBJECT with rm_type_name=DV_ORDINAL = unconstrained ordinal (any value allowed)
+         if (node.rm_type_name.text() == 'DV_ORDINAL')
+         {
+            obn = new CDvOrdinal(
+               owner:            this.template,
+               rmTypeName:       node.rm_type_name.text(),
+               nodeId:           node.node_id.text() ?: null,
+               type:             node.'@xsi:type'.text(),
+               archetypeId:      node.archetype_id.value.text(),
+               templatePath:     templatePath,
+               path:             path,
+               dataPath:         dataPath,
+               templateDataPath: templateDataPath,
+               occurrences:      parseIntervalInt(node.occurrences)
+            )
+            // empty list means any ordinal value is allowed
+         }
+         else
+         {
+
          // C_COMPLEX_OBJECTs and C_ARCHETYPE_ROOTs will be parsed here.
 
          // println "ObjectNode "+ node.'@xsi:type'.text()
@@ -570,6 +591,7 @@ class OperationalTemplateParser {
             occurrences:      parseIntervalInt(node.occurrences)
             // TODO: default_values
          )
+         } // else (not DV_ORDINAL)
       }
 
       // TODO: parse occurrences

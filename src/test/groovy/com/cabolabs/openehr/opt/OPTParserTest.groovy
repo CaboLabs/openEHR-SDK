@@ -268,6 +268,23 @@ class OPTParserTest extends GroovyTestCase {
    }
 
 
+   void testParseDvOrdinalAsComplexObject()
+   {
+      println "====== testParseDvOrdinalAsComplexObject ======"
+
+      // compo_hierarchy_eval_cluster.opt has a DV_ORDINAL with xsi:type="C_COMPLEX_OBJECT" (no list items = any allowed)
+      // Parser must create CDvOrdinal, not plain ObjectNode
+      def path = "opts/"+ OptManager.DEFAULT_NAMESPACE + "/compo_hierarchy_eval_cluster.opt"
+      def opt = TestUtils.loadTemplate(path)
+
+      def node = opt.getNodes('/content[archetype_id=openEHR-EHR-EVALUATION.evaluation_concept.v0]/data[at0001]/items[at0005]/value')[0]
+
+      assertNotNull(node)
+      assert node instanceof CDvOrdinal
+      assert node.rmTypeName == 'DV_ORDINAL'
+      assert node.list.isEmpty() // no list items = unconstrained
+   }
+
    void testCBooleanParse()
    {
       println "====== testCBooleanParse ======"
