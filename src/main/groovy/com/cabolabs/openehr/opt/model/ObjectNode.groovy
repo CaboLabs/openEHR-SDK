@@ -85,12 +85,12 @@ class ObjectNode extends Constraint {
 
       if (!codedTerm)
       {
-         log.info( "codedTerm not found "+ this.archetypeId +" "+ code )
+         log.warn( "codedTerm not found "+ this.archetypeId +" "+ code )
          return
       }
       else
       {
-         log.info( "codedTerm found "+ codedTerm.code +" "+ codedTerm.term.text )
+         //log.info( "codedTerm found "+ codedTerm.code +" "+ codedTerm.term.text )
       }
 
       return codedTerm.term.description
