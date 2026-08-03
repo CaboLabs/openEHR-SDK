@@ -44,7 +44,7 @@ class OperationalTemplateParser {
      'INSTRUCTION_DETAILS'
    ]
 
-   // for building "data paths" (it's really alternative template paths not "data" pahts)
+   // for building "data paths" (it's really alternative template paths not "data" paths)
    def pathCounter = [:]
 
    /**
@@ -285,7 +285,7 @@ class OperationalTemplateParser {
          // only for non root nodes and nodes with node_id
          if (!pathCounter[templatePath])
          {
-            pathCounter[templatePath] = 1
+            pathCounter[templatePath] = 1 // NOTE: this makes data paths to start in 1, we might start in 0
          }
          else
          {
