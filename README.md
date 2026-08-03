@@ -347,5 +347,99 @@ def formGenerator = new OptUiGenerator(false, 4)
 String formHtml = formGenerator.generate(opt)
 ```
 
+### Diff two Operational Templates
+
+Two complementary diff algorithms live under `com.cabolabs.openehr.opt.diff`:
+
+- **`OperationalTemplateDiffAlgorithm`** — structural diff. Classifies every node as `same`, `added` or `removed` by comparing template paths between the two OPTs. Fast, and good for spotting structural changes, but doesn't look inside a node: if a node exists in both OPTs at the same path but its constraints changed (name, code list, cardinality, etc.), it's still reported as `same`.
+- **`SemanticOperationalTemplateDiffAlgorithm`** — field-level diff. Traverses both OPTs' object trees in parallel (attributes matched by RM attribute name, nodes matched by `nodeId`, falling back to position when `nodeId` is absent) and additionally reports `modified` nodes together with the specific fields/constraints that changed: name, RM type, occurrences, cardinality, existence, code lists, terminology, quantity units/magnitude/precision, ordinal values/symbols, primitive patterns/ranges, archetype slot includes/excludes, etc.
+
+Both return a tree (`OperationalTemplateDiff` / `SemanticOperationalTemplateDiff`) rooted at the OPT's `definition`; neither algorithm mutates the input OPTs, so the same `OperationalTemplate` instances can be diffed against several others.
+
+#### Structural diff
+
+```groovy
+import com.cabolabs.openehr.opt.diff.OperationalTemplateDiffAlgorithm
+import com.cabolabs.openehr.opt.diff.OperationalTemplateDiff2JsMindTree
+
+def opt1 = loadAndParse('template_v1.opt')
+def opt2 = loadAndParse('template_v2.opt')
+
+def diffal = new OperationalTemplateDiffAlgorithm()
+def diff = diffal.diff(opt1, opt2) // OperationalTemplateDiff
+
+// diff.root is a tree of NodeDiff: { templateDataPath, compareResult: same|added|removed, optNode, attributeDiffs }
+// attributeDiffs is Map<rmAttributeName, List<NodeDiff>>, since an attribute can hold repeated/alternative nodes
+
+// NodeDiff.optNode holds a live reference into the OPT tree (with a circular parent pointer),
+// so don't JsonOutput.toJson(diff) directly - use the jsMind serializer instead:
+def jsmind = new OperationalTemplateDiff2JsMindTree()
+println jsmind.getJsMindTreeString(diff)
+```
+
+Given a template where `at0004`, `at0005` and `at0009` all got their internal constraints edited but no node was added or removed, `diff.root` looks like this (printed manually by walking `attributeDiffs`):
+
+```
+/ [same]
+  @content [same]
+    /content[archetype_id=...diff_observation_test.v1](1) [same]
+      @data [same]
+        .../data[at0001](1) [same]
+          @events [same]
+            .../events[at0002](1) [same]
+              @data [same]
+                .../data[at0003](1) [same]
+                  @items [same]
+                    .../items[at0004](1) [same]   <- name/occurrences changed, NOT detected
+                    .../items[at0005](1) [same]   <- code list changed, NOT detected
+                    .../items[at0009](1) [same]   <- quantity list changed, NOT detected
+```
+
+Since nothing was added or removed, the whole tree reports `same` - the structural diff can't see the changes inside those three nodes.
+
+#### Semantic diff
+
+```groovy
+import com.cabolabs.openehr.opt.diff.SemanticOperationalTemplateDiffAlgorithm
+
+def opt1 = loadAndParse('template_v1.opt')
+def opt2 = loadAndParse('template_v2.opt')
+
+def diffal = new SemanticOperationalTemplateDiffAlgorithm()
+def diff = diffal.diff(opt1, opt2) // SemanticOperationalTemplateDiff
+
+println diff.templateMetadataChanges // template_id/concept/language/purpose/isControlled changes
+
+def dump
+dump = { node, indent ->
+   println "${indent}${node.templatePath} [${node.status}]"
+   node.fieldChanges.each { println "${indent}  * ${it.field}: '${it.oldValue}' -> '${it.newValue}'" }
+   node.listChanges.each  { println "${indent}  * ${it.field}: added=${it.added.size()} removed=${it.removed.size()} modified=${it.modified*.item}" }
+   node.attributes.each { name, attrDiff -> attrDiff.children.each { child -> dump(child, indent + '  ') } }
+}
+dump(diff.root, '')
+```
+
+For the same at0004/at0005/at0009 changes (occurrences `0..1`→`1..1` and a name change on at0004, one code added to at0005's local code list, one quantity unit added plus a `magnitude >= 0` constraint added to the existing units on at0009 - this exact scenario is covered by `SemanticOptDiffTest.testSemanticDiffUserProvidedFixtures`), the output looks like this:
+
+```
+/ [modified]
+  ...
+  .../items[at0004] [modified]
+    * occurrences: '[0..1]' -> '[1..1]'
+    * name: 'text node 1' -> 'text node 1 changed name'
+  .../items[at0005] [modified]
+    .../items[at0005]/value [modified]
+      .../items[at0005]/value/defining_code [modified]
+        * codeList: added=1 removed=0 modified=[]
+  .../items[at0009] [modified]
+    .../items[at0009]/value [modified]
+      * list: added=1 removed=0 modified=[cm, mm]
+```
+
+(`added`/`removed` on a `list`/`codeList` `ListChange` hold the actual matched items - plain strings for `codeList`, `CQuantityItem`/`CDvOrdinalItem` objects for quantity/ordinal lists; `modified` holds one `ListItemChange` per item that exists on both sides but differs, keyed by the item's matching field - `units` for quantity, `value` for ordinal - each carrying its own `FieldChange` list, e.g. `magnitude: null -> '[0.0..*)'` for `cm`/`mm` above.)
+
+Every `modified` status bubbles up to all ancestors, so `diff.root.status == 'modified'` even though the actual changes are deep in the tree - and every node already carries `templatePath`, `nodeId`, `rmTypeName`, `type`, `name`, `status`, `fieldChanges` and `listChanges`, so a tree UI can render straight off this structure without any further lookups into the OPTs.
+
 [EHRCommitter]: https://github.com/ppazos/EHRCommitter
 [EHRServer]: https://github.com/ppazos/cabolabs-ehrserver
