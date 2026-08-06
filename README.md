@@ -352,7 +352,7 @@ String formHtml = formGenerator.generate(opt)
 Two complementary diff algorithms live under `com.cabolabs.openehr.opt.diff`:
 
 - **`OperationalTemplateDiffAlgorithm`** — structural diff. Classifies every node as `same`, `added` or `removed` by comparing template paths between the two OPTs. Fast, and good for spotting structural changes, but doesn't look inside a node: if a node exists in both OPTs at the same path but its constraints changed (name, code list, cardinality, etc.), it's still reported as `same`.
-- **`SemanticOperationalTemplateDiffAlgorithm`** — field-level diff. Traverses both OPTs' object trees in parallel (attributes matched by RM attribute name; children matched by archetype_id ignoring its trailing version for archetype-root nodes, by `nodeId` otherwise, falling back to position when neither is present) and additionally reports `modified` nodes together with the specific fields/constraints that changed: name, RM type, occurrences, `archetypeId` (so a version bump on an archetype slot shows up explicitly), cardinality, existence, code lists, terminology, quantity units/magnitude/precision, ordinal values/symbols, primitive patterns/ranges, archetype slot includes/excludes, etc. Matching an archetype root by archetype_id rather than `nodeId` matters because the root's `nodeId` is conventionally the generic `at0000` for every archetype - under a `C_MULTIPLE_ATTRIBUTE` slot holding several sibling archetypes (e.g. `COMPOSITION.content`), `nodeId`-only matching would pair up unrelated archetypes; a specialized archetype replacing a generic one (different archetype_id concept, e.g. `request-lab` for `request`) is correctly reported as removed+added rather than matched.
+- **`SemanticOperationalTemplateDiffAlgorithm`** — field-level diff. Traverses both OPTs' object trees in parallel (attributes matched by RM attribute name; children matched by archetype_id ignoring its trailing version for archetype-root nodes, by `nodeId` otherwise, falling back to position when neither is present) and additionally reports `modified` nodes together with the specific fields/constraints that changed: name, RM type, occurrences, `archetypeId` (so a version bump on an archetype slot shows up explicitly), cardinality, existence, code lists, terminology, quantity units/magnitude/precision, ordinal values/symbols, primitive patterns/ranges, archetype slot includes/excludes, etc. Matching an archetype root by archetype_id rather than `nodeId` matters because the root's `nodeId` is conventionally the generic `at0000` for every archetype - under a `C_MULTIPLE_ATTRIBUTE` slot holding several sibling archetypes (e.g. `COMPOSITION.content`), `nodeId`-only matching would pair up unrelated archetypes; a specialized archetype replacing a generic one (different archetype_id concept, e.g. `request-lab` for `request`) is correctly reported as removed+added rather than matched. It also flags which of those changes are *breaking* - would invalidate data that was valid under `opt1` once validated against `opt2` (see [Breaking-change detection](#breaking-change-detection)).
 
 Both return a tree (`OperationalTemplateDiff` / `SemanticOperationalTemplateDiff`) rooted at the OPT's `definition`; neither algorithm mutates the input OPTs, so the same `OperationalTemplate` instances can be diffed against several others.
 
@@ -440,6 +440,35 @@ For the same at0004/at0005/at0009 changes (occurrences `0..1`→`1..1` and a nam
 (`added`/`removed` on a `list`/`codeList` `ListChange` hold the actual matched items - plain strings for `codeList`, `CQuantityItem`/`CDvOrdinalItem` objects for quantity/ordinal lists; `modified` holds one `ListItemChange` per item that exists on both sides but differs, keyed by the item's matching field - `units` for quantity, `value` for ordinal - each carrying its own `FieldChange` list, e.g. `magnitude: null -> '[0.0..*)'` for `cm`/`mm` above.)
 
 Every `modified` status bubbles up to all ancestors, so `diff.root.status == 'modified'` even though the actual changes are deep in the tree - and every node already carries `templatePath`, `nodeId`, `rmTypeName`, `type`, `name`, `status`, `fieldChanges` and `listChanges`, so a tree UI can render straight off this structure without any further lookups into the OPTs.
+
+#### Breaking-change detection
+
+On top of `fieldChanges`/`listChanges`, the semantic diff also flags which changes can invalidate data that was valid under `opt1` once it's validated against `opt2`. Every such change is collected into `diff.breakingChanges` (flat `List<BreakingChange>`, each with `templatePath`, `category`, `field`, `oldValue`, `newValue`, `reason`, `certain`), and every `SemanticNodeDiff`/`AttributeDiff` also carries a `breaking` boolean rolled up from its own changes and all its descendants, so a tree UI can flag a path without walking the flat list.
+
+`certain` tells them apart:
+
+- `true` - the change alone makes some previously-valid data invalid:
+  - `occurrences_narrowed` / `existence_narrowed` / `cardinality_narrowed` / `range_narrowed` - an interval (occurrences, existence, cardinality, a primitive's `range`, a quantity item's `magnitude`/`precision`) got tighter: a higher lower bound, a lower upper bound, a bound flipping from inclusive to exclusive, or a brand-new interval constraint where there was none before.
+  - `value_removed` - a value dropped out of a constrained set: a code removed from a `CODE_PHRASE`'s `codeList`, an item removed from an ordinal/string/integer `list`, a quantity unit removed, or `CBoolean.trueValid`/`falseValid` flipping from valid to invalid.
+  - `node_added_mandatory` / `attribute_added_mandatory` - a node or attribute that didn't exist in `opt1` was added with `occurrences`/`existence` that doesn't allow `0`, i.e. it's now required; legacy data never had it.
+- `false` - only *possibly* breaking, needs an external check the diff can't do on its own:
+  - `node_removed` / `attribute_removed` - fine for data already committed under `opt1` (the value is still there, it's just not checked against a definition on the `opt2` side), but breaks any stored query that references that path. Cross-check against wherever queries are persisted (e.g. an AQL query registry) to know for sure.
+
+Widening changes (a bound relaxed, a value added to a set, a constraint dropped entirely) are never reported as breaking.
+
+Continuing the at0004/at0005/at0009 example above, `at0004`'s `occurrences: '[0..1]' -> '[1..1]'` and `at0009`'s new `magnitude` constraints are both `certain` breaking changes:
+
+```groovy
+diff.breakingChanges.each { println "${it.templatePath} [${it.category}] ${it.field}: '${it.oldValue}' -> '${it.newValue}' (certain=${it.certain})" }
+```
+
+```
+.../items[at0004] [occurrences_narrowed] occurrences: '[0..1]' -> '[1..1]' (certain=true)
+.../items[at0009]/value[units=cm] [range_narrowed] magnitude: 'null' -> '[0.0..*)' (certain=true)
+.../items[at0009]/value[units=mm] [range_narrowed] magnitude: 'null' -> '[0.0..*)' (certain=true)
+```
+
+and `at0004.breaking == true`, bubbling up so `diff.root.breaking == true` too - while the code *added* to at0005's `codeList` doesn't appear at all, since gaining a value only widens what's valid.
 
 [EHRCommitter]: https://github.com/ppazos/EHRCommitter
 [EHRServer]: https://github.com/ppazos/cabolabs-ehrserver
