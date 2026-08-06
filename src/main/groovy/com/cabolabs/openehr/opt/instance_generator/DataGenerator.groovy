@@ -77,7 +77,7 @@ class DataGenerator {
       if (!ivd.lowerIncluded) l_limit_seconds++
 
       // random generates including the lower and excluding the upper
-      def rnd = new java.util.concurrent.ThreadLocalRandom()
+      def rnd = java.util.concurrent.ThreadLocalRandom.current()
       // the if below is to prevent the case where both limits are the same, and nextLong throws an exception
       Long value = (l_limit_seconds < u_limit_seconds ? rnd.nextLong(l_limit_seconds, u_limit_seconds) : l_limit_seconds)
 

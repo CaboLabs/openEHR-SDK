@@ -24,7 +24,7 @@ class OperationalTemplateParser {
 
       if (validate)
       {
-         def inputStream = getClass().getResourceAsStream('/xsd/OperationalTemplate.xsd')
+         def inputStream = getClass().getResourceAsStream('/xsd/OperationalTemplateExtra.xsd')
          this.schemaValidator = new XmlValidation(inputStream)
       }
    }

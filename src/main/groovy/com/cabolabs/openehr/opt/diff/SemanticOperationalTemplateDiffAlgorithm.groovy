@@ -34,8 +34,13 @@ import com.cabolabs.openehr.opt.model.primitive.CDuration
  */
 class SemanticOperationalTemplateDiffAlgorithm {
 
+   // accumulates every breaking change found during one diff() run; reset at the start of diff()
+   private List<BreakingChange> breakingChanges
+
    SemanticOperationalTemplateDiff diff(OperationalTemplate opt1, OperationalTemplate opt2)
    {
+      breakingChanges = []
+
       def metadataChanges = []
       compareField(metadataChanges, 'templateId', opt1.templateId, opt2.templateId)
       compareField(metadataChanges, 'concept', opt1.concept, opt2.concept)
@@ -49,7 +54,8 @@ class SemanticOperationalTemplateDiffAlgorithm {
          compared: opt1,
          to: opt2,
          templateMetadataChanges: metadataChanges,
-         root: root
+         root: root,
+         breakingChanges: breakingChanges
       )
    }
 
@@ -58,20 +64,26 @@ class SemanticOperationalTemplateDiffAlgorithm {
       if (n1 == null) return buildSubtree(n2, 'added')
       if (n2 == null) return buildSubtree(n1, 'removed')
 
+      def path = n2.templatePath ?: n1.templatePath
+      def sizeBefore = breakingChanges.size()
+
       def fieldChanges = []
       def listChanges = []
 
       compareField(fieldChanges, 'name', n1.text, n2.text)
       compareField(fieldChanges, 'rmTypeName', n1.rmTypeName, n2.rmTypeName)
       compareField(fieldChanges, 'type', n1.type, n2.type)
-      compareField(fieldChanges, 'occurrences', intervalStr(n1.occurrences), intervalStr(n2.occurrences))
+      compareIntervalField(fieldChanges, path, 'occurrences', n1.occurrences, n2.occurrences)
       compareField(fieldChanges, 'archetypeId', n1.archetypeId, n2.archetypeId)
 
-      compareTypeSpecific(n1, n2, fieldChanges, listChanges)
+      compareTypeSpecific(n1, n2, path, fieldChanges, listChanges)
+
+      def ownBreaking = breakingChanges.subList(sizeBefore, breakingChanges.size()).any { it.certain }
 
       def attributes = matchAttributes(n1, n2)
 
       def childrenChanged = attributes.values().any { it.status != 'same' }
+      def childrenBreaking = attributes.values().any { it.breaking }
 
       return new SemanticNodeDiff(
          templatePath: n2.templatePath,
@@ -83,6 +95,7 @@ class SemanticOperationalTemplateDiffAlgorithm {
          fieldChanges: fieldChanges,
          listChanges:  listChanges,
          attributes:   attributes,
+         breaking:     ownBreaking || childrenBreaking,
          node1:        n1,
          node2:        n2
       )
@@ -91,13 +104,40 @@ class SemanticOperationalTemplateDiffAlgorithm {
    // builds a whole-subtree diff for a node that only exists on one side (status is 'added' or 'removed')
    private SemanticNodeDiff buildSubtree(ObjectNode n, String status)
    {
+      // a node newly added whose occurrences don't allow 0 is mandatory: legacy data, which never
+      // had this node, can no longer be valid. A removed node isn't breaking for stored data by
+      // itself (that data still has the value, it's just not re-validated against it going
+      // forward), but it can break a stored query that references this path.
+      def mandatory = (status == 'added' && n.occurrences != null && !n.occurrences.has(0))
+
+      if (mandatory)
+      {
+         addBreaking('node_added_mandatory', n.templatePath, 'occurrences', null, intervalStr(n.occurrences),
+            'new node is mandatory (occurrences does not allow 0); legacy data lacks it', true)
+      }
+      else if (status == 'removed')
+      {
+         addBreaking('node_removed', n.templatePath, null, n.nodeId, null,
+            'node removed; verify no stored queries reference this path', false)
+      }
+
       def attributes = [:]
 
       n.attributes.each { attr ->
+         def children = attr.children.collect { buildSubtree(it, status) }
+         def attrMandatory = (status == 'added' && attr.existence != null && !attr.existence.has(0))
+
+         if (attrMandatory)
+         {
+            addBreaking('attribute_added_mandatory', n.templatePath, attr.rmAttributeName, null, intervalStr(attr.existence),
+               'new attribute is mandatory (existence does not allow 0); legacy data lacks it', true)
+         }
+
          attributes[attr.rmAttributeName] = new AttributeDiff(
             rmAttributeName: attr.rmAttributeName,
             status: status,
-            children: attr.children.collect { buildSubtree(it, status) }
+            children: children,
+            breaking: attrMandatory || children.any { it.breaking }
          )
       }
 
@@ -109,6 +149,7 @@ class SemanticOperationalTemplateDiffAlgorithm {
          name:         n.text,
          status:       status,
          attributes:   attributes,
+         breaking:     mandatory || attributes.values().any { it.breaking },
          node1:        status == 'removed' ? n : null,
          node2:        status == 'added'   ? n : null
       )
@@ -116,52 +157,75 @@ class SemanticOperationalTemplateDiffAlgorithm {
 
    private Map<String, AttributeDiff> matchAttributes(ObjectNode n1, ObjectNode n2)
    {
+      def path = n2.templatePath ?: n1.templatePath
       def names = (n1.attributes*.rmAttributeName + n2.attributes*.rmAttributeName).unique()
 
       def result = [:]
       names.each { name ->
          def a1 = n1.attributes.find { it.rmAttributeName == name }
          def a2 = n2.attributes.find { it.rmAttributeName == name }
-         result[name] = compareAttributeNodes(name, a1, a2)
+         result[name] = compareAttributeNodes(path, name, a1, a2)
       }
       return result
    }
 
-   private AttributeDiff compareAttributeNodes(String name, AttributeNode a1, AttributeNode a2)
+   private AttributeDiff compareAttributeNodes(String path, String name, AttributeNode a1, AttributeNode a2)
    {
       if (a1 == null)
       {
+         def children = a2.children.collect { buildSubtree(it, 'added') }
+         def mandatory = (a2.existence != null && !a2.existence.has(0))
+
+         if (mandatory)
+         {
+            addBreaking('attribute_added_mandatory', path, name, null, intervalStr(a2.existence),
+               'new attribute is mandatory (existence does not allow 0); legacy data lacks it', true)
+         }
+
          return new AttributeDiff(
             rmAttributeName: name,
             status: 'added',
-            children: a2.children.collect { buildSubtree(it, 'added') }
+            children: children,
+            breaking: mandatory || children.any { it.breaking }
          )
       }
 
       if (a2 == null)
       {
+         def children = a1.children.collect { buildSubtree(it, 'removed') }
+
+         addBreaking('attribute_removed', path, name, name, null,
+            'attribute removed; verify no stored queries reference this path', false)
+
          return new AttributeDiff(
             rmAttributeName: name,
             status: 'removed',
-            children: a1.children.collect { buildSubtree(it, 'removed') }
+            children: children,
+            breaking: children.any { it.breaking }
          )
       }
+
+      def sizeBefore = breakingChanges.size()
 
       def fieldChanges = []
       compareField(fieldChanges, 'cardinality.isOrdered', a1.cardinality?.isOrdered, a2.cardinality?.isOrdered)
       compareField(fieldChanges, 'cardinality.isUnique', a1.cardinality?.isUnique, a2.cardinality?.isUnique)
-      compareField(fieldChanges, 'cardinality.interval', intervalStr(a1.cardinality?.interval), intervalStr(a2.cardinality?.interval))
-      compareField(fieldChanges, 'existence', intervalStr(a1.existence), intervalStr(a2.existence))
+      compareIntervalField(fieldChanges, path, 'cardinality.interval', a1.cardinality?.interval, a2.cardinality?.interval)
+      compareIntervalField(fieldChanges, path, 'existence', a1.existence, a2.existence)
+
+      def ownBreaking = breakingChanges.subList(sizeBefore, breakingChanges.size()).any { it.certain }
 
       def children = matchChildren(a1.children, a2.children)
 
       def childrenChanged = children.any { it.status != 'same' }
+      def childrenBreaking = children.any { it.breaking }
 
       return new AttributeDiff(
          rmAttributeName: name,
          status: (fieldChanges || childrenChanged) ? 'modified' : 'same',
          fieldChanges: fieldChanges,
-         children: children
+         children: children,
+         breaking: ownBreaking || childrenBreaking
       )
    }
 
@@ -222,19 +286,19 @@ class SemanticOperationalTemplateDiffAlgorithm {
 
    // ---- type-specific comparators ----
 
-   private void compareTypeSpecific(ObjectNode n1, ObjectNode n2, List fieldChanges, List listChanges)
+   private void compareTypeSpecific(ObjectNode n1, ObjectNode n2, String path, List fieldChanges, List listChanges)
    {
       if (n1 instanceof CCodePhrase && n2 instanceof CCodePhrase)
       {
-         compareCCodePhrase(n1, n2, fieldChanges, listChanges)
+         compareCCodePhrase(n1, n2, path, fieldChanges, listChanges)
       }
       else if (n1 instanceof CDvQuantity && n2 instanceof CDvQuantity)
       {
-         compareCDvQuantity(n1, n2, fieldChanges, listChanges)
+         compareCDvQuantity(n1, n2, path, fieldChanges, listChanges)
       }
       else if (n1 instanceof CDvOrdinal && n2 instanceof CDvOrdinal)
       {
-         compareCDvOrdinal(n1, n2, fieldChanges, listChanges)
+         compareCDvOrdinal(n1, n2, path, fieldChanges, listChanges)
       }
       else if (n1 instanceof ArchetypeSlot && n2 instanceof ArchetypeSlot)
       {
@@ -242,7 +306,7 @@ class SemanticOperationalTemplateDiffAlgorithm {
       }
       else if (n1 instanceof PrimitiveObjectNode && n2 instanceof PrimitiveObjectNode)
       {
-         comparePrimitiveObjectNode(n1, n2, fieldChanges, listChanges)
+         comparePrimitiveObjectNode(n1, n2, path, fieldChanges, listChanges)
       }
       // else: generic ObjectNode, or the two sides are different constraint subtypes -
       // the 'type'/'rmTypeName' FieldChanges already added above capture that the
@@ -250,7 +314,7 @@ class SemanticOperationalTemplateDiffAlgorithm {
       // diff across two different constraint kinds.
    }
 
-   private void compareCCodePhrase(CCodePhrase n1, CCodePhrase n2, List fieldChanges, List listChanges)
+   private void compareCCodePhrase(CCodePhrase n1, CCodePhrase n2, String path, List fieldChanges, List listChanges)
    {
       compareField(fieldChanges, 'terminologyId', n1.terminologyId, n2.terminologyId)
       compareField(fieldChanges, 'terminologyRef', n1.terminologyRef, n2.terminologyRef)
@@ -262,10 +326,16 @@ class SemanticOperationalTemplateDiffAlgorithm {
       if (added || removed)
       {
          listChanges << new ListChange(field: 'codeList', added: added, removed: removed)
+
+         if (removed)
+         {
+            addBreaking('value_removed', path, 'codeList', removed, null,
+               "code(s) ${removed} removed from the valid set; legacy data using them would fail validation", true)
+         }
       }
    }
 
-   private void compareCDvQuantity(CDvQuantity n1, CDvQuantity n2, List fieldChanges, List listChanges)
+   private void compareCDvQuantity(CDvQuantity n1, CDvQuantity n2, String path, List fieldChanges, List listChanges)
    {
       compareField(fieldChanges, 'property', codePhraseStr(n1.property), codePhraseStr(n2.property))
 
@@ -283,18 +353,24 @@ class SemanticOperationalTemplateDiffAlgorithm {
          def i1 = list1.find { it.units == u }
          def i2 = list2.find { it.units == u }
          def itemChanges = []
-         compareField(itemChanges, 'magnitude', intervalStr(i1.magnitude), intervalStr(i2.magnitude))
-         compareField(itemChanges, 'precision', intervalStr(i1.precision), intervalStr(i2.precision))
+         compareIntervalField(itemChanges, "${path}[units=${u}]", 'magnitude', i1.magnitude, i2.magnitude)
+         compareIntervalField(itemChanges, "${path}[units=${u}]", 'precision', i1.precision, i2.precision)
          if (itemChanges) modified << new ListItemChange(item: u, changes: itemChanges)
       }
 
       if (added || removed || modified)
       {
          listChanges << new ListChange(field: 'list', added: added, removed: removed, modified: modified)
+
+         if (removed)
+         {
+            addBreaking('value_removed', path, 'list', removed*.units, null,
+               "unit(s) ${removed*.units} removed from the valid set; legacy data using them would fail validation", true)
+         }
       }
    }
 
-   private void compareCDvOrdinal(CDvOrdinal n1, CDvOrdinal n2, List fieldChanges, List listChanges)
+   private void compareCDvOrdinal(CDvOrdinal n1, CDvOrdinal n2, String path, List fieldChanges, List listChanges)
    {
       def list1 = n1.list ?: []
       def list2 = n2.list ?: []
@@ -317,6 +393,12 @@ class SemanticOperationalTemplateDiffAlgorithm {
       if (added || removed || modified)
       {
          listChanges << new ListChange(field: 'list', added: added, removed: removed, modified: modified)
+
+         if (removed)
+         {
+            addBreaking('value_removed', path, 'list', removed*.value, null,
+               "ordinal value(s) ${removed*.value} removed from the valid set; legacy data using them would fail validation", true)
+         }
       }
    }
 
@@ -326,7 +408,7 @@ class SemanticOperationalTemplateDiffAlgorithm {
       compareField(fieldChanges, 'excludes', n1.excludes, n2.excludes)
    }
 
-   private void comparePrimitiveObjectNode(PrimitiveObjectNode n1, PrimitiveObjectNode n2, List fieldChanges, List listChanges)
+   private void comparePrimitiveObjectNode(PrimitiveObjectNode n1, PrimitiveObjectNode n2, String path, List fieldChanges, List listChanges)
    {
       def i1 = n1.item
       def i2 = n2.item
@@ -339,31 +421,58 @@ class SemanticOperationalTemplateDiffAlgorithm {
 
       if (i1 instanceof CInteger)
       {
-         compareField(fieldChanges, 'range', intervalStr(i1.range), intervalStr(i2.range))
+         compareIntervalField(fieldChanges, path, 'range', i1.range, i2.range)
          def added = i2.list - i1.list
          def removed = i1.list - i2.list
-         if (added || removed) listChanges << new ListChange(field: 'list', added: added, removed: removed)
+         if (added || removed)
+         {
+            listChanges << new ListChange(field: 'list', added: added, removed: removed)
+            if (removed)
+            {
+               addBreaking('value_removed', path, 'list', removed, null,
+                  "value(s) ${removed} removed from the valid set; legacy data using them would fail validation", true)
+            }
+         }
       }
       else if (i1 instanceof CReal)
       {
-         compareField(fieldChanges, 'range', intervalStr(i1.range), intervalStr(i2.range))
+         compareIntervalField(fieldChanges, path, 'range', i1.range, i2.range)
       }
       else if (i1 instanceof CBoolean)
       {
          compareField(fieldChanges, 'trueValid', i1.trueValid, i2.trueValid)
          compareField(fieldChanges, 'falseValid', i1.falseValid, i2.falseValid)
+
+         if (i1.trueValid && !i2.trueValid)
+         {
+            addBreaking('value_removed', path, 'trueValid', true, false,
+               "'true' no longer a valid value; legacy data with value true would fail validation", true)
+         }
+         if (i1.falseValid && !i2.falseValid)
+         {
+            addBreaking('value_removed', path, 'falseValid', true, false,
+               "'false' no longer a valid value; legacy data with value false would fail validation", true)
+         }
       }
       else if (i1 instanceof CString)
       {
          compareField(fieldChanges, 'pattern', i1.pattern, i2.pattern)
          def added = i2.list - i1.list
          def removed = i1.list - i2.list
-         if (added || removed) listChanges << new ListChange(field: 'list', added: added, removed: removed)
+         if (added || removed)
+         {
+            listChanges << new ListChange(field: 'list', added: added, removed: removed)
+            if (removed)
+            {
+               addBreaking('value_removed', path, 'list', removed, null,
+                  "value(s) ${removed} removed from the valid set; legacy data using them would fail validation", true)
+            }
+         }
       }
       else if (i1 instanceof CDuration)
       {
          compareField(fieldChanges, 'pattern', i1.pattern, i2.pattern)
-         compareField(fieldChanges, 'range', intervalStr(i1.range), intervalStr(i2.range))
+         compareIntervalField(fieldChanges, path, 'range', i1.range, i2.range)
       }
       else if (i1 instanceof CDate || i1 instanceof CDateTime || i1 instanceof CTime)
       {
@@ -379,6 +488,88 @@ class SemanticOperationalTemplateDiffAlgorithm {
       {
          fieldChanges << new FieldChange(field: field, oldValue: v1, newValue: v2)
       }
+   }
+
+   // compares two Interval-like constraints (IntervalInt / IntervalBigDecimal / IntervalDuration,
+   // duck-typed on lower/upper/lowerIncluded/upperIncluded/lowerUnbounded/upperUnbounded).
+   // Records a FieldChange when they differ, and a BreakingChange when the new interval is
+   // narrower than the old one - the case where legacy data conforming to the old OPT can be
+   // invalid under the new OPT.
+   private void compareIntervalField(List fieldChanges, String path, String field, def i1, def i2)
+   {
+      def s1 = intervalStr(i1)
+      def s2 = intervalStr(i2)
+
+      if (s1 == s2) return
+
+      fieldChanges << new FieldChange(field: field, oldValue: s1, newValue: s2)
+
+      if (isNarrower(i1, i2))
+      {
+         addBreaking(narrowedCategory(field), path, field, s1, s2,
+            'constraint narrowed; values previously valid under the old OPT may now be invalid', true)
+      }
+   }
+
+   private String narrowedCategory(String field)
+   {
+      switch (field)
+      {
+         case 'occurrences':          return 'occurrences_narrowed'
+         case 'existence':            return 'existence_narrowed'
+         case 'cardinality.interval': return 'cardinality_narrowed'
+         default:                     return 'range_narrowed' // range, magnitude, precision
+      }
+   }
+
+   // true when i2 (new) accepts a strict subset of what i1 (old) accepted: a tighter lower
+   // bound, a tighter upper bound, or a bound flipping from included to excluded at the same
+   // value. A brand-new constraint where none existed before (i1 == null) counts as narrowing
+   // too, since previously-unconstrained values are now checked against it. A constraint that's
+   // dropped entirely (i2 == null) is a widening, never breaking.
+   private boolean isNarrower(def i1, def i2)
+   {
+      if (i2 == null) return false
+      if (i1 == null) return true
+
+      boolean lowerTighter = false
+      if (!i2.lowerUnbounded)
+      {
+         if (i1.lowerUnbounded) lowerTighter = true
+         else
+         {
+            def cmp = i2.lower <=> i1.lower
+            if (cmp > 0) lowerTighter = true
+            else if (cmp == 0 && i1.lowerIncluded && !i2.lowerIncluded) lowerTighter = true
+         }
+      }
+
+      boolean upperTighter = false
+      if (!i2.upperUnbounded)
+      {
+         if (i1.upperUnbounded) upperTighter = true
+         else
+         {
+            def cmp = i2.upper <=> i1.upper
+            if (cmp < 0) upperTighter = true
+            else if (cmp == 0 && i1.upperIncluded && !i2.upperIncluded) upperTighter = true
+         }
+      }
+
+      return lowerTighter || upperTighter
+   }
+
+   private void addBreaking(String category, String path, String field, def oldValue, def newValue, String reason, boolean certain)
+   {
+      breakingChanges << new BreakingChange(
+         templatePath: path,
+         category: category,
+         field: field,
+         oldValue: oldValue,
+         newValue: newValue,
+         reason: reason,
+         certain: certain
+      )
    }
 
    // works for IntervalInt, IntervalBigDecimal and IntervalDuration alike (duck typing on the

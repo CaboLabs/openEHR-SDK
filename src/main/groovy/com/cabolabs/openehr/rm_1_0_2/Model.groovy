@@ -8,21 +8,24 @@ class Model {
 
    public static Map rm_attributes_not_in_opt = [
       EHR_STATUS: [
-         uid:           'OBJECT_VERSION_ID', // NOTE: in the RM all possible UID_BASED_ID could be the type but only this one is used by recommendation
-         subject:       'PARTY_SELF',
-         is_queryable:  'Boolean',
-         is_modifiable: 'Boolean',
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+         uid:               'OBJECT_VERSION_ID', // NOTE: in the RM all possible UID_BASED_ID could be the type but only this one is used by recommendation
+         subject:           'PARTY_SELF',
+         is_queryable:      'Boolean',
+         is_modifiable:     'Boolean',
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
       FOLDER: [
-         uid:           'OBJECT_VERSION_ID',
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+         uid:               'OBJECT_VERSION_ID',
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
       COMPOSITION: [
-         uid:           'OBJECT_VERSION_ID',
-         composer:      ['PARTY_IDENTIFIED', 'PARTY_RELATED', 'PARTY_SELF'],
-         context:       'EVENT_CONTEXT', // if no other_context is specified the event context is not on the OPT, we need to check if it is or not to avoid double indexing.
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+         uid:               'OBJECT_VERSION_ID',
+         composer:          ['PARTY_IDENTIFIED', 'PARTY_RELATED', 'PARTY_SELF'],
+         context:           'EVENT_CONTEXT', // if no other_context is specified the event context is not on the OPT, we need to check if it is or not to avoid double indexing.
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
       EVENT_CONTEXT: [
          setting:        'DV_CODED_TEXT',
@@ -32,110 +35,146 @@ class Model {
          participations: 'PARTICIPATION' // has many!
       ],
       SECTION: [
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
       OBSERVATION: [
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
       EVALUATION: [
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
 
       ADMIN_ENTRY: [
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
       ACTION: [
-         time: 'DV_DATE_TIME',
+         time:                'DV_DATE_TIME',
          instruction_details: 'INSTRUCTION_DETAILS',
-         name: ['DV_TEXT', 'DV_CODED_TEXT']
+         name:                ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details:   'ARCHETYPED'
       ],
       INSTRUCTION_DETAILS: [
          instruction_id: 'LOCATABLE_REF',
          activity_id: 'String'
       ],
       INSTRUCTION: [
-         narrative:    'DV_TEXT',
-         expiry_time:  'DV_DATE_TIME',
-         name:         ['DV_TEXT', 'DV_CODED_TEXT']
+         narrative:         'DV_TEXT',
+         expiry_time:       'DV_DATE_TIME',
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
       ACTIVITY: [
-         timing:       'DV_PARSABLE',
+         timing:              'DV_PARSABLE',
          action_archetype_id: 'String',
-         name:         ['DV_TEXT', 'DV_CODED_TEXT']
+         name:                ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details:   'ARCHETYPED'
       ],
       HISTORY: [
-         origin:       'DV_DATE_TIME',
-         period:       'DV_DURATION',
-         duration:     'DV_DURATION',
-         name:         ['DV_TEXT', 'DV_CODED_TEXT']
+         origin:            'DV_DATE_TIME',
+         period:            'DV_DURATION',
+         duration:          'DV_DURATION',
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
       EVENT: [ // to avoid issues with clients using abstract types, considered point event
-         time:         'DV_DATE_TIME',
-         name:         ['DV_TEXT', 'DV_CODED_TEXT']
+         time:              'DV_DATE_TIME',
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
       POINT_EVENT: [
-         time:         'DV_DATE_TIME',
-         name:         ['DV_TEXT', 'DV_CODED_TEXT']
+         time:              'DV_DATE_TIME',
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
       INTERVAL_EVENT: [
-         'time': 'DV_DATE_TIME',
-         'width': 'DV_DURATION',
-         name:   ['DV_TEXT', 'DV_CODED_TEXT']
+         'time':            'DV_DATE_TIME',
+         'width':           'DV_DURATION',
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
       ITEM_TREE: [
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
       CLUSTER: [
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
       ELEMENT: [
-         'null_flavour': 'DV_CODED_TEXT', // this could be in the opt constraining the possible codes
-         name:           ['DV_TEXT', 'DV_CODED_TEXT']
+         'null_flavour':    'DV_CODED_TEXT', // this could be in the opt constraining the possible codes
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
+      ],
+
+      ARCHETYPED: [
+         archetype_id: 'ARCHETYPE_ID',
+         template_id:  'TEMPLATE_ID',
+         rm_version:   'String'
+      ],
+      ARCHETYPE_ID: [
+         value: 'String'
+      ],
+      TEMPLATE_ID: [
+         value: 'String'
       ],
 
       // DEMOGRAPHIC
       PERSON: [
-         uid:           'OBJECT_VERSION_ID',
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+         uid:               'OBJECT_VERSION_ID',
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
       ORGANISATION: [
-         uid:           'OBJECT_VERSION_ID',
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+         uid:               'OBJECT_VERSION_ID',
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
       GROUP: [
-         uid:           'OBJECT_VERSION_ID',
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+         uid:               'OBJECT_VERSION_ID',
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
       AGENT: [
-         uid:           'OBJECT_VERSION_ID',
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+         uid:               'OBJECT_VERSION_ID',
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
       PARTY_RELATIONSHIP: [
-         uid:           'OBJECT_VERSION_ID',
-         source:        'PARTY_REF', // need to support queries over the relationship.source to find all the relationships of an actor
-         target:        'PARTY_REF', // need to support queries over the relationship.target to find all the relationships of an actor
-         time_validity: 'DV_INTERVAL<DV_DATE>',
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+         uid:               'OBJECT_VERSION_ID',
+         source:            'PARTY_REF', // need to support queries over the relationship.source to find all the relationships of an actor
+         target:            'PARTY_REF', // need to support queries over the relationship.target to find all the relationships of an actor
+         time_validity:     'DV_INTERVAL<DV_DATE>',
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
       ROLE: [
-         uid:           'OBJECT_VERSION_ID',
-         time_validity: 'DV_INTERVAL<DV_DATE>',
-         performer:     'PARTY_REF',
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+         uid:               'OBJECT_VERSION_ID',
+         time_validity:     'DV_INTERVAL<DV_DATE>',
+         performer:         'PARTY_REF',
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
       CAPABILITY: [
-         time_validity: 'DV_INTERVAL<DV_DATE>',
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+         time_validity:     'DV_INTERVAL<DV_DATE>',
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
       CONTACT: [
-         time_validity: 'DV_INTERVAL<DV_DATE>',
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+         time_validity:     'DV_INTERVAL<DV_DATE>',
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
       ADDRESS: [
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
       PARTY_IDENTITY: [
-         name:          ['DV_TEXT', 'DV_CODED_TEXT']
+         name:              ['DV_TEXT', 'DV_CODED_TEXT'],
+         archetype_details: 'ARCHETYPED'
       ],
 
       // REF and ID

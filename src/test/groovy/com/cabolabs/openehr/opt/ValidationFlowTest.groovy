@@ -1766,10 +1766,10 @@ class ValidationFlowTest extends GroovyTestCase {
                         "archetype_node_id": "at0002",
                         "value": {
                            "_type": "DV_IDENTIFIER",
-                           "issuer": "",
+                           "issuer": "issuerA",
                            "assigner": "Hospital de Clinicas",
-                           "id": "",
-                           "type": ""
+                           "id": "agentId",
+                           "type": "typeB"
                         }
                      }
                ]
@@ -1912,10 +1912,10 @@ class ValidationFlowTest extends GroovyTestCase {
                         "archetype_node_id": "at0002",
                         "value": {
                            "_type": "DV_IDENTIFIER",
-                           "issuer": "",
+                           "issuer": "issuerA",
                            "assigner": "Hospital de Clinicas",
-                           "id": "",
-                           "type": ""
+                           "id": "agentId",
+                           "type": "typeB"
                         }
                      }
                ]

@@ -13,6 +13,9 @@ class SemanticNodeDiff {
    String name // resolved text
    String status // same, added, removed, modified
 
+   // true if this node or any descendant carries a 'certain' BreakingChange (see BreakingChange)
+   boolean breaking = false
+
    List<FieldChange> fieldChanges = []
    List<ListChange> listChanges = []
 

@@ -9,4 +9,8 @@ class SemanticOperationalTemplateDiff {
    List<FieldChange> templateMetadataChanges = [] // templateId, concept, language, purpose, isControlled
 
    SemanticNodeDiff root
+
+   // flat list of every breaking (or possibly-breaking) constraint change found anywhere in the
+   // tree, see BreakingChange for what 'certain' means
+   List<BreakingChange> breakingChanges = []
 }

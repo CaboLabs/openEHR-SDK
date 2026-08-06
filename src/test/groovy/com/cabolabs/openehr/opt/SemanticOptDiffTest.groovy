@@ -172,7 +172,7 @@ class SemanticOptDiffTest extends GroovyTestCase {
       def path1 = PS +"test_opt_diff"+ PS +"test_diff_v0.opt"
       def opt1 = loadAndParse(path1)
 
-      def path2 = PS +"test_opt_diff"+ PS +"test diff v1.opt"
+      def path2 = PS +"test_opt_diff"+ PS +"test_diff_v1.opt"
       def opt2 = loadAndParse(path2)
 
       def diffal = new SemanticOperationalTemplateDiffAlgorithm()
@@ -225,19 +225,38 @@ class SemanticOptDiffTest extends GroovyTestCase {
 
       def mmChange = listChange.modified.find { it.item == 'mm' }
       assert mmChange.changes.find { it.field == 'magnitude' }
+
+      // breaking-change detection: occurrences 0..1 -> 1..1 is a narrower constraint (a legacy
+      // instance with 0 occurrences of at0004 is no longer valid)
+      assert at0004.breaking
+      def occBreak = diff.breakingChanges.find { it.category == 'occurrences_narrowed' && it.templatePath == at0004.templatePath }
+      assert occBreak
+      assert occBreak.certain
+      assert occBreak.oldValue == '[0..1]'
+      assert occBreak.newValue == '[1..1]'
+
+      // codeList gaining 'at0010' only widens the valid set, not breaking
+      assert !diff.breakingChanges.any { it.templatePath == codePhraseNode.templatePath }
+
+      // a magnitude constraint appearing where there was none before narrows what's valid
+      assert qtyNode.breaking
+      def magBreaks = diff.breakingChanges.findAll { it.category == 'range_narrowed' && it.field == 'magnitude' }
+      assert magBreaks.size() == 2 // cm and mm
+
+      assert diff.root.breaking
    }
 
-   // breaking changes: test diff v1.opt -> test diff v2.opt (same COMPOSITION/OBSERVATION archetypes bumped v1->v2)
+   // breaking changes: test_diff_v1.opt -> test_diff_v2.opt (same COMPOSITION/OBSERVATION archetypes bumped v1->v2)
    //  - at0004 (DV_TEXT "text node 1 changed name") removed entirely
    //  - at0011 (DV_TEXT "text node 2 new") added
    //  - at0005 (DV_CODED_TEXT): nested CCodePhrase codeList lost code 'at0007'
    //  - at0009 (DV_QUANTITY) untouched between v1 and v2, stays 'same'
    void testSemanticDiffBreakingChangesV1toV2()
    {
-      def path1 = PS +"test_opt_diff"+ PS +"test diff v1.opt"
+      def path1 = PS +"test_opt_diff"+ PS +"test_diff_v1.opt"
       def opt1 = loadAndParse(path1)
 
-      def path2 = PS +"test_opt_diff"+ PS +"test diff v2.opt"
+      def path2 = PS +"test_opt_diff"+ PS +"test_diff_v2.opt"
       def opt2 = loadAndParse(path2)
 
       def diffal = new SemanticOperationalTemplateDiffAlgorithm()
@@ -275,6 +294,25 @@ class SemanticOptDiffTest extends GroovyTestCase {
       def at0009 = findNode(diff, "${prefix2}[at0009]")
       assert at0009
       assert at0009.status == 'same'
+      assert !at0009.breaking
+
+      // a removed node isn't 'certain' breaking on its own (legacy data keeps the value; only a
+      // stored query referencing this path would be affected) - so it doesn't flip .breaking
+      assert !at0004.breaking
+      def removedBreak = diff.breakingChanges.find { it.category == 'node_removed' && it.templatePath == at0004.templatePath }
+      assert removedBreak
+      assert !removedBreak.certain
+
+      // losing code 'at0007' from the valid set is certain breaking: legacy data using it would
+      // fail validation under v2
+      assert codePhraseNode.breaking
+      def valueRemoved = diff.breakingChanges.find { it.category == 'value_removed' && it.templatePath == codePhraseNode.templatePath }
+      assert valueRemoved
+      assert valueRemoved.certain
+      assert valueRemoved.oldValue == ['at0007']
+
+      // the certain breaking change deep under at0005 bubbles .breaking up to root
+      assert diff.root.breaking
    }
 
    // test_diff_2_v0.opt -> test_diff_2_v1.opt: a COMPOSITION with 2 sibling archetypes under
