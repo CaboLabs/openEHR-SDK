@@ -270,6 +270,63 @@ class OperationalTemplate {
       obnc.text = obnc.parent.parent.text +'.'+ obnc.parent.rmAttributeName
       obnc.description = obnc.parent.parent.description +'.'+ obnc.parent.rmAttributeName
 
+      // For 'name' on a Locatable that doesn't have an explicit name C_ATTRIBUTE,
+      // the constraint isn't "open" - it's implicit: the node's own node_id is
+      // bound to a term_definitions entry (term_definitions.code == node_id),
+      // and that term's text IS the fixed value the DV_TEXT.value must equal.
+      // Without this, complete() would leave the name unconstrained, which is
+      // wrong - it's the same fixed-value constraint _validate_locatable's
+      // fallback branch already enforces against uncompleted templates, so
+      // complete() should resolve and materialize it instead of dropping it.
+      if (attr == 'name' && type == 'DV_TEXT')
+      {
+         String fixedText = atnc.parent.ownerArchetypeRoot?.getText(atnc.parent.nodeId)
+
+         if (fixedText)
+         {
+            def valueAtn = new AttributeNode(
+               rmAttributeName:  'value',
+               type:             'C_SINGLE_ATTRIBUTE',
+               parent:           obnc,
+               path:             obnc.path             + '/value',
+               dataPath:         obnc.dataPath         + '/value',
+               templatePath:     obnc.templatePath     + '/value',
+               templateDataPath: obnc.templateDataPath + '/value',
+               existence:        new IntervalInt(
+                  upperIncluded:  true,
+                  lowerIncluded:  true,
+                  upperUnbounded: false,
+                  lowerUnbounded: false,
+                  lower: 1,
+                  upper: 1
+               )
+            )
+
+            def stringObnc = new PrimitiveObjectNode(
+               owner:            this,
+               rmTypeName:       'STRING',
+               type:             'C_PRIMITIVE_OBJECT',
+               templatePath:     obnc.templatePath + '/value',
+               path:             obnc.path         + '/value',
+               dataPath:         obnc.dataPath     + '/value',
+               templateDataPath: obnc.templateDataPath + '/value',
+               parent:           valueAtn,
+               occurrences:      new IntervalInt(
+                  upperIncluded:  true,
+                  lowerIncluded:  true,
+                  upperUnbounded: false,
+                  lowerUnbounded: false,
+                  lower: 0,
+                  upper: 1
+               )
+            )
+            stringObnc.item = new CString(list: [fixedText])
+
+            valueAtn.children << stringObnc
+            obnc.attributes << valueAtn
+         }
+      }
+
       atnc.children << obnc
 
 
