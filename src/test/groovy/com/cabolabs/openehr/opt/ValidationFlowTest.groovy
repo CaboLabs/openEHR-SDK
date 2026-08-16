@@ -373,6 +373,61 @@ class ValidationFlowTest extends GroovyTestCase {
       assert !report.errors
    }
 
+   void test_ehr_status_any_name_tampered()
+   {
+      // Same fixture as test_ehr_status_any_valid, template_id "ehr_status_any_en_v1",
+      // but with EHR_STATUS.name changed to something the template doesn't allow.
+      def json_ehr_status = $/
+         {
+            "_type": "EHR_STATUS",
+            "archetype_node_id": "openEHR-EHR-EHR_STATUS.generic.v1",
+            "archetype_details": {
+               "archetype_id": {
+                  "value": "openEHR-EHR-EHR_STATUS.any.v1"
+               },
+               "template_id": {
+                  "value": "ehr_status_any_en_v1"
+               },
+               "rm_version": "1.0.2"
+            },
+            "name": {
+               "_type": "DV_TEXT",
+               "value": "TOTALLY WRONG EHR_STATUS NAME"
+            },
+            "subject": {
+               "external_ref": {
+                  "id": {
+                     "_type": "GENERIC_ID",
+                     "value": "ins01",
+                     "scheme": "id_scheme"
+                  },
+                  "namespace": "DEMOGRAPHIC",
+                  "type": "PERSON"
+               }
+            },
+            "is_modifiable": true,
+            "is_queryable": true
+         }
+      /$
+
+      def parser = new OpenEhrJsonParser(true) // does RM schema validation not API
+      EhrStatus status = parser.parseJson(json_ehr_status)
+
+      assert status
+
+      // SETUP OPT REPO
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      // SETUP RM VALIDATOR
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(status, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert report.errors
+      assert report.errors.find { it.dataPath == '/name' || it.path == '/name' }
+   }
+
    void test_ehr_status_coded_valid()
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
@@ -599,6 +654,47 @@ class ValidationFlowTest extends GroovyTestCase {
       assert !report.errors
    }
 
+   void test_folder_any_name_tampered_still_valid()
+   {
+      // Same fixture/template as test_folder_any_valid, but the name doesn't match
+      // the template's "generic" text at all. FOLDER.name is an open constraint -
+      // it's organizational, not archetyped content - so this must still validate
+      // clean (using RmValidator2, the validator actually used by EHRServerNG).
+      def json_folder = $/
+         {
+            "_type": "FOLDER",
+            "name": {
+               "_type": "DV_TEXT",
+               "value": "some completely made up folder name, anything goes"
+            },
+            "archetype_node_id": "openEHR-EHR-FOLDER.generic.v1",
+            "archetype_details": {
+               "archetype_id": {
+                  "value": "openEHR-EHR-FOLDER.generic.v1"
+               },
+               "template_id": {
+                  "value": "generic_folder"
+               },
+               "rm_version": "1.0.2"
+            }
+         }
+      /$
+
+      def parser = new OpenEhrJsonParser(true)
+      Folder folder = parser.parseJson(json_folder)
+
+      assert folder
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(folder, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert !report.errors
+   }
+
    void test_folder_any_valid_api()
    {
       // PARSE JSON WITH API SCHEMA VALIDATION
@@ -796,6 +892,75 @@ class ValidationFlowTest extends GroovyTestCase {
 
       // SETUP RM VALIDATOR
       RmValidator validator = new RmValidator(opt_manager)
+      RmValidationReport report = validator.dovalidate(folder, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert !report.errors
+   }
+
+   void test_folder_with_subfolders_name_tampered_still_valid()
+   {
+      // Nested FOLDERs, every name renamed to arbitrary text - same generic_folder
+      // template as test_folder_with_subfolders_any_valid, but validated with
+      // RmValidator2 (the one EHRServerNG actually uses). FOLDER.name is an open
+      // constraint at every level, root and nested, so this must validate clean.
+      def json_folder = $/
+         {
+            "_type": "FOLDER",
+            "name": {
+               "_type": "DV_TEXT",
+               "value": "whatever root name I want"
+            },
+            "archetype_node_id": "openEHR-EHR-FOLDER.generic.v1",
+            "archetype_details": {
+               "archetype_id": {
+                  "value": "openEHR-EHR-FOLDER.generic.v1"
+               },
+               "template_id": {
+                  "value": "generic_folder"
+               },
+               "rm_version": "1.0.2"
+            },
+            "folders": [
+               {
+                  "_type": "FOLDER",
+                  "name": {
+                     "_type": "DV_TEXT",
+                     "value": "whatever child name I want"
+                  },
+                  "archetype_node_id": "openEHR-EHR-FOLDER.generic.v1",
+                  "folders": [
+                     {
+                        "_type": "FOLDER",
+                        "name": {
+                           "_type": "DV_TEXT",
+                           "value": "whatever grandchild name I want"
+                        },
+                        "archetype_node_id": "openEHR-EHR-FOLDER.generic.v1"
+                     }
+                  ]
+               },
+               {
+                  "_type": "FOLDER",
+                  "name": {
+                     "_type": "DV_TEXT",
+                     "value": "another whatever child name"
+                  },
+                  "archetype_node_id": "openEHR-EHR-FOLDER.generic.v1"
+               }
+            ]
+         }
+      /$
+
+      def parser = new OpenEhrJsonParser(true)
+      Folder folder = parser.parseJson(json_folder)
+
+      assert folder
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(folder, 'com.cabolabs.openehr_opt.namespaces.default')
 
       assert !report.errors
@@ -1031,6 +1196,49 @@ class ValidationFlowTest extends GroovyTestCase {
       println locatable_string
    }
 
+   void test_compo_vital_signs_monitoring_name_tampered()
+   {
+      // Same fixture/template as test_compo_vital_signs_monitoring, but with the
+      // COMPOSITION root name, an ENTRY subclass name (OBSERVATION in content),
+      // an ITEM_STRUCTURE name (ITEM_TREE in protocol) and an ITEM name (ELEMENT
+      // deep inside data/events/data/items) all tampered one at a time.
+      String path = "/canonical_json/vital_signs_monitoring.json"
+      File file = new File(getClass().getResource(path).toURI())
+      def json_compo = file.text
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      def parser = new OpenEhrJsonParserQuick(true)
+
+      // COMPOSITION root name
+      Composition compo = parser.parseJson(json_compo)
+      compo.name.value = "TOTALLY WRONG COMPOSITION NAME"
+      RmValidationReport report = new RmValidator2(opt_manager).dovalidate(compo, 'com.cabolabs.openehr_opt.namespaces.default')
+      assert report.errors
+      assert report.errors.find { it.dataPath == '/name' }
+
+      // ENTRY subclass (OBSERVATION) name inside content
+      compo = parser.parseJson(json_compo)
+      compo.content[0].name.value = "TOTALLY WRONG OBSERVATION NAME"
+      report = new RmValidator2(opt_manager).dovalidate(compo, 'com.cabolabs.openehr_opt.namespaces.default')
+      assert report.errors
+      assert report.errors.find { it.path == '/content(0)' }
+
+      // ITEM_STRUCTURE (ITEM_TREE) name
+      compo = parser.parseJson(json_compo)
+      compo.content[0].protocol.name.value = "TOTALLY WRONG ITEM_TREE NAME"
+      report = new RmValidator2(opt_manager).dovalidate(compo, 'com.cabolabs.openehr_opt.namespaces.default')
+      assert report.errors
+
+      // ITEM (ELEMENT) name, deeply nested
+      compo = parser.parseJson(json_compo)
+      compo.content[0].data.events[0].data.items[0].name.value = "TOTALLY WRONG ELEMENT NAME"
+      report = new RmValidator2(opt_manager).dovalidate(compo, 'com.cabolabs.openehr_opt.namespaces.default')
+      assert report.errors
+   }
+
 
    // ===================================================
    // DEMOGRAPHIC
@@ -1064,6 +1272,30 @@ class ValidationFlowTest extends GroovyTestCase {
       assert !report.errors
    }
 
+   void test_person_name_tampered()
+   {
+      // Same fixture/template_id as test_person_valid, name tampered.
+      String path = "/canonical_json/demographic/generic_person.json"
+      File file = new File(getClass().getResource(path).toURI())
+      def json_person = file.text
+
+      def parser = new OpenEhrJsonParserQuick(true)
+      Person person = parser.parseJson(json_person)
+      person.name.value = "TOTALLY WRONG PERSON NAME"
+
+      assert person
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(person, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert report.errors
+      assert report.errors.find { it.dataPath == '/name' || it.path == '/name' }
+   }
+
    void test_person_complete_valid()
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
@@ -1093,6 +1325,32 @@ class ValidationFlowTest extends GroovyTestCase {
       println report.errors
 
       assert !report.errors
+   }
+
+   void test_person_complete_name_tampered()
+   {
+      // Same fixture/template as test_person_complete_valid, going through the
+      // PartyDto overload of _validate_party/_validate_locatable (a different
+      // dispatch path than the plain Person/Actor RM class).
+      String path = "/canonical_json/demographic/person_complete.json"
+      File file = new File(getClass().getResource(path).toURI())
+      def json_person = file.text
+
+      def parser = new OpenEhrJsonParserQuick(true)
+      parser.setSchemaFlavorAPI()
+      PersonDto person = parser.parsePersonDto(json_person)
+      person.name.value = "TOTALLY WRONG PERSON_DTO NAME"
+
+      assert person
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(person, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert report.errors
    }
 
    void test_organization_valid()
@@ -1127,6 +1385,30 @@ class ValidationFlowTest extends GroovyTestCase {
       assert !report.errors
    }
 
+   void test_organization_name_tampered()
+   {
+      // Same fixture/template_id as test_organization_valid, name tampered.
+      String path = "/canonical_json/demographic/generic_organization.json"
+      File file = new File(getClass().getResource(path).toURI())
+      def json_organization = file.text
+
+      def parser = new OpenEhrJsonParserQuick(true)
+      parser.setSchemaFlavorAPI()
+      OrganizationDto organization = parser.parseJson(json_organization)
+      organization.name.value = "TOTALLY WRONG ORGANISATION NAME"
+
+      assert organization
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(organization, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert report.errors
+   }
+
    void test_group_valid()
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
@@ -1159,6 +1441,29 @@ class ValidationFlowTest extends GroovyTestCase {
       assert !report.errors
    }
 
+   void test_group_name_tampered()
+   {
+      // Same fixture/template_id as test_group_valid, name tampered.
+      String path = "/canonical_json/demographic/generic_group.json"
+      File file = new File(getClass().getResource(path).toURI())
+      def json_group = file.text
+
+      def parser = new OpenEhrJsonParserQuick(true)
+      Group group = parser.parseJson(json_group)
+      group.name.value = "TOTALLY WRONG GROUP NAME"
+
+      assert group
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(group, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert report.errors
+   }
+
    void test_agent_valid()
    {
       // PARSE JSON WITH RM SCHEMA VALIDATION
@@ -1186,6 +1491,29 @@ class ValidationFlowTest extends GroovyTestCase {
       RmValidationReport report = validator.dovalidate(agent, 'com.cabolabs.openehr_opt.namespaces.default')
 
       assert !report.errors
+   }
+
+   void test_agent_name_tampered()
+   {
+      // Same fixture/template_id as test_agent_valid, name tampered.
+      String path = "/canonical_json/demographic/generic_agent.json"
+      File file = new File(getClass().getResource(path).toURI())
+      def json_agent = file.text
+
+      def parser = new OpenEhrJsonParserQuick(true)
+      Agent agent = parser.parseJson(json_agent)
+      agent.name.value = "TOTALLY WRONG AGENT NAME"
+
+      assert agent
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(agent, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert report.errors
    }
 
    void test_role_valid()
@@ -1217,6 +1545,29 @@ class ValidationFlowTest extends GroovyTestCase {
       //println report.errors
 
       assert !report.errors
+   }
+
+   void test_role_name_tampered()
+   {
+      // Same fixture/template_id as test_role_valid, name tampered.
+      String path = "/canonical_json/demographic/generic_role.json"
+      File file = new File(getClass().getResource(path).toURI())
+      def json_role = file.text
+
+      def parser = new OpenEhrJsonParser(true)
+      Role role = parser.parseJson(json_role)
+      role.name.value = "TOTALLY WRONG ROLE NAME"
+
+      assert role
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(role, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert report.errors
    }
 
    void test_person_api_valid()
@@ -1490,6 +1841,47 @@ class ValidationFlowTest extends GroovyTestCase {
       println serializer.serialize(person)
    }
 
+   void test_generic_person_api_name_tampered()
+   {
+      // Same fixture/template_id as test_generic_person_api_valid (API schema
+      // flavor parsing), root PERSON.name tampered.
+      def json_person_dto = $/
+         {
+            "_type": "PERSON",
+            "name": {
+               "_type": "DV_TEXT",
+               "value": "TOTALLY WRONG PERSON NAME"
+            },
+            "archetype_node_id": "openEHR-DEMOGRAPHIC-PERSON.generic.v1",
+            "archetype_details": {
+               "archetype_id": {
+                  "value": "openEHR-DEMOGRAPHIC-PERSON.generic.v1"
+               },
+               "template_id": {
+                  "value": "generic_person"
+               },
+               "rm_version": "1.0.2"
+            }
+         }
+      /$
+
+      def parser = new OpenEhrJsonParserQuick()
+      parser.setSchemaFlavorAPI()
+      PersonDto person = parser.parseActorDto(json_person_dto)
+
+      assert person
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(person, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert report.errors
+      assert report.errors.find { it.dataPath == '/name' || it.path == '/name' }
+   }
+
    void test_generic_group_api_valid()
    {
       def json_dto = $/
@@ -1725,6 +2117,93 @@ class ValidationFlowTest extends GroovyTestCase {
 
       def serializer = new OpenEhrJsonSerializer()
       println serializer.serialize(relationship)
+   }
+
+   void test_generic_relationship_api_name_tampered()
+   {
+      // Same fixture/template_id as test_generic_relationship_api_valid.
+      // PARTY_RELATIONSHIP.name used to never be checked at all (validate(PartyRelationship, ObjectNode)
+      // never called _validate_locatable) - this pins that fix down.
+      def json = $/
+         {
+            "_type": "PARTY_RELATIONSHIP",
+            "name": {
+               "_type": "DV_TEXT",
+               "value": "TOTALLY WRONG RELATIONSHIP NAME"
+            },
+            "archetype_details": {
+               "archetype_id": {
+                  "_type": "ARCHETYPE_ID",
+                  "value": "openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.generic_relationship.v1"
+               },
+               "template_id": {
+                  "_type": "TEMPLATE_ID",
+                  "value": "generic_relationship"
+               },
+               "rm_version": "1.0.2"
+            },
+            "archetype_node_id": "openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.generic_relationship.v1",
+            "details": {
+               "_type": "ITEM_TREE",
+               "name": {
+                  "_type": "DV_TEXT",
+                  "value": "tree"
+               },
+               "archetype_node_id": "at0001",
+               "items": [
+                  {
+                  "_type": "ELEMENT",
+                  "name": {
+                     "_type": "DV_TEXT",
+                     "value": "relationship type"
+                  },
+                  "archetype_node_id": "at0002",
+                  "value": {
+                     "_type": "DV_CODED_TEXT",
+                     "value": "Natural child",
+                     "defining_code": {
+                        "terminology_id": {
+                        "value": "SNOMED-CT"
+                        },
+                        "code_string": "75226009"
+                     }
+                  }
+                  }
+               ]
+            },
+            "source": {
+               "id": {
+                  "_type": "OBJECT_VERSION_ID",
+                  "value": "cf9c8328-8e43-407a-bcb1-90bd88fd52f3::ATOMIK_CDR::1"
+               },
+               "namespace": "demographic",
+               "type": "PERSON"
+            },
+            "target": {
+               "id": {
+                  "_type": "OBJECT_VERSION_ID",
+                  "value": "a7118145-43e3-4810-bdab-3753d9714aa3::ATOMIK_CDR::1"
+               },
+               "namespace": "demographic",
+               "type": "PERSON"
+            }
+         }
+      /$
+
+      def parser = new OpenEhrJsonParserQuick(true)
+      PartyRelationship relationship = parser.parseJson(json)
+
+      assert relationship
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(relationship, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert report.errors
+      assert report.errors.find { it.dataPath == '/name' || it.path == '/name' }
    }
 
 
@@ -2013,5 +2492,321 @@ class ValidationFlowTest extends GroovyTestCase {
       assert agent
       assert agent.roles.size() == 1
       assert agent.roles[0].name.value == "Agent Role"
+   }
+
+
+   // ===================================================
+   // SECTION / ADMIN_ENTRY
+   // No existing fixture in this file has a SECTION, so this is a minimal
+   // hand-built template+instance: COMPOSITION > SECTION > ADMIN_ENTRY > ITEM_TREE > ELEMENT.
+   // template_id is "section_admin_test" (see archetype_details.template_id.value
+   // in the instance below, matching src/main/resources/opts/.../section_admin_test.opt).
+
+   void test_section_admin_entry_valid()
+   {
+      String path = "/canonical_json/section_admin_test.json"
+      File file = new File(getClass().getResource(path).toURI())
+      def json_compo = file.text
+
+      def parser = new OpenEhrJsonParserQuick()
+      Composition compo = parser.parseJson(json_compo)
+
+      assert compo
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(compo, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert !report.errors
+   }
+
+   void test_section_name_tampered()
+   {
+      String path = "/canonical_json/section_admin_test.json"
+      File file = new File(getClass().getResource(path).toURI())
+      def json_compo = file.text
+
+      def parser = new OpenEhrJsonParserQuick()
+      Composition compo = parser.parseJson(json_compo)
+      compo.content[0].name.value = "TOTALLY WRONG SECTION NAME"
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(compo, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert report.errors
+   }
+
+   void test_admin_entry_name_tampered()
+   {
+      String path = "/canonical_json/section_admin_test.json"
+      File file = new File(getClass().getResource(path).toURI())
+      def json_compo = file.text
+
+      def parser = new OpenEhrJsonParserQuick()
+      Composition compo = parser.parseJson(json_compo)
+      compo.content[0].items[0].name.value = "TOTALLY WRONG ADMIN_ENTRY NAME"
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(compo, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert report.errors
+   }
+
+   void test_admin_entry_item_tree_name_tampered()
+   {
+      String path = "/canonical_json/section_admin_test.json"
+      File file = new File(getClass().getResource(path).toURI())
+      def json_compo = file.text
+
+      def parser = new OpenEhrJsonParserQuick()
+      Composition compo = parser.parseJson(json_compo)
+      compo.content[0].items[0].data.name.value = "TOTALLY WRONG ITEM_TREE NAME"
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(compo, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert report.errors
+   }
+
+   void test_admin_entry_element_name_tampered()
+   {
+      String path = "/canonical_json/section_admin_test.json"
+      File file = new File(getClass().getResource(path).toURI())
+      def json_compo = file.text
+
+      def parser = new OpenEhrJsonParserQuick()
+      Composition compo = parser.parseJson(json_compo)
+      compo.content[0].items[0].data.items[0].name.value = "TOTALLY WRONG ELEMENT NAME"
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(compo, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert report.errors
+   }
+
+
+   // ===================================================
+   // INSTRUCTION / ACTIVITY
+   // Fixture provided by user: orden_medicacion.opt/json (template_id "Orden de
+   // medicación intrahospitalaria"). COMPOSITION > INSTRUCTION > ACTIVITY.
+   // ===================================================
+
+   void test_orden_medicacion_valid()
+   {
+      String path = "/canonical_json/orden_medicacion.json"
+      File file = new File(getClass().getResource(path).toURI())
+      def json_compo = file.text
+
+      def parser = new OpenEhrJsonParserQuick()
+      Composition compo = parser.parseJson(json_compo)
+
+      assert compo
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(compo, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert !report.errors
+   }
+
+   void test_instruction_name_tampered()
+   {
+      String path = "/canonical_json/orden_medicacion.json"
+      File file = new File(getClass().getResource(path).toURI())
+      def json_compo = file.text
+
+      def parser = new OpenEhrJsonParserQuick()
+      Composition compo = parser.parseJson(json_compo)
+      compo.content[0].name.value = "TOTALLY WRONG INSTRUCTION NAME"
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(compo, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert report.errors
+   }
+
+   void test_activity_name_tampered()
+   {
+      String path = "/canonical_json/orden_medicacion.json"
+      File file = new File(getClass().getResource(path).toURI())
+      def json_compo = file.text
+
+      def parser = new OpenEhrJsonParserQuick()
+      Composition compo = parser.parseJson(json_compo)
+      compo.content[0].activities[0].name.value = "TOTALLY WRONG ACTIVITY NAME"
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(compo, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert report.errors
+   }
+
+
+   // ===================================================
+   // CAPABILITY (ROLE.capabilities)
+   // Fixture provided by user: generic_role_complete.json, reusing the OPT already
+   // in the repo (src/main/resources/opts/.../generic_role_complete.opt), same
+   // template_id, verified content-identical to the one the user supplied.
+   // ===================================================
+
+   void test_generic_role_complete_valid()
+   {
+      String path = "/canonical_json/demographic/generic_role_complete.json"
+      File file = new File(getClass().getResource(path).toURI())
+      def json_role = file.text
+
+      def parser = new OpenEhrJsonParserQuick()
+      Role role = parser.parseJson(json_role)
+
+      assert role
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(role, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert !report.errors
+   }
+
+   void test_capability_name_tampered()
+   {
+      String path = "/canonical_json/demographic/generic_role_complete.json"
+      File file = new File(getClass().getResource(path).toURI())
+      def json_role = file.text
+
+      def parser = new OpenEhrJsonParserQuick()
+      Role role = parser.parseJson(json_role)
+      role.capabilities[0].name.value = "TOTALLY WRONG CAPABILITY NAME"
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(role, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert report.errors
+   }
+
+
+   // ===================================================
+   // CONTACT / ADDRESS / PARTY_IDENTITY (PERSON.contacts, .addresses, .identities)
+   // Fixture provided by user: person_complete.json, renamed to
+   // person_complete_contacts.json since its template_id ("person_complete") and
+   // uid are identical to the existing person_complete.opt already in the repo -
+   // same template, so it reuses that OPT without needing a second copy.
+   // ===================================================
+
+   void test_person_complete_contacts_valid()
+   {
+      String path = "/canonical_json/demographic/person_complete_contacts.json"
+      File file = new File(getClass().getResource(path).toURI())
+      def json_person = file.text
+
+      def parser = new OpenEhrJsonParserQuick()
+      Person person = parser.parseJson(json_person)
+
+      assert person
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(person, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert !report.errors
+   }
+
+   void test_contact_name_tampered()
+   {
+      String path = "/canonical_json/demographic/person_complete_contacts.json"
+      File file = new File(getClass().getResource(path).toURI())
+      def json_person = file.text
+
+      def parser = new OpenEhrJsonParserQuick()
+      Person person = parser.parseJson(json_person)
+      person.contacts[0].name.value = "TOTALLY WRONG CONTACT NAME"
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(person, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert report.errors
+   }
+
+   void test_address_name_tampered()
+   {
+      String path = "/canonical_json/demographic/person_complete_contacts.json"
+      File file = new File(getClass().getResource(path).toURI())
+      def json_person = file.text
+
+      def parser = new OpenEhrJsonParserQuick()
+      Person person = parser.parseJson(json_person)
+      person.contacts[0].addresses[0].name.value = "TOTALLY WRONG ADDRESS NAME"
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(person, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert report.errors
+   }
+
+   void test_party_identity_name_tampered()
+   {
+      String path = "/canonical_json/demographic/person_complete_contacts.json"
+      File file = new File(getClass().getResource(path).toURI())
+      def json_person = file.text
+
+      def parser = new OpenEhrJsonParserQuick()
+      Person person = parser.parseJson(json_person)
+      person.identities[0].name.value = "TOTALLY WRONG PARTY_IDENTITY NAME"
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      RmValidator2 validator = new RmValidator2(opt_manager)
+      RmValidationReport report = validator.dovalidate(person, 'com.cabolabs.openehr_opt.namespaces.default')
+
+      assert report.errors
    }
 }

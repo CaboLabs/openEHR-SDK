@@ -1,0 +1,134 @@
+{
+   "_type": "ROLE",
+   "name": {
+      "_type": "DV_TEXT",
+      "value": "generic role"
+   },
+   "archetype_details": {
+      "archetype_id": {
+         "value": "openEHR-DEMOGRAPHIC-ROLE.generic_role.v1"
+      },
+      "template_id": {
+         "value": "generic_role_complete"
+      },
+      "rm_version": "1.0.2"
+   },
+   "archetype_node_id": "openEHR-DEMOGRAPHIC-ROLE.generic_role.v1",
+   "details": {
+      "_type": "ITEM_TREE",
+      "name": {
+         "_type": "DV_TEXT",
+         "value": "tree"
+      },
+      "archetype_node_id": "at0001",
+      "items": [
+         {
+            "_type": "ELEMENT",
+            "name": {
+               "_type": "DV_TEXT",
+               "value": "identifier"
+            },
+            "archetype_node_id": "at0002",
+            "value": {
+               "_type": "DV_IDENTIFIER",
+               "id": "26266400",
+               "issuer": "Hospital de Clinicas",
+               "assigner": "Hospital de Clinicas",
+               "type": "test1"
+            }
+         }
+      ]
+   },
+   "identities": [
+      {
+         "_type": "PARTY_IDENTITY",
+         "name": {
+            "_type": "DV_TEXT",
+            "value": "identity"
+         },
+         "archetype_node_id": "at0004",
+         "details": {
+            "_type": "ITEM_TREE",
+            "name": {
+               "_type": "DV_TEXT",
+               "value": "tree"
+            },
+            "archetype_node_id": "at0005",
+            "items": [
+               {
+                  "_type": "ELEMENT",
+                  "name": {
+                     "_type": "DV_TEXT",
+                     "value": "name"
+                  },
+                  "archetype_node_id": "at0006",
+                  "value": {
+                     "_type": "DV_TEXT",
+                     "value": "DrQ.keby.ZDwbkNfzMgG,XCJAn,EXvSLH.afbDymXwwjnyrtQVsjfQkNLeMFNiIzxE.X,PeLYVdzUZstXYvKvsioQGigjvqVnswOItlXWzAcpIvGiNUbVL,pz.BtpsmYxakVC.ncfxhCQRN p,CNjMcbRRYQsAOqCkaGXfrtLz,FiKzfiTNYhsmYJ.FrGtorDOrkdMgzaImPKtcusNnLthJqZTlnxpkJMd.Abcr.fGKaGOpzNaPEq,.awOJsaYqRbRUyJmGvpFzCjfYmJpTvUbjA qdeVgnJIKeXOL i,Cuf"
+                  }
+               }
+            ]
+         }
+      }
+   ],
+   "time_validity": {
+      "lower": {
+         "_type": "DV_DATE",
+         "value": "2026-08-16"
+      },
+      "lower_included": true,
+      "lower_unbounded": false,
+      "upper_included": false,
+      "upper_unbounded": true
+   },
+   "performer": {
+      "id": {
+         "_type": "HIER_OBJECT_ID",
+         "value": "cbcb9734-7d03-4d62-94e9-7f6cf7e3a6df"
+      },
+      "namespace": "DEMOGRAPHIC",
+      "type": "PERSON"
+   },
+   "capabilities": [
+      {
+         "_type": "CAPABILITY",
+         "name": {
+            "_type": "DV_TEXT",
+            "value": "capability"
+         },
+         "archetype_node_id": "at0008",
+         "credentials": {
+            "_type": "ITEM_TREE",
+            "name": {
+               "_type": "DV_TEXT",
+               "value": "tree"
+            },
+            "archetype_node_id": "at0009",
+            "items": [
+               {
+                  "_type": "ELEMENT",
+                  "name": {
+                     "_type": "DV_TEXT",
+                     "value": "capability name"
+                  },
+                  "archetype_node_id": "at0010",
+                  "value": {
+                     "_type": "DV_TEXT",
+                     "value": "sqoKxAqLPCPSJHPEqhdXkBINpFxCCYFBmmnd.hAhj.RQMfEQaUvM rFAOX AgYhDcIYoABnzfBhdNgzuAFuQR,YAMgstZKZYKqGReV.UG.tSwMtcDuxIq LXAusnfexSCgVCVG.jDxFmSDKgTYbUeEWdHqIKIJk utcCcYHIynPdLbwXPeCzwYKkFymZKLLMkYGgm.KZnfDSTYbFxH,kGEqzUmoDXdOriQIzhNwMWzyVTP RtkndUHp vGakdi MzETgUEqYDufwOemLwurncKFXmaigSRMGYLAcsxN,deAB"
+                  }
+               }
+            ]
+         },
+         "time_validity": {
+            "lower": {
+               "_type": "DV_DATE",
+               "value": "2026-08-16"
+            },
+            "lower_included": true,
+            "lower_unbounded": false,
+            "upper_included": false,
+            "upper_unbounded": true
+         }
+      }
+   ]
+}

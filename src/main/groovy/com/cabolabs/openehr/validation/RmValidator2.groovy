@@ -341,7 +341,15 @@ class RmValidator2 {
             if (c_object.type == 'C_ARCHETYPE_ROOT') check_attr_name = 'archetypeId'
             else check_attr_name = 'nodeId'
 
-            if (aName)
+            // FOLDER.name is an open constraint, match by node/archetype id only.
+            if (item instanceof Folder)
+            {
+               if (item.archetype_node_id == c_object."$check_attr_name")
+               {
+                  rm_objects_with_same_node_id << item
+               }
+            }
+            else if (aName)
             {
                // get all items that match the name constraint of the c_object AND have the same node ID
                name_report = validate(item, item.name, aName, '/name')
@@ -457,7 +465,15 @@ class RmValidator2 {
 
             aName = c_object.getAttr('name')
 
-            if (aName)
+            // FOLDER.name is an open constraint, match by node/archetype id only.
+            if (item instanceof Folder)
+            {
+               if (item.archetype_node_id == c_object."$check_attr_name")
+               {
+                  alternative_cobjs << c_object
+               }
+            }
+            else if (aName)
             {
                // get all items that match the name constraint of the c_object AND have the same node ID
                name_report = validate(item, item.name, aName, '/name')
@@ -663,6 +679,8 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
+      report.append(_validate_locatable(p, o)) // validates name
+
       validate_single_attribute(p, o, 'details', report)
 
       // time_validity
@@ -791,7 +809,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(ob, o)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -831,7 +849,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(h, o)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -862,7 +880,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(e, o)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -893,7 +911,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(e, o)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -925,7 +943,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(ev, o)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -954,7 +972,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(ins, o)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -996,7 +1014,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(ac, o)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -1068,7 +1086,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(context, o)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -1106,7 +1124,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(is, o)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -1144,7 +1162,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(is, o)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -1183,7 +1201,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(is, o)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -1221,7 +1239,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(is, o)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -1250,7 +1268,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(cl, o)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -1288,7 +1306,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(e, o)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -1342,7 +1360,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, ct, o, dv_path)
-         if (report.hasErrors()) // if there is one alternative that validates the data, then it passes the validation
+         if (!report.hasErrors()) // if there is one alternative that validates the data, then it passes the validation
          {
             return report
          }
@@ -1429,7 +1447,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, cp, o, dv_path)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -1488,7 +1506,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, te, o, dv_path)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -1532,7 +1550,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -1580,7 +1598,7 @@ class RmValidator2 {
          //println o.type +" "+ o.rmTypeName
          report = validate(parent, d, o, dv_path)
 
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -1628,7 +1646,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -1664,7 +1682,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -1713,7 +1731,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -1752,7 +1770,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -1791,7 +1809,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -1828,7 +1846,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -1878,7 +1896,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -1925,7 +1943,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -1962,7 +1980,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -2010,7 +2028,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -2049,7 +2067,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -2097,7 +2115,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -2157,7 +2175,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -2218,7 +2236,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -2257,7 +2275,7 @@ class RmValidator2 {
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
-         if (report.hasErrors())
+         if (!report.hasErrors()) // if this alternative validates the data with no errors, then it passes the validation
          {
             return report
          }
@@ -2284,6 +2302,11 @@ class RmValidator2 {
    private RmValidationReport _validate_locatable(Locatable locatable, ObjectNode o)
    {
       RmValidationReport report = new RmValidationReport()
+
+      // FOLDER.name is treated as an open constraint regardless of what the template
+      // says: folders are user/application organized, not archetyped content, so any
+      // name is valid.
+      if (locatable instanceof Folder) return report
 
       def a_name = o.getAttr('name')
       if (a_name) // should comply with the constraint for the DvText/DvCodedText
