@@ -8,6 +8,8 @@ import com.cabolabs.openehr.opt.model.OperationalTemplate
 import groovy.transform.Synchronized
 import groovy.time.TimeCategory
 import groovy.time.TimeDuration
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CopyOnWriteArrayList
 
 @groovy.util.logging.Slf4j
 class OptManager {
@@ -19,21 +21,26 @@ class OptManager {
 
    // ns will be used as folder name where OPTs are separated in the repo
    // most OS have a file name limit of 255, so that should be the limit of the ns size
-   public static String DEFAULT_NAMESPACE = 'com.cabolabs.openehr_opt.namespaces.default'
+   // volatile: can be changed at runtime via init()/setDefaultNamespace() from one thread
+   // (e.g. app startup) and must be visible to request threads that rely on the namespace
+   // defaults baked into loadAll/load/getOpt/etc.
+   public static volatile String DEFAULT_NAMESPACE = 'com.cabolabs.openehr_opt.namespaces.default'
 
    // [namespace -> [optid -> OPT]]
-   private static Map<String, Map<String, OperationalTemplate>> cache = [:]
+   // ConcurrentHashMap so reads (getLoadedOpts, getOpt, isLoaded, etc.) don't need to
+   // synchronize against the mutating methods (loadAll, load, unloadAll, removeOpt).
+   private Map<String, Map<String, OperationalTemplate>> cache = new ConcurrentHashMap<>()
 
    // otpid => timestamp de cuando fue usado por ultima vez.
    // Sirve para saber si un arquetipo no fue utilizado por mucho tiempo, y bajarlo del cache par optimizar espacio en memoria.
-   //private static Map<String, Date> timestamps = [:]
-   private static Map<String, Map<String, Date>> timestamps = [:] // [namespace -> [optid -> date]]
+   //private Map<String, Date> timestamps = [:]
+   private Map<String, Map<String, Date>> timestamps = new ConcurrentHashMap<>() // [namespace -> [optid -> date]]
 
    // Archetypes referenced by all the templates loaded
    // The list of archetype roots has more than one item when the same archetype is
    // referenced from different OPTs
    // namespace -> [archId -> [arch roots]]
-   private static Map<String, Map<String, List<ObjectNode>>> referencedArchetypes = [:]
+   private Map<String, Map<String, List<ObjectNode>>> referencedArchetypes = new ConcurrentHashMap<>()
 
    // SINGLETON
    private static OptManager instance = null
@@ -46,16 +53,33 @@ class OptManager {
    }
 
    //public static OptManager getInstance(String repoPath)
+   @Synchronized
    public static OptManager getInstance()
    {
       if (!instance) instance = new OptManager()
       return instance
    }
 
-   public void init(OptRepository repo, int ttl_seconds = 1800)
+   // defaultNamespace lets the client set the namespace matching the folder name that holds
+   // their OPTs in the repo, so they don't have to pass it explicitly on every call.
+   public void init(OptRepository repo, int ttl_seconds = 1800, String defaultNamespace = null)
    {
       this.repo = repo
       this.ttl_seconds = ttl_seconds
+
+      if (defaultNamespace) setDefaultNamespace(defaultNamespace)
+   }
+
+   public static void setDefaultNamespace(String namespace)
+   {
+      if (!namespace) throw new IllegalArgumentException("namespace can't be null or empty")
+
+      DEFAULT_NAMESPACE = namespace
+   }
+
+   public static String getDefaultNamespace()
+   {
+      return DEFAULT_NAMESPACE
    }
 
 
@@ -75,7 +99,7 @@ class OptManager {
    }
 
    @Synchronized
-   public void loadAll(String namespace = DEFAULT_NAMESPACE, boolean complete = false)
+   public void loadAll(String namespace = DEFAULT_NAMESPACE, boolean complete = true)
    {
       if (!repo) throw new Exception("Please initialize the OPT repository by calling init()")
 
@@ -101,8 +125,8 @@ class OptManager {
 
             //log.debug("Loading OPT: " + opt.templateId)
 
-            if (!this.cache[namespace]) this.cache[namespace] = [:]
-            if (!this.timestamps[namespace]) this.timestamps[namespace] = [:]
+            this.cache.computeIfAbsent(namespace) { new ConcurrentHashMap<>() }
+            this.timestamps.computeIfAbsent(namespace) { new ConcurrentHashMap<>() }
 
             this.cache[namespace][opt.templateId] = opt
             this.timestamps[namespace][opt.templateId] = new Date()
@@ -114,6 +138,8 @@ class OptManager {
          }
       }
 
+      // namespace could still be unset if there were no opts to load, or all of them failed to parse
+      this.cache.computeIfAbsent(namespace) { new ConcurrentHashMap<>() }
 
       def refarchs = []
       this.cache[namespace].each { _optid, _opt ->
@@ -127,30 +153,24 @@ class OptManager {
             // A better solution to reduce the memory use, is to merge all the internal
             // structures into one complete structure. (TODO)
             // TODO: do not add the reference twice for the same OPT (check if this case can happen)
-            if (!this.referencedArchetypes[namespace])
-            {
-               this.referencedArchetypes[namespace] = [:]
-            }
+            this.referencedArchetypes.computeIfAbsent(namespace) { new ConcurrentHashMap<>() }
 
-            if (!this.referencedArchetypes[namespace][_objectNode.archetypeId])
-            {
-               this.referencedArchetypes[namespace][_objectNode.archetypeId] = []
-            }
+            def archRoots = this.referencedArchetypes[namespace].computeIfAbsent(_objectNode.archetypeId) { new CopyOnWriteArrayList<>() }
 
             // avoids to load object nodes from the same template twice
-            if (!this.referencedArchetypes[namespace][_objectNode.archetypeId].any { it.templatePath == _objectNode.templatePath })
+            if (!archRoots.any { it.templatePath == _objectNode.templatePath })
             {
-               this.referencedArchetypes[namespace][_objectNode.archetypeId] << _objectNode
+               archRoots << _objectNode
             }
          }
       }
    }
 
    /*
-    * Loads one template in the cache.
+    * Loads one template in the cache, searching by templateId within the namespace.
     */
    @Synchronized
-   public void load(String templateId, String namespace = DEFAULT_NAMESPACE, boolean complete = false)
+   public void load(String templateId, String namespace = DEFAULT_NAMESPACE, boolean complete = true)
    {
       if (!repo) throw new Exception("Please initialize the OPT repository by calling init()")
 
@@ -173,49 +193,100 @@ class OptManager {
       def parser = new OperationalTemplateParser()
       def opt = parser.parse(text)
 
-      if (opt)
-      {
-         if (complete) opt.complete()
-
-         log.debug("Loading OPT: ${templateId} internally has the template_id: ${opt.templateId}")
-
-         if (!this.cache[namespace]) this.cache[namespace] = [:]
-         if (!this.timestamps[namespace]) this.timestamps[namespace] = [:]
-
-         // this is indexed with the templateId param passed, not with the loaded opt.templateId which could be not normalized, the templateId param is normalized by the client
-         this.cache[namespace][templateId] = opt
-         this.timestamps[namespace][templateId] = new Date()
-
-         // set referencedArchetypes
-         def refarchs = opt.getReferencedArchetypes()
-         refarchs.each { _objectNode ->
-            // If the archertype is referenced twice by different opts, it is overwritten,
-            // the objectnodes can have different structures since one OPT might have all
-            // the nodes and another that uses the SAME archetype might have a couple.
-            // To avoid that issue, we save here all the references to the same archetype.
-            // A better solution to reduce the memory use, is to merge all the internal
-            // structures into one complete structure. (TODO)
-            // TODO: do not add the reference twice for the same OPT (check if this case can happen)
-            if (!this.referencedArchetypes[namespace])
-            {
-               this.referencedArchetypes[namespace] = [:]
-            }
-
-            if (!this.referencedArchetypes[namespace][_objectNode.archetypeId])
-            {
-               this.referencedArchetypes[namespace][_objectNode.archetypeId] = []
-            }
-
-            // avoids to load object nodes from the same template twice
-            if (!this.referencedArchetypes[namespace][_objectNode.archetypeId].any { it.templatePath == _objectNode.templatePath })
-            {
-               this.referencedArchetypes[namespace][_objectNode.archetypeId] << _objectNode
-            }
-         }
-      }
-      else
+      if (!opt)
       {
          throw new Exception("OPT could not be loaded "+ templateId)
+      }
+
+      if (complete) opt.complete()
+
+      log.debug("Loading OPT: ${templateId} internally has the template_id: ${opt.templateId}")
+
+      this.cache.computeIfAbsent(namespace) { new ConcurrentHashMap<>() }
+      this.timestamps.computeIfAbsent(namespace) { new ConcurrentHashMap<>() }
+
+      // this is indexed with the templateId param passed, not with the loaded opt.templateId which could be not normalized, the templateId param is normalized by the client
+      this.cache[namespace][templateId] = opt
+      this.timestamps[namespace][templateId] = new Date()
+
+      registerReferencedArchetypes(namespace, opt)
+   }
+
+   /**
+    * Loads and caches the OPT located directly at `location` (e.g. an absolute file path
+    * or an S3 object key), bypassing the templateId search that load()/getOpt() do.
+    * Use this when the caller already knows exactly which file to load - an alternative
+    * to the namespace+templateId lookup, not a variant of it, so it's a separate method
+    * instead of an extra param on getOpt()/load().
+    *
+    * The OPT is cached under its own parsed template_id (like loadAll() does), so a
+    * subsequent getOpt(opt.templateId, namespace) will hit the cache.
+    */
+   @Synchronized
+   public OperationalTemplate loadFromLocation(String location, String namespace = DEFAULT_NAMESPACE, boolean complete = true)
+   {
+      if (!repo) throw new Exception("Please initialize the OPT repository by calling init()")
+
+      def text
+      try
+      {
+         text = this.repo.getOptContents(location)
+      }
+      catch (Exception e)
+      {
+         throw new Exception("There was a problem reading the template from the repo", e)
+      }
+
+      if (!text)
+      {
+         throw new Exception("OPT not found at location "+ location)
+      }
+
+      def parser = new OperationalTemplateParser()
+      def opt = parser.parse(text)
+
+      if (!opt)
+      {
+         throw new Exception("OPT could not be loaded from "+ location)
+      }
+
+      if (complete) opt.complete()
+
+      log.debug("Loading OPT from location: ${location} internally has the template_id: ${opt.templateId}")
+
+      this.cache.computeIfAbsent(namespace) { new ConcurrentHashMap<>() }
+      this.timestamps.computeIfAbsent(namespace) { new ConcurrentHashMap<>() }
+
+      this.cache[namespace][opt.templateId] = opt
+      this.timestamps[namespace][opt.templateId] = new Date()
+
+      registerReferencedArchetypes(namespace, opt)
+
+      return opt
+   }
+
+   // shared by load() and loadFromLocation(): indexes the archetypes an OPT references,
+   // so they can be looked up later without merging OPTs together (see TODOs below).
+   private void registerReferencedArchetypes(String namespace, OperationalTemplate opt)
+   {
+      def refarchs = opt.getReferencedArchetypes()
+      refarchs.each { _objectNode ->
+         // If the archertype is referenced twice by different opts, it is overwritten,
+         // the objectnodes can have different structures since one OPT might have all
+         // the nodes and another that uses the SAME archetype might have a couple.
+         // To avoid that issue, we save here all the references to the same archetype.
+         // A better solution to reduce the memory use, is to merge all the internal
+         // structures into one complete structure. (TODO)
+         // TODO: do not add the reference twice for the same OPT (check if this case can happen)
+         this.referencedArchetypes.computeIfAbsent(namespace) { new ConcurrentHashMap<>() }
+
+         def archRoots = this.referencedArchetypes[namespace].computeIfAbsent(_objectNode.archetypeId) { new CopyOnWriteArrayList<>() }
+
+         // avoids to load object nodes from the same template twice
+         if (!archRoots.any { it.templatePath == _objectNode.templatePath })
+         {
+            archRoots << _objectNode
+         }
       }
    }
 
@@ -230,11 +301,16 @@ class OptManager {
    /**
     * templateId identifier of the OPT that is requested
     * namespace from where the manager will try to load the template
-    * filename associated with the template, if not present, it is the templateId with .opt extension,
-    *          this is because external systems might assign a custom filename for OPTs that is not the templateId.
+    * complete: same meaning as in load()/loadAll()/loadFromLocation(), only applies on
+    *           a cache miss - if the OPT is already cached, its existing completeness
+    *           is whatever it was loaded with, this doesn't retroactively complete it.
+    *
+    * Looks up the OPT by templateId within the namespace (cache, then repo search).
+    * To load an OPT from a specific file/location instead, use loadFromLocation() -
+    * that's a separate lookup strategy, not a variant of this one.
     */
    @Synchronized
-   public OperationalTemplate getOpt(String templateId, String namespace = DEFAULT_NAMESPACE, String filename = null)
+   public OperationalTemplate getOpt(String templateId, String namespace = DEFAULT_NAMESPACE, boolean complete = true)
    {
       if (!repo) throw new Exception("Please initialize the OPT repository by calling init()")
 
@@ -245,33 +321,7 @@ class OptManager {
          return this.cache[namespace][templateId]
       }
 
-      load(templateId, namespace)
-
-      /*
-      def text = this.repo.getOptContentsByTemplateId(templateId, namespace)
-      if (!text)
-      {
-         throw new Exception("OPT not found "+ templateId)
-      }
-
-      def parser = new OperationalTemplateParser()
-      def opt = parser.parse( text )
-
-      if (opt)
-      {
-         log.debug("Loading OPT: " + opt.templateId)
-
-         if (!this.cache[namespace]) this.cache[namespace] = [:]
-         if (!this.timestamps[namespace]) this.timestamps[namespace] = [:]
-
-         this.cache[namespace][opt.templateId] = opt
-         this.timestamps[namespace][opt.templateId] = new Date()
-      }
-      else
-      {
-         throw new Exception("OPT could not be loaded "+ templateId)
-      }
-      */
+      load(templateId, namespace, complete)
 
       return this.cache[namespace][templateId]
    }

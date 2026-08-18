@@ -313,7 +313,7 @@ class OptManagerTest extends GroovyTestCase {
       man.getLoadedOpts().each { id, opt ->
          opt.nodes.each { optpath, nodes ->
             nodes.each { node ->
-               if (node.archetypeId.contains("pulse") || node.path.contains('1055'))
+               if (node.archetypeId?.contains("pulse") || node.path?.contains('1055'))
                   println node.archetypeId +' '+ node.path // archetypeId is only present on root nodes
             }
          }
@@ -355,15 +355,23 @@ class OptManagerTest extends GroovyTestCase {
    {
       def optMan = OptManager.getInstance()
       def opt = optMan.getOpt('generic_agent', OptManager.DEFAULT_NAMESPACE)
+
+      assert opt != null
+
       //List tree = []
       //getReferencedArchetypesRecursive(opt.definition, tree)
 
-      println opt.getReferencedArchetypes()
+      def refArchs = opt.getReferencedArchetypes()
+
+      println refArchs
+
+      assert refArchs
    }
 
    void testAttributesNotInOpt()
    {
-      def opt = man.getOpt('generic_relationship', OptManager.DEFAULT_NAMESPACE)
+      // complete: false because this test asserts the pre-completion state before calling opt.complete() itself
+      def opt = man.getOpt('generic_relationship', OptManager.DEFAULT_NAMESPACE, false)
       def obj = opt.findRoot('openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.generic_relationship.v1')
 
       // obj.nodes.sort{it.key}.each {

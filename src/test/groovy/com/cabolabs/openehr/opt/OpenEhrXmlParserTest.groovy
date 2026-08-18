@@ -131,11 +131,15 @@ class OpenEhrXmlParserTest extends GroovyTestCase {
       def parser = new OpenEhrXmlParser()
       Folder folder = parser.parseLocatable(xml)
 
+      assert folder != null
+
       // serialize status object
       def serializer = new OpenEhrXmlSerializer()
       String xml2 = serializer.serialize(folder)
 
-      println xml2 // TODO: should compare this one with the xml string above without indentation
+      assert xml2
+
+      println xml2 // TODO: should compare this one with the xml string above without indentation, ignoring order
       // Check xmluint https://stackoverflow.com/questions/16540318/compare-two-xml-strings-ignoring-element-order
       // https://stackoverflow.com/questions/48216562/compare-two-xmls-using-xmlunit-bypassing-the-order-of-elements
 
@@ -328,6 +332,8 @@ class OpenEhrXmlParserTest extends GroovyTestCase {
       String xml = file.text
       def parser = new OpenEhrXmlParser()
       Composition c = (Composition)parser.parseLocatable(xml)
+
+      assert c != null
 
       // TODO: check values at paths
 

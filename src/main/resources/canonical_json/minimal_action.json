@@ -107,8 +107,8 @@
                             "_type": "DV_PROPORTION",
                             "numerator": 311.6,
                             "denominator": 84.2,
-                            "type": 3,
-                            "precision": 0
+                            "type": 0,
+                            "precision": 2
                         }
                     }
                 ]

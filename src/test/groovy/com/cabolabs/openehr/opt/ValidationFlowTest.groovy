@@ -425,7 +425,9 @@ class ValidationFlowTest extends GroovyTestCase {
       RmValidationReport report = validator.dovalidate(status, 'com.cabolabs.openehr_opt.namespaces.default')
 
       assert report.errors
-      assert report.errors.find { it.dataPath == '/name' || it.path == '/name' }
+      // getOpt() now completes the OPT by default, which adds a coded-text alternative for
+      // name, so the tampered-value error surfaces under /name/value/value instead of /name
+      assert report.errors.find { it.dataPath?.startsWith('/name') || it.path?.startsWith('/name') }
    }
 
    void test_ehr_status_coded_valid()
@@ -648,7 +650,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
 
       // SETUP RM VALIDATOR
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(folder, 'com.cabolabs.openehr_opt.namespaces.default')
 
       assert !report.errors
@@ -775,7 +777,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
 
       // SETUP RM VALIDATOR
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(folder, 'com.cabolabs.openehr_opt.namespaces.default')
 
       assert !report.errors
@@ -891,7 +893,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
 
       // SETUP RM VALIDATOR
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(folder, 'com.cabolabs.openehr_opt.namespaces.default')
 
       assert !report.errors
@@ -1010,7 +1012,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
 
       // SETUP RM VALIDATOR
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(folder, 'com.cabolabs.openehr_opt.namespaces.default')
 
       assert report.errors
@@ -1037,32 +1039,76 @@ class ValidationFlowTest extends GroovyTestCase {
       opt_manager.init(repo)
 
       // SETUP RM VALIDATOR
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(compo, 'test_validation_missing_node')
 
-      assert report.errors.size() == 5
+      // The fixture has 5 wrong node names at different depths (content(0) itself, its data,
+      // and its 3 events). Under the old RmValidator, each was checked independently and all 5
+      // were reported, because that validator matched container items to template alternatives
+      // by archetype_node_id alone.
+      //
+      // RmValidator2 matches container items (content, events, ...) by archetype_node_id AND
+      // name together (see validate(Locatable, List, AttributeNode) around line 470) - needed
+      // to disambiguate templates that reuse the same archetype at the same path under different
+      // names. So when content(0)'s own name doesn't match anything, RmValidator2 can't tell
+      // which archetype governs it, and correctly stops there instead of guessing: it reports
+      // one "not defined in template" error for content(0) and never descends into its children,
+      // so the 4 deeper mismatches (data/name, events(0..2)/name) are unreachable through this
+      // single fixture - not a validator bug, just not independently exercisable here anymore.
+      assert report.errors.size() == 1
 
-      def err
+      def err = report.errors.find { it.path == "/content(0)" }
 
-      err = report.errors.find { it.dataPath == "/content(0)/name" }
+      assert err.error == "No c_object found with archetype_node_id openEHR-EHR-OBSERVATION.test_all_datatypes.v1 that matches the name 'Blood Pressure' at /content(0), the RM object contains an item that is not defined in the template"
+   }
 
-      assert err.error == "expected name is 'Test all datatypes' and actual name is 'Blood Pressure'"
+   void test_compo_validation_deep_name_tampered()
+   {
+      // Same fixture/template as test_compo_validation_missing_node, but here only one
+      // name is wrong at a time and every other name is corrected first, so the root
+      // (and, for the second case, the parent HISTORY) matches its template alternative
+      // and validation actually descends far enough to reach the deep mismatch - unlike
+      // test_compo_validation_missing_node, where content(0) itself is unmatched and
+      // RmValidator2 correctly stops right there.
+      String path = "/opts/test_validation_missing_node/composition.json"
+      File file = new File(getClass().getResource(path).toURI())
+      def json_compo = file.text
 
-      err = report.errors.find { it.dataPath == "/content(0)/data/name" }
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
 
-      assert err.error == "expected name is 'Event Series' and actual name is 'history'"
+      def parser = new OpenEhrJsonParser(true)
+      RmValidator2 validator = new RmValidator2(opt_manager)
 
-      err = report.errors.find { it.dataPath == "/content(0)/data/events(0)/name" }
+      // HISTORY.name wrong (single-attribute name check, content(0) itself correct).
+      // The archetype's events[at0002] c_object only allows 0..1 occurrences, so the
+      // fixture's own 3 events (unrelated to naming) are trimmed to 1 to isolate the
+      // name check from that separate cardinality constraint.
+      Composition compo = parser.parseJson(json_compo)
+      compo.content[0].name.value = "Test all datatypes"
+      compo.content[0].data.name.value = "TOTALLY WRONG HISTORY NAME"
+      compo.content[0].data.events = [compo.content[0].data.events[0]]
+      compo.content[0].data.events[0].name.value = "Cualquier evento"
 
-      assert err.error == "expected name is 'Cualquier evento' and actual name is 'any event'"
+      RmValidationReport report = validator.dovalidate(compo, 'test_validation_missing_node')
 
-      err = report.errors.find { it.dataPath == "/content(0)/data/events(1)/name" }
+      assert report.errors.size() == 1
+      assert report.errors[0].dataPath == "/content(0)/data/name/value/value"
+      assert report.errors[0].error == "value 'TOTALLY WRONG HISTORY NAME' is not contained in the list [Event Series]"
 
-      assert err.error == "expected name is 'Cualquier evento' and actual name is 'any event'"
+      // EVENT.name wrong (container-item name check, HISTORY itself correct)
+      compo = parser.parseJson(json_compo)
+      compo.content[0].name.value = "Test all datatypes"
+      compo.content[0].data.name.value = "Event Series"
+      compo.content[0].data.events = [compo.content[0].data.events[0]]
+      compo.content[0].data.events[0].name.value = "TOTALLY WRONG EVENT NAME"
 
-      err = report.errors.find { it.dataPath == "/content(0)/data/events(2)/name" }
+      report = validator.dovalidate(compo, 'test_validation_missing_node')
 
-      assert err.error == "expected name is 'Cualquier evento' and actual name is 'any event'"
+      assert report.errors.size() == 1
+      assert report.errors[0].path == "/content(0)/data/events(0)"
+      assert report.errors[0].error == "No c_object found with archetype_node_id at0002 that matches the name 'TOTALLY WRONG EVENT NAME' at /content(0)/data/events(0), the RM object contains an item that is not defined in the template"
    }
 
    void test_compo_minimal_action_valid()
@@ -1085,7 +1131,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
 
       // SETUP RM VALIDATOR
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(compo, 'com.cabolabs.openehr_opt.namespaces.default')
 
       assert !report.errors
@@ -1111,7 +1157,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
 
       // SETUP RM VALIDATOR
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(compo, 'com.cabolabs.openehr_opt.namespaces.default')
 
       assert !report.errors
@@ -1137,7 +1183,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
 
       // SETUP RM VALIDATOR
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(compo, 'com.cabolabs.openehr_opt.namespaces.default')
 
       assert report.errors
@@ -1145,22 +1191,25 @@ class ValidationFlowTest extends GroovyTestCase {
 
       def err
 
-      err = report.errors.find { it.path == "/content(0)/data/events(0)/data/items(9)/value/lower/magnitude" }
+      // RmValidator2 reports dataPath/optPath (3-arg addError), not the old path/error (2-arg),
+      // and nests one level deeper (.../magnitude/magnitude: DvInterval's lower/upper is itself
+      // a DvQuantity, whose own magnitude check appends another /magnitude).
+      err = report.errors.find { it.dataPath == "/content(0)/data/events(0)/data/items(9)/value/lower/magnitude/magnitude" }
 
       assert err.error == "value '5' is not contained in the range '10..100'"
 
 
-      err = report.errors.find { it.path == "/content(0)/data/events(0)/data/items(9)/value/upper/magnitude" }
+      err = report.errors.find { it.dataPath == "/content(0)/data/events(0)/data/items(9)/value/upper/magnitude/magnitude" }
 
       assert err.error == "value '10' is not contained in the range '50..200'"
 
 
-      err = report.errors.find { it.path == "/content(0)/data/events(0)/data/items(16)/value/issuer" }
+      err = report.errors.find { it.dataPath == "/content(0)/data/events(0)/data/items(16)/value/issuer" }
 
       assert err.error == "value 'Hospital de Clinicas' doesn't match pattern 'issuerA'"
 
 
-      err = report.errors.find { it.path == "/content(0)/data/events(0)/data/items(16)/value/type" }
+      err = report.errors.find { it.dataPath == "/content(0)/data/events(0)/data/items(16)/value/type" }
 
       assert err.error == "value 'LOCALID' doesn't match pattern 'typeB'"
    }
@@ -1217,7 +1266,9 @@ class ValidationFlowTest extends GroovyTestCase {
       compo.name.value = "TOTALLY WRONG COMPOSITION NAME"
       RmValidationReport report = new RmValidator2(opt_manager).dovalidate(compo, 'com.cabolabs.openehr_opt.namespaces.default')
       assert report.errors
-      assert report.errors.find { it.dataPath == '/name' }
+      // getOpt() now completes the OPT by default, which adds a coded-text alternative for
+      // name, so the tampered-value error surfaces under /name/value/value instead of /name
+      assert report.errors.find { it.dataPath?.startsWith('/name') }
 
       // ENTRY subclass (OBSERVATION) name inside content
       compo = parser.parseJson(json_compo)
@@ -1293,7 +1344,9 @@ class ValidationFlowTest extends GroovyTestCase {
       RmValidationReport report = validator.dovalidate(person, 'com.cabolabs.openehr_opt.namespaces.default')
 
       assert report.errors
-      assert report.errors.find { it.dataPath == '/name' || it.path == '/name' }
+      // getOpt() now completes the OPT by default, which adds a coded-text alternative for
+      // name, so the tampered-value error surfaces under /name/value/value instead of /name
+      assert report.errors.find { it.dataPath?.startsWith('/name') || it.path?.startsWith('/name') }
    }
 
    void test_person_complete_valid()
@@ -1879,7 +1932,9 @@ class ValidationFlowTest extends GroovyTestCase {
       RmValidationReport report = validator.dovalidate(person, 'com.cabolabs.openehr_opt.namespaces.default')
 
       assert report.errors
-      assert report.errors.find { it.dataPath == '/name' || it.path == '/name' }
+      // getOpt() now completes the OPT by default, which adds a coded-text alternative for
+      // name, so the tampered-value error surfaces under /name/value/value instead of /name
+      assert report.errors.find { it.dataPath?.startsWith('/name') || it.path?.startsWith('/name') }
    }
 
    void test_generic_group_api_valid()
@@ -2203,7 +2258,9 @@ class ValidationFlowTest extends GroovyTestCase {
       RmValidationReport report = validator.dovalidate(relationship, 'com.cabolabs.openehr_opt.namespaces.default')
 
       assert report.errors
-      assert report.errors.find { it.dataPath == '/name' || it.path == '/name' }
+      // getOpt() now completes the OPT by default, which adds a coded-text alternative for
+      // name, so the tampered-value error surfaces under /name/value/value instead of /name
+      assert report.errors.find { it.dataPath?.startsWith('/name') || it.path?.startsWith('/name') }
    }
 
 
