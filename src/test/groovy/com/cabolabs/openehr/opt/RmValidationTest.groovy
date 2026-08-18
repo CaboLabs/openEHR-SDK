@@ -41,15 +41,20 @@ class RmValidationTest extends GroovyTestCase {
       opt_manager.init(repo)
       //opt_manager.loadAll()
 
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(c, OptManager.DEFAULT_NAMESPACE)
 
       report.errors.each { error ->
          println "1: "+ error
       }
+
+      // This XML canonical fixture carries the same 3 deliberate constraint violations as
+      // canonical_json/test_all_datatypes_en_constraints_violated.json (see
+      // ValidationFlowTest.test_compo_test_all_datatypes_en_invalid): a magnitude out of
+      // range, and issuer/type not matching their archetype patterns.
+      assert report.errors.size() == 3
    }
 
-   /*
    void testValidationFromXmlComposition2()
    {
       String path = "/canonical_xml/test_all_datatypes.composition.en.xml"
@@ -71,6 +76,8 @@ class RmValidationTest extends GroovyTestCase {
       report.errors.each { error ->
          println "2: "+ error
       }
+
+      assert report.errors.size() == 3
    }
 
 
@@ -89,12 +96,14 @@ class RmValidationTest extends GroovyTestCase {
       opt_manager.init(repo)
       //opt_manager.loadAll()
 
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(c, OptManager.DEFAULT_NAMESPACE)
 
       report.errors.each { error ->
          println "3: "+ error
       }
+
+      assert !report.errors
    }
 
     void testValidationFromJsonComposition2()
@@ -118,6 +127,8 @@ class RmValidationTest extends GroovyTestCase {
       report.errors.each { error ->
          println "4: "+ error
       }
+
+      assert !report.errors
    }
 
    void testValidationFromJsonCompositionAllDatatypes()
@@ -135,12 +146,14 @@ class RmValidationTest extends GroovyTestCase {
       opt_manager.init(repo)
       //opt_manager.loadAll()
 
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(c, OptManager.DEFAULT_NAMESPACE)
 
       report.errors.each { error ->
          println '5: '+error
       }
+
+      assert !report.errors
    }
 
    void testValidationFromJsonCompositionAllDatatypes2()
@@ -164,6 +177,8 @@ class RmValidationTest extends GroovyTestCase {
       report.errors.each { error ->
          println '6: '+ error
       }
+
+      assert !report.errors
    }
 
    void testValidationFromJsonCompositionInvalidCardinalitiesA()
@@ -181,12 +196,17 @@ class RmValidationTest extends GroovyTestCase {
       opt_manager.init(repo)
       //opt_manager.loadAll()
 
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(c, "")
 
       report.errors.each { error ->
          println '7: '+ error
       }
+
+      // fixture name promises an invalid-cardinality case: events container is empty but
+      // the archetype requires exactly 1
+      assert report.errors.size() == 1
+      assert report.errors[0].error == "Number of objects in container (0) violates the cardinality constraint 1..1"
    }
 
    void testValidationFromJsonCompositionInvalidCardinalitiesA2()
@@ -210,6 +230,9 @@ class RmValidationTest extends GroovyTestCase {
       report.errors.each { error ->
          println '8: '+ error
       }
+
+      assert report.errors.size() == 1
+      assert report.errors[0].error == "Number of objects in container (0) violates the cardinality constraint 1..1"
    }
 
    void testValidationFromJsonCompositionInvalidCardinalitiesB()
@@ -227,12 +250,17 @@ class RmValidationTest extends GroovyTestCase {
       opt_manager.init(repo)
       //opt_manager.loadAll()
 
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(c, "")
 
       report.errors.each { error ->
          println '9: '+ error
       }
+
+      // fixture name promises an invalid-cardinality case: content container is empty but
+      // the archetype requires at least 1
+      assert report.errors.size() == 1
+      assert report.errors[0].error == "Number of objects in container (0) violates the cardinality constraint 1..*"
    }
 
 
@@ -257,8 +285,10 @@ class RmValidationTest extends GroovyTestCase {
       report.errors.each { error ->
          println '10: '+ error
       }
+
+      assert report.errors.size() == 1
+      assert report.errors[0].error == "Number of objects in container (0) violates the cardinality constraint 1..*"
    }
-   */
 
    Composition load_compo(String path)
    {

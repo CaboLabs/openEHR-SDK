@@ -667,6 +667,8 @@ class OpenEhrXmlSerializerTest extends GroovyTestCase {
       def serializer = new OpenEhrXmlSerializer(true)
       def personString = serializer.serialize(person)
 
+      assert personString
+
       println personString
 
 
@@ -677,10 +679,13 @@ class OpenEhrXmlSerializerTest extends GroovyTestCase {
       // NOTE: favour should be 'api' and current validator doesn't have an option for that, we neither have the XSD for that.
       def inputStream = getClass().getResourceAsStream('/xsd/Version.xsd')
       def schemaValidator = new XmlValidation(inputStream)
-      if (!schemaValidator.validate(personString))
+      boolean valid = schemaValidator.validate(personString)
+      if (!valid)
       {
          println schemaValidator.getErrors()
       }
+
+      assert valid
    }
 
    void testEhrDtoSerialize()
@@ -737,6 +742,8 @@ class OpenEhrXmlSerializerTest extends GroovyTestCase {
 
       def serializer = new OpenEhrXmlSerializer()
       def ehr_string = serializer.serialize(dto_ehr)
+
+      assert ehr_string
 
       /* TODO: validate XML against API schema
 

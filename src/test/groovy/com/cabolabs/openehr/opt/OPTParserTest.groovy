@@ -197,6 +197,8 @@ class OPTParserTest extends GroovyTestCase {
       opt.complete()
       def nodes = opt.nodes.findAll{ it.key.endsWith('null_flavour') }
 
+      assert nodes
+
       nodes.each { tpath, obn ->
          println tpath
          println obn.text
@@ -210,6 +212,8 @@ class OPTParserTest extends GroovyTestCase {
       def opt = TestUtils.loadTemplate(path)
       opt.complete()
       def nodes = opt.nodes
+
+      assert opt.definition.text
 
       println opt.definition.text
 
@@ -234,15 +238,22 @@ class OPTParserTest extends GroovyTestCase {
 
       def obn = opt.findRoot('openEHR-EHR-OBSERVATION.glasgow_coma_scale.v1')
 
+      assert obn != null
+
       println obn
 
       // Get the object node that for thet EVENT.time inside the observation
       // NOTE: this is a list
       def event_time_node = obn.getNodes('/data[at0001]/events[at0002]/time')
 
+      assert event_time_node
+
       // We know the object node is for a datatype, so the parent object should be a locatable or pathable,
       // in this case is for the EVENT
       def event_node = event_time_node[0].parent.parent
+
+      // EVENT is abstract in the RM, so the concrete node is POINT_EVENT or INTERVAL_EVENT
+      assert event_node.rmTypeName in ['POINT_EVENT', 'INTERVAL_EVENT']
 
       println event_time_node[0]
       println event_node.rmTypeName
@@ -250,7 +261,11 @@ class OPTParserTest extends GroovyTestCase {
 
       // Then we want to verify if the event node contains a descendant path,
       // this is to know the data
-      println event_node.nodes.find{ it.key == '/data[at0001]/events[at0002]/data[at0003]/items[at0037]/value' }
+      def descendant = event_node.nodes.find{ it.key == '/data[at0001]/events[at0002]/data[at0003]/items[at0037]/value' }
+
+      assert descendant != null
+
+      println descendant
 
       // event_node.nodes.each {
       //    println it.key
@@ -264,7 +279,11 @@ class OPTParserTest extends GroovyTestCase {
       //    }
       // }
 
-      println obn.getNodes('/data[at0001]/events[at0002]/data[at0003]/items[at0037]/value')
+      def leaf_nodes = obn.getNodes('/data[at0001]/events[at0002]/data[at0003]/items[at0037]/value')
+
+      assert leaf_nodes
+
+      println leaf_nodes
    }
 
 
@@ -356,9 +375,18 @@ class OPTParserTest extends GroovyTestCase {
       opt.complete() // complete adds time and instruction_details
 
       def obj = opt.findRoot('openEHR-EHR-ACTION.estado_cita.v0')
+
+      // complete() should have materialized the RM-mandatory attributes not explicit in
+      // the archetype/OPT, per the comment above.
+      assert obj.nodes['/time']
+      assert obj.nodes['/instruction_details']
+
       def toJson = new JsonSerializer()
       toJson.serialize(obj)
       def json = toJson.get()
+
+      assert json
+
       println "action nodes: "+ json
    }
 
@@ -564,7 +592,8 @@ class OPTParserTest extends GroovyTestCase {
 
       def toJson = new JsonSerializer()
       toJson.serialize(opt)
-      //println toJson.get(true) // TODO: make some type of assert...
+
+      assert toJson.get(true)
    }
 
    void testParseNodesCDvOrdinal()
@@ -770,6 +799,8 @@ class OPTParserTest extends GroovyTestCase {
       def ins = igen.generateXMLCompositionStringFromOPT(opt)
       //println ins
 
+      assert ins
+
       new File( "documents" + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'.xml'").format(new Date()) ) << ins
    }
 
@@ -782,6 +813,8 @@ class OPTParserTest extends GroovyTestCase {
       def ins = igen.generateXMLCompositionStringFromOPT(opt)
       //println ins
 
+      assert ins
+
       new File( "documents" + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'.xml'").format(new Date()) ) << ins
    }
 
@@ -792,6 +825,8 @@ class OPTParserTest extends GroovyTestCase {
       def igen = new JsonInstanceGenerator()
       def ins = igen.generateJSONCompositionStringFromOPT(opt)
       //println ins
+
+      assert ins
 
       def dpath = "documents" + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'.json'").format(new Date())
       new File(dpath) << ins
@@ -806,6 +841,8 @@ class OPTParserTest extends GroovyTestCase {
 
       //println ui
 
+      assert ui
+
       new File( "html" + PS + new java.text.SimpleDateFormat("'"+ opt.concept +"_'yyyyMMddhhmmss'_"+ opt.langCode +".html'").format(new Date()) ) << ui
    }
 
@@ -818,6 +855,8 @@ class OPTParserTest extends GroovyTestCase {
 
       //println ui
 
+      assert ui
+
       new File( "html" + PS + new java.text.SimpleDateFormat("'"+ opt.concept +"_'yyyyMMddhhmmss'_"+ opt.langCode +".html'").format(new Date()) ) << ui
    }
 
@@ -827,6 +866,9 @@ class OPTParserTest extends GroovyTestCase {
       def opt = TestUtils.loadTemplate(path)
       def gen = new OptUiGenerator()
       def ui = gen.generate(opt)
+
+      assert ui
+
       new File( "html" + PS + new java.text.SimpleDateFormat("'"+ opt.concept +"_'yyyyMMddhhmmss'_"+ opt.langCode +".html'").format(new Date()) ) << ui
    }
 
@@ -836,6 +878,9 @@ class OPTParserTest extends GroovyTestCase {
       def opt = TestUtils.loadTemplate(path)
       def gen = new OptUiGenerator()
       def ui = gen.generate(opt)
+
+      assert ui
+
       new File( "html" + PS + new java.text.SimpleDateFormat("'"+ opt.concept +"_'yyyyMMddhhmmss'_"+ opt.langCode +".html'").format(new Date()) ) << ui
    }
 

@@ -270,6 +270,17 @@ class RmValidator2 {
 
       RmValidationReport report = new RmValidationReport()
 
+      // ARCHETYPE_SLOT children are unresolved pointers - the template doesn't say what
+      // archetype fills them, so there isn't enough information to check existence,
+      // cardinality or occurrences here without risking false positives. This is a
+      // template-authoring gap (an unresolved slot), not something the validator can
+      // fix on its own - the fix is for whoever authors/completes the template to
+      // resolve or remove the slot.
+      if (cma.children?.any { it.type == 'ARCHETYPE_SLOT' })
+      {
+         return report
+      }
+
       //println cma.cardinality.interval
       //println cma.dataPath +" size: "+ container.size()
 
@@ -1565,7 +1576,69 @@ class RmValidator2 {
    {
       RmValidationReport report = new RmValidationReport()
 
-      // TODO: validate numerator and denominator if there is any constrain, and against the type
+      // proportion_kind: 0 ratio, 1 unitary, 2 percent, 3 fraction, 4 integer_fraction
+      switch (d.type)
+      {
+         case 0: // RATIO: numerator any real, denominator any real != 0
+            if (d.denominator != null && d.denominator.compareTo(BigDecimal.ZERO) == 0)
+            {
+               report.addError(
+                  parent.dataPath + dv_path +'/denominator',
+                  o.templatePath,
+                  "denominator can't be 0 for a DV_PROPORTION of type RATIO"
+               )
+            }
+            break
+
+         case 1: // UNITARY: numerator any real, denominator must be 1.0
+            if (d.denominator != null && d.denominator.compareTo(BigDecimal.ONE) != 0)
+            {
+               report.addError(
+                  parent.dataPath + dv_path +'/denominator',
+                  o.templatePath,
+                  "denominator must be 1.0 for a DV_PROPORTION of type UNITARY"
+               )
+            }
+            break
+
+         case 2: // PERCENT: numerator any real, denominator must be 100.0
+            if (d.denominator != null && d.denominator.compareTo(new BigDecimal(100)) != 0)
+            {
+               report.addError(
+                  parent.dataPath + dv_path +'/denominator',
+                  o.templatePath,
+                  "denominator must be 100.0 for a DV_PROPORTION of type PERCENT"
+               )
+            }
+            break
+
+         case 3: // FRACTION: numerator and denominator must be integers
+         case 4: // INTEGER_FRACTION: numerator and denominator must be integers
+            if (d.numerator != null && d.numerator.stripTrailingZeros().scale() > 0)
+            {
+               report.addError(
+                  parent.dataPath + dv_path +'/numerator',
+                  o.templatePath,
+                  "numerator must be an integer for a DV_PROPORTION of type FRACTION or INTEGER_FRACTION"
+               )
+            }
+            if (d.denominator != null && d.denominator.stripTrailingZeros().scale() > 0)
+            {
+               report.addError(
+                  parent.dataPath + dv_path +'/denominator',
+                  o.templatePath,
+                  "denominator must be an integer for a DV_PROPORTION of type FRACTION or INTEGER_FRACTION"
+               )
+            }
+            break
+
+         default:
+            report.addError(
+               parent.dataPath + dv_path +'/type',
+               o.templatePath,
+               "type must be one of 0 (ratio), 1 (unitary), 2 (percent), 3 (fraction) or 4 (integer_fraction), got '${d.type}'"
+            )
+      }
 
       return report
    }
@@ -2063,7 +2136,9 @@ class RmValidator2 {
    private RmValidationReport validate_alternatives(Pathable parent, DvInterval d, List<ObjectNode> os, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
-      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'DV_INTERVAL' }
+      // rmTypeName is the generic form (DV_INTERVAL<DV_QUANTITY>, DV_INTERVAL<DV_COUNT>, ...),
+      // never the bare 'DV_INTERVAL', so match by prefix like checkAllowedType(..., DataValue, ...) does.
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName.startsWith('DV_INTERVAL') }
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)

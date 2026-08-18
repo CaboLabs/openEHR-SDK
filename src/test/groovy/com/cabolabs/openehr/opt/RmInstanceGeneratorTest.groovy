@@ -12,7 +12,6 @@ import com.cabolabs.openehr.rm_1_0_2.common.change_control.Contribution
 import com.cabolabs.openehr.rm_1_0_2.common.change_control.Version
 import com.cabolabs.openehr.rm_1_0_2.composition.Composition
 import com.cabolabs.openehr.validation.RmValidationReport
-import com.cabolabs.openehr.validation.RmValidator
 import com.cabolabs.openehr.validation.RmValidator2
 import groovy.util.GroovyTestCase
 
@@ -48,7 +47,7 @@ class RmInstanceGeneratorTest extends GroovyTestCase {
       opt_manager.init(repo)
       //opt_manager.loadAll()
 
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(version.data, OptManager.DEFAULT_NAMESPACE)
 
       assert report.errors.size() == 0
@@ -80,7 +79,7 @@ class RmInstanceGeneratorTest extends GroovyTestCase {
       opt_manager.init(repo)
       //opt_manager.loadAll()
 
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(version.data, OptManager.DEFAULT_NAMESPACE)
 
       assert report.errors.size() == 0
@@ -112,7 +111,7 @@ class RmInstanceGeneratorTest extends GroovyTestCase {
       opt_manager.init(repo)
       //opt_manager.loadAll()
 
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(version.data, OptManager.DEFAULT_NAMESPACE)
 
       report.errors.each {
@@ -148,7 +147,7 @@ class RmInstanceGeneratorTest extends GroovyTestCase {
       opt_manager.init(repo)
       //opt_manager.loadAll()
 
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(version.data, OptManager.DEFAULT_NAMESPACE)
 
       assert report.errors.size() == 0
@@ -180,7 +179,7 @@ class RmInstanceGeneratorTest extends GroovyTestCase {
       opt_manager.init(repo)
       //opt_manager.loadAll()
 
-      RmValidator validator = new RmValidator(opt_manager)
+      RmValidator2 validator = new RmValidator2(opt_manager)
       RmValidationReport report = validator.dovalidate(version.data, OptManager.DEFAULT_NAMESPACE)
 
       assert report.errors.size() == 0

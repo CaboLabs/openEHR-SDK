@@ -65,6 +65,61 @@ import com.cabolabs.openehr.validation.RmValidationReport
 import com.cabolabs.openehr.opt.instance_generator.RmInstanceGenerator
 ```
 
+### OptManager
+
+`OptManager` is a process-wide singleton that caches parsed OPTs (and their referenced
+archetypes) per namespace, so callers don't reparse the same template on every request. It's
+used internally by `RmValidator2` and the instance generators, and can be used directly to
+load/inspect OPTs.
+
+```groovy
+import com.cabolabs.openehr.opt.manager.OptManager
+import com.cabolabs.openehr.opt.manager.OptRepository
+import com.cabolabs.openehr.opt.manager.OptRepositoryFSImpl
+
+OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("opts").toURI())
+OptManager opt_manager = OptManager.getInstance()
+opt_manager.init(repo)
+
+// look up by templateId within a namespace (cache hit, or search + cache on miss)
+def opt = opt_manager.getOpt('my_template.v1', OptManager.DEFAULT_NAMESPACE)
+
+// load a specific file/location directly, bypassing the templateId search - an alternative
+// to the namespace+templateId lookup above, not a variant of it
+def opt2 = opt_manager.loadFromLocation('/path/to/some.opt', OptManager.DEFAULT_NAMESPACE)
+```
+
+**Thread safety.** `OptManager`'s internal caches are backed by `ConcurrentHashMap` /
+`CopyOnWriteArrayList`, and the compound-mutation methods (`loadAll`, `load`, `getOpt`,
+`unloadAll`, `removeOpt`, `cleanCache`, `cleanAll`, `getInstance`) are synchronized. Reads
+(`getLoadedOpts`, `getNodes`, `getText`, `isLoaded`, ...) don't need external locking.
+
+**`complete()` runs by default.** `loadAll()`, `load()`, `loadFromLocation()` and `getOpt()`
+(on a cache miss) all call `OperationalTemplate.complete()` by default now, so RM-mandatory
+attributes not explicit in the archetype/OPT get materialized before validation - including
+`getOpt()`'s implicit lazy-load path used by `RmValidator2`. Pass `complete: false` to any of
+them to opt out and get the raw, uncompleted OPT:
+
+```groovy
+def opt = opt_manager.getOpt('my_template.v1', OptManager.DEFAULT_NAMESPACE, false)
+```
+
+**Configurable default namespace.** `OptManager.DEFAULT_NAMESPACE` is the namespace every
+method falls back to when none is passed explicitly. Set it once at startup instead of
+passing a namespace on every call:
+
+```groovy
+// either at init() time, matching the folder name that holds your OPTs in the repo
+opt_manager.init(repo, 1800, 'my_org_templates')
+
+// or explicitly, any time
+OptManager.setDefaultNamespace('my_org_templates')
+```
+
+**Resetting.** `OptManager.reset()` drops the singleton (and, with it, all cached state) -
+the next `getInstance()` starts from a clean slate. Useful between test runs or when
+switching repos entirely; `unloadAll(namespace)` clears just one namespace instead.
+
 ### Validate an openEHR Operational Template against its schema
 
 ```groovy
@@ -179,6 +234,9 @@ String xml = marshal.serialize(compo)
 ```
 
 ### Validate COMPOSITION against OPT
+
+> **Note:** the original `RmValidator` has been decommissioned and removed. `RmValidator2` is
+> the only supported RM validator; use it for all new code.
 
 ```groovy
 import com.cabolabs.openehr.opt.manager.OptManager

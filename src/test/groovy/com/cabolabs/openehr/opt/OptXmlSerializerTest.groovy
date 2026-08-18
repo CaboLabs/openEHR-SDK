@@ -71,14 +71,15 @@ class OptXmlSerializerTest extends GroovyTestCase {
    {
       def path = "opts/"+ OptManager.DEFAULT_NAMESPACE + "/solicitacao_exame_error.opt" // this OPT has an error: a C_PRIMITIVE_OBJECT.item is missing
 
-      try
-      {
+      // shouldFail fails the test if the closure does NOT throw, so this can't silently
+      // pass without ever checking the message (the old try/catch put the assert inside
+      // the catch block, so if loadTemplate() stopped throwing the test would pass having
+      // verified nothing).
+      def message = shouldFail {
          TestUtils.loadTemplate(path)
       }
-      catch (Exception e)
-      {
-         assert e.getMessage().startsWith("Invalid template: missing required primitive.item")
-      }
+
+      assert message.startsWith("Invalid template: missing required primitive.item")
    }
 
    void testRole()
@@ -212,6 +213,8 @@ class OptXmlSerializerTest extends GroovyTestCase {
       def ins = igen.generateXMLCompositionStringFromOPT(opt)
       //println ins
 
+      assert ins
+
       new File( "documents" + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'.xml'").format(new Date()) ) << ins
    }
 
@@ -222,6 +225,8 @@ class OptXmlSerializerTest extends GroovyTestCase {
       def igen = new JsonInstanceGenerator()
       def ins = igen.generateJSONCompositionStringFromOPT(opt)
       //println ins
+
+      assert ins
 
       def dpath = "documents" + PS + new java.text.SimpleDateFormat("'"+ opt.concept+"_'yyyyMMddhhmmss'.json'").format(new Date())
       new File(dpath) << ins
@@ -236,6 +241,8 @@ class OptXmlSerializerTest extends GroovyTestCase {
 
       //println ui
 
+      assert ui
+
       new File( "html" + PS + new java.text.SimpleDateFormat("'"+ opt.concept +"_'yyyyMMddhhmmss'_"+ opt.langCode +".html'").format(new Date()) ) << ui
    }
 
@@ -248,6 +255,8 @@ class OptXmlSerializerTest extends GroovyTestCase {
 
       //println ui
 
+      assert ui
+
       new File( "html" + PS + new java.text.SimpleDateFormat("'"+ opt.concept +"_'yyyyMMddhhmmss'_"+ opt.langCode +".html'").format(new Date()) ) << ui
    }
 
@@ -255,6 +264,11 @@ class OptXmlSerializerTest extends GroovyTestCase {
    {
       def path = "sets"+ "/composition_observation_1"+ "/composition_observation_en.opt"
       def opt = TestUtils.loadTemplate(path)
+
+      assert opt != null
+
+      // TODO: generation is disabled here, unlike testUIGeneratorObservationES right below -
+      // unclear if that's deliberate (known-broken for this OPT) or just left unfinished.
       // def gen = new OptUiGenerator()
       // def ui = gen.generate(opt)
       // new File( "html" + PS + new java.text.SimpleDateFormat("'"+ opt.concept +"_'yyyyMMddhhmmss'_"+ opt.langCode +".html'").format(new Date()) ) << ui
@@ -266,6 +280,9 @@ class OptXmlSerializerTest extends GroovyTestCase {
       def opt = TestUtils.loadTemplate(path)
       def gen = new OptUiGenerator()
       def ui = gen.generate(opt)
+
+      assert ui
+
       new File( "html" + PS + new java.text.SimpleDateFormat("'"+ opt.concept +"_'yyyyMMddhhmmss'_"+ opt.langCode +".html'").format(new Date()) ) << ui
    }
 
@@ -447,7 +464,12 @@ class OptXmlSerializerTest extends GroovyTestCase {
    {
       def path = "opts"+ "/Terminology ref.opt"
       def opt = TestUtils.loadTemplate(path)
-      opt.getNodes().each { tpath, node ->
+
+      def nodes = opt.getNodes()
+
+      assert nodes
+
+      nodes.each { tpath, node ->
          println node.nodes
       }
    }
