@@ -494,12 +494,50 @@ class OptManager {
    {
       if (this.cache[namespace] && this.cache[namespace][templateId])
       {
+         // Purge this OPT's own referenced-archetype roots first, while we still have the
+         // OperationalTemplate instance to ask which ones are its - otherwise
+         // getReferencedArchetypes()/getNodes()/getText()/getDescription() keep serving
+         // this OPT's (now removed) nodes indefinitely.
+         //
+         // Entries are deduped by templatePath ALONE (see registerReferencedArchetypes/
+         // loadAll), not by owning OPT - templatePath is purely structural (e.g.
+         // "/content[archetype_id=X]"), so two different OPTs that reference the same
+         // archetype at the same structural position collide onto the SAME stored entry,
+         // and only the first-loaded OPT's ObjectNode instance is kept. So a templatePath
+         // match here does not necessarily mean this OPT owns that entry, and removing it
+         // unconditionally could delete another still-loaded OPT's only reference. Before
+         // dropping a templatePath, check whether any OTHER currently-loaded OPT in this
+         // namespace still contributes the same archetypeId+templatePath.
+         def opt = this.cache[namespace][templateId]
+         if (this.referencedArchetypes[namespace])
+         {
+            def refarchs = opt.getReferencedArchetypes()
+            refarchs.each { _objectNode ->
+               def archRoots = this.referencedArchetypes[namespace][_objectNode.archetypeId]
+               if (archRoots)
+               {
+                  boolean stillNeeded = this.cache[namespace].any { otherTemplateId, otherOpt ->
+                     otherTemplateId != templateId &&
+                     otherOpt.getReferencedArchetypes().any {
+                        it.archetypeId == _objectNode.archetypeId && it.templatePath == _objectNode.templatePath
+                     }
+                  }
+
+                  if (!stillNeeded)
+                  {
+                     archRoots.removeIf { it.templatePath == _objectNode.templatePath }
+                     if (archRoots.isEmpty())
+                     {
+                        this.referencedArchetypes[namespace].remove(_objectNode.archetypeId)
+                     }
+                  }
+               }
+            }
+         }
+
          this.cache[namespace].remove(templateId)
          this.timestamps[namespace].remove(templateId)
       }
-
-      // TODO: it is not checking for referenced archetypes that might depend only
-      // on this OPT and should also be removed from this.referencedArchetypes[namespace]
    }
 
    // Checks if the template is loaded in the cache

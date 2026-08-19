@@ -143,6 +143,89 @@ class OptManagerTest extends GroovyTestCase {
       man.reset()
    }
 
+   void testRemoveOptClearsReferencedArchetypes()
+   {
+      println "====== testRemoveOptClearsReferencedArchetypes ======"
+
+      String namespace = 'test_ref_archs_namespace'
+      String archetypeId = 'openEHR-EHR-OBSERVATION.test_all_datatypes.v1'
+
+      assert man.getLoadedOpts(namespace).size() == 0
+      man.loadAll(namespace)
+      assert man.getLoadedOpts(namespace).size() == 1
+
+      def loadedOpt = man.getLoadedOpts(namespace).values().first()
+      String templateId = loadedOpt.templateId
+
+      assert man.getReferencedArchetypes(archetypeId, namespace)
+      assert man.getNodes(archetypeId, '/', namespace)
+
+      man.removeOpt(templateId, namespace)
+
+      // cache itself is cleared
+      assert !man.isLoaded(templateId, namespace)
+      assert man.getLoadedOpts(namespace).size() == 0
+
+      // referencedArchetypes no longer serves this (now removed) OPT's nodes -
+      // it was the only OPT in this namespace referencing this archetype, so the
+      // archetypeId entry should be gone entirely, not just emptied.
+      assert man.getReferencedArchetypes(archetypeId, namespace) == null
+      assert man.getNodes(archetypeId, '/', namespace) == []
+
+      man.reset()
+   }
+
+   void testRemoveOptDoesNotDropSharedTemplatePathFromOtherLoadedOpt()
+   {
+      println "====== testRemoveOptDoesNotDropSharedTemplatePathFromOtherLoadedOpt ======"
+
+      String namespace = OptManager.DEFAULT_NAMESPACE
+      String archetypeId = 'openEHR-EHR-OBSERVATION.test_all_datatypes.v1'
+      String templateIdA = 'test_all_datatypes.en.v1'
+      String templateIdB = 'test_all_datatypes_strict_cardinalities.en.v1'
+
+      def optA = man.getOpt(templateIdA, namespace)
+
+      // templateIdB's on-disk filename ("...strict_cardinalities.en.v1.opt") doesn't match
+      // what normalizeTemplateId() would produce for it ("..._strict_cardinalities_en_v1"),
+      // so the normal templateId-based lookup 404s - load it directly by path instead.
+      String locationB = new File(getClass().getResource('/opts/' + namespace + '/test_all_datatypes_strict_cardinalities.en.v1.opt').toURI()).absolutePath
+      def optB = man.loadFromLocation(locationB, namespace, true)
+
+      assert man.isLoaded(templateIdA, namespace)
+      assert man.isLoaded(templateIdB, namespace)
+
+      // Both OPTs reference the same archetype at the same structural templatePath (it's
+      // the sole/first content item in both templates) - this is a real collision, not a
+      // hypothetical.
+      String pathA = optA.getReferencedArchetypes().find { it.archetypeId == archetypeId }.templatePath
+      String pathB = optB.getReferencedArchetypes().find { it.archetypeId == archetypeId }.templatePath
+      assert pathA == pathB
+
+      // Because of that collision, registerReferencedArchetypes/loadAll's dedup-by-templatePath
+      // silently drops the second OPT's own node - only ONE entry is stored for this
+      // archetypeId, owned by whichever OPT loaded first. removeOpt() has to work around this
+      // pre-existing limitation, not assume a templatePath match means exclusive ownership.
+      assert man.getReferencedArchetypes(archetypeId, namespace).size() == 1
+
+      man.removeOpt(templateIdA, namespace)
+
+      // optB is still loaded and still needs this archetype at this templatePath - it must
+      // still be resolvable even though optA (which happened to own the stored entry) is gone.
+      assert man.isLoaded(templateIdB, namespace)
+      assert man.getReferencedArchetypes(archetypeId, namespace) != null
+      assert man.getReferencedArchetypes(archetypeId, namespace).size() == 1
+      assert man.getNodes(archetypeId, '/', namespace)
+
+      man.removeOpt(templateIdB, namespace)
+
+      // nothing loaded references it anymore - the entry should finally be gone
+      assert man.getReferencedArchetypes(archetypeId, namespace) == null
+      assert man.getNodes(archetypeId, '/', namespace) == []
+
+      man.reset()
+   }
+
    void testTemplateDataPathsReferral()
    {
       println "====== testTemplateDataPathsReferral ======"
