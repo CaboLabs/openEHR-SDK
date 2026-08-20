@@ -1059,7 +1059,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
       def err = report.errors.find { it.path == "/content(0)" }
 
-      assert err.error == "No c_object found with archetype_node_id openEHR-EHR-OBSERVATION.test_all_datatypes.v1 that matches the name 'Blood Pressure' at /content(0), the RM object contains an item that is not defined in the template"
+      assert err.error == "No c_object found with archetype_node_id openEHR-EHR-OBSERVATION.test_all_datatypes.v1 that matches the name 'Blood Pressure' at /content(0), the RM object contains an item that is not defined in the template - expected name: 'Test all datatypes'"
    }
 
    void test_compo_validation_deep_name_tampered()
@@ -1108,7 +1108,7 @@ class ValidationFlowTest extends GroovyTestCase {
 
       assert report.errors.size() == 1
       assert report.errors[0].path == "/content(0)/data/events(0)"
-      assert report.errors[0].error == "No c_object found with archetype_node_id at0002 that matches the name 'TOTALLY WRONG EVENT NAME' at /content(0)/data/events(0), the RM object contains an item that is not defined in the template"
+      assert report.errors[0].error == "No c_object found with archetype_node_id at0002 that matches the name 'TOTALLY WRONG EVENT NAME' at /content(0)/data/events(0), the RM object contains an item that is not defined in the template - expected name: 'Cualquier evento'"
    }
 
    void test_compo_minimal_action_valid()

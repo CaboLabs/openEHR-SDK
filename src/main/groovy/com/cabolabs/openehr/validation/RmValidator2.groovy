@@ -252,6 +252,56 @@ class RmValidator2 {
    }
 
 
+   // Builds a "expected name(s): [...]" suffix for the "No c_object found" error, so the
+   // client doesn't have to go look up the archetype/OPT externally to know what name was
+   // actually expected at this node_id/archetype_id - specially useful when there's a
+   // single fixed value (the common case for a name that's either an explicit constraint
+   // or the archetype's own term text, materialized by complete() as a fixed-value DV_TEXT).
+   // Returns '' (no suffix) when no expected value can be determined (open/unconstrained name).
+   private String expectedNameHint(AttributeNode cma, String archetype_node_id)
+   {
+      def id_matching_cobjs = cma.children.findAll { c_object ->
+         def check_attr = (c_object.type == 'C_ARCHETYPE_ROOT') ? 'archetypeId' : 'nodeId'
+         archetype_node_id == c_object."$check_attr"
+      }
+
+      def expected = id_matching_cobjs.collect { expectedNameFor(it) }.findAll { it }.unique()
+
+      if (!expected) return ''
+
+      return expected.size() == 1 ?
+         " - expected name: '${expected[0]}'" :
+         " - expected one of these names: ${expected}"
+   }
+
+   // The name a c_object constrains an item's name to, when that's determinable as a single
+   // fixed value: either an explicit name constraint with a fixed-value DV_TEXT alternative
+   // (list.size() == 1), or - when there's no explicit name constraint - the archetype's own
+   // term text for that node_id (the same text the fixed-value constraint injected by
+   // complete() is built from). Returns null when the name is open/unconstrained or the
+   // constraint allows more than one fixed value, since there's nothing single to report.
+   private String expectedNameFor(ObjectNode c_object)
+   {
+      def aName = c_object.getAttr('name')
+
+      if (!aName)
+      {
+         return c_object.ownerArchetypeRoot?.getText(c_object.nodeId)
+      }
+
+      def fixedValues = [] as Set
+      aName.children.each { nameAlt ->
+         if (nameAlt.rmTypeName != 'DV_TEXT') return
+
+         def valueAttr = nameAlt.getAttr('value')
+         valueAttr?.children?.each { valObj ->
+            if (valObj.item instanceof CString) fixedValues.addAll(valObj.item.list)
+         }
+      }
+
+      return fixedValues.size() == 1 ? fixedValues[0] : null
+   }
+
    /**
     * Parent is the object wit ha container attribute (e.g. ItemTree)
     * Container is the value of the container attribute (e.g. ItemTree.items)
@@ -521,6 +571,7 @@ class RmValidator2 {
             report.addError(
                item.dataPath,
                "No c_object found with archetype_node_id ${item.archetype_node_id} that matches the name '${item.name.value}' at ${item.dataPath}, the RM object contains an item that is not defined in the template"
+               + expectedNameHint(cma, item.archetype_node_id)
             )
          }
          else if (alternative_cobjs.size() > 1)
