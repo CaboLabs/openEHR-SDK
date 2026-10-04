@@ -8,6 +8,17 @@ import com.cabolabs.openehr.opt.model.*
  */
 class TestUtils {
 
+   /**
+    * A file in the folder where tests write what they generate (build/tmp/test-output, git ignored with build), so
+    * running the tests doesn't leave files in the root of the repo.
+    */
+   static File outputFile(String name)
+   {
+      def dir = new File('build' + File.separator + 'tmp' + File.separator + 'test-output')
+      dir.mkdirs()
+      return new File(dir, name)
+   }
+
    static OperationalTemplate loadTemplate(String path)
    {
       //println path

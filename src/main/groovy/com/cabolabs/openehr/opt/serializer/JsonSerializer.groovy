@@ -184,6 +184,10 @@ class JsonSerializer {
          units: obn.units
       ]
 
+      // optional: only when the OPT has them
+      if (obn.unitsSystem) n.units_system = obn.unitsSystem
+      if (obn.unitsDisplayName) n.units_display_name = obn.unitsDisplayName
+
       return n
    }
 

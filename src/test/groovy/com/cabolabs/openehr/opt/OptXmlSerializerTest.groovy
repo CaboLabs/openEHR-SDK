@@ -500,4 +500,43 @@ class OptXmlSerializerTest extends GroovyTestCase {
    }
 
    */
+
+   // units_system and units_display_name are serialized after units, validate against the schema and survive parse and serialize again
+   void testQuantityItemUnitsSystem()
+   {
+      def path = "opts/diff/units_system_v0.opt"
+      def opt = TestUtils.loadTemplate(path)
+
+      validateOptString(opt)
+      verifySerializeParseSerialize(opt)
+
+      String xml = new OptXmlSerializer(true).serialize(opt)
+
+      // after units, in the order of the schema
+      assert (xml =~ /(?s)<units>mg<\/units>\s*<units_system>http:\/\/unitsofmeasure.org<\/units_system>\s*<units_display_name>mg<\/units_display_name>/).find()
+      assert (xml =~ /(?s)<units>g<\/units>\s*<units_system>http:\/\/unitsofmeasure.org<\/units_system>\s*<units_display_name>g<\/units_display_name>/).find()
+
+      // the parsed copy has the same fields
+      def parsed = new OperationalTemplateParser().parse(xml)
+      def items = parsed.nodes.values().flatten().findAll { it instanceof CDvQuantity }.unique()*.list.flatten()
+
+      assert items*.units.sort() == ['g', 'mg']
+      assert items*.unitsSystem.every { it == 'http://unitsofmeasure.org' }
+      assert items*.unitsDisplayName.sort() == ['g', 'mg']
+   }
+
+   // an OPT without them doesn't get empty elements
+   void testQuantityItemWithoutUnitsSystem()
+   {
+      def path = "opts/diff/Registro_de_monitor_de_signos.opt"
+      def opt = TestUtils.loadTemplate(path)
+
+      validateOptString(opt)
+
+      String xml = new OptXmlSerializer(true).serialize(opt)
+
+      assert xml.contains('<units>')
+      assert !xml.contains('units_system')
+      assert !xml.contains('units_display_name')
+   }
 }

@@ -183,7 +183,7 @@ class OPTParserTest extends GroovyTestCase {
       toJson.serialize(opt)
       def complete = toJson.get(true)
       def json = toJson.get(true)
-      new File('a_opt_complete.json').text = json
+      TestUtils.outputFile('a_opt_complete.json').text = json
       println json
 
       assert incomplete.size() < complete.size()
@@ -1138,4 +1138,37 @@ class OPTParserTest extends GroovyTestCase {
       assert opt.nodes.size() == 10
    }
    */
+
+   // units_system and units_display_name, optional in the items of a C_DV_QUANTITY (template designer OPT)
+   void testQuantityItemUnitsSystem()
+   {
+      def path = "opts/diff/units_system_v0.opt"
+      def opt = TestUtils.loadTemplate(path)
+
+      def quantities = opt.nodes.values().flatten().findAll { it instanceof CDvQuantity }.unique()
+      assert quantities.size() == 1
+
+      def items = quantities[0].list
+      assert items*.units == ['g', 'mg']
+
+      items.each { item ->
+         assert item.unitsSystem == 'http://unitsofmeasure.org'
+         assert item.unitsDisplayName == item.units
+      }
+   }
+
+   // an OPT written without them: the fields are just null
+   void testQuantityItemWithoutUnitsSystem()
+   {
+      def path = "opts/diff/Registro_de_monitor_de_signos.opt"
+      def opt = TestUtils.loadTemplate(path)
+
+      def items = opt.nodes.values().flatten().findAll { it instanceof CDvQuantity }.unique()*.list.flatten()
+
+      assert items
+      items.each {
+         assert it.unitsSystem == null
+         assert it.unitsDisplayName == null
+      }
+   }
 }

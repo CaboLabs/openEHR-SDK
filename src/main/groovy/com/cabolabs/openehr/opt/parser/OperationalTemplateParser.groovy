@@ -388,6 +388,9 @@ class OperationalTemplateParser {
             cqi.units     = it.units.text()
             cqi.magnitude = parseIntervalBigDecimal(it.magnitude)
             cqi.precision = parseIntervalInt(it.precision)
+            // optional
+            cqi.unitsSystem      = it.units_system.text() ?: null
+            cqi.unitsDisplayName = it.units_display_name.text() ?: null
             obn.list << cqi
          }
       }
