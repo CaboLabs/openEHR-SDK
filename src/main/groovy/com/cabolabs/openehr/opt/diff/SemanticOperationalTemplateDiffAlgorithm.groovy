@@ -355,6 +355,9 @@ class SemanticOperationalTemplateDiffAlgorithm {
          def itemChanges = []
          compareIntervalField(itemChanges, "${path}[units=${u}]", 'magnitude', i1.magnitude, i2.magnitude)
          compareIntervalField(itemChanges, "${path}[units=${u}]", 'precision', i1.precision, i2.precision)
+         // optional, informative: they don't change what is valid
+         compareField(itemChanges, 'unitsSystem', i1.unitsSystem, i2.unitsSystem)
+         compareField(itemChanges, 'unitsDisplayName', i1.unitsDisplayName, i2.unitsDisplayName)
          if (itemChanges) modified << new ListItemChange(item: u, changes: itemChanges)
       }
 

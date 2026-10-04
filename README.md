@@ -185,6 +185,10 @@ def opt = loadAndParse("vital_signs.opt")
 opt.complete()
 ```
 
+#### Parser notes
+
+**C_DURATION: range or pattern.** A `C_DURATION` constrains a duration expression in one of two ways: with a *pattern*, the expression has to follow a format (`PYMD` allows years, months and days), or with a *range*, the expression has to be between two durations (`PT0M..PT100M` means between 0 and 100 minutes). The schema allows both in the same constraint, but in practice they are alternatives, so the parser treats them that way: if the OPT has a range, `CDuration.range` is set and the pattern is not read (`CDuration.pattern` stays `null`); the pattern is only read when there is no range.
+
 ### Parse a JSON COMPOSITION
 
 ```groovy

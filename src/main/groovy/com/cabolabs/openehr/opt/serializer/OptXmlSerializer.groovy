@@ -294,6 +294,15 @@ class OptXmlSerializer {
             {
                units(item.units)
             }
+            // optional, after units as in the schema
+            if (item.unitsSystem)
+            {
+               units_system(item.unitsSystem)
+            }
+            if (item.unitsDisplayName)
+            {
+               units_display_name(item.unitsDisplayName)
+            }
          }
       }
 
