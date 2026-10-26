@@ -134,8 +134,23 @@ class OpenEhrJsonSerializerTest extends GroovyTestCase {
 
    void testLocatableSerializeExcludesNulls()
    {
-      serializeBothModes(spanishEhrStatus()).each { string ->
+      def status = spanishEhrStatus()
 
+      // units is written without a null check, so it reaches the encoder as null
+      status.other_details.items << new Element(
+         name: new DvText(
+            value: 'Presión sistólica'
+         ),
+         archetype_node_id: 'at0003',
+         value: new DvQuantity(
+            magnitude: 120
+         )
+      )
+
+      serializeBothModes(status).each { string ->
+
+         assert string.contains('"magnitude"')
+         assert !string.contains('"units"')
          assert !string.contains('null')
       }
    }
