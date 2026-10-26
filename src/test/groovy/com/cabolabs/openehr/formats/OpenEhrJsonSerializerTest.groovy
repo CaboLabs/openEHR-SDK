@@ -38,6 +38,84 @@ class OpenEhrJsonSerializerTest extends GroovyTestCase {
 
    private static String PS = System.getProperty("file.separator")
 
+   private EhrStatus spanishEhrStatus()
+   {
+      new EhrStatus(
+         name: new DvText(
+            value: 'Estado de la historia clínica'
+         ),
+         archetype_node_id: 'openEHR-EHR-EHR_STATUS.generic.v1',
+         archetype_details: new Archetyped(
+            archetype_id: new ArchetypeId(
+               value: 'openEHR-EHR-EHR_STATUS.generic.v1'
+            ),
+            template_id: new TemplateId(
+               value: 'generic.en.v1'
+            ),
+            rm_version: '1.0.2'
+         ),
+         is_queryable: true,
+         is_modifiable: true,
+         subject: new PartySelf(),
+         other_details: new ItemTree(
+            name: new DvText(
+               value: 'árbol'
+            ),
+            archetype_node_id: 'at0001',
+            items: [
+               new Element(
+                  name: new DvText(
+                     value: 'Observación'
+                  ),
+                  archetype_node_id: 'at0002',
+                  value: new DvText(
+                     // accents, ñ, ü, ¿, a literal backslash-u sequence and a control char
+                     value: 'Presión arterial: ñandú, pingüino, ¿qué? \\u00e1 \u0001'
+                  )
+               )
+            ]
+         )
+      )
+   }
+
+   void testLocatableSerializeSpanishAccents()
+   {
+      def status = spanishEhrStatus()
+      def slurper = new JsonSlurper()
+
+      [false, true].each { pretty ->
+
+         def serializer = new OpenEhrJsonSerializer(pretty)
+         def string = serializer.serialize(status)
+         println string
+
+         // accents are written as UTF-8 chars, not as unicode escapes
+         assert string.contains('Estado de la historia clínica')
+         assert string.contains('árbol')
+         assert string.contains('Observación')
+         assert string.contains('Presión arterial: ñandú, pingüino, ¿qué?')
+         assert !string.contains('\\u00f3')
+
+         // a literal backslash-u in the data keeps its escaped backslash
+         assert string.contains('\\\\u00e1')
+
+         // control chars stay escaped
+         assert string.contains('\\u0001')
+
+         // output is valid JSON and the value roundtrips
+         def json_map = slurper.parseText(string)
+         assert json_map.name.value == 'Estado de la historia clínica'
+         assert json_map.other_details.items[0].value.value == status.other_details.items[0].value.value
+
+         // nulls are excluded in both modes
+         assert !string.contains('null')
+      }
+
+      // both modes produce the same content
+      assert slurper.parseText(new OpenEhrJsonSerializer(true).serialize(status)) ==
+             slurper.parseText(new OpenEhrJsonSerializer(false).serialize(status))
+   }
+
    void testContributionSerialize()
    {
       def c = new Contribution(

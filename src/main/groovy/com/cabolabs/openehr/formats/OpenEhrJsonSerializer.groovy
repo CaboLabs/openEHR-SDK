@@ -80,22 +80,80 @@ class OpenEhrJsonSerializer {
 
    private String encode(Map m)
    {
-      if (this.pretty)
-      {
-         def out = JsonOutput.prettyPrint(JsonOutput.toJson(m))
-
-         // unescape unicode escaped characters
-         out = out.replaceAll(/\\u([0-9a-fA-F]{4})/){Integer.parseInt(it[1], 16) as char}
-         return out
-      }
-
-      //return JsonOutput.toJson(m)
       def generator = new JsonGenerator.Options()
          .excludeNulls()
          .disableUnicodeEscaping() // avoid unicode escape
          .build()
 
-      return generator.toJson(m)
+      def out = generator.toJson(m)
+
+      if (this.pretty)
+      {
+         // JsonOutput.prettyPrint escapes non-ASCII chars again, so indent the generator output directly
+         return this.prettyPrint(out)
+      }
+
+      return out
+   }
+
+   // indents compact JSON without touching the content of string values
+   private String prettyPrint(String json)
+   {
+      def indent = '    '
+      def sb = new StringBuilder()
+      int level = 0
+      boolean inString = false
+      boolean escaped = false
+
+      for (int i = 0; i < json.length(); i++)
+      {
+         String c = json[i]
+
+         if (inString)
+         {
+            sb.append(c)
+            if (escaped) escaped = false
+            else if (c == '\\') escaped = true
+            else if (c == '"') inString = false
+            continue
+         }
+
+         switch (c)
+         {
+            case '"':
+               inString = true
+               sb.append(c)
+            break
+            case ['{', '[']:
+               sb.append(c)
+               String next = (i + 1 < json.length()) ? json[i + 1] : c
+               if (next == '}' || next == ']') // empty object or array
+               {
+                  sb.append(next)
+                  i++
+               }
+               else
+               {
+                  level++
+                  sb.append('\n').append(indent * level)
+               }
+            break
+            case ['}', ']']:
+               level--
+               sb.append('\n').append(indent * level).append(c)
+            break
+            case ',':
+               sb.append(c).append('\n').append(indent * level)
+            break
+            case ':':
+               sb.append(': ')
+            break
+            default:
+               sb.append(c)
+         }
+      }
+
+      return sb.toString()
    }
 
    String serialize(Locatable o)
