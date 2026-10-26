@@ -16,6 +16,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representati
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemTree
 import com.cabolabs.openehr.rm_1_0_2.common.generic.PartySelf
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
+import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.*
 import com.cabolabs.openehr.rm_1_0_2.demographic.*
@@ -78,15 +79,16 @@ class OpenEhrJsonSerializerTest extends GroovyTestCase {
       )
    }
 
+   // compact and pretty serializations of the same instance
+   private List serializeBothModes(Locatable o)
+   {
+      [false, true].collect { pretty -> new OpenEhrJsonSerializer(pretty).serialize(o) }
+   }
+
    void testLocatableSerializeSpanishAccents()
    {
-      def status = spanishEhrStatus()
-      def slurper = new JsonSlurper()
+      serializeBothModes(spanishEhrStatus()).each { string ->
 
-      [false, true].each { pretty ->
-
-         def serializer = new OpenEhrJsonSerializer(pretty)
-         def string = serializer.serialize(status)
          println string
 
          // accents are written as UTF-8 chars, not as unicode escapes
@@ -95,25 +97,56 @@ class OpenEhrJsonSerializerTest extends GroovyTestCase {
          assert string.contains('Observación')
          assert string.contains('Presión arterial: ñandú, pingüino, ¿qué?')
          assert !string.contains('\\u00f3')
+      }
+   }
+
+   void testLocatableSerializeLiteralBackslashU()
+   {
+      serializeBothModes(spanishEhrStatus()).each { string ->
 
          // a literal backslash-u in the data keeps its escaped backslash
          assert string.contains('\\\\u00e1')
+      }
+   }
+
+   void testLocatableSerializeControlChars()
+   {
+      serializeBothModes(spanishEhrStatus()).each { string ->
 
          // control chars stay escaped
          assert string.contains('\\u0001')
+      }
+   }
 
-         // output is valid JSON and the value roundtrips
+   void testLocatableSerializeRoundtrip()
+   {
+      def status = spanishEhrStatus()
+      def slurper = new JsonSlurper()
+
+      serializeBothModes(status).each { string ->
+
+         // output is valid JSON and the values roundtrip
          def json_map = slurper.parseText(string)
          assert json_map.name.value == 'Estado de la historia clínica'
          assert json_map.other_details.items[0].value.value == status.other_details.items[0].value.value
+      }
+   }
 
-         // nulls are excluded in both modes
+   void testLocatableSerializeExcludesNulls()
+   {
+      serializeBothModes(spanishEhrStatus()).each { string ->
+
          assert !string.contains('null')
       }
+   }
 
-      // both modes produce the same content
-      assert slurper.parseText(new OpenEhrJsonSerializer(true).serialize(status)) ==
-             slurper.parseText(new OpenEhrJsonSerializer(false).serialize(status))
+   void testLocatableSerializePrettyMatchesCompact()
+   {
+      def slurper = new JsonSlurper()
+      def (compact, pretty) = serializeBothModes(spanishEhrStatus())
+
+      assert pretty != compact
+      assert slurper.parseText(pretty) == slurper.parseText(compact)
    }
 
    void testContributionSerialize()
