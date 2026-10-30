@@ -115,8 +115,8 @@ class OptManager {
          }
          catch (Exception e)
          {
-            log.error("OPT could not be loaded from "+ location)
-            log.error(parser.getLastErrors().toString().substring(0, 200) + '...')
+            // lastErrors only has schema validation errors, the exception is what describes this failure
+            log.error("OPT could not be loaded from "+ location, e)
          }
 
          if (opt)
@@ -134,7 +134,7 @@ class OptManager {
          else
          {
             log.error("OPT could not be loaded from "+ location)
-            log.error(parser.getLastErrors().toString().substring(0, 200) + '...')
+            log.error(errorsSummary(parser.getLastErrors()))
          }
       }
 
@@ -164,6 +164,13 @@ class OptManager {
             }
          }
       }
+   }
+
+   // errors could be shorter than the limit or null, logging should never throw
+   private static String errorsSummary(errors, int limit = 200)
+   {
+      def text = errors?.toString() ?: 'no errors reported'
+      return (text.size() > limit) ? text.take(limit) + '...' : text
    }
 
    /*
