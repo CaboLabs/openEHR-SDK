@@ -16,6 +16,7 @@ import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.representati
 import com.cabolabs.openehr.rm_1_0_2.data_structures.item_structure.ItemTree
 import com.cabolabs.openehr.rm_1_0_2.common.generic.PartySelf
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Archetyped
+import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 
 import com.cabolabs.openehr.rm_1_0_2.data_types.quantity.*
 import com.cabolabs.openehr.rm_1_0_2.demographic.*
@@ -37,6 +38,131 @@ import com.cabolabs.openehr.opt.instance_validation.JsonInstanceValidation
 class OpenEhrJsonSerializerTest extends GroovyTestCase {
 
    private static String PS = System.getProperty("file.separator")
+
+   private EhrStatus spanishEhrStatus()
+   {
+      new EhrStatus(
+         name: new DvText(
+            value: 'Estado de la historia clínica'
+         ),
+         archetype_node_id: 'openEHR-EHR-EHR_STATUS.generic.v1',
+         archetype_details: new Archetyped(
+            archetype_id: new ArchetypeId(
+               value: 'openEHR-EHR-EHR_STATUS.generic.v1'
+            ),
+            template_id: new TemplateId(
+               value: 'generic.en.v1'
+            ),
+            rm_version: '1.0.2'
+         ),
+         is_queryable: true,
+         is_modifiable: true,
+         subject: new PartySelf(),
+         other_details: new ItemTree(
+            name: new DvText(
+               value: 'árbol'
+            ),
+            archetype_node_id: 'at0001',
+            items: [
+               new Element(
+                  name: new DvText(
+                     value: 'Observación'
+                  ),
+                  archetype_node_id: 'at0002',
+                  value: new DvText(
+                     // accents, ñ, ü, ¿, a literal backslash-u sequence and a control char
+                     value: 'Presión arterial: ñandú, pingüino, ¿qué? \\u00e1 \u0001'
+                  )
+               )
+            ]
+         )
+      )
+   }
+
+   // compact and pretty serializations of the same instance
+   private List serializeBothModes(Locatable o)
+   {
+      [false, true].collect { pretty -> new OpenEhrJsonSerializer(pretty).serialize(o) }
+   }
+
+   void testLocatableSerializeSpanishAccents()
+   {
+      serializeBothModes(spanishEhrStatus()).each { string ->
+
+         println string
+
+         // accents are written as UTF-8 chars, not as unicode escapes
+         assert string.contains('Estado de la historia clínica')
+         assert string.contains('árbol')
+         assert string.contains('Observación')
+         assert string.contains('Presión arterial: ñandú, pingüino, ¿qué?')
+         assert !string.contains('\\u00f3')
+      }
+   }
+
+   void testLocatableSerializeLiteralBackslashU()
+   {
+      serializeBothModes(spanishEhrStatus()).each { string ->
+
+         // a literal backslash-u in the data keeps its escaped backslash
+         assert string.contains('\\\\u00e1')
+      }
+   }
+
+   void testLocatableSerializeControlChars()
+   {
+      serializeBothModes(spanishEhrStatus()).each { string ->
+
+         // control chars stay escaped
+         assert string.contains('\\u0001')
+      }
+   }
+
+   void testLocatableSerializeRoundtrip()
+   {
+      def status = spanishEhrStatus()
+      def slurper = new JsonSlurper()
+
+      serializeBothModes(status).each { string ->
+
+         // output is valid JSON and the values roundtrip
+         def json_map = slurper.parseText(string)
+         assert json_map.name.value == 'Estado de la historia clínica'
+         assert json_map.other_details.items[0].value.value == status.other_details.items[0].value.value
+      }
+   }
+
+   void testLocatableSerializeExcludesNulls()
+   {
+      def status = spanishEhrStatus()
+
+      // units is written without a null check, so it reaches the encoder as null
+      status.other_details.items << new Element(
+         name: new DvText(
+            value: 'Presión sistólica'
+         ),
+         archetype_node_id: 'at0003',
+         value: new DvQuantity(
+            magnitude: 120
+         )
+      )
+
+      serializeBothModes(status).each { string ->
+
+         assert string.contains('"magnitude"')
+         assert !string.contains('"units"')
+         assert !string.contains('null')
+      }
+   }
+
+   void testLocatableSerializePrettyMatchesCompact()
+   {
+      def slurper = new JsonSlurper()
+      def (compact, pretty) = serializeBothModes(spanishEhrStatus())
+
+      assert pretty != compact
+      assert slurper.parseText(pretty) == slurper.parseText(compact)
+   }
 
    void testContributionSerialize()
    {
