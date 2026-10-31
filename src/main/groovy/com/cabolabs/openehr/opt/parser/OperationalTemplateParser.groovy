@@ -71,6 +71,37 @@ class OperationalTemplateParser {
       return parseOperationalTemplate(templateXML)
    }
 
+   // RESOURCE_DESCRIPTION and the first RESOURCE_DESCRIPTION_ITEM (details)
+   private void parseDescription(GPathResult desc)
+   {
+      if (desc.isEmpty()) return
+
+      this.template.originalAuthor       = _parseDictionary(desc.original_author)
+      this.template.otherContributors    = desc.other_contributors.collect { it.text().trim() }
+      this.template.lifecycleState       = desc.lifecycle_state.text().trim() ?: null
+      this.template.resourcePackageUri   = desc.resource_package_uri.text().trim() ?: null
+      this.template.otherDetails         = _parseDictionary(desc.other_details)
+
+      def details = desc.details[0]
+      if (details)
+      {
+         this.template.keywords            = details.keywords.collect { it.text().trim() }
+         this.template.use                 = details.use.text().trim() ?: null
+         this.template.misuse              = details.misuse.text().trim() ?: null
+         this.template.copyright           = details.copyright.text().trim() ?: null
+         this.template.originalResourceUri = _parseDictionary(details.original_resource_uri)
+         this.template.detailsOtherDetails = _parseDictionary(details.other_details)
+      }
+   }
+
+   // StringDictionaryItem list to id -> value
+   private Map<String, String> _parseDictionary(GPathResult items)
+   {
+      def m = [:]
+      items.each { m[it.@id.text()] = it.text().trim() }
+      return m
+   }
+
    private parseOperationalTemplate(GPathResult tpXML)
    {
       this.template = new OperationalTemplate(
@@ -80,8 +111,9 @@ class OperationalTemplateParser {
          language: _parseCodePhrase(tpXML.language),
          isControlled: ((!tpXML.is_controlled.isEmpty() && tpXML.is_controlled.text().trim() != '') ? tpXML.is_controlled.text().trim() : false),
          purpose: tpXML.description.details.purpose.text().trim(),
-         // TODO: add use, misuse, keywords, etc. from RESOURCE_DESCRIPTION_ITEM: https://github.com/openEHR/java-libs/blob/f6ee434226bf926d261c2690016c1d6022b877be/oet-parser/src/main/xsd/Resource.xsd
       )
+
+      parseDescription(tpXML.description)
 
       this.template.definition = parseObjectNode(tpXML.definition, '/', '/', '/', '/')
 

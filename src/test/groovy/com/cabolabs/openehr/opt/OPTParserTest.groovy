@@ -324,6 +324,65 @@ class OPTParserTest extends GroovyTestCase {
       assert opt.nodes.values()*.rmTypeName == clean.nodes.values()*.rmTypeName
    }
 
+   void testParseAndSerializeDescriptionMetadata()
+   {
+      println "====== testParseAndSerializeDescriptionMetadata ======"
+
+      def path = "opts/"+ 'test_all_types2' + "/test_all_types_en_v1.opt"
+      def text = new File(ClassLoader.getSystemResource(path).toURI()).getText()
+
+      def description = '''<description>
+        <original_author id="name">Heather Leslie</original_author>
+        <original_author id="organisation">Atomica Informatics</original_author>
+        <original_author id="date">2020-03-13</original_author>
+        <other_contributors>Shan Nan&lt;nanshan@zju.edu.cn&gt;</other_contributors>
+        <other_contributors>Bin Qi</other_contributors>
+        <lifecycle_state>unmanaged</lifecycle_state>
+        <other_details id="licence">CC BY-SA 4.0</other_details>
+        <other_details id="MD5-CAM-1.0.1">839f7dba1a56344e80197ec32154c49b</other_details>
+        <other_details id="Owner"></other_details>
+        <details>
+          <language><terminology_id><value>ISO_639-1</value></terminology_id><code_string>en</code_string></language>
+          <purpose>The purpose</purpose>
+          <keywords>openEHR</keywords>
+          <keywords>COVID-19</keywords>
+          <use>The use</use>
+          <misuse>The misuse</misuse>
+        </details>
+      </description>'''
+
+      def withMeta = text.replaceFirst(/(?s)<description>.*?<\/description>/, description)
+      assert withMeta != text
+
+      def opt = new OperationalTemplateParser(true).parse(withMeta)
+
+      assert opt.originalAuthor == [name: 'Heather Leslie', organisation: 'Atomica Informatics', date: '2020-03-13']
+      assert opt.otherContributors == ['Shan Nan<nanshan@zju.edu.cn>', 'Bin Qi']
+      assert opt.lifecycleState == 'unmanaged'
+      assert opt.otherDetails == [licence: 'CC BY-SA 4.0', 'MD5-CAM-1.0.1': '839f7dba1a56344e80197ec32154c49b', Owner: '']
+      assert opt.purpose == 'The purpose'
+      assert opt.keywords == ['openEHR', 'COVID-19']
+      assert opt.use == 'The use'
+      assert opt.misuse == 'The misuse'
+
+      // serialize and parse again (parser validates against the schema)
+      def xml = new OptXmlSerializer().serialize(opt)
+      def opt2 = new OperationalTemplateParser(true).parse(xml)
+
+      assert opt2.originalAuthor == opt.originalAuthor
+      assert opt2.otherContributors == opt.otherContributors
+      assert opt2.lifecycleState == opt.lifecycleState
+      assert opt2.otherDetails == opt.otherDetails
+      assert opt2.keywords == opt.keywords
+      assert opt2.use == opt.use
+      assert opt2.misuse == opt.misuse
+
+      def json = new groovy.json.JsonSlurper().parseText(new JsonSerializer().serialize(opt).with { groovy.json.JsonOutput.toJson(it) })
+      assert json.original_author.name == 'Heather Leslie'
+      assert json.lifecycle_state == 'unmanaged'
+      assert json.keywords == ['openEHR', 'COVID-19']
+   }
+
    void testCBooleanParse()
    {
       println "====== testCBooleanParse ======"
