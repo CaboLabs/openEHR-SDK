@@ -74,12 +74,12 @@ class OperationalTemplateParser {
    private parseOperationalTemplate(GPathResult tpXML)
    {
       this.template = new OperationalTemplate(
-         uid: tpXML.uid.value.text(),
-         templateId: tpXML.template_id.value.text(),
-         concept: tpXML.concept.text(),
+         uid: tpXML.uid.value.text().trim(),
+         templateId: tpXML.template_id.value.text().trim(),
+         concept: tpXML.concept.text().trim(),
          language: _parseCodePhrase(tpXML.language),
-         isControlled: ((!tpXML.is_controlled.isEmpty() && tpXML.is_controlled.text() != '') ? tpXML.is_controlled.text() : false),
-         purpose: tpXML.description.details.purpose.text(),
+         isControlled: ((!tpXML.is_controlled.isEmpty() && tpXML.is_controlled.text().trim() != '') ? tpXML.is_controlled.text().trim() : false),
+         purpose: tpXML.description.details.purpose.text().trim(),
          // TODO: add use, misuse, keywords, etc. from RESOURCE_DESCRIPTION_ITEM: https://github.com/openEHR/java-libs/blob/f6ee434226bf926d261c2690016c1d6022b877be/oet-parser/src/main/xsd/Resource.xsd
       )
 
@@ -155,12 +155,12 @@ class OperationalTemplateParser {
 
    private _parseCodePhrase(GPathResult node)
    {
-      return node.terminology_id.value.text() +"::"+ node.code_string.text()
+      return node.terminology_id.value.text().trim() +"::"+ node.code_string.text().trim()
    }
 
    private parseCodePhrase(GPathResult node)
    {
-      return new CodePhrase(codeString: node.code_string.text(), terminologyId: node.terminology_id.value.text())
+      return new CodePhrase(codeString: node.code_string.text().trim(), terminologyId: node.terminology_id.value.text().trim())
    }
 
    private parseIntervalInt(GPathResult node)
@@ -168,19 +168,19 @@ class OperationalTemplateParser {
       if (node.isEmpty()) return null
 
       def itv = new IntervalInt(
-         upperIncluded:  node.upper_included.text().toBoolean(),
-         lowerIncluded:  node.lower_included.text().toBoolean(),
-         upperUnbounded: node.upper_unbounded.text().toBoolean(),
-         lowerUnbounded: node.lower_unbounded.text().toBoolean()
+         upperIncluded:  node.upper_included.text().trim().toBoolean(),
+         lowerIncluded:  node.lower_included.text().trim().toBoolean(),
+         upperUnbounded: node.upper_unbounded.text().trim().toBoolean(),
+         lowerUnbounded: node.lower_unbounded.text().trim().toBoolean()
       )
 
       if (!itv.lowerUnbounded)
       {
-         itv.lower = Integer.parseInt(node.lower.text())
+         itv.lower = Integer.parseInt(node.lower.text().trim())
       }
       if (!itv.upperUnbounded)
       {
-         itv.upper = Integer.parseInt(node.upper.text())
+         itv.upper = Integer.parseInt(node.upper.text().trim())
       }
 
       return itv
@@ -191,10 +191,10 @@ class OperationalTemplateParser {
       if (node.isEmpty()) return null
 
       def itv = new IntervalBigDecimal(
-         upperIncluded:  node.upper_included.text().toBoolean(),
-         lowerIncluded:  node.lower_included.text().toBoolean(),
-         upperUnbounded: node.upper_unbounded.text().toBoolean(),
-         lowerUnbounded: node.lower_unbounded.text().toBoolean()
+         upperIncluded:  node.upper_included.text().trim().toBoolean(),
+         lowerIncluded:  node.lower_included.text().trim().toBoolean(),
+         upperUnbounded: node.upper_unbounded.text().trim().toBoolean(),
+         lowerUnbounded: node.lower_unbounded.text().trim().toBoolean()
       )
 
       if (!itv.lowerUnbounded)
@@ -214,17 +214,17 @@ class OperationalTemplateParser {
       if (node.isEmpty()) return null
 
       def itv = new IntervalDuration(
-         upperIncluded:  node.upper_included.text().toBoolean(),
-         lowerIncluded:  node.lower_included.text().toBoolean(),
-         upperUnbounded: node.upper_unbounded.text().toBoolean(),
-         lowerUnbounded: node.lower_unbounded.text().toBoolean()
+         upperIncluded:  node.upper_included.text().trim().toBoolean(),
+         lowerIncluded:  node.lower_included.text().trim().toBoolean(),
+         upperUnbounded: node.upper_unbounded.text().trim().toBoolean(),
+         lowerUnbounded: node.lower_unbounded.text().trim().toBoolean()
       )
 
       if (!itv.lowerUnbounded)
       {
          try
          {
-            itv.lower = new Duration(value: node.lower.text()) // throws exception if value is invalid
+            itv.lower = new Duration(value: node.lower.text().trim()) // throws exception if value is invalid
          }
          catch (Exception e)
          {
@@ -236,7 +236,7 @@ class OperationalTemplateParser {
       {
          try
          {
-            itv.upper = new Duration(value: node.upper.text()) // throws exception if value is invalid
+            itv.upper = new Duration(value: node.upper.text().trim()) // throws exception if value is invalid
          }
          catch (Exception e)
          {
@@ -265,23 +265,23 @@ class OperationalTemplateParser {
             templatePath     += '[archetype_id='+ node.archetype_id.value +']' // slot in the path instead of node_id
             templateDataPath += '[archetype_id='+ node.archetype_id.value +']'
 
-            if (node.'@xsi:type'.text() == "C_ARCHETYPE_ROOT")
+            if (node.'@xsi:type'.text().trim() == "C_ARCHETYPE_ROOT")
             {
                path     = '/' // archetype root found
                dataPath = '/' // reset data path when path is root
             }
          }
          // para tag vacia empty da false pero text es vacio ej. <node_id/>
-         else if (!node.node_id.isEmpty() && node.node_id.text() != '')
+         else if (!node.node_id.isEmpty() && node.node_id.text().trim() != '')
          {
             // avoids adding the node_id for PATHABLE nodes
             // if node is a LOCATABLE add the node_id to the dataPath
-            if (!pathables.contains(node.rm_type_name.text()))
+            if (!pathables.contains(node.rm_type_name.text().trim()))
             {
-               templatePath     += '['+ node.node_id.text() + ']'
-               path             += '['+ node.node_id.text() + ']'
-               templateDataPath += '['+ node.node_id.text() + ']'
-               dataPath         += '['+ node.node_id.text() + ']'
+               templatePath     += '['+ node.node_id.text().trim() + ']'
+               path             += '['+ node.node_id.text().trim() + ']'
+               templateDataPath += '['+ node.node_id.text().trim() + ']'
+               dataPath         += '['+ node.node_id.text().trim() + ']'
             }
          }
 
@@ -309,16 +309,16 @@ class OperationalTemplateParser {
       //log.debug(templatePath)
 
       def obn
-      if (['C_CODE_PHRASE', 'C_CODE_REFERENCE', 'CONSTRAINT_REF'].contains(node.'@xsi:type'.text()))
+      if (['C_CODE_PHRASE', 'C_CODE_REFERENCE', 'CONSTRAINT_REF'].contains(node.'@xsi:type'.text().trim()))
       {
-         assert node.rm_type_name.text() == 'CODE_PHRASE'
+         assert node.rm_type_name.text().trim() == 'CODE_PHRASE'
 
          def terminologyRef
 
          // referenceSetUri is present on C_CODE_REFERENCE and in some C_CODE_PHRASE,
          // that is a bug from modeling tools.
          // In general this has this form: terminology:SNOMED-CT but in modeling tools any value can be added.
-         def uri = node.referenceSetUri.text()
+         def uri = node.referenceSetUri.text().trim()
          if (uri) terminologyRef = uri
 
          // println "terminologyRef "+ terminologyRef
@@ -327,10 +327,10 @@ class OperationalTemplateParser {
 
          obn = new CCodePhrase(
             owner:            this.template,
-            rmTypeName:       node.rm_type_name.text(),
-            nodeId:           node.node_id.text() ?: null, // ?: avoids empty string
-            type:             node.'@xsi:type'.text(),
-            archetypeId:      node.archetype_id.value.text(), // This is optional, just resolved slots have archId
+            rmTypeName:       node.rm_type_name.text().trim(),
+            nodeId:           node.node_id.text().trim() ?: null, // ?: avoids empty string
+            type:             node.'@xsi:type'.text().trim(),
+            archetypeId:      node.archetype_id.value.text().trim(), // This is optional, just resolved slots have archId
             templatePath:     templatePath,
             path:             path,
             dataPath:         dataPath,
@@ -341,7 +341,7 @@ class OperationalTemplateParser {
 
          if (obn.type == 'CONSTRAINT_REF')
          {
-            obn.reference = node.reference.text()
+            obn.reference = node.reference.text().trim()
          }
 
 
@@ -350,7 +350,7 @@ class OperationalTemplateParser {
 
          // parse terminologyID value, we could create CODE_PHRASE and parse this internally
          // name [ ‘(’ version ‘)’ ]
-         def tid = node.terminology_id.value.text()
+         def tid = node.terminology_id.value.text().trim()
 
          //println "template parser terminology_id: "+ tid
 
@@ -361,18 +361,18 @@ class OperationalTemplateParser {
          if (!node.code_list.isEmpty())
          {
             node.code_list.each {
-               obn.codeList << it.text()
+               obn.codeList << it.text().trim()
             }
          }
       }
-      else if (node.'@xsi:type'.text() == 'C_DV_QUANTITY')
+      else if (node.'@xsi:type'.text().trim() == 'C_DV_QUANTITY')
       {
          obn = new CDvQuantity(
             owner:            this.template,
-            rmTypeName:       node.rm_type_name.text(),
-            nodeId:           node.node_id.text() ?: null, // ?: avoids empty string
-            type:             node.'@xsi:type'.text(),
-            archetypeId:      node.archetype_id.value.text(), // This is optional, just resolved slots have archId
+            rmTypeName:       node.rm_type_name.text().trim(),
+            nodeId:           node.node_id.text().trim() ?: null, // ?: avoids empty string
+            type:             node.'@xsi:type'.text().trim(),
+            archetypeId:      node.archetype_id.value.text().trim(), // This is optional, just resolved slots have archId
             templatePath:     templatePath,
             path:             path,
             dataPath:         dataPath,
@@ -388,23 +388,23 @@ class OperationalTemplateParser {
          def cqi
          node.list.each {
             cqi           = new CQuantityItem()
-            cqi.units     = it.units.text()
+            cqi.units     = it.units.text().trim()
             cqi.magnitude = parseIntervalBigDecimal(it.magnitude)
             cqi.precision = parseIntervalInt(it.precision)
             // optional
-            cqi.unitsSystem      = it.units_system.text() ?: null
-            cqi.unitsDisplayName = it.units_display_name.text() ?: null
+            cqi.unitsSystem      = it.units_system.text().trim() ?: null
+            cqi.unitsDisplayName = it.units_display_name.text().trim() ?: null
             obn.list << cqi
          }
       }
-      else if (node.'@xsi:type'.text() == 'C_DV_ORDINAL')
+      else if (node.'@xsi:type'.text().trim() == 'C_DV_ORDINAL')
       {
          obn = new CDvOrdinal(
             owner:            this.template,
-            rmTypeName:       node.rm_type_name.text(),
-            nodeId:           node.node_id.text() ?: null, // ?: avoids empty string
-            type:             node.'@xsi:type'.text(),
-            archetypeId:      node.archetype_id.value.text(), // This is optional, just resolved slots have archId
+            rmTypeName:       node.rm_type_name.text().trim(),
+            nodeId:           node.node_id.text().trim() ?: null, // ?: avoids empty string
+            type:             node.'@xsi:type'.text().trim(),
+            archetypeId:      node.archetype_id.value.text().trim(), // This is optional, just resolved slots have archId
             templatePath:     templatePath,
             path:             path,
             dataPath:         dataPath,
@@ -415,19 +415,19 @@ class OperationalTemplateParser {
          def coi
          node.list.each {
             coi        = new CDvOrdinalItem()
-            coi.value  = Integer.parseInt(it.value.text())
+            coi.value  = Integer.parseInt(it.value.text().trim())
             coi.symbol = parseCodePhrase(it.symbol.defining_code)
             obn.list << coi
          }
       }
-      else if (node.'@xsi:type'.text() == 'ARCHETYPE_SLOT')
+      else if (node.'@xsi:type'.text().trim() == 'ARCHETYPE_SLOT')
       {
          obn = new ArchetypeSlot(
             owner:            this.template,
-            rmTypeName:       node.rm_type_name.text(),
-            nodeId:           node.node_id.text() ?: null, // ?: avoids empty string
-            type:             node.'@xsi:type'.text(),
-            archetypeId:      node.archetype_id.value.text(),
+            rmTypeName:       node.rm_type_name.text().trim(),
+            nodeId:           node.node_id.text().trim() ?: null, // ?: avoids empty string
+            type:             node.'@xsi:type'.text().trim(),
+            archetypeId:      node.archetype_id.value.text().trim(),
             templatePath:     templatePath,
             path:             path,
             dataPath:         dataPath,
@@ -436,17 +436,17 @@ class OperationalTemplateParser {
          )
 
          // NOTE: we are storing only the values, not the full expressions
-         obn.includes = node.includes.expression.right_operand.item.pattern.text()
-         obn.excludes = node.excludes.expression.right_operand.item.pattern.text()
+         obn.includes = node.includes.expression.right_operand.item.pattern.text().trim()
+         obn.excludes = node.excludes.expression.right_operand.item.pattern.text().trim()
       }
-      else if (node.'@xsi:type'.text() == 'C_PRIMITIVE_OBJECT')
+      else if (node.'@xsi:type'.text().trim() == 'C_PRIMITIVE_OBJECT')
       {
          obn = new PrimitiveObjectNode(
             owner:            this.template,
-            rmTypeName:       node.rm_type_name.text(),
-            nodeId:           node.node_id.text() ?: null, // ?: avoids empty string
-            type:             node.'@xsi:type'.text(),
-            archetypeId:      node.archetype_id.value.text(), // This is optional, just resolved slots have archId
+            rmTypeName:       node.rm_type_name.text().trim(),
+            nodeId:           node.node_id.text().trim() ?: null, // ?: avoids empty string
+            type:             node.'@xsi:type'.text().trim(),
+            archetypeId:      node.archetype_id.value.text().trim(), // This is optional, just resolved slots have archId
             templatePath:     templatePath,
             path:             path,
             dataPath:         dataPath,
@@ -469,7 +469,7 @@ class OperationalTemplateParser {
          }
 
          // TODO: switch (primitive.'@xsi:type'.text())
-         if (primitive.'@xsi:type'.text() == 'C_INTEGER')
+         if (primitive.'@xsi:type'.text().trim() == 'C_INTEGER')
          {
             obn.item = new CInteger()
 
@@ -478,25 +478,25 @@ class OperationalTemplateParser {
             else
             {
                primitive.list.each {
-                  obn.item.list << Integer.parseInt(it.text())
+                  obn.item.list << Integer.parseInt(it.text().trim())
                }
             }
          }
-         else if (primitive.'@xsi:type'.text() == 'C_DATE_TIME')
+         else if (primitive.'@xsi:type'.text().trim() == 'C_DATE_TIME')
          {
             obn.item = new CDateTime()
-            obn.item.pattern = primitive.pattern.text()
+            obn.item.pattern = primitive.pattern.text().trim()
          }
-         else if (primitive.'@xsi:type'.text() == 'C_DATE')
+         else if (primitive.'@xsi:type'.text().trim() == 'C_DATE')
          {
             obn.item = new CDate()
-            obn.item.pattern = primitive.pattern.text()
+            obn.item.pattern = primitive.pattern.text().trim()
          }
-         else if (primitive.'@xsi:type'.text() == 'C_BOOLEAN')
+         else if (primitive.'@xsi:type'.text().trim() == 'C_BOOLEAN')
          {
             obn.item = new CBoolean(
-               trueValid: primitive.true_valid.text().toBoolean(),
-               falseValid: primitive.false_valid.text().toBoolean()
+               trueValid: primitive.true_valid.text().trim().toBoolean(),
+               falseValid: primitive.false_valid.text().trim().toBoolean()
             )
             /*
             <item xsi:type="C_BOOLEAN">
@@ -505,7 +505,7 @@ class OperationalTemplateParser {
             </item>
             */
          }
-         else if (primitive.'@xsi:type'.text() == 'C_DURATION')
+         else if (primitive.'@xsi:type'.text().trim() == 'C_DURATION')
          {
             obn.item = new CDuration()
 
@@ -515,7 +515,7 @@ class OperationalTemplateParser {
             {
                try
                {
-                  obn.item.pattern = primitive.pattern.text() // throws exception if value is invalid
+                  obn.item.pattern = primitive.pattern.text().trim() // throws exception if value is invalid
                }
                catch (Exception e)
                {
@@ -523,17 +523,17 @@ class OperationalTemplateParser {
                }
             }
          }
-         else if (primitive.'@xsi:type'.text() == 'C_REAL')
+         else if (primitive.'@xsi:type'.text().trim() == 'C_REAL')
          {
             obn.item = new CReal()
             obn.item.range = parseIntervalBigDecimal(primitive.range)
          }
-         else if (primitive.'@xsi:type'.text() == 'C_STRING')
+         else if (primitive.'@xsi:type'.text().trim() == 'C_STRING')
          {
             obn.item = new CString()
 
             if (!primitive.pattern.isEmpty())
-               obn.item.pattern = primitive.pattern.text()
+               obn.item.pattern = primitive.pattern.text().trim()
             else
             {
                primitive.list.each { li ->
@@ -541,14 +541,14 @@ class OperationalTemplateParser {
                   // <item xsi:type="C_STRING">
                   //    <list />
                   //  </item>
-                  if (li.text())
-                     obn.item.list << li.text()
+                  if (li.text().trim())
+                     obn.item.list << li.text().trim()
                }
             }
          }
          else
          {
-            throw new Exception("primitive '"+ primitive.'@xsi:type'.text() +"' not supported, check "+ path)
+            throw new Exception("primitive '"+ primitive.'@xsi:type'.text().trim() +"' not supported, check "+ path)
          }
       }
       else
@@ -562,14 +562,14 @@ class OperationalTemplateParser {
          // }
 
          // C_COMPLEX_OBJECT with rm_type_name=DV_ORDINAL = unconstrained ordinal (any value allowed)
-         if (node.rm_type_name.text() == 'DV_ORDINAL')
+         if (node.rm_type_name.text().trim() == 'DV_ORDINAL')
          {
             obn = new CDvOrdinal(
                owner:            this.template,
-               rmTypeName:       node.rm_type_name.text(),
-               nodeId:           node.node_id.text() ?: null,
-               type:             node.'@xsi:type'.text(),
-               archetypeId:      node.archetype_id.value.text(),
+               rmTypeName:       node.rm_type_name.text().trim(),
+               nodeId:           node.node_id.text().trim() ?: null,
+               type:             node.'@xsi:type'.text().trim(),
+               archetypeId:      node.archetype_id.value.text().trim(),
                templatePath:     templatePath,
                path:             path,
                dataPath:         dataPath,
@@ -586,10 +586,10 @@ class OperationalTemplateParser {
          // println "ObjectNode "+ node.'@xsi:type'.text()
          obn = new ObjectNode(
             owner:            this.template,
-            rmTypeName:       node.rm_type_name.text(),
-            nodeId:           node.node_id.text() ?: null, // ?: avoids empty string
-            type:             node.'@xsi:type'.text(),
-            archetypeId:      node.archetype_id.value.text(), // This is optional, just resolved slots have archId
+            rmTypeName:       node.rm_type_name.text().trim(),
+            nodeId:           node.node_id.text().trim() ?: null, // ?: avoids empty string
+            type:             node.'@xsi:type'.text().trim(),
+            archetypeId:      node.archetype_id.value.text().trim(), // This is optional, just resolved slots have archId
             templatePath:     templatePath,
             path:             path,
             dataPath:         dataPath,
@@ -652,30 +652,30 @@ class OperationalTemplateParser {
       def templatePath = parentPath
       if (templatePath == '/')
       {
-         templatePath     += attr.rm_attribute_name.text() // Avoids to repeat '/'
-         templateDataPath += attr.rm_attribute_name.text()
+         templatePath     += attr.rm_attribute_name.text().trim() // Avoids to repeat '/'
+         templateDataPath += attr.rm_attribute_name.text().trim()
       }
       else
       {
-         templatePath     += '/'+ attr.rm_attribute_name.text()
-         templateDataPath += '/'+ attr.rm_attribute_name.text()
+         templatePath     += '/'+ attr.rm_attribute_name.text().trim()
+         templateDataPath += '/'+ attr.rm_attribute_name.text().trim()
       }
 
       def nextArchPath
       if (path == '/')
       {
-         nextArchPath = '/' + attr.rm_attribute_name.text()
-         dataPath     = '/' + attr.rm_attribute_name.text()
+         nextArchPath = '/' + attr.rm_attribute_name.text().trim()
+         dataPath     = '/' + attr.rm_attribute_name.text().trim()
       }
       else
       {
-         nextArchPath = path +'/'+ attr.rm_attribute_name.text()
-         dataPath     = dataPath +'/'+ attr.rm_attribute_name.text()
+         nextArchPath = path +'/'+ attr.rm_attribute_name.text().trim()
+         dataPath     = dataPath +'/'+ attr.rm_attribute_name.text().trim()
       }
 
       def atn = new AttributeNode(
-         rmAttributeName:  attr.rm_attribute_name.text(),
-         type:             attr.'@xsi:type'.text(),
+         rmAttributeName:  attr.rm_attribute_name.text().trim(),
+         type:             attr.'@xsi:type'.text().trim(),
          parent:           parent,
          path:             nextArchPath,
          dataPath:         dataPath,
@@ -704,15 +704,15 @@ class OperationalTemplateParser {
    private parseCodedTerm(GPathResult node)
    {
       return new CodedTerm(
-         code: node.@code.text(),
+         code: node.@code.text().trim(),
          term: parseTerm(node.items))
    }
 
    private parseTerm(GPathResult node)
    {
       return new Term(
-         text: node.find{ it.@id == 'text' }.text(),
-         description: node.find{ it.@id == 'description' }.text())
+         text: node.find{ it.@id == 'text' }.text().trim(),
+         description: node.find{ it.@id == 'description' }.text().trim())
    }
 
    private parseCardinality(GPathResult node)
@@ -720,8 +720,8 @@ class OperationalTemplateParser {
       if (node.isEmpty()) return null
 
       def card = new Cardinality(
-         isOrdered:  node.is_ordered.text().toBoolean(),
-         isUnique:  node.is_unique.text().toBoolean(),
+         isOrdered:  node.is_ordered.text().trim().toBoolean(),
+         isUnique:  node.is_unique.text().trim().toBoolean(),
          interval: parseIntervalInt(node.interval)
       )
 
