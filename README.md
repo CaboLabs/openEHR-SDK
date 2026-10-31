@@ -95,7 +95,7 @@ def opt2 = opt_manager.loadFromLocation('/path/to/some.opt', OptManager.DEFAULT_
 (`getLoadedOpts`, `getNodes`, `getText`, `isLoaded`, ...) don't need external locking.
 
 **`complete()` runs by default.** `loadAll()`, `load()`, `loadFromLocation()` and `getOpt()`
-(on a cache miss) all call `OperationalTemplate.complete()` by default now, so RM-mandatory
+all call `OperationalTemplate.complete()` by default now, so RM-mandatory
 attributes not explicit in the archetype/OPT get materialized before validation - including
 `getOpt()`'s implicit lazy-load path used by `RmValidator2`. Pass `complete: false` to any of
 them to opt out and get the raw, uncompleted OPT:
@@ -103,6 +103,18 @@ them to opt out and get the raw, uncompleted OPT:
 ```groovy
 def opt = opt_manager.getOpt('my_template.v1', OptManager.DEFAULT_NAMESPACE, false)
 ```
+
+Since 2.7.0, `getOpt()` with `complete` true (the default) also completes an OPT that is
+already cached uncompleted (e.g. loaded earlier with `load(..., false)`), in place, using
+`OperationalTemplate.isCompleted`. The result no longer depends on which caller loaded the
+OPT first. Because the cached instance is shared, every caller sees the completed OPT from
+then on; use `getOpt(..., false)` to read the cached OPT as it is without completing it.
+
+**Errors.** `getOpt()`, `load()` and `loadFromLocation()` throw an `Exception` when the OPT is
+not found or can't be read or parsed, they never return `null`. The message includes the
+reason from the repo (`There was a problem reading the template from the repo: <reason>`) and
+the original exception is the cause. Since 2.7.0, `loadAll()` also skips a file that fails to
+parse instead of re-caching the template parsed from the previous file.
 
 **Configurable default namespace.** `OptManager.DEFAULT_NAMESPACE` is the namespace every
 method falls back to when none is passed explicitly. Set it once at startup instead of
@@ -267,6 +279,12 @@ report.errors.each { error ->
    println error
 }
 ```
+
+The OPT for the COMPOSITION's `template_id` must exist: that is a precondition of the validation,
+not a data validation result. If the OPT can't be found or loaded, `dovalidate()` throws the
+`Exception` from `OptManager.getOpt()` (with the reason in its message) instead of returning a
+report. Since 2.7.0, the public `RmValidator2.opt_not_found(String)` method was removed, it was
+never reachable.
 
 ### Transform XML COMPOSITION to JSON
 
