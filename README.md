@@ -44,6 +44,55 @@ $ gradle test
 The test report in HTML will be under ./build/reports/tests/test/index.html
 
 
+## Use as a dependency
+
+Coordinates: `com.cabolabs:openehr-sdk`. The version is in [gradle.properties](gradle.properties).
+
+Gradle:
+
+```groovy
+repositories {
+   mavenCentral()
+   maven { url 'https://jitpack.io' } // still needed for the ADL parser dependency (com.github.ppazos:java-libs)
+}
+
+dependencies {
+   implementation 'com.cabolabs:openehr-sdk:2.7.0'
+}
+```
+
+Maven:
+
+```xml
+<repositories>
+  <repository>
+    <id>jitpack.io</id> <!-- still needed for the ADL parser dependency (com.github.ppazos:java-libs) -->
+    <url>https://jitpack.io</url>
+  </repository>
+</repositories>
+
+<dependency>
+  <groupId>com.cabolabs</groupId>
+  <artifactId>openehr-sdk</artifactId>
+  <version>2.7.0</version>
+</dependency>
+```
+
+The JitPack coordinates (`com.github.CaboLabs:openEHR-SDK:<tag>`) keep working.
+
+### Publishing to Maven Central
+
+Only for maintainers. Needs a [Central Portal](https://central.sonatype.com) account with the `com.cabolabs` namespace verified, and a GPG key (its public key published to a key server).
+
+```shell
+$ export ORG_GRADLE_PROJECT_signingKey="$(gpg --armor --export-secret-keys <key id>)"
+$ export ORG_GRADLE_PROJECT_signingPassword="<key passphrase>"
+$ gradle clean centralBundle
+```
+
+This runs the build, signs the artifacts (only if the signing key is set) and creates `build/central-bundle/openehr-sdk-<version>-bundle.zip` with the jar, sources, javadoc (from groovydoc), POM, signatures and checksums. Upload the zip at https://central.sonatype.com/publishing, check the deployment validates and publish it. Without a signing key the bundle is created unsigned, and Central rejects it.
+
+
 ## Usage as Java/Groovy Library
 
 ### Common Imports

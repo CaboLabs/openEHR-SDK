@@ -10,7 +10,29 @@ plugins {
     // Apply the groovy plugin to add support for Groovy
     id 'groovy'
 
+    // api configuration, so what the public API exposes gets compile scope in the published POM
+    id 'java-library'
+
     id 'eclipse'
+
+    // publishing to Maven Central
+    id 'maven-publish'
+    id 'signing'
+}
+
+// Maven coordinates: com.cabolabs:openehr-sdk:<version>, version is in gradle.properties
+def sdkArtifactId = 'openehr-sdk'
+
+java {
+    // Maven Central requires the sources and javadoc jars
+    withSourcesJar()
+}
+
+// javadoc doesn't process Groovy sources, so the javadoc jar is built from groovydoc
+tasks.register('javadocJar', Jar) {
+    dependsOn tasks.named('groovydoc')
+    archiveClassifier = 'javadoc'
+    from tasks.named('groovydoc').map { it.destinationDir }
 }
 
 repositories {
@@ -23,7 +45,8 @@ repositories {
 
 dependencies {
     // Use the latest Groovy version for building this library
-    implementation 'org.codehaus.groovy:groovy-all:3.0.11'
+    // api: the SDK classes are Groovy classes, consumers need Groovy to compile against them
+    api 'org.codehaus.groovy:groovy-all:3.0.11'
 
     // picocli for CLI
     //implementation 'info.picocli:picocli:4.7.5'
@@ -87,3 +110,91 @@ sourceSets {
    }
 }
 */
+
+
+// ---------------------------------------------------------------------------
+// Publishing to Maven Central, see "Publishing to Maven Central" in the README
+// ---------------------------------------------------------------------------
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact tasks.named('javadocJar')
+
+            artifactId = sdkArtifactId
+
+            pom {
+                // groovy-all 3.x has no jar, it is a pom-only artifact that aggregates the Groovy modules.
+                // Gradle resolves that from its metadata, but Maven needs the type to not look for a jar.
+                withXml {
+                    asNode().dependencies.dependency.findAll { it.artifactId.text() == 'groovy-all' }.each {
+                        it.appendNode('type', 'pom')
+                    }
+                }
+
+                name = 'openEHR SDK'
+                description = 'Java/Groovy SDK for openEHR: Operational Template (OPT) parsing, RM instance parsing, serialization and validation, and instance generation'
+                url = 'https://github.com/CaboLabs/openEHR-SDK'
+
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'ppazos'
+                        name = 'Pablo Pazos'
+                        organization = 'CaboLabs'
+                        organizationUrl = 'https://cabolabs.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:https://github.com/CaboLabs/openEHR-SDK.git'
+                    developerConnection = 'scm:git:ssh://git@github.com/CaboLabs/openEHR-SDK.git'
+                    url = 'https://github.com/CaboLabs/openEHR-SDK'
+                }
+                issueManagement {
+                    system = 'GitHub'
+                    url = 'https://github.com/CaboLabs/openEHR-SDK/issues'
+                }
+            }
+        }
+    }
+
+    repositories {
+        // local staging repository with the Maven layout, centralBundle zips it to upload it to the Central Portal
+        maven {
+            name = 'centralStaging'
+            url = layout.buildDirectory.dir('central-staging')
+        }
+    }
+}
+
+// The key is read from the environment or gradle properties so it never gets in the repo:
+//   ORG_GRADLE_PROJECT_signingKey (ASCII armored private key), ORG_GRADLE_PROJECT_signingPassword
+// Signing is skipped when there is no key, so build/test/publishToMavenLocal work without it.
+signing {
+    required = false
+    def signingKey = findProperty('signingKey')
+    def signingPassword = findProperty('signingPassword')
+    if (signingKey)
+    {
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign publishing.publications.mavenJava
+    }
+}
+
+// Zip with the layout the Central Portal expects (groupId/artifactId/version/*), upload it at
+// https://central.sonatype.com/publishing or through its API.
+tasks.register('centralBundle', Zip) {
+    group = 'publishing'
+    description = 'Creates build/central-bundle/<artifactId>-<version>-bundle.zip to upload to Maven Central'
+
+    dependsOn 'publishMavenJavaPublicationToCentralStagingRepository'
+    from layout.buildDirectory.dir('central-staging')
+    archiveFileName = "${sdkArtifactId}-${project.version}-bundle.zip"
+    destinationDirectory = layout.buildDirectory.dir('central-bundle')
+}
