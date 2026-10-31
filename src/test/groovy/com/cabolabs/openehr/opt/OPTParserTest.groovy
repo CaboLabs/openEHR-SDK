@@ -332,11 +332,11 @@ class OPTParserTest extends GroovyTestCase {
       def text = new File(ClassLoader.getSystemResource(path).toURI()).getText()
 
       def description = '''<description>
-        <original_author id="name">Heather Leslie</original_author>
-        <original_author id="organisation">Atomica Informatics</original_author>
+        <original_author id="name">Joe Smith</original_author>
+        <original_author id="organisation">Acme Health</original_author>
         <original_author id="date">2020-03-13</original_author>
-        <other_contributors>Shan Nan&lt;nanshan@zju.edu.cn&gt;</other_contributors>
-        <other_contributors>Bin Qi</other_contributors>
+        <other_contributors>Jane Doe&lt;jane.doe@example.com&gt;</other_contributors>
+        <other_contributors>Max Miller</other_contributors>
         <lifecycle_state>unmanaged</lifecycle_state>
         <other_details id="licence">CC BY-SA 4.0</other_details>
         <other_details id="MD5-CAM-1.0.1">839f7dba1a56344e80197ec32154c49b</other_details>
@@ -356,8 +356,8 @@ class OPTParserTest extends GroovyTestCase {
 
       def opt = new OperationalTemplateParser(true).parse(withMeta)
 
-      assert opt.originalAuthor == [name: 'Heather Leslie', organisation: 'Atomica Informatics', date: '2020-03-13']
-      assert opt.otherContributors == ['Shan Nan<nanshan@zju.edu.cn>', 'Bin Qi']
+      assert opt.originalAuthor == [name: 'Joe Smith', organisation: 'Acme Health', date: '2020-03-13']
+      assert opt.otherContributors == ['Jane Doe<jane.doe@example.com>', 'Max Miller']
       assert opt.lifecycleState == 'unmanaged'
       assert opt.otherDetails == [licence: 'CC BY-SA 4.0', 'MD5-CAM-1.0.1': '839f7dba1a56344e80197ec32154c49b', Owner: '']
       assert opt.purpose == 'The purpose'
@@ -378,7 +378,7 @@ class OPTParserTest extends GroovyTestCase {
       assert opt2.misuse == opt.misuse
 
       def json = new groovy.json.JsonSlurper().parseText(new JsonSerializer().serialize(opt).with { groovy.json.JsonOutput.toJson(it) })
-      assert json.original_author.name == 'Heather Leslie'
+      assert json.original_author.name == 'Joe Smith'
       assert json.lifecycle_state == 'unmanaged'
       assert json.keywords == ['openEHR', 'COVID-19']
    }
