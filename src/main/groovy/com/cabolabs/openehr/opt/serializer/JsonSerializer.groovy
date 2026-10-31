@@ -23,6 +23,17 @@ class JsonSerializer {
          language:    opt.language,
          concept:     opt.concept,
          purpose:     opt.purpose,
+         original_author:        opt.originalAuthor,
+         other_contributors:     opt.otherContributors,
+         lifecycle_state:        opt.lifecycleState,
+         resource_package_uri:   opt.resourcePackageUri,
+         other_details:          opt.otherDetails,
+         keywords:               opt.keywords,
+         use:                    opt.use,
+         misuse:                 opt.misuse,
+         copyright:              opt.copyright,
+         original_resource_uri:  opt.originalResourceUri,
+         details_other_details:  opt.detailsOtherDetails,
          uid:         opt.uid,
          template_id: opt.templateId
       ]

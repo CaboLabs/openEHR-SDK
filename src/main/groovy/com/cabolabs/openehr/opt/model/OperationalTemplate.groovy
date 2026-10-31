@@ -20,8 +20,20 @@ class OperationalTemplate {
 
    // description
    String purpose // purpose language will be the same as the template language, so is not storeds
-   List otherDetails = [] // List<Term>
-   Term originalAuthor
+   // RESOURCE_DESCRIPTION, StringDictionaryItem elements are kept as id -> value, in document order
+   Map<String, String> originalAuthor = [:]
+   List<String> otherContributors = []
+   String lifecycleState
+   String resourcePackageUri
+   Map<String, String> otherDetails = [:]
+
+   // RESOURCE_DESCRIPTION_ITEM, only the item for the template language is kept
+   List<String> keywords = []
+   String use
+   String misuse
+   String copyright
+   Map<String, String> originalResourceUri = [:]
+   Map<String, String> detailsOtherDetails = [:]
 
    // Plays the role of a CComplexObject of aom
    ObjectNode definition // has attributes category, context and content of the COMPOSITION

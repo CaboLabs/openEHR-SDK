@@ -57,9 +57,22 @@ class OptXmlSerializer {
             code_string(opt.language.split('::')[1])
          }
          description {
-            // TODO: we don't parse the description elements!
-            original_author(id: 'Original Author', 'Not Specified') // TODO: get value from OPT
-            lifecycle_state()
+            if (opt.originalAuthor)
+            {
+               opt.originalAuthor.each { id, value ->
+                  original_author(id: id, value)
+               }
+            }
+            else
+            {
+               original_author(id: 'Original Author', 'Not Specified')
+            }
+            opt.otherContributors.each { other_contributors(it) }
+            lifecycle_state(opt.lifecycleState ?: '')
+            if (opt.resourcePackageUri) resource_package_uri(opt.resourcePackageUri)
+            opt.otherDetails.each { id, value ->
+               other_details(id: id, value)
+            }
             details {
                language {
                   terminology_id {
@@ -68,6 +81,16 @@ class OptXmlSerializer {
                   code_string(opt.language.split('::')[1])
                }
                purpose(opt.purpose)
+               opt.keywords.each { keywords(it) }
+               if (opt.use) builder.invokeMethod('use', [opt.use] as Object[]) // use() is also Object.use(Class, Closure), so call the builder directly
+               if (opt.misuse) misuse(opt.misuse)
+               if (opt.copyright) copyright(opt.copyright)
+               opt.originalResourceUri.each { id, value ->
+                  original_resource_uri(id: id, value)
+               }
+               opt.detailsOtherDetails.each { id, value ->
+                  other_details(id: id, value)
+               }
             }
          }
          if (opt.uid)
