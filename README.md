@@ -201,6 +201,16 @@ opt.complete()
 
 **C_DURATION: range or pattern.** A `C_DURATION` constrains a duration expression in one of two ways: with a *pattern*, the expression has to follow a format (`PYMD` allows years, months and days), or with a *range*, the expression has to be between two durations (`PT0M..PT100M` means between 0 and 100 minutes). The schema allows both in the same constraint, but in practice they are alternatives, so the parser treats them that way: if the OPT has a range, `CDuration.range` is set and the pattern is not read (`CDuration.pattern` stays `null`); the pattern is only read when there is no range.
 
+**Description metadata.** The `<description>` of the OPT (RESOURCE_DESCRIPTION) is parsed into `OperationalTemplate` and written back by `OptXmlSerializer` and `JsonSerializer`:
+
+- `originalAuthor`: map of `id -> value` from the `original_author` elements (e.g. `name`, `organisation`, `email`, `date`), in document order.
+- `otherContributors`: list from `other_contributors`.
+- `lifecycleState`, `resourcePackageUri`: `null` when empty or not present.
+- `otherDetails`: map of `id -> value` from the `other_details` of the description (e.g. `licence`, `custodian_organisation`, `MD5-CAM-1.0.1`). Ids with an empty value are kept with `''`.
+- From the first `<details>` item: `purpose`, `keywords` (list), `use`, `misuse`, `copyright`, `originalResourceUri` and `detailsOtherDetails` (maps of `id -> value`).
+
+Only the first `<details>` item is read, so the descriptions in other languages are not kept. When an OPT has no `original_author`, the XML serializer writes `Not Specified`, since the schema requires it.
+
 ### Parse a JSON COMPOSITION
 
 ```groovy
