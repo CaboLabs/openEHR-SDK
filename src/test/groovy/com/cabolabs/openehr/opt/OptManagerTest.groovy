@@ -55,6 +55,23 @@ class OptManagerTest extends GroovyTestCase {
       //man.reset()
    }
 
+   void testGetOptCompletesCachedUncompletedOpt()
+   {
+      println "====== testGetOptCompletesCachedUncompletedOpt ======"
+
+      String namespace = 'compo_root_nodes'
+      String templateId
+
+      man.loadAll(namespace, false) // loaded uncompleted
+      templateId = man.getLoadedOpts(namespace).keySet().first()
+      assert !man.getLoadedOpts(namespace)[templateId].isCompleted
+
+      def opt = man.getOpt(templateId, namespace) // complete = true by default
+
+      assert opt.isCompleted
+      assert man.getLoadedOpts(namespace)[templateId].isCompleted
+   }
+
    void testRootArchetype()
    {
       println "====== testRootArchetype ======"
