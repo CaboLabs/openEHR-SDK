@@ -283,7 +283,7 @@ class CompletedTemplateNameValidationTest extends GroovyTestCase {
       opt_manager.init(repo)
 
       opt_manager.load('person_complete', 'com.cabolabs.openehr_opt.namespaces.default', false)
-      def opt = opt_manager.getOpt('person_complete', 'com.cabolabs.openehr_opt.namespaces.default')
+      def opt = opt_manager.getOpt('person_complete', 'com.cabolabs.openehr_opt.namespaces.default', false)
 
       // before complete(): root PERSON has no name constraint at all
       assert opt.definition.getAttr('name') == null

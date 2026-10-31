@@ -127,12 +127,9 @@ class RmValidator2 {
       // TEST: complete, RM validation fails (fixed)
       //this.opt_manager.load(template_id, namespace, true)
 
+      // precondition: the OPT must exist, getOpt() throws with the reason if it can't be found or loaded,
+      // that is not a data validation result so it is not reported in the validation report
       def opt = this.opt_manager.getOpt(template_id, namespace)
-
-      if (!opt)
-      {
-         return opt_not_found(template_id)
-      }
 
       // dataPath is needed for error reporting and calculated while the object gets validated
       rm_object.dataPath = '' // avoid using / to avoid all checks, so / could be added at the end
@@ -2759,13 +2756,6 @@ class RmValidator2 {
 
    // ================================================================
    // General errors
-
-   RmValidationReport opt_not_found(String template_id)
-   {
-      def report = new RmValidationReport()
-      report.addError("Template '${template_id}' was not found")
-      return report
-   }
 
    RmValidationReport locatable_missing_archetype_details(Locatable rm_object)
    {

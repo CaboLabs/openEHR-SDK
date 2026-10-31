@@ -95,7 +95,7 @@ def opt2 = opt_manager.loadFromLocation('/path/to/some.opt', OptManager.DEFAULT_
 (`getLoadedOpts`, `getNodes`, `getText`, `isLoaded`, ...) don't need external locking.
 
 **`complete()` runs by default.** `loadAll()`, `load()`, `loadFromLocation()` and `getOpt()`
-(on a cache miss) all call `OperationalTemplate.complete()` by default now, so RM-mandatory
+all call `OperationalTemplate.complete()` by default now, so RM-mandatory
 attributes not explicit in the archetype/OPT get materialized before validation - including
 `getOpt()`'s implicit lazy-load path used by `RmValidator2`. Pass `complete: false` to any of
 them to opt out and get the raw, uncompleted OPT:
@@ -103,6 +103,18 @@ them to opt out and get the raw, uncompleted OPT:
 ```groovy
 def opt = opt_manager.getOpt('my_template.v1', OptManager.DEFAULT_NAMESPACE, false)
 ```
+
+Since 2.7.0, `getOpt()` with `complete` true (the default) also completes an OPT that is
+already cached uncompleted (e.g. loaded earlier with `load(..., false)`), in place, using
+`OperationalTemplate.isCompleted`. The result no longer depends on which caller loaded the
+OPT first. Because the cached instance is shared, every caller sees the completed OPT from
+then on; use `getOpt(..., false)` to read the cached OPT as it is without completing it.
+
+**Errors.** `getOpt()`, `load()` and `loadFromLocation()` throw an `Exception` when the OPT is
+not found or can't be read or parsed, they never return `null`. The message includes the
+reason from the repo (`There was a problem reading the template from the repo: <reason>`) and
+the original exception is the cause. Since 2.7.0, `loadAll()` also skips a file that fails to
+parse instead of re-caching the template parsed from the previous file.
 
 **Configurable default namespace.** `OptManager.DEFAULT_NAMESPACE` is the namespace every
 method falls back to when none is passed explicitly. Set it once at startup instead of
@@ -189,6 +201,16 @@ opt.complete()
 
 **C_DURATION: range or pattern.** A `C_DURATION` constrains a duration expression in one of two ways: with a *pattern*, the expression has to follow a format (`PYMD` allows years, months and days), or with a *range*, the expression has to be between two durations (`PT0M..PT100M` means between 0 and 100 minutes). The schema allows both in the same constraint, but in practice they are alternatives, so the parser treats them that way: if the OPT has a range, `CDuration.range` is set and the pattern is not read (`CDuration.pattern` stays `null`); the pattern is only read when there is no range.
 
+**Description metadata.** The `<description>` of the OPT (RESOURCE_DESCRIPTION) is parsed into `OperationalTemplate` and written back by `OptXmlSerializer` and `JsonSerializer`:
+
+- `originalAuthor`: map of `id -> value` from the `original_author` elements (e.g. `name`, `organisation`, `email`, `date`), in document order.
+- `otherContributors`: list from `other_contributors`.
+- `lifecycleState`, `resourcePackageUri`: `null` when empty or not present.
+- `otherDetails`: map of `id -> value` from the `other_details` of the description (e.g. `licence`, `custodian_organisation`, `MD5-CAM-1.0.1`). Ids with an empty value are kept with `''`.
+- From the first `<details>` item: `purpose`, `keywords` (list), `use`, `misuse`, `copyright`, `originalResourceUri` and `detailsOtherDetails` (maps of `id -> value`).
+
+Only the first `<details>` item is read, so the descriptions in other languages are not kept. When an OPT has no `original_author`, the XML serializer writes `Not Specified`, since the schema requires it.
+
 ### Parse a JSON COMPOSITION
 
 ```groovy
@@ -267,6 +289,12 @@ report.errors.each { error ->
    println error
 }
 ```
+
+The OPT for the COMPOSITION's `template_id` must exist: that is a precondition of the validation,
+not a data validation result. If the OPT can't be found or loaded, `dovalidate()` throws the
+`Exception` from `OptManager.getOpt()` (with the reason in its message) instead of returning a
+report. Since 2.7.0, the public `RmValidator2.opt_not_found(String)` method was removed, it was
+never reachable.
 
 ### Transform XML COMPOSITION to JSON
 

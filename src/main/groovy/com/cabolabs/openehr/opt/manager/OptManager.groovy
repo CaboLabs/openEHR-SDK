@@ -103,11 +103,13 @@ class OptManager {
    {
       if (!repo) throw new Exception("Please initialize the OPT repository by calling init()")
 
-      def opt
       def parser = new OperationalTemplateParser(true)
 
       def opts = this.repo.getAllOptKeysAndContents(namespace)
       opts.each { location, text ->
+
+         // declared per file: if parsing fails, opt must be null and not the template parsed in the previous iteration
+         def opt = null
 
          try
          {
@@ -189,7 +191,7 @@ class OptManager {
       }
       catch (Exception e)
       {
-         throw new Exception("There was a problem reading the template from the repo", e)
+         throw new Exception("There was a problem reading the template from the repo: "+ e.message, e)
       }
 
       if (!text)
@@ -241,7 +243,7 @@ class OptManager {
       }
       catch (Exception e)
       {
-         throw new Exception("There was a problem reading the template from the repo", e)
+         throw new Exception("There was a problem reading the template from the repo: "+ e.message, e)
       }
 
       if (!text)
@@ -308,9 +310,9 @@ class OptManager {
    /**
     * templateId identifier of the OPT that is requested
     * namespace from where the manager will try to load the template
-    * complete: same meaning as in load()/loadAll()/loadFromLocation(), only applies on
-    *           a cache miss - if the OPT is already cached, its existing completeness
-    *           is whatever it was loaded with, this doesn't retroactively complete it.
+    * complete: same meaning as in load()/loadAll()/loadFromLocation(). On a cache hit, if
+    *           complete is true and the cached OPT was loaded uncompleted, it is completed
+    *           in place, so the result doesn't depend on who loaded the OPT first.
     *
     * Looks up the OPT by templateId within the namespace (cache, then repo search).
     * To load an OPT from a specific file/location instead, use loadFromLocation() -
@@ -325,7 +327,11 @@ class OptManager {
       if (this.cache[namespace] && this.cache[namespace][templateId])
       {
          this.timestamps[namespace][templateId] = new Date() // actualizo timestamp
-         return this.cache[namespace][templateId]
+
+         def cached = this.cache[namespace][templateId]
+         if (complete && !cached.isCompleted) cached.complete()
+
+         return cached
       }
 
       load(templateId, namespace, complete)
