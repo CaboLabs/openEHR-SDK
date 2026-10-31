@@ -191,7 +191,7 @@ class OptManager {
       }
       catch (Exception e)
       {
-         throw new Exception("There was a problem reading the template from the repo", e)
+         throw new Exception("There was a problem reading the template from the repo: "+ e.message, e)
       }
 
       if (!text)
@@ -243,7 +243,7 @@ class OptManager {
       }
       catch (Exception e)
       {
-         throw new Exception("There was a problem reading the template from the repo", e)
+         throw new Exception("There was a problem reading the template from the repo: "+ e.message, e)
       }
 
       if (!text)

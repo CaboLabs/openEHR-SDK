@@ -55,6 +55,25 @@ class RmValidationTest extends GroovyTestCase {
       assert report.errors.size() == 3
    }
 
+   void testValidationWithMissingTemplateThrows()
+   {
+      String path = "/canonical_xml/test_all_datatypes.composition.en.xml"
+      File file = new File(getClass().getResource(path).toURI())
+      Composition c = (Composition)new OpenEhrXmlParser().parseLocatable(file.text)
+      c.archetype_details.template_id.value = 'no_such_template'
+
+      OptRepository repo = new OptRepositoryFSImpl(getClass().getResource("/opts").toURI())
+      OptManager opt_manager = OptManager.getInstance()
+      opt_manager.init(repo)
+
+      // a missing OPT is a violated precondition, not a validation result: the exception carries the reason
+      def e = shouldFail(Exception) {
+         new RmValidator2(opt_manager).dovalidate(c, OptManager.DEFAULT_NAMESPACE)
+      }
+
+      assert e.contains("There was a problem reading the template from the repo: ")
+   }
+
    void testValidationFromXmlComposition2()
    {
       String path = "/canonical_xml/test_all_datatypes.composition.en.xml"
