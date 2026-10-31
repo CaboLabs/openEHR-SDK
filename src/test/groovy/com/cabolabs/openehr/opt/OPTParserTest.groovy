@@ -304,6 +304,26 @@ class OPTParserTest extends GroovyTestCase {
       assert node.list.isEmpty() // no list items = unconstrained
    }
 
+   void testTextNodesAreTrimmed()
+   {
+      println "====== testTextNodesAreTrimmed ======"
+
+      def path = "opts/"+ 'test_all_types2' + "/test_all_types_en_v1.opt"
+      def clean = TestUtils.loadTemplate(path)
+
+      // pads the text of the nodes with whitespace and newlines
+      def text = new File(ClassLoader.getSystemResource(path).toURI()).getText()
+      def padded = text.replaceAll(/<concept>([^<]*)<\/concept>/, '<concept>\n   $1\n   </concept>')
+                       .replaceAll(/<rm_type_name>([^<]*)<\/rm_type_name>/, '<rm_type_name>\n $1 \n</rm_type_name>')
+      assert padded != text
+
+      def opt = new OperationalTemplateParser(true).parse(padded)
+
+      assert opt.concept == clean.concept
+      assert opt.nodes.keySet() == clean.nodes.keySet()
+      assert opt.nodes.values()*.rmTypeName == clean.nodes.values()*.rmTypeName
+   }
+
    void testCBooleanParse()
    {
       println "====== testCBooleanParse ======"
