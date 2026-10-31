@@ -515,4 +515,32 @@ println "obj path "+ obj.templatePath
       println json
 
    }
+
+   // #220: loadAll logged the errors with substring(0, 200), which threw for errors shorter than that or null,
+   // aborting the load. Not reproducible through loadAll here since without a logger binding log.error isn't evaluated.
+   void testErrorsSummary()
+   {
+      def parser = new OperationalTemplateParser(true)
+      parser.parse('not an opt')
+      def errors = parser.getLastErrors()
+
+      assert errors.toString().size() < 200
+      assert OptManager.errorsSummary(errors) == errors.toString()
+
+      assert OptManager.errorsSummary(null) == 'no errors reported'
+
+      assert OptManager.errorsSummary(['x' * 300]) == '[' + ('x' * 199) + '...'
+   }
+
+   void testParserResetsLastErrors()
+   {
+      def parser = new OperationalTemplateParser(true)
+
+      assert parser.parse('not an opt') == null
+      assert parser.getLastErrors()
+
+      def opt = parser.parse(getClass().getResourceAsStream('/opts/compo_root_nodes/demographics.opt').text)
+      assert opt
+      assert parser.getLastErrors() == null
+   }
 }

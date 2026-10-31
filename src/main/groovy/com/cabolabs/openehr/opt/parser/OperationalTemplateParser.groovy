@@ -53,6 +53,9 @@ class OperationalTemplateParser {
     */
    OperationalTemplate parse(String templateContents)
    {
+      // the parser can be reused, errors from a previous parse don't apply to this one
+      this.lastErrors = null
+
       if (this.validate)
       {
          boolean valid = this.schemaValidator.validate(templateContents)
