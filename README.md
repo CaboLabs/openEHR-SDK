@@ -82,15 +82,56 @@ The JitPack coordinates (`com.github.CaboLabs:openEHR-SDK:<tag>`) keep working.
 
 ### Publishing to Maven Central
 
-Only for maintainers. Needs a [Central Portal](https://central.sonatype.com) account with the `com.cabolabs` namespace verified, and a GPG key (its public key published to a key server).
+Only for maintainers. A version published to Maven Central can't be changed or deleted, so check everything before the final publish step.
+
+#### One-time setup
+
+1. Create an account at the [Central Portal](https://central.sonatype.com) and sign in.
+2. Register the `com.cabolabs` namespace (Namespaces > Register New Namespace) and verify it: the Portal shows a value to add as a DNS TXT record on `cabolabs.com`, then press Verify.
+3. Create a GPG key (RSA 4096 or similar) and publish its public key to a key server, Central checks signatures against it:
+
+```shell
+$ gpg --full-generate-key
+$ gpg --list-secret-keys --keyid-format LONG      # the key id is after rsa4096/
+$ gpg --keyserver keyserver.ubuntu.com --send-keys <key id>
+```
+
+4. (Optional, only to upload through the API instead of the web page) Generate a user token in the Portal (Account > Generate User Token).
+
+#### Each release
+
+1. Set the new `version` in [gradle.properties](gradle.properties), run the tests, merge to `master` and tag the release.
+2. Export the signing key and its passphrase, they are read from the environment so they never get in the repo:
 
 ```shell
 $ export ORG_GRADLE_PROJECT_signingKey="$(gpg --armor --export-secret-keys <key id>)"
 $ export ORG_GRADLE_PROJECT_signingPassword="<key passphrase>"
-$ gradle clean centralBundle
 ```
 
-This runs the build, signs the artifacts (only if the signing key is set) and creates `build/central-bundle/openehr-sdk-<version>-bundle.zip` with the jar, sources, javadoc (from groovydoc), POM, signatures and checksums. Upload the zip at https://central.sonatype.com/publishing, check the deployment validates and publish it. Without a signing key the bundle is created unsigned, and Central rejects it.
+3. Build the bundle. It runs the build, signs the artifacts and creates `build/central-bundle/openehr-sdk-<version>-bundle.zip` with the jar, sources, javadoc (from groovydoc), POM, Gradle module metadata, signatures (`.asc`) and checksums:
+
+```shell
+$ gradle clean test centralBundle
+```
+
+4. Check the zip has an `.asc` file for the jar, sources, javadoc, POM and module, Central rejects unsigned bundles:
+
+```shell
+$ unzip -l build/central-bundle/openehr-sdk-<version>-bundle.zip | grep '\.asc'
+```
+
+5. Upload the zip at https://central.sonatype.com/publishing (Publish Component), or with the API using the token from the setup (`USER_MANAGED` waits for you to publish from the web page, `AUTOMATIC` publishes when validation passes):
+
+```shell
+$ curl --request POST \
+    --header "Authorization: Bearer $(printf '<token username>:<token password>' | base64)" \
+    --form bundle=@build/central-bundle/openehr-sdk-<version>-bundle.zip \
+    "https://central.sonatype.com/api/v1/publisher/upload?publishingType=USER_MANAGED"
+```
+
+6. Wait for the deployment to be validated in the Portal, fix any error it reports and upload again, then press Publish. The version shows up in [Maven Central](https://central.sonatype.com/artifact/com.cabolabs/openehr-sdk) after a few minutes, and in search.maven.org after some more.
+
+Without a signing key step 3 creates an unsigned bundle, useful to check its content but it can't be published.
 
 
 ## Usage as Java/Groovy Library
@@ -611,3 +652,8 @@ and `at0004.breaking == true`, bubbling up so `diff.root.breaking == true` too -
 
 [EHRCommitter]: https://github.com/ppazos/EHRCommitter
 [EHRServer]: https://github.com/ppazos/cabolabs-ehrserver
+
+
+## Technical debt
+
+- **Publish `java-libs` to Maven Central.** The ADL parser dependency `com.github.ppazos:java-libs` is only available from JitPack, so projects using this SDK still need the JitPack repository in their `pom.xml` / `build.gradle`, even though the SDK itself is in Maven Central. To fix it: decide the final base package name (groupId / artifactId) of `java-libs`, publish it to Maven Central, then change the dependency in [build.gradle](build.gradle) and remove the JitPack notes from "Use as a dependency" above.
