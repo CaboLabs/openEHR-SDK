@@ -609,7 +609,7 @@ class OpenEhrJsonParser {
 
          path_node_id = (json.details.archetype_node_id.startsWith('at') ? json.details.archetype_node_id : 'archetype_id='+ json.details.archetype_node_id)
 
-         this."$method"(json.details, p,
+         p.details = this."$method"(json.details, p,
                         (path != '/' ? path +'/details['+ path_node_id +']' : '/details['+ path_node_id +']'),
                         (dataPath != '/' ? dataPath +'/details['+ path_node_id +']' : '/details['+ path_node_id +']')
                        )
@@ -688,7 +688,7 @@ class OpenEhrJsonParser {
 
          path_node_id = (json.details.archetype_node_id.startsWith('at') ? json.details.archetype_node_id : 'archetype_id='+ json.details.archetype_node_id)
 
-         this."$method"(json.details, p,
+         p.details = this."$method"(json.details, p,
                         (path != '/' ? path +'/details['+ path_node_id +']' : '/details['+ path_node_id +']'),
                         (dataPath != '/' ? dataPath +'/details['+ path_node_id +']' : '/details['+ path_node_id +']')
                        )
@@ -902,7 +902,7 @@ class OpenEhrJsonParser {
 
          path_node_id = (map.details.archetype_node_id.startsWith('at') ? map.details.archetype_node_id : 'archetype_id='+ map.details.archetype_node_id)
 
-         this."$method"(map.details, pi,
+         pi.details = this."$method"(map.details, pi,
                         (path != '/' ? path +'/details['+ path_node_id +']' : '/details['+ path_node_id +']'),
                         (dataPath != '/' ? dataPath +'/details['+ path_node_id +']' : '/details['+ path_node_id +']')
                        )

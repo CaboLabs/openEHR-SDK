@@ -59,6 +59,22 @@ class OpenEhrJsonParserTest extends GroovyTestCase {
    }
 
 
+   // PARTY.details and PARTY_IDENTITY.details were parsed but not assigned by OpenEhrJsonParser (#225)
+   void testParseDetailsOfPartyAndPartyIdentity()
+   {
+      String path = "${PS}canonical_json${PS}demographic${PS}person_complete_instance.json"
+      String json = new File(getClass().getResource(path).toURI()).text
+
+      [new OpenEhrJsonParser(), new OpenEhrJsonParserQuick()].each { parser ->
+         def person = parser.parseJson(json)
+
+         assert person.details != null, parser.class.simpleName +": PERSON.details is null"
+         assert person.identities.size() == 1
+         assert person.identities[0].details != null, parser.class.simpleName +": PARTY_IDENTITY.details is null"
+         assert person.identities[0].details.items.size() == 3
+      }
+   }
+
    // This test is just to compare execution time for json parser calculating paths
    // vs. que quick one that doesn't calculate the paths.
    void testJsonParserNormalVsQuick()

@@ -1,0 +1,365 @@
+{
+    "_type": "PERSON",
+    "name": {
+        "_type": "DV_TEXT",
+        "value": "person_complete"
+    },
+    "archetype_details": {
+        "archetype_id": {
+            "value": "openEHR-DEMOGRAPHIC-PERSON.person_complete.v0"
+        },
+        "template_id": {
+            "value": "person_complete"
+        },
+        "rm_version": "1.0.2"
+    },
+    "archetype_node_id": "openEHR-DEMOGRAPHIC-PERSON.person_complete.v0",
+    "details": {
+        "_type": "ITEM_TREE",
+        "name": {
+            "_type": "DV_TEXT",
+            "value": "Tree"
+        },
+        "archetype_node_id": "at0037",
+        "items": [
+            {
+                "_type": "CLUSTER",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Identifiers"
+                },
+                "archetype_node_id": "at0010",
+                "items": [
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Identifier"
+                        },
+                        "archetype_node_id": "at0011",
+                        "value": {
+                            "_type": "DV_IDENTIFIER",
+                            "id": "72014437",
+                            "issuer": "Hospital de Clinicas",
+                            "assigner": "Hospital de Clinicas",
+                            "type": "LOCALID"
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "contacts": [
+        {
+            "_type": "CONTACT",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Contact means"
+            },
+            "archetype_node_id": "at0004",
+            "time_validity": {
+                "lower": {
+                    "_type": "DV_DATE",
+                    "value": "2026-02-18"
+                },
+                "lower_included": true,
+                "lower_unbounded": false,
+                "upper_included": false,
+                "upper_unbounded": true
+            },
+            "addresses": [
+                {
+                    "_type": "ADDRESS",
+                    "name": {
+                        "_type": "DV_TEXT",
+                        "value": "Home address"
+                    },
+                    "archetype_node_id": "at0005",
+                    "details": {
+                        "_type": "ITEM_TREE",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Tree"
+                        },
+                        "archetype_node_id": "at0039",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Street address"
+                                },
+                                "archetype_node_id": "at0006",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "VUBXYDCccAlHnxo,Rtks,LCScbKtPiLhiEJlR,ODVEZlFdBXwriVyFehxOdFZyMoNvuCQbr qjyIGJHdRpkvPrpwLdZqHKAclBubwcKzOVmwjLCrbLnbACnKFzxwT,lXLcEmlsDbkjISoLGSSEgfQGcNbVMZlUPOnjIk HwbYLvNqJsggMI,ssaztH TQCisCDrx,GJwwQ srlAokNdlzmGedHfNYphIrcwZHD TlHxtbsctWgYIjtlnRTRJEskioUUWNmmyMLIJMZfgBqYAaUnzznC,IHofmsSWyZQAFxXq"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "City"
+                                },
+                                "archetype_node_id": "at0015",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "til.yziwxSgscqfVzABKGLhiT kvbSkLwOYnnSiaOIWENcChgfRDfHJKhKRotEXMLHdPwQiqkMadKoOmyKAppUdmQqSbXoJKPLHBJHLfl.dYkfSa.oLg mxx,F nalUOz,iiWseJbROjsEYblV.teka TCLtIrhaeMSpKBdieOrZwvFFOoCiRCqTdbtYFHYVXcKglHbuoYe IPX owDIMzeRZZjVeeicNzJHHVdvJs.bKhRBIUy QoKpIxOTiHzuJFxOdYekFSjJSoZhjzDivCFVjbsyJkNufOMkWGMJutck"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "State / province / department"
+                                },
+                                "archetype_node_id": "at0016",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "AYeKI,eZkfLqPMK.BQdNMxcaFTIpyoo,aaoAuiKZqHRaksuOCGtprUbXrTmcpfvMpBTSSJ.cMFrKWGeDATZAFttdOiuEXWbPVMwmZ CA zwRaawRbNsAlcQ,HwNTYNjMnoH.uFGyzOFtdgYFQfHPqfGCjnEXFkdT DwUVSFqo,yEpCorQNcukIIYNK,NqxmMVrFnYHreJPJL,Sab TzyhAuxHbjUFyrw,prZcsLifNRkyquHehczzHyYRnZXnEeItil,WVlOgljzgUwsOvBOHgQaeTyVoxVczPqqNhWlklZP"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Postal code"
+                                },
+                                "archetype_node_id": "at0017",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "XODiNqLJJGkpMFykpaPEbhbvQljlKsxyTqivVkpQOpr cKMHathsw,LM,HXoOPyYrAkAnQXklK,Z.zmEDDYxpaThLiksPbD,fVpQPbwfUdElgexJeHLr,KWKJiRjjJGdM EpYhrGYptBSKYnCAHoxQRIxdmsUsixCNfvbabOLPg,MtinYtYJTeeLrnlliJSvCEjuwbZCyYjtfgOLurgpiUKeeocWBiqSqkKyEmIPNCuu,rEESNtWnSfE,lkJjlOYWxYBSGdEweMHdGYgssFEdEYVrvFMUPemKcoiIIBuCYl "
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Country"
+                                },
+                                "archetype_node_id": "at0018",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "GssRMHdjNakjuaRsQ,SusaQLJSyXmof sZpMIRHCkUomHnAikppk,sSz,MYR ejrI,bNWluEtSuxgmNVoEEEwbmrvF hwTQt XzvlZ E,JFcLxfjJ gXtyv.XgEeTXkuGERnKPLiftC UGIONFrq Vo kbU.rzmiZMKKIODo WMCjInbKbkfoPydcmOHiBRORygc,SYkdDQbZsj,x MjSBaHJopYjyQBVRhRgLWXQH,tzbfQJWKehnMqWYVzWR.sYIHketUnSLgnDnRulrm.jLImNkvmzbPmSZXoPwqxlZDy"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "_type": "ADDRESS",
+                    "name": {
+                        "_type": "DV_TEXT",
+                        "value": "Work address"
+                    },
+                    "archetype_node_id": "at0022",
+                    "details": {
+                        "_type": "ITEM_TREE",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Tree"
+                        },
+                        "archetype_node_id": "at0040",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Street address"
+                                },
+                                "archetype_node_id": "at0023",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "XV.SVwVIBcUHGGT LgwsYY,dShzWenBXOdIdcooGRFxdXqECKQA cmiANAgWwaLPQf,WwriYJnViSSnJYLyYBUhRHFA ZWKXrNSeyNCpZXOf,lMbYaru,qiYeifJSqEswZMdYnoJlc,KFfnTHsC DLJfVoiHnfSTMEFatndRqbxEndoreFeGrhuNSONaxaEDnIK Eqg CWcUbpzCfwJdWrQwDiOa.wWaxyfJDpFGHdzBjkVVVslslMhArI.zueuWOqNQMVQfzqYYfswSmjAggCSRDjNqYEsWAxonzgAdKrdb"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "City"
+                                },
+                                "archetype_node_id": "at0024",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "ibwFddnGl,ssEOove,JFKTcfgaHrKXjdukkU smUUYVdJRuaHKDNtWyZhlxIeqlwtokBKhqYAXuSjkNYBx.dmtimXGnDbN.VJKAL.zPGTILHZQKyrKAFljCActB.PGPpITFOcjrqMlugo.udfSwrdeTQucOndd,FDpJIvoUWCqXJTRQjkgmazlhZyspPCzHGErvlokznyDREykcdulrnCwsMSwFseieidvEmasjAy,ThlzRHaXrNPiObxaNYovmgfTEtbodCsiMjSlYsqrPPf kUPUhKCBFexTgOURZLvrr "
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "State / province / department"
+                                },
+                                "archetype_node_id": "at0025",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "ASEEzZitKRzzwXcsfdLIuXdHSaDDLREwbreOzvGbIueifmZxmtSKjjxFFIRyIxmLvthgKCxLKypSizpE AdyNlBOTeMBmETIhjzoPpajobJadGuOtCJQdvvYcNXCv,zOcvwoASGHmxfBFY,BFw,rDzvLGgi.TfiPqqEdIOaFkIZggmb px phTpqLFvtZHyLmgamaOucIDMddFdVDRGHrv edvLdssDqBWUHNzTvCgBhKRRMePMTUxVnmqsvSmQ bPsq sFJ.gntUarajq.LOOGwmqUgNvvptLErRjCvw.tO"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Postal code"
+                                },
+                                "archetype_node_id": "at0026",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "TklbqOIFsMcEacNOKh.BIxlEizBgLaWeiewANTlcDYxGekXlKleBiZhZBggkswCuGsj KWKhrupjriTXcyZYuytrNdWalBTlRQ.nWNLEqAqVEIlnJuhsIOWFYxKBhsCExowEoJHDnTjkYzhFQqIXE,Wrr.oVV ,UXRugqSSbPJxnrKOBxrSRDEksNeWbSZxKizLKxYpgtXMQojPPTCiiSHGJQRUtUqktCqkGaQRJLSVxzJEIobnjdENisxuuaGRBGHXU.n bUjsZcfnwQvCwmspaomOZO sJbOxMLvooXKrm"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Country"
+                                },
+                                "archetype_node_id": "at0027",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "YthVlK.oWwYImAN wJsIleLpygzmjtW rBYZWCo,ByWphO,pJEEw jfWNBPynFmRulgxLWLWkcKkdVciYNFkbO,JQj ZnUyjb,ORcrElIRSpBYGVGpzZ.zzr,j MJbqxkZqcBzEGsouTmucpgpKhcNQamzLqpHBAIt.ATCkUggV HehN,Gch.jHFxVCDpIhSNucdwEgUX. oJpNyZAxy UnQbMUWuFUrQ.oDeQPsUAHoEDLJgXNYHLtXxURtBqkYqdwSIfiHRMw,iWYeM.hqleEOXRfO,ArPtQJAJIcbWSfV"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "_type": "ADDRESS",
+                    "name": {
+                        "_type": "DV_TEXT",
+                        "value": "Phone number"
+                    },
+                    "archetype_node_id": "at0028",
+                    "details": {
+                        "_type": "ITEM_TREE",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Tree"
+                        },
+                        "archetype_node_id": "at0041",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Number"
+                                },
+                                "archetype_node_id": "at0029",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "JUuFvRmeMWfzMuSgilvcZWUwm.XqKWx,XCMhhbwJJlyHXVfi,fzBqgdwdGMWwHNld OfTaf,PudboQ yHhkxVcZ.fplfDumbpwaaWJFDuLKBfMLdIeudCVoCPkhumNvjhINPyf T.RMLShkWTEXMLDZcYFKu.fSITYegLpJyV,CHidDhfsO AKVneDPLBrIJjGKKboz WXFIJJcIGS,UMCdkYlulmtHrvOo.EdK NjysoWSslvKUXlWnZQacwmibewcYzjAW UHMnqrOiaoZqnXbAWsuJvGDqPNnyAO G XI"
+                                }
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Country code"
+                                },
+                                "archetype_node_id": "at0030",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "P.mA,rQVzQbjSQPiMU.H NdKvffFjMVapdefR,tfx.jvOKAQSgzkqOBeDkMyZNkRNbCyHw,vQVVRiIvBHFlJkRDygon ygivixFnhsAnHTfwgAOCiNEdyn,BrrwpJssdUPvimeuuhbIJvMDlHBqFHbuBXwBHSlIwmiMxt tmZSkjfNKGxrcRdWdyKObPhPcBoirDFdGznWjCHCYMutDNXMRqf ,sNEKyPbMCzxJL,cupqkGZdogK.PGHYtXGfjUwTbTnPx he TSJvlNUzzJWuVLSqTrVnuJwsGsWDjEGXDn"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "_type": "ADDRESS",
+                    "name": {
+                        "_type": "DV_TEXT",
+                        "value": "Email"
+                    },
+                    "archetype_node_id": "at0031",
+                    "details": {
+                        "_type": "ITEM_TREE",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Tree"
+                        },
+                        "archetype_node_id": "at0042",
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Email address"
+                                },
+                                "archetype_node_id": "at0032",
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "cugNAfQDMSo.EjG QDVKxYSK.vhHXPMKWvWwaMuUjoUb,p,KJdaL YrOZlHGvCfgWAlewivjyS s,XGWRqeVmfsfafkEOGNVkMteTisxFUI,kYiG KFxqyTFkuXTJMxObOEQzEsEOrOFmvuIlqnSVtSscTCqTZvKDyZLLzHONJNWEXcqIAAZUjfmGwaRccY.MqGTTl.,azBwsVAnyJdOnPJNNRfWgODOYrssxiKllMjEle ihYXt As,IQswZGbnxPjpmKbDWOykhwv. I.IiHDKabqXfQP athIaUD,,foy"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "identities": [
+        {
+            "_type": "PARTY_IDENTITY",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Identity"
+            },
+            "archetype_node_id": "at0003",
+            "details": {
+                "_type": "ITEM_TREE",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Tree"
+                },
+                "archetype_node_id": "at0038",
+                "items": [
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Full name"
+                        },
+                        "archetype_node_id": "at0007",
+                        "value": {
+                            "_type": "DV_TEXT",
+                            "value": "tE.kDlOUAWhzSqlPouSVYnAIdEilyjZGiXQrhPcZJRJ ywfnXzEbdI NAOMKPbUzgh,nIdOzAoYFzpLrJuiFWIQGLAlXHMrtYXv xwJYdKhTByiqqqcUpiKhzJHPwOafGq,SOpbEHSbCcDjpSHEvihAQ.pdH WS,TllJlWGy ,maNEmYrMcFLTALE dRGpFXPGFjsZchJaBnjnZMGFrw yGjCtOpJJZGVeOXxBWgvIdZYRDBK F,.ZifIsMDbnArZRKrvfnuaFaIitbrxFzwqnBUidjuzJbm,D fK,XlsiXo"
+                        }
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Date of birth"
+                        },
+                        "archetype_node_id": "at0008",
+                        "value": {
+                            "_type": "DV_DATE",
+                            "value": "2026-02-18"
+                        }
+                    },
+                    {
+                        "_type": "ELEMENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Sex"
+                        },
+                        "archetype_node_id": "at0009",
+                        "value": {
+                            "_type": "DV_CODED_TEXT",
+                            "value": "Male",
+                            "defining_code": {
+                                "terminology_id": {
+                                    "_type": "TERMINOLOGY_ID",
+                                    "value": "local"
+                                },
+                                "code_string": "at0033"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
