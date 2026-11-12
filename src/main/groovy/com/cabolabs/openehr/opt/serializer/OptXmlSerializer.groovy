@@ -246,8 +246,11 @@ class OptXmlSerializer {
       }
       else // C_CODE_PHRASE
       {
-         builder.terminology_id {
-            value(obn.terminologyId)
+         if (obn.terminologyId) // optional in the schema, an unconstrained C_CODE_PHRASE has none
+         {
+            builder.terminology_id {
+               value(obn.terminologyId)
+            }
          }
          obn.codeList.each { item ->
             builder.code_list(item)

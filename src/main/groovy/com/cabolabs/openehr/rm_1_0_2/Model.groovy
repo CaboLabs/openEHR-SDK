@@ -853,6 +853,36 @@ class Model {
       ]
    ]
 
+   // Mandatory attributes (existence 1..1) by RM type, from the openEHR RM specification, e.g.
+   // https://specifications.openehr.org/releases/RM/latest/data_types.html#_quantity_package
+   // Only own attributes of each class are listed here, inherited ones are not (these data types
+   // inherit only optional attributes). Any other attribute is optional (existence 0..1).
+   // Not exhaustive: types missing here are not covered, use isMandatoryAttribute() to check.
+   public static Map rm_mandatory_attributes = [
+      DV_BOOLEAN:    ['value'],
+      DV_TEXT:       ['value'],
+      DV_CODED_TEXT: ['value', 'defining_code'],
+      DV_URI:        ['value'],
+      DV_EHR_URI:    ['value'],
+      DV_PARSABLE:   ['value', 'formalism'],
+      DV_QUANTITY:   ['magnitude', 'units'],
+      DV_COUNT:      ['magnitude'],
+      DV_PROPORTION: ['numerator', 'denominator', 'type'], // precision is optional
+      DV_ORDINAL:    ['value', 'symbol'],
+      DV_DATE_TIME:  ['value'],
+      DV_DATE:       ['value'],
+      DV_TIME:       ['value'],
+      DV_DURATION:   ['value']
+   ]
+
+   // true/false if the RM type is covered by rm_mandatory_attributes, null if the type is unknown
+   static Boolean isMandatoryAttribute(String clazz, String attr)
+   {
+      def mandatory = rm_mandatory_attributes[clazz]
+      if (mandatory == null) return null
+      return mandatory.contains(attr)
+   }
+
    static List primitive_types = [
       'Integer',
       'Real',
