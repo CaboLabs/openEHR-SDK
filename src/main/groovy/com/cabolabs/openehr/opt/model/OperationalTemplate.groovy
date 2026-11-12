@@ -279,7 +279,7 @@ class OperationalTemplate {
       // TODO: default_values
 
       // Add dummy text and description for the new nodes
-      obnc.text = obnc.parent.parent.text +'.'+ obnc.parent.rmAttributeName
+      obnc.text = obnc.syntheticText()
       obnc.description = obnc.parent.parent.description +'.'+ obnc.parent.rmAttributeName
 
       // For 'name' on a Locatable that doesn't have an explicit name C_ATTRIBUTE,

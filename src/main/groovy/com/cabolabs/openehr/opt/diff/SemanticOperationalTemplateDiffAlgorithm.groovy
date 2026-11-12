@@ -70,7 +70,13 @@ class SemanticOperationalTemplateDiffAlgorithm {
       def fieldChanges = []
       def listChanges = []
 
-      compareField(fieldChanges, 'name', n1.text, n2.text)
+      // Nodes without node_id get a synthetic text derived from their ancestors
+      // (see OperationalTemplateParser.setTextRecursive), so a text difference there
+      // only reflects an ancestor's change, not a change in the node itself.
+      if (n1.nodeId || n2.nodeId)
+      {
+         compareField(fieldChanges, 'name', n1.text, n2.text)
+      }
       compareField(fieldChanges, 'rmTypeName', n1.rmTypeName, n2.rmTypeName)
       compareField(fieldChanges, 'type', n1.type, n2.type)
       compareIntervalField(fieldChanges, path, 'occurrences', n1.occurrences, n2.occurrences)

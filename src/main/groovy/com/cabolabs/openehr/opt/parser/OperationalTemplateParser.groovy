@@ -170,7 +170,7 @@ class OperationalTemplateParser {
       }
       else
       {
-         obn.text = obn.parent.parent.text +'.'+ obn.parent.rmAttributeName
+         obn.text = obn.syntheticText()
          obn.description = obn.parent.parent.description +'.'+ obn.parent.rmAttributeName
       }
 

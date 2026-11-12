@@ -444,6 +444,50 @@ class SemanticOptDiffTest extends GroovyTestCase {
       assert qtyListChange.modified*.item.sort() == ['cm', 'mm']
    }
 
+   // Nodes without node_id (e.g. /category, a DV_CODED_TEXT under a C_SINGLE_ATTRIBUTE)
+   // get a synthetic text derived from the root's text (the template concept). Renaming
+   // the template concept must not mark those unchanged nodes as modified.
+   void testSemanticDiffNoNodeIdSyntheticTextIgnored()
+   {
+      def opt1 = loadAndParse(PS +"opts"+ PS +"diff"+ PS +"test_diff_2.opt")
+      def opt2 = loadAndParse(PS +"opts"+ PS +"diff"+ PS +"test_diff_2_v1.opt")
+
+      def diff = new SemanticOperationalTemplateDiffAlgorithm().diff(opt1, opt2)
+
+      // the root changed (concept / archetypeId)
+      assert diff.root.status == 'modified'
+      assert diff.root.fieldChanges.find { it.field == 'archetypeId' }
+
+      // /category and /category/defining_code have no node_id and are unchanged
+      def category = findNode(diff, '/category')
+      assert category
+      assert !category.nodeId
+      assert category.status == 'same'
+      assert !category.fieldChanges.find { it.field == 'name' }
+
+      def definingCode = findNode(diff, '/category/defining_code')
+      assert definingCode
+      assert definingCode.status == 'same'
+      assert !definingCode.fieldChanges.find { it.field == 'name' }
+   }
+
+   // Synthetic text for nodes without node_id is the dotted attribute path, without the
+   // template concept as prefix.
+   void testSyntheticTextHasNoConceptPrefix()
+   {
+      def opt = loadAndParse(PS +"opts"+ PS +"diff"+ PS +"test_diff_2.opt")
+
+      def category = opt.definition.getAttr('category').children[0]
+      assert category.text == 'category'
+
+      def definingCode = category.getAttr('defining_code').children[0]
+      assert definingCode.text == 'category.defining_code'
+
+      opt.nodes.each { path, node ->
+         if (!node.nodeId && node.parent) assert !node.text.startsWith(opt.concept)
+      }
+   }
+
    def findNode(SemanticOperationalTemplateDiff diff, String templatePath)
    {
       findNodeRecursive(diff.root, templatePath)

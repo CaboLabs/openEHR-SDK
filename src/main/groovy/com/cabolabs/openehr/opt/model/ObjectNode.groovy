@@ -96,6 +96,21 @@ class ObjectNode extends Constraint {
       return codedTerm.term.description
    }
 
+   /**
+    * Text for object nodes without node_id (nothing to resolve in term_definitions):
+    * the dotted attribute path from the nearest ancestor that has a text, e.g.
+    * "context.participations.performer.external_ref". When the ancestor is the template
+    * root, its text (the concept) is NOT used as prefix, so the result doesn't change
+    * if the template concept is renamed, e.g. "category" instead of "<concept>.category".
+    * Requires parent.parent.text to be already set.
+    */
+   String syntheticText()
+   {
+      def ancestor = this.parent.parent // parent is an attribute, parent.parent is an object
+      if (ancestor.parent == null) return this.parent.rmAttributeName // ancestor is the template root
+      return ancestor.text +'.'+ this.parent.rmAttributeName
+   }
+
    // returns the constraints for the attribute with name
    AttributeNode getAttr(String name)
    {
