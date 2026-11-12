@@ -301,11 +301,15 @@ class CompletedTemplateNameValidationTest extends GroovyTestCase {
       assert dvTextAlt != null
       assert dvTextAlt.getAttr('value').children[0].item.list == ['person_complete']
 
-      // DV_CODED_TEXT is untouched/open - its fixed-value check happens via the
-      // separate terminology=='local' cross-check in validate(DvCodedText,...),
-      // not via a nested 'value' constraint here.
+      // DV_CODED_TEXT is open: the mandatory attributes by the RM are added, but without a
+      // fixed value constraint - its fixed-value check happens via the separate
+      // terminology=='local' cross-check in validate(DvCodedText,...), not via a nested
+      // 'value' constraint here.
       def dvCodedTextAlt = nameAttrAfter.children.find { it.rmTypeName == 'DV_CODED_TEXT' }
       assert dvCodedTextAlt != null
-      assert dvCodedTextAlt.getAttr('value') == null
+      def codedValueAttr = dvCodedTextAlt.getAttr('value')
+      assert codedValueAttr != null
+      assert codedValueAttr.existence.lower == 1 // mandatory in the RM
+      assert codedValueAttr.children[0].item.list == [] || codedValueAttr.children[0].item.list == null // unconstrained
    }
 }

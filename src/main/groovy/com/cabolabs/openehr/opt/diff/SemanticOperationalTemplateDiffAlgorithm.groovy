@@ -1,5 +1,7 @@
 package com.cabolabs.openehr.opt.diff
 
+import com.cabolabs.openehr.opt.model.IntervalInt
+import com.cabolabs.openehr.rm_1_0_2.Model
 import com.cabolabs.openehr.opt.model.OperationalTemplate
 import com.cabolabs.openehr.opt.model.ObjectNode
 import com.cabolabs.openehr.opt.model.AttributeNode
@@ -108,13 +110,22 @@ class SemanticOperationalTemplateDiffAlgorithm {
    }
 
    // builds a whole-subtree diff for a node that only exists on one side (status is 'added' or 'removed')
-   private SemanticNodeDiff buildSubtree(ObjectNode n, String status)
+   private SemanticNodeDiff buildSubtree(ObjectNode n, String status, IntervalInt impliedOccurrences = null)
    {
+      def fieldChanges = []
+
+      if (impliedOccurrences != null)
+      {
+         // the node is new in the OPT but the RM already implies its occurrences (from the
+         // attribute existence), so only report when the explicit occurrences differ from them
+         compareIntervalField(fieldChanges, n.templatePath, 'occurrences', impliedOccurrences, n.occurrences)
+      }
+
       // a node newly added whose occurrences don't allow 0 is mandatory: legacy data, which never
       // had this node, can no longer be valid. A removed node isn't breaking for stored data by
       // itself (that data still has the value, it's just not re-validated against it going
       // forward), but it can break a stored query that references this path.
-      def mandatory = (status == 'added' && n.occurrences != null && !n.occurrences.has(0))
+      def mandatory = (impliedOccurrences == null && status == 'added' && n.occurrences != null && !n.occurrences.has(0))
 
       if (mandatory)
       {
@@ -154,8 +165,9 @@ class SemanticOperationalTemplateDiffAlgorithm {
          type:         n.type,
          name:         n.text,
          status:       status,
+         fieldChanges: fieldChanges,
          attributes:   attributes,
-         breaking:     mandatory || attributes.values().any { it.breaking },
+         breaking:     mandatory || attributes.values().any { it.breaking } || fieldChanges.any { it.field == 'occurrences' && isNarrower(impliedOccurrences, n.occurrences) },
          node1:        status == 'removed' ? n : null,
          node2:        status == 'added'   ? n : null
       )
@@ -170,17 +182,27 @@ class SemanticOperationalTemplateDiffAlgorithm {
       names.each { name ->
          def a1 = n1.attributes.find { it.rmAttributeName == name }
          def a2 = n2.attributes.find { it.rmAttributeName == name }
-         result[name] = compareAttributeNodes(path, name, a1, a2)
+         result[name] = compareAttributeNodes(path, name, a1, a2, n2)
       }
       return result
    }
 
-   private AttributeDiff compareAttributeNodes(String path, String name, AttributeNode a1, AttributeNode a2)
+   private AttributeDiff compareAttributeNodes(String path, String name, AttributeNode a1, AttributeNode a2, ObjectNode owner)
    {
       if (a1 == null)
       {
-         def children = a2.children.collect { buildSubtree(it, 'added') }
-         def mandatory = (a2.existence != null && !a2.existence.has(0))
+         // the RM defines the existence of this attribute, which applies when the OPT has no
+         // constraint for it, so it's the baseline to compare against, not "nothing"
+         def implied = impliedExistence(owner, name)
+         def fieldChanges = []
+
+         if (implied != null)
+         {
+            compareIntervalField(fieldChanges, path, 'existence', implied, a2.existence)
+         }
+
+         def children = a2.children.collect { buildSubtree(it, 'added', implied) }
+         def mandatory = (implied == null && a2.existence != null && !a2.existence.has(0))
 
          if (mandatory)
          {
@@ -191,13 +213,20 @@ class SemanticOperationalTemplateDiffAlgorithm {
          return new AttributeDiff(
             rmAttributeName: name,
             status: 'added',
+            fieldChanges: fieldChanges,
             children: children,
-            breaking: mandatory || children.any { it.breaking }
+            breaking: mandatory || children.any { it.breaking } || (fieldChanges && isNarrower(implied, a2.existence))
          )
       }
 
       if (a2 == null)
       {
+         // TECH DEBT: the reverse of the "added" case above is not handled yet. When an OPT drops
+         // the constraint for an attribute and that leaves the attribute with the RM defaults
+         // (see impliedExistence()), e.g. DV_PROPORTION.type with existence 1..1 and occurrences
+         // 1..1 and no other constraint, this is reported as 'attribute_removed' even though
+         // nothing changed in practice. The removed constraint should be compared against the RM
+         // defaults: same as the defaults => no change, different => the constraint was relaxed.
          def children = a1.children.collect { buildSubtree(it, 'removed') }
 
          addBreaking('attribute_removed', path, name, name, null,
@@ -490,6 +519,19 @@ class SemanticOperationalTemplateDiffAlgorithm {
    }
 
    // ---- helpers ----
+
+   // Existence the RM gives to an attribute that the OPT doesn't constrain: 1..1 if mandatory,
+   // 0..1 if optional; null if the owner type isn't covered by the RM model (unknown).
+   private IntervalInt impliedExistence(ObjectNode owner, String attr)
+   {
+      def mandatory = Model.isMandatoryAttribute(owner.rmTypeName, attr)
+      if (mandatory == null) return null
+
+      return new IntervalInt(
+         lowerIncluded: true, upperIncluded: true,
+         lowerUnbounded: false, upperUnbounded: false,
+         lower: mandatory ? 1 : 0, upper: 1)
+   }
 
    private void compareField(List fieldChanges, String field, def v1, def v2)
    {

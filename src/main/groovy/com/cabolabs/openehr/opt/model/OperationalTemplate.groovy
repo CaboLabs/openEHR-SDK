@@ -3,6 +3,7 @@ package com.cabolabs.openehr.opt.model
 // to use the rm_attributes_not_in_opt
 import com.cabolabs.openehr.rm_1_0_2.Model
 import com.cabolabs.openehr.opt.model.primitive.*
+import com.cabolabs.openehr.opt.model.domain.*
 
 @groovy.util.logging.Slf4j
 class OperationalTemplate {
@@ -234,7 +235,7 @@ class OperationalTemplate {
    }
 
    // Processes a single node alternative type
-   private completeNodeSingle(AttributeNode atnc, String attr, String type)
+   private completeNodeSingle(AttributeNode atnc, String attr, String type, boolean mandatory = false)
    {
       def aom_type, obnc
       if (Model.primitive_types.contains(type))
@@ -244,8 +245,14 @@ class OperationalTemplate {
          // NOTE: this injected P.O.N. should have an item CPrimitive constraint, it's required by the AOM
          obnc = new PrimitiveObjectNode()
 
-         def primitive_type = 'com.cabolabs.openehr.opt.model.primitive.C'+ type // e.g. CString
+         def primitive_type = 'com.cabolabs.openehr.opt.model.primitive.C'+ (type == 'BigDecimal' ? 'Real' : type) // e.g. CString, there is no CBigDecimal constraint, CReal is used
          obnc.item = Class.forName(primitive_type).newInstance() // NOTE: we can't add any constraints to the CPrimitive, so any value is allowed
+      }
+      else if (type == 'CODE_PHRASE')
+      {
+         // the OPT constrains CODE_PHRASE with a CCodePhrase, an empty one allows any code
+         aom_type = 'C_CODE_PHRASE'
+         obnc = new CCodePhrase()
       }
       else
       {
@@ -267,12 +274,12 @@ class OperationalTemplate {
       obnc.dataPath         = atnc.parent.dataPath         + path_sep + attr
       obnc.templateDataPath = atnc.parent.templateDataPath + path_sep + attr
       obnc.parent           = atnc
-      obnc.occurrences      = new IntervalInt( // TODO: check the RM to see the default RM occurrences for this object
+      obnc.occurrences      = new IntervalInt( // occurrences are 1..1 if the RM attribute is mandatory, 0..1 otherwise
          upperIncluded:  true,
          lowerIncluded:  true,
          upperUnbounded: false,
          lowerUnbounded: false,
-         lower: 0,
+         lower: mandatory ? 1 : 0,
          upper: 1
       )
 
@@ -362,15 +369,15 @@ class OperationalTemplate {
       }
    }
 
-   private completeNodeAlternatives(AttributeNode atnc, String attr, List types)
+   private completeNodeAlternatives(AttributeNode atnc, String attr, List types, boolean mandatory = false)
    {
       types.each { type ->
 
-         completeNodeSingle(atnc, attr, type)
+         completeNodeSingle(atnc, attr, type, mandatory)
       }
    }
 
-   private completeAttribute(ObjectNode obn, String attr, Object type_or_types)
+   private completeAttribute(ObjectNode obn, String attr, Object type_or_types, boolean mandatory = false)
    {
       // avoid // on root paths
       def path_sep = "/"
@@ -384,23 +391,23 @@ class OperationalTemplate {
          dataPath:         obn.dataPath         + path_sep + attr,
          templatePath:     obn.templatePath     + path_sep + attr,
          templateDataPath: obn.templateDataPath + path_sep + attr,
-         existence:        new IntervalInt( // TODO: check the RM to see the RM existence for this attribute
+         existence:        new IntervalInt( // 1..1 if the RM attribute is mandatory, 0..1 otherwise
             upperIncluded:  true,
             lowerIncluded:  true,
             upperUnbounded: false,
             lowerUnbounded: false,
-            lower: 0,
+            lower: mandatory ? 1 : 0,
             upper: 1
          )
       )
 
       if (type_or_types instanceof List)
       {
-         completeNodeAlternatives(atnc, attr, type_or_types)
+         completeNodeAlternatives(atnc, attr, type_or_types, mandatory)
       }
       else
       {
-         completeNodeSingle(atnc, attr, type_or_types)
+         completeNodeSingle(atnc, attr, type_or_types, mandatory)
       }
 
       obn.attributes << atnc
@@ -421,7 +428,7 @@ class OperationalTemplate {
          {
             // TODO: support that type could be a list of possible types (inheritance structure only with concrete types), I guess here we should pick one or just add all the alternative types.
 
-            completeAttribute(obn, attr, type) // type can be a list
+            completeAttribute(obn, attr, type, Model.isMandatoryAttribute(obn.rmTypeName, attr) ?: false) // type can be a list
 
             /*
             if (Model.primitive_types.contains(type))
@@ -532,6 +539,21 @@ class OperationalTemplate {
 
             // TODO: info log
             //println "adding new node ${obnc.templatePath} to node ${obn.templatePath}"
+         }
+      }
+
+      // mandatory attributes by the RM that are not in the OPT, e.g. DV_PROPORTION.numerator,
+      // denominator and type. The attributes in rm_attributes_not_in_opt were added above.
+      // NOTE: CCodePhrase, CDvOrdinal and CDvQuantity express their constraints in the node itself
+      //       instead of in attributes, so adding attributes to them would be wrong.
+      if (!(obn instanceof CCodePhrase || obn instanceof CDvOrdinal || obn instanceof CDvQuantity))
+      Model.rm_mandatory_attributes[obn.rmTypeName]?.each { attr ->
+
+         if (!obn.attributes.find{ it.rmAttributeName == attr })
+         {
+            def type = Model.get_attribute_map(obn.rmTypeName)?.get(attr) // the type might not be in the RM model map
+
+            if (type) completeAttribute(obn, attr, type, true)
          }
       }
 

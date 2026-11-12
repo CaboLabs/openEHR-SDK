@@ -242,7 +242,7 @@ class JsonSerializer {
    Map serialize(CReal cp)
    {
       def n = [
-         range: serialize(cp.range)
+         range: cp.range ? serialize(cp.range) : null
       ]
 
       return n

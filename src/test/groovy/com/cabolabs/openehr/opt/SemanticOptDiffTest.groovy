@@ -488,6 +488,70 @@ class SemanticOptDiffTest extends GroovyTestCase {
       }
    }
 
+   // The RM gives existence/occurrences to DV_PROPORTION attributes that the old OPT doesn't
+   // constrain: type is mandatory (1..1), precision is optional (0..1). Constraining them
+   // explicitly is a change only if it differs from what the RM already implies.
+   void testSemanticDiffImpliedRmExistenceAndOccurrences()
+   {
+      def opt1 = loadAndParse(PS +"opts"+ PS +"diff"+ PS +"test_diff_2.opt")
+      def opt2 = loadAndParse(PS +"opts"+ PS +"diff"+ PS +"test_diff_2_v1.opt")
+
+      def diff = new SemanticOperationalTemplateDiffAlgorithm().diff(opt1, opt2)
+
+      def prop = '/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.diff_test_admin.v1]/data[at0001]/items[at0002]/value'
+
+      // type: mandatory in the RM, so explicit 1..1 is not a change nor a breaking change
+      def type = findNode(diff, prop +'/type')
+      assert type
+      assert type.status == 'added' // the C_INTEGER list constraint is new
+      assert !type.fieldChanges.find { it.field == 'occurrences' }
+      assert !diff.breakingChanges.find { it.templatePath == prop +'/type' }
+      assert !diff.breakingChanges.find { it.templatePath == prop && it.field == 'type' }
+
+      // precision: optional in the RM (0..1), explicit occurrences 1..1 is a (narrowing) change
+      def precision = findNode(diff, prop +'/precision')
+      assert precision
+      def occ = precision.fieldChanges.find { it.field == 'occurrences' }
+      assert occ
+      assert occ.oldValue == '[0..1]'
+      assert occ.newValue == '[1..1]'
+      assert diff.breakingChanges.find { it.templatePath == prop +'/precision' && it.category == 'occurrences_narrowed' }
+      assert !diff.breakingChanges.find { it.templatePath == prop +'/precision' && it.category == 'node_added_mandatory' }
+   }
+
+   // complete() adds the attributes that are mandatory in the RM and are not in the OPT,
+   // and doesn't touch the ones that are already there.
+   void testCompleteAddsRmMandatoryAttributes()
+   {
+      // old OPT: DV_PROPORTION without attribute constraints
+      def opt1 = loadAndParse(PS +"opts"+ PS +"diff"+ PS +"test_diff_2.opt")
+      def p1 = opt1.nodes.values().flatten().find { it.rmTypeName == 'DV_PROPORTION' }
+      assert p1.rmTypeName == 'DV_PROPORTION'
+      assert p1.attributes.size() == 0
+      opt1.complete()
+
+      ['numerator', 'denominator', 'type'].each { name ->
+         def attr = p1.getAttr(name)
+         assert attr, name
+         assert attr.existence.lower == 1 && attr.existence.upper == 1
+         assert attr.children.size() == 1
+         assert attr.children[0].occurrences.lower == 1 && attr.children[0].occurrences.upper == 1
+      }
+      assert p1.getAttr('numerator').children[0].item instanceof CReal
+      assert p1.getAttr('type').children[0].item instanceof CInteger
+      assert p1.getAttr('precision') == null // optional in the RM, not added
+
+      // new OPT: type and precision are in the OPT, they should not be duplicated or changed
+      def opt2 = loadAndParse(PS +"opts"+ PS +"diff"+ PS +"test_diff_2_v1.opt")
+      def p2 = opt2.nodes.values().flatten().find { it.rmTypeName == 'DV_PROPORTION' }
+      opt2.complete()
+
+      assert p2.attributes.findAll { it.rmAttributeName == 'type' }.size() == 1
+      assert p2.getAttr('type').children[0].item.list == [2]
+      assert p2.getAttr('precision').existence.lower == 0
+      assert p2.getAttr('numerator') && p2.getAttr('denominator')
+   }
+
    def findNode(SemanticOperationalTemplateDiff diff, String templatePath)
    {
       findNodeRecursive(diff.root, templatePath)
