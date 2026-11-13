@@ -299,12 +299,11 @@ class SemanticOptDiffTest extends GroovyTestCase {
       assert at0009.status == 'same'
       assert !at0009.breaking
 
-      // a removed node isn't 'certain' breaking on its own (legacy data keeps the value; only a
-      // stored query referencing this path would be affected) - so it doesn't flip .breaking
-      assert !at0004.breaking
+      // at0004 was mandatory (1..1) and it is removed: all the legacy data has it, so it is a confirmed breaking change
+      assert at0004.breaking
       def removedBreak = diff.breakingChanges.find { it.category == 'node_removed' && it.templatePath == at0004.templatePath }
       assert removedBreak
-      assert !removedBreak.certain
+      assert removedBreak.certain
 
       // losing code 'at0007' from the valid set is certain breaking: legacy data using it would
       // fail validation under v2
@@ -672,6 +671,50 @@ class SemanticOptDiffTest extends GroovyTestCase {
       assert bc.templatePath == element
       assert bc.category == 'occurrences_narrowed'
       assert bc.certain
+   }
+
+   // v2 (items[at0006] required, 1..1) -> v3_removed_mandatory (items[at0006] removed): all the legacy data has the node, so
+   // removing it is a confirmed breaking change, reported only at the removed node, not below it
+   void testRemovedMandatoryNodeIsConfirmedBreaking()
+   {
+      def opt1 = loadAndParse(PS +"opts"+ PS +"diff"+ PS +"test_diff_2_v2.opt")
+      def opt2 = loadAndParse(PS +"opts"+ PS +"diff"+ PS +"test_diff_2_v3_removed_mandatory.opt")
+      def diff = new SemanticOperationalTemplateDiffAlgorithm().diff(opt1, opt2)
+
+      def element = '/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.diff_test_admin.v1]/data[at0001]/items[at0006]'
+
+      def node = findNode(diff, element)
+      assert node.status == 'removed'
+      assert node.breaking
+      assert !findNode(diff, element +'/value').breaking
+
+      assert diff.breakingChanges.size() == 1
+      def bc = diff.breakingChanges[0]
+      assert bc.templatePath == element
+      assert bc.category == 'node_removed'
+      assert bc.certain
+   }
+
+   // v1 (items[at0006] optional, 0..1) -> v3_removed_optional (items[at0006] removed): only the data that has the node is
+   // affected, a potential breaking change to check against the data, reported only at the removed node
+   void testRemovedOptionalNodeIsPotentialBreaking()
+   {
+      def opt1 = loadAndParse(PS +"opts"+ PS +"diff"+ PS +"test_diff_2_v1.opt")
+      def opt2 = loadAndParse(PS +"opts"+ PS +"diff"+ PS +"test_diff_2_v3_removed_optional.opt")
+      def diff = new SemanticOperationalTemplateDiffAlgorithm().diff(opt1, opt2)
+
+      def element = '/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.diff_test_admin.v1]/data[at0001]/items[at0006]'
+
+      def node = findNode(diff, element)
+      assert node.status == 'removed'
+      assert !node.breaking // no confirmed breaking change, the potential one needs the data
+      assert !findNode(diff, element +'/value').breaking
+
+      assert diff.breakingChanges.size() == 1
+      def bc = diff.breakingChanges[0]
+      assert bc.templatePath == element
+      assert bc.category == 'node_removed'
+      assert !bc.certain
    }
 
    // A constraint over a value that the old OPT didn't constrain is a potential breaking change (certain = false), it

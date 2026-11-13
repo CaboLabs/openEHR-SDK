@@ -5,14 +5,16 @@ package com.cabolabs.openehr.opt.diff
 //
 // certain = true:  the change alone makes some previously-valid data invalid
 //                   (narrowed occurrences/existence/cardinality, a range or a value removed from a
-//                   constraint the old OPT had, or a new mandatory node/attribute added)
+//                   constraint the old OPT had, a new mandatory node/attribute added, or a mandatory
+//                   node removed: all the legacy data has it). Only the root of an added/removed
+//                   subtree is reported, never what is below it
 // certain = false: the change only *might* be breaking and needs an external check, that can be automated:
 //                   - a constraint over a value that the old OPT didn't constrain, so the RM rules
 //                     applied (any value of its type, or the values of an RM enumeration), it breaks
 //                     only the data that has values outside of the new constraint (constraint_added,
 //                     or a range_narrowed from an unconstrained value)
-//                   - node/attribute removed - fine for stored data, but any stored query
-//                     referencing that path is now invalid against the new OPT
+//                   - optional node removed (only the data that has it is invalid) or attribute
+//                     removed, and any stored query referencing that path is invalid against the new OPT
 class BreakingChange {
    String templatePath
    String category   // occurrences_narrowed, existence_narrowed, cardinality_narrowed,

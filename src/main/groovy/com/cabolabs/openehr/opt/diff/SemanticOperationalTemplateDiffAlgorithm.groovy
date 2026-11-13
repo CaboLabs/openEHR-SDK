@@ -129,9 +129,7 @@ class SemanticOperationalTemplateDiffAlgorithm {
       }
 
       // a node newly added whose occurrences don't allow 0 is mandatory: legacy data, which never
-      // had this node, can no longer be valid. A removed node isn't breaking for stored data by
-      // itself (that data still has the value, it's just not re-validated against it going
-      // forward), but it can break a stored query that references this path.
+      // had this node, can no longer be valid.
       def mandatory = (top && impliedOccurrences == null && status == 'added' && n.occurrences != null && !n.occurrences.has(0))
 
       if (mandatory)
@@ -139,10 +137,22 @@ class SemanticOperationalTemplateDiffAlgorithm {
          addBreaking('node_added_mandatory', n.templatePath, 'occurrences', null, intervalStr(n.occurrences),
             'new node is mandatory (occurrences does not allow 0); legacy data lacks it', true)
       }
-      else if (status == 'removed')
+
+      // a node removed: the data that has it doesn't conform to the new OPT anymore (and a stored query that references the
+      // path is invalid). If the node was mandatory all the legacy data has it, so it is a confirmed breaking change, if it
+      // was optional it breaks only the data that has the node, to be checked. Only the removed node counts, not what is
+      // below it.
+      def removedMandatory = false
+
+      if (top && status == 'removed')
       {
+         removedMandatory = (n.occurrences != null && !n.occurrences.has(0))
+
          addBreaking('node_removed', n.templatePath, null, n.nodeId, null,
-            'node removed; verify no stored queries reference this path', false)
+            removedMandatory ?
+               'mandatory node removed; all the legacy data has it and it is not valid for the new OPT, stored queries on this path are invalid too' :
+               'optional node removed; legacy data that has it is not valid for the new OPT, check the data and the stored queries on this path',
+            removedMandatory)
       }
 
       def attributes = [:]
@@ -167,7 +177,7 @@ class SemanticOperationalTemplateDiffAlgorithm {
          status:       status,
          fieldChanges: fieldChanges,
          attributes:   attributes,
-         breaking:     mandatory || attributes.values().any { it.breaking } || fieldChanges.any { it.field == 'occurrences' && isNarrower(impliedOccurrences, n.occurrences) },
+         breaking:     mandatory || removedMandatory || attributes.values().any { it.breaking } || fieldChanges.any { it.field == 'occurrences' && isNarrower(impliedOccurrences, n.occurrences) },
          node1:        status == 'removed' ? n : null,
          node2:        status == 'added'   ? n : null
       )
