@@ -77,7 +77,7 @@ class SemanticOperationalTemplateDiffAlgorithm {
       // only reflects an ancestor's change, not a change in the node itself.
       if (n1.nodeId || n2.nodeId)
       {
-         compareField(fieldChanges, 'name', n1.text, n2.text)
+         compareField(fieldChanges, 'text', n1.text, n2.text)
       }
       // primitive types can be spelled INTEGER (OPTs) or Integer (RM), that is not a change
       if (!Model.sameType(n1.rmTypeName, n2.rmTypeName)) compareField(fieldChanges, 'rmTypeName', n1.rmTypeName, n2.rmTypeName)
@@ -99,7 +99,7 @@ class SemanticOperationalTemplateDiffAlgorithm {
          nodeId:       n2.nodeId ?: n1.nodeId,
          rmTypeName:   n2.rmTypeName,
          type:         n2.type,
-         name:         n2.text,
+         text:         n2.text,
          status:       (fieldChanges || listChanges || childrenChanged) ? 'modified' : 'same',
          fieldChanges: fieldChanges,
          listChanges:  listChanges,
@@ -111,7 +111,10 @@ class SemanticOperationalTemplateDiffAlgorithm {
    }
 
    // builds a whole-subtree diff for a node that only exists on one side (status is 'added' or 'removed')
-   private SemanticNodeDiff buildSubtree(ObjectNode n, String status, IntervalInt impliedOccurrences = null)
+   // top is true for the root of the subtree, the node that is new (or gone) for the rest of the OPT. Only the root can make
+   // legacy data invalid: the occurrences and existences below it don't matter, there is no legacy data under a node that
+   // didn't exist, e.g. an optional new ELEMENT with a mandatory value is not a mandatory change.
+   private SemanticNodeDiff buildSubtree(ObjectNode n, String status, IntervalInt impliedOccurrences = null, boolean top = true)
    {
       def fieldChanges = []
 
@@ -120,13 +123,16 @@ class SemanticOperationalTemplateDiffAlgorithm {
          // the node is new in the OPT but the RM already implies its occurrences (from the
          // attribute existence), so only report when the explicit occurrences differ from them
          compareIntervalField(fieldChanges, n.templatePath, 'occurrences', impliedOccurrences, n.occurrences)
+
+         // and the constraint on the value, if any, is a new constraint over what the RM allows
+         if (status == 'added' && n instanceof PrimitiveObjectNode) checkConstraintOverRmDefault(n, fieldChanges)
       }
 
       // a node newly added whose occurrences don't allow 0 is mandatory: legacy data, which never
       // had this node, can no longer be valid. A removed node isn't breaking for stored data by
       // itself (that data still has the value, it's just not re-validated against it going
       // forward), but it can break a stored query that references this path.
-      def mandatory = (impliedOccurrences == null && status == 'added' && n.occurrences != null && !n.occurrences.has(0))
+      def mandatory = (top && impliedOccurrences == null && status == 'added' && n.occurrences != null && !n.occurrences.has(0))
 
       if (mandatory)
       {
@@ -142,20 +148,13 @@ class SemanticOperationalTemplateDiffAlgorithm {
       def attributes = [:]
 
       n.attributes.each { attr ->
-         def children = attr.children.collect { buildSubtree(it, status) }
-         def attrMandatory = (status == 'added' && attr.existence != null && !attr.existence.has(0))
-
-         if (attrMandatory)
-         {
-            addBreaking('attribute_added_mandatory', n.templatePath, attr.rmAttributeName, null, intervalStr(attr.existence),
-               'new attribute is mandatory (existence does not allow 0); legacy data lacks it', true)
-         }
+         def children = attr.children.collect { buildSubtree(it, status, null, false) }
 
          attributes[attr.rmAttributeName] = new AttributeDiff(
             rmAttributeName: attr.rmAttributeName,
             status: status,
             children: children,
-            breaking: attrMandatory || children.any { it.breaking }
+            breaking: children.any { it.breaking }
          )
       }
 
@@ -164,7 +163,7 @@ class SemanticOperationalTemplateDiffAlgorithm {
          nodeId:       n.nodeId,
          rmTypeName:   n.rmTypeName,
          type:         n.type,
-         name:         n.text,
+         text:         n.text,
          status:       status,
          fieldChanges: fieldChanges,
          attributes:   attributes,
@@ -558,9 +557,82 @@ class SemanticOperationalTemplateDiffAlgorithm {
 
       if (isNarrower(i1, i2))
       {
-         addBreaking(narrowedCategory(field), path, field, s1, s2,
-            'constraint narrowed; values previously valid under the old OPT may now be invalid', true)
+         def category = narrowedCategory(field)
+
+         // a range over a value that was not constrained, so the RM rules apply (any value of its type), only breaks the
+         // data that has values outside of the range: it is a potential breaking change, to be confirmed against the data
+         boolean potential = (category == 'range_narrowed' && (i1 == null || (i1.lowerUnbounded && i1.upperUnbounded)))
+
+         addBreaking(category, path, field, s1, s2,
+            potential ? 'new range over an unconstrained value; legacy data with values outside of it would be invalid, check the data' :
+                        'constraint narrowed; values previously valid under the old OPT may now be invalid', !potential)
       }
+   }
+
+   // A constraint on a primitive that the old OPT didn't have: the RM rules applied to it (any value of the type, or the
+   // values of the RM enumeration, e.g. DV_PROPORTION.type is 0..4). Legacy data with values outside of the new constraint
+   // would be invalid, so it is a potential breaking change that needs a check of the data.
+   private void checkConstraintOverRmDefault(PrimitiveObjectNode n, List fieldChanges)
+   {
+      def item = n.item
+      def attr = n.parent?.rmAttributeName
+      def owner = n.parent?.parent?.rmTypeName
+      def enumerated = Model.rm_enumerated_values[owner]?.get(attr)
+
+      String field = null
+      def newValue = null
+      def oldValue = null
+
+      if (item instanceof CInteger)
+      {
+         if (item.list)
+         {
+            // the whole RM enumeration is not a constraint
+            if (!(enumerated && item.list.containsAll(enumerated)))
+            {
+               field = 'list'; newValue = item.list; oldValue = enumerated
+            }
+         }
+         else if (item.range && !(item.range.lowerUnbounded && item.range.upperUnbounded))
+         {
+            field = 'range'; newValue = intervalStr(item.range)
+         }
+      }
+      else if (item instanceof CReal || item instanceof CDuration)
+      {
+         if (item.range && !(item.range.lowerUnbounded && item.range.upperUnbounded))
+         {
+            field = 'range'; newValue = intervalStr(item.range)
+         }
+         else if (item instanceof CDuration && item.pattern)
+         {
+            field = 'pattern'; newValue = item.pattern
+         }
+      }
+      else if (item instanceof CString)
+      {
+         if (item.list) { field = 'list'; newValue = item.list }
+         else if (item.pattern) { field = 'pattern'; newValue = item.pattern }
+      }
+      else if (item instanceof CDate || item instanceof CDateTime || item instanceof CTime)
+      {
+         if (item.pattern) { field = 'pattern'; newValue = item.pattern }
+      }
+      else if (item instanceof CBoolean)
+      {
+         if (item.trueValid == false || item.falseValid == false)
+         {
+            field = 'validValues'
+            newValue = [(item.trueValid == false) ? null : true, (item.falseValid == false) ? null : false].findAll { it != null }
+         }
+      }
+
+      if (field == null) return
+
+      if (enumerated) fieldChanges << new FieldChange(field: field, oldValue: oldValue, newValue: newValue)
+
+      addBreaking('constraint_added', n.templatePath, field, oldValue, newValue,
+         'new constraint over the RM default for the value; legacy data with values outside of it would be invalid, check the data', false)
    }
 
    private String narrowedCategory(String field)

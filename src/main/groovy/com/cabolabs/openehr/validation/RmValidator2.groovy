@@ -1688,6 +1688,41 @@ class RmValidator2 {
             )
       }
 
+      // RM invariants of DV_PROPORTION that are for every type (see the BMM / data types specification)
+
+      // Valid_denominator: denominator /= 0.0 (for the types above that didn't check it already: ratio reports it, and
+      // unitary and percent require a denominator that is not 0)
+      if (d.type in [3, 4] && d.denominator != null && d.denominator.compareTo(BigDecimal.ZERO) == 0)
+      {
+         report.addError(
+            parent.dataPath + dv_path +'/denominator',
+            o.templatePath,
+            "denominator can't be 0 for a DV_PROPORTION"
+         )
+      }
+
+      // Precision_validity: precision = 0 implies is_integral, and Is_integral_validity: is_integral implies the
+      // numerator and denominator are whole numbers
+      if (d.precision == 0)
+      {
+         if (d.numerator != null && d.numerator.stripTrailingZeros().scale() > 0)
+         {
+            report.addError(
+               parent.dataPath + dv_path +'/numerator',
+               o.templatePath,
+               "numerator must be an integer when the precision is 0"
+            )
+         }
+         if (d.denominator != null && d.denominator.stripTrailingZeros().scale() > 0)
+         {
+            report.addError(
+               parent.dataPath + dv_path +'/denominator',
+               o.templatePath,
+               "denominator must be an integer when the precision is 0"
+            )
+         }
+      }
+
       return report
    }
 
