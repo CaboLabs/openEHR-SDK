@@ -1,5 +1,6 @@
 package com.cabolabs.openehr.opt.parser
 
+import com.cabolabs.openehr.rm_1_0_2.Model
 import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.opt.model.primitive.*
 import com.cabolabs.openehr.opt.model.domain.*
@@ -171,7 +172,7 @@ class OperationalTemplateParser {
       else
       {
          obn.text = obn.syntheticText()
-         obn.description = obn.parent.parent.description +'.'+ obn.parent.rmAttributeName
+         obn.description = obn.syntheticDescription()
       }
 
       obn.attributes.each { attr ->
@@ -475,7 +476,8 @@ class OperationalTemplateParser {
       {
          obn = new PrimitiveObjectNode(
             owner:            this.template,
-            rmTypeName:       node.rm_type_name.text().trim(),
+            // OPTs have INTEGER, the RM has Integer, the RM spelling is used in the model
+            rmTypeName:       Model.normalizePrimitiveType(node.rm_type_name.text().trim()),
             nodeId:           node.node_id.text().trim() ?: null, // ?: avoids empty string
             type:             node.'@xsi:type'.text().trim(),
             archetypeId:      node.archetype_id.value.text().trim(), // This is optional, just resolved slots have archId

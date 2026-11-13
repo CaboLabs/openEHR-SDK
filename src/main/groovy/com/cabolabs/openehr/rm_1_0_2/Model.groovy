@@ -875,6 +875,61 @@ class Model {
       DV_DURATION:   ['value']
    ]
 
+   // Attributes typed as a primitive that the RM restricts to a fixed set of values (RM enumerations),
+   // by RM type and attribute name. DV_PROPORTION.type is a PROPORTION_KIND:
+   // pk_ratio=0, pk_unitary=1, pk_percent=2, pk_fraction=3, pk_integer_fraction=4
+   public static Map rm_enumerated_values = [
+      DV_PROPORTION: [
+         type: [0, 1, 2, 3, 4]
+      ]
+   ]
+
+   // The RM base (foundation) types in the BMM files and in this model use PascalCase (Integer, Real, ...)
+   // while the rm_type_name of a C_PRIMITIVE_OBJECT in an OPT uses the RM convention for types (INTEGER, REAL, ...).
+   // BigDecimal is a Java-ism of this model, and Integer64 a BMM type, OPTs use REAL and INTEGER for them.
+   private static Map opt_primitive_type_names = [
+      Integer:    'INTEGER',
+      Integer64:  'INTEGER',
+      Real:       'REAL',
+      BigDecimal: 'REAL',
+      Boolean:    'BOOLEAN',
+      String:     'STRING',
+      Character:  'CHARACTER'
+   ]
+
+   // Type of a primitive as it is written in OPTs (used by the serializer), e.g. Integer => INTEGER
+   static String optPrimitiveTypeName(String modelTypeName)
+   {
+      opt_primitive_type_names[modelTypeName] ?: modelTypeName.toUpperCase()
+   }
+
+   // Canonical RM base type (as in the BMM, PascalCase) for the spellings of a primitive type found
+   // in OPTs (INTEGER, DOUBLE, ...) and in this model (BigDecimal), case insensitive.
+   // Types that aren't primitives are returned as they are.
+   private static Map canonical_primitive_types = [
+      integer:    'Integer',
+      integer64:  'Integer',
+      real:       'Real',
+      double:     'Real',
+      bigdecimal: 'Real',
+      boolean:    'Boolean',
+      string:     'String',
+      character:  'Character'
+   ]
+
+   static String normalizePrimitiveType(String type)
+   {
+      if (type == null) return null
+      canonical_primitive_types[type.toLowerCase()] ?: type
+   }
+
+   // true if both are the same type, taking into account the spellings of primitive types:
+   // sameType('INTEGER', 'Integer') => true, sameType('DV_TEXT', 'dv_text') => false
+   static boolean sameType(String type1, String type2)
+   {
+      normalizePrimitiveType(type1) == normalizePrimitiveType(type2)
+   }
+
    // true/false if the RM type is covered by rm_mandatory_attributes, null if the type is unknown
    static Boolean isMandatoryAttribute(String clazz, String attr)
    {

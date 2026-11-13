@@ -247,6 +247,13 @@ class OperationalTemplate {
 
          def primitive_type = 'com.cabolabs.openehr.opt.model.primitive.C'+ (type == 'BigDecimal' ? 'Real' : type) // e.g. CString, there is no CBigDecimal constraint, CReal is used
          obnc.item = Class.forName(primitive_type).newInstance() // NOTE: we can't add any constraints to the CPrimitive, so any value is allowed
+
+         // the RM restricts some attributes to the values of an enumeration, e.g. DV_PROPORTION.type
+         def enum_values = Model.rm_enumerated_values[atnc.parent.rmTypeName]?.get(atnc.rmAttributeName)
+         if (enum_values && obnc.item instanceof CInteger)
+         {
+            obnc.item.list = new ArrayList(enum_values)
+         }
       }
       else if (type == 'CODE_PHRASE')
       {
@@ -267,7 +274,7 @@ class OperationalTemplate {
       if (atnc.parent.path == "/") path_sep = ""
 
       obnc.owner            = this // this template
-      obnc.rmTypeName       = type
+      obnc.rmTypeName       = (aom_type == 'C_PRIMITIVE_OBJECT') ? Model.normalizePrimitiveType(type) : type // BigDecimal => Real
       obnc.type             = aom_type
       obnc.templatePath     = atnc.parent.templatePath     + path_sep + attr // same paths as the attr since this has no nodeId
       obnc.path             = atnc.parent.path             + path_sep + attr
@@ -287,7 +294,7 @@ class OperationalTemplate {
 
       // Add dummy text and description for the new nodes
       obnc.text = obnc.syntheticText()
-      obnc.description = obnc.parent.parent.description +'.'+ obnc.parent.rmAttributeName
+      obnc.description = obnc.syntheticDescription()
 
       // For 'name' on a Locatable that doesn't have an explicit name C_ATTRIBUTE,
       // the constraint isn't "open" - it's implicit: the node's own node_id is
@@ -323,7 +330,7 @@ class OperationalTemplate {
 
             def stringObnc = new PrimitiveObjectNode(
                owner:            this,
-               rmTypeName:       'STRING',
+               rmTypeName:       'String',
                type:             'C_PRIMITIVE_OBJECT',
                templatePath:     obnc.templatePath + '/value',
                path:             obnc.path         + '/value',

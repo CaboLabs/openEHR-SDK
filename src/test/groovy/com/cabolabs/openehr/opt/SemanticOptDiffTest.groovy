@@ -7,6 +7,7 @@ import com.cabolabs.openehr.opt.model.domain.*
 import com.cabolabs.openehr.opt.model.datatypes.*
 import com.cabolabs.openehr.opt.model.primitive.*
 import com.cabolabs.openehr.opt.diff.*
+import com.cabolabs.openehr.rm_1_0_2.Model
 
 class SemanticOptDiffTest extends GroovyTestCase {
 
@@ -481,10 +482,24 @@ class SemanticOptDiffTest extends GroovyTestCase {
       assert category.text == 'category'
 
       def definingCode = category.getAttr('defining_code').children[0]
-      assert definingCode.text == 'category.defining_code'
+      assert definingCode.text == null // attributes of a DV_XXX have no text
+      assert definingCode.description == null
 
       opt.nodes.each { path, node ->
-         if (!node.nodeId && node.parent) assert !node.text.startsWith(opt.concept)
+         if (!node.nodeId && node.parent) assert !node.text?.startsWith(opt.concept)
+      }
+
+      // the children of DV_PROPORTION attributes have no text nor description, also after complete()
+      def opt2 = loadAndParse(PS +"opts"+ PS +"diff"+ PS +"test_diff_2_v1.opt")
+      opt2.complete()
+      def proportion = opt2.nodes.values().flatten().find { it.rmTypeName == 'DV_PROPORTION' }
+      assert proportion.text
+      assert proportion.attributes.size() == 4
+      proportion.attributes.each { a ->
+         a.children.each { c ->
+            assert c.text == null, a.rmAttributeName
+            assert c.description == null, a.rmAttributeName
+         }
       }
    }
 
@@ -537,6 +552,11 @@ class SemanticOptDiffTest extends GroovyTestCase {
          assert attr.children.size() == 1
          assert attr.children[0].occurrences.lower == 1 && attr.children[0].occurrences.upper == 1
       }
+      // injected primitives use the RM types, same as the parsed ones
+      assert p1.getAttr('numerator').children[0].rmTypeName == 'Real'
+      assert p1.getAttr('type').children[0].rmTypeName == 'Integer'
+      // DV_PROPORTION.type is a PROPORTION_KIND enumeration: 0..4
+      assert p1.getAttr('type').children[0].item.list == [0, 1, 2, 3, 4]
       assert p1.getAttr('numerator').children[0].item instanceof CReal
       assert p1.getAttr('type').children[0].item instanceof CInteger
       assert p1.getAttr('precision') == null // optional in the RM, not added
@@ -550,6 +570,41 @@ class SemanticOptDiffTest extends GroovyTestCase {
       assert p2.getAttr('type').children[0].item.list == [2]
       assert p2.getAttr('precision').existence.lower == 0
       assert p2.getAttr('numerator') && p2.getAttr('denominator')
+   }
+
+   // OPTs spell primitive types INTEGER, the RM (BMM) Integer
+   void testPrimitiveTypeSpellings()
+   {
+      assert Model.sameType('INTEGER', 'Integer')
+      assert Model.sameType('Integer64', 'INTEGER')
+      assert Model.sameType('DOUBLE', 'Real')
+      assert Model.sameType('BigDecimal', 'REAL')
+      assert Model.sameType('STRING', 'String')
+      assert Model.sameType('DV_TEXT', 'DV_TEXT')
+      assert !Model.sameType('INTEGER', 'REAL')
+      assert !Model.sameType('INTEGER', 'STRING')
+      assert !Model.sameType('DV_TEXT', 'dv_text') // only primitives are spelled in different ways
+      assert Model.normalizePrimitiveType('INTEGER') == 'Integer'
+      assert Model.normalizePrimitiveType('DV_TEXT') == 'DV_TEXT'
+      assert Model.normalizePrimitiveType(null) == null
+   }
+
+   // The OPT has INTEGER, the model uses the RM type (Integer), and it is written back as INTEGER.
+   void testPrimitiveTypesAreNormalizedOnParseAndSerialize()
+   {
+      def opt = loadAndParse(PS +"opts"+ PS +"diff"+ PS +"test_diff_2_v1.opt")
+      def proportion = opt.nodes.values().flatten().find { it.rmTypeName == 'DV_PROPORTION' }
+
+      assert proportion.getAttr('type').children[0].rmTypeName == 'Integer'
+      assert proportion.getAttr('precision').children[0].rmTypeName == 'Integer'
+
+      String xml = new com.cabolabs.openehr.opt.serializer.OptXmlSerializer(true).serialize(opt)
+      assert xml.contains('<rm_type_name>INTEGER</rm_type_name>')
+      assert !xml.contains('<rm_type_name>Integer</rm_type_name>')
+
+      // parse and serialize again gives the same
+      def opt2 = new OperationalTemplateParser().parse(xml)
+      assert new com.cabolabs.openehr.opt.serializer.OptXmlSerializer(true).serialize(opt2) == xml
    }
 
    def findNode(SemanticOperationalTemplateDiff diff, String templatePath)

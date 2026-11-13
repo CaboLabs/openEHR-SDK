@@ -1,5 +1,6 @@
 package com.cabolabs.openehr.opt.serializer
 
+import com.cabolabs.openehr.rm_1_0_2.Model
 import groovy.xml.MarkupBuilder
 
 import com.cabolabs.openehr.opt.model.*
@@ -114,7 +115,8 @@ class OptXmlSerializer {
    // common for all object nodes
    void fillObjectNode(ObjectNode obn)
    {
-      builder.rm_type_name(obn.rmTypeName)
+      // the model has the RM spelling of primitive types (Integer), OPTs have INTEGER
+      builder.rm_type_name(obn instanceof PrimitiveObjectNode ? Model.optPrimitiveTypeName(obn.rmTypeName) : obn.rmTypeName)
 
       builder.occurrences {
          serialize(obn.occurrences)
