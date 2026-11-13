@@ -202,6 +202,12 @@ class SemanticOperationalTemplateDiffAlgorithm {
          }
 
          def children = a2.children.collect { buildSubtree(it, 'added', implied) }
+
+         // the attribute is defined by the RM, so it existed before: a primitive constraint on it replaces the RM default
+         // (any value of the type), it is a modified constraint, not a new node
+         def overDefault = (implied != null && a2.children && a2.children.every { it instanceof PrimitiveObjectNode })
+         if (overDefault) children.each { it.status = 'modified' }
+
          def mandatory = (implied == null && a2.existence != null && !a2.existence.has(0))
 
          if (mandatory)
@@ -212,7 +218,7 @@ class SemanticOperationalTemplateDiffAlgorithm {
 
          return new AttributeDiff(
             rmAttributeName: name,
-            status: 'added',
+            status: overDefault ? 'modified' : 'added',
             fieldChanges: fieldChanges,
             children: children,
             breaking: mandatory || children.any { it.breaking } || (fieldChanges && isNarrower(implied, a2.existence))
@@ -590,46 +596,47 @@ class SemanticOperationalTemplateDiffAlgorithm {
             // the whole RM enumeration is not a constraint
             if (!(enumerated && item.list.containsAll(enumerated)))
             {
-               field = 'list'; newValue = item.list; oldValue = enumerated
+               field = 'list'; newValue = item.list; oldValue = enumerated ?: 'any'
             }
          }
          else if (item.range && !(item.range.lowerUnbounded && item.range.upperUnbounded))
          {
-            field = 'range'; newValue = intervalStr(item.range)
+            field = 'range'; newValue = intervalStr(item.range); oldValue = intervalStr(null)
          }
       }
       else if (item instanceof CReal || item instanceof CDuration)
       {
          if (item.range && !(item.range.lowerUnbounded && item.range.upperUnbounded))
          {
-            field = 'range'; newValue = intervalStr(item.range)
+            field = 'range'; newValue = intervalStr(item.range); oldValue = intervalStr(null)
          }
          else if (item instanceof CDuration && item.pattern)
          {
-            field = 'pattern'; newValue = item.pattern
+            field = 'pattern'; newValue = item.pattern; oldValue = 'any'
          }
       }
       else if (item instanceof CString)
       {
-         if (item.list) { field = 'list'; newValue = item.list }
-         else if (item.pattern) { field = 'pattern'; newValue = item.pattern }
+         if (item.list) { field = 'list'; newValue = item.list; oldValue = 'any' }
+         else if (item.pattern) { field = 'pattern'; newValue = item.pattern; oldValue = 'any' }
       }
       else if (item instanceof CDate || item instanceof CDateTime || item instanceof CTime)
       {
-         if (item.pattern) { field = 'pattern'; newValue = item.pattern }
+         if (item.pattern) { field = 'pattern'; newValue = item.pattern; oldValue = 'any' }
       }
       else if (item instanceof CBoolean)
       {
          if (item.trueValid == false || item.falseValid == false)
          {
             field = 'validValues'
+            oldValue = [true, false]
             newValue = [(item.trueValid == false) ? null : true, (item.falseValid == false) ? null : false].findAll { it != null }
          }
       }
 
       if (field == null) return
 
-      if (enumerated) fieldChanges << new FieldChange(field: field, oldValue: oldValue, newValue: newValue)
+      fieldChanges << new FieldChange(field: field, oldValue: oldValue, newValue: newValue)
 
       addBreaking('constraint_added', n.templatePath, field, oldValue, newValue,
          'new constraint over the RM default for the value; legacy data with values outside of it would be invalid, check the data', false)
@@ -702,7 +709,8 @@ class SemanticOperationalTemplateDiffAlgorithm {
    // included/unbounded flags, which would hide a real constraint change (e.g. 0..1 vs (0..1)).
    private String intervalStr(def interval)
    {
-      if (interval == null) return null
+      // no constraint is shown as the most open interval, never as null
+      if (interval == null) return '(*..*)'
 
       def lo = interval.lowerUnbounded ? '*' : interval.lower
       def hi = interval.upperUnbounded ? '*' : interval.upper

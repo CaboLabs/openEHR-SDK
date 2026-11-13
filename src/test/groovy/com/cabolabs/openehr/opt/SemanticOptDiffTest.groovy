@@ -221,7 +221,7 @@ class SemanticOptDiffTest extends GroovyTestCase {
       def cmChange = listChange.modified.find { it.item == 'cm' }
       def cmMagnitude = cmChange.changes.find { it.field == 'magnitude' }
       assert cmMagnitude
-      assert cmMagnitude.oldValue == null
+      assert cmMagnitude.oldValue == '(*..*)' // no constraint is the most open interval, not null
       assert cmMagnitude.newValue == '[0.0..*)'
 
       def mmChange = listChange.modified.find { it.item == 'mm' }
@@ -371,12 +371,12 @@ class SemanticOptDiffTest extends GroovyTestCase {
 
       def typeAttr = proportionNode.attributes['type']
       assert typeAttr
-      assert typeAttr.status == 'added'
+      assert typeAttr.status == 'modified' // the RM defines the attribute, the OPT constrains it
       assert typeAttr.children[0].node2.item.list == [2]
 
       def precisionAttr = proportionNode.attributes['precision']
       assert precisionAttr
-      assert precisionAttr.status == 'added'
+      assert precisionAttr.status == 'modified'
       def precisionRange = precisionAttr.children[0].node2.item.range
       assert precisionRange.lower == 1
       assert precisionRange.upper == 1
@@ -387,7 +387,7 @@ class SemanticOptDiffTest extends GroovyTestCase {
       assert datetimeNode.status == 'modified'
       def datetimeValueAttr = datetimeNode.attributes['value']
       assert datetimeValueAttr
-      assert datetimeValueAttr.status == 'added'
+      assert datetimeValueAttr.status == 'modified'
       assert datetimeValueAttr.children[0].node2.item.pattern == 'yyyy-mm-ddThh:mm:ss'
 
       // at0004: DV_COUNT gained a whole new 'magnitude' constraint (>= 0)
@@ -396,7 +396,7 @@ class SemanticOptDiffTest extends GroovyTestCase {
       assert countNode.status == 'modified'
       def countMagnitudeAttr = countNode.attributes['magnitude']
       assert countMagnitudeAttr
-      assert countMagnitudeAttr.status == 'added'
+      assert countMagnitudeAttr.status == 'modified'
       def magnitudeRange = countMagnitudeAttr.children[0].node2.item.range
       assert magnitudeRange.lower == 0
       assert magnitudeRange.lowerIncluded == true
@@ -520,7 +520,7 @@ class SemanticOptDiffTest extends GroovyTestCase {
       // type: mandatory in the RM, so explicit 1..1 is not a change nor a breaking change
       def type = findNode(diff, prop +'/type')
       assert type
-      assert type.status == 'added' // the C_INTEGER list constraint is new
+      assert type.status == 'modified' // the C_INTEGER list constrains the RM default [0..4]
       assert !type.fieldChanges.find { it.field == 'occurrences' }
       assert !diff.breakingChanges.find { it.templatePath == prop +'/type' && it.certain } // only the potential one for the list [2]
       assert !diff.breakingChanges.find { it.templatePath == prop +'/type' && it.category == 'node_added_mandatory' }
