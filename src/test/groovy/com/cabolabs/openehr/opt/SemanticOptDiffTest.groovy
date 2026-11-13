@@ -193,7 +193,7 @@ class SemanticOptDiffTest extends GroovyTestCase {
       assert occChange.oldValue == '[0..1]'
       assert occChange.newValue == '[1..1]'
 
-      def nameChange = at0004.fieldChanges.find { it.field == 'name' }
+      def nameChange = at0004.fieldChanges.find { it.field == 'text' }
       assert nameChange
       assert nameChange.oldValue == 'text node 1'
       assert nameChange.newValue == 'text node 1 changed name'
@@ -239,10 +239,12 @@ class SemanticOptDiffTest extends GroovyTestCase {
       // codeList gaining 'at0010' only widens the valid set, not breaking
       assert !diff.breakingChanges.any { it.templatePath == codePhraseNode.templatePath }
 
-      // a magnitude constraint appearing where there was none before narrows what's valid
-      assert qtyNode.breaking
+      // a magnitude constraint appearing where there was none before narrows what's valid, but only for the data
+      // with values outside of it: a potential breaking change, not a certain one
       def magBreaks = diff.breakingChanges.findAll { it.category == 'range_narrowed' && it.field == 'magnitude' }
       assert magBreaks.size() == 2 // cm and mm
+      assert magBreaks.every { !it.certain }
+      assert !qtyNode.breaking // 'breaking' is for certain breaking changes
 
       assert diff.root.breaking
    }
@@ -279,7 +281,7 @@ class SemanticOptDiffTest extends GroovyTestCase {
       def at0011 = findNode(diff, "${prefix2}[at0011]")
       assert at0011
       assert at0011.status == 'added'
-      assert at0011.name == 'text node 2 new'
+      assert at0011.text == 'text node 2 new'
 
       // at0005: nested CCodePhrase lost code 'at0007'
       def codePhraseNode = findNode(diff, "${prefix2}[at0005]/value/defining_code")
@@ -409,7 +411,7 @@ class SemanticOptDiffTest extends GroovyTestCase {
       def ordinalNode = findNode(diff, "${adminPrefix}[at0006]")
       assert ordinalNode
       assert ordinalNode.status == 'added'
-      assert ordinalNode.name == 'ordinal node 1'
+      assert ordinalNode.text == 'ordinal node 1'
 
       // OBSERVATION side mirrors the existing test_diff_v0/v1 fixture changes
       def obsRoot = findNode(diff, "/content[archetype_id=openEHR-EHR-OBSERVATION.diff_observation_test.v1]")
@@ -423,7 +425,7 @@ class SemanticOptDiffTest extends GroovyTestCase {
       assert occChange
       assert occChange.oldValue == '[0..1]'
       assert occChange.newValue == '[1..1]'
-      def nameChange = at0004.fieldChanges.find { it.field == 'name' }
+      def nameChange = at0004.fieldChanges.find { it.field == 'text' }
       assert nameChange
       assert nameChange.oldValue == 'text node 1'
       assert nameChange.newValue == 'text node 1 changed name'
@@ -464,12 +466,12 @@ class SemanticOptDiffTest extends GroovyTestCase {
       assert category
       assert !category.nodeId
       assert category.status == 'same'
-      assert !category.fieldChanges.find { it.field == 'name' }
+      assert !category.fieldChanges.find { it.field == 'text' }
 
       def definingCode = findNode(diff, '/category/defining_code')
       assert definingCode
       assert definingCode.status == 'same'
-      assert !definingCode.fieldChanges.find { it.field == 'name' }
+      assert !definingCode.fieldChanges.find { it.field == 'text' }
    }
 
    // Synthetic text for nodes without node_id is the dotted attribute path, without the
@@ -520,7 +522,8 @@ class SemanticOptDiffTest extends GroovyTestCase {
       assert type
       assert type.status == 'added' // the C_INTEGER list constraint is new
       assert !type.fieldChanges.find { it.field == 'occurrences' }
-      assert !diff.breakingChanges.find { it.templatePath == prop +'/type' }
+      assert !diff.breakingChanges.find { it.templatePath == prop +'/type' && it.certain } // only the potential one for the list [2]
+      assert !diff.breakingChanges.find { it.templatePath == prop +'/type' && it.category == 'node_added_mandatory' }
       assert !diff.breakingChanges.find { it.templatePath == prop && it.field == 'type' }
 
       // precision: optional in the RM (0..1), explicit occurrences 1..1 is a (narrowing) change
@@ -605,6 +608,66 @@ class SemanticOptDiffTest extends GroovyTestCase {
       // parse and serialize again gives the same
       def opt2 = new OperationalTemplateParser().parse(xml)
       assert new com.cabolabs.openehr.opt.serializer.OptXmlSerializer(true).serialize(opt2) == xml
+   }
+
+   // Only the root of an added subtree can be mandatory for the legacy data: ADMIN_ENTRY items[at0006] is a new optional
+   // ELEMENT (0..1) with a mandatory value (1..1), that is not a breaking change.
+   void testNothingMandatoryBelowAnOptionalAddedNode()
+   {
+      def opt1 = loadAndParse(PS +"opts"+ PS +"diff"+ PS +"test_diff_2.opt")
+      def opt2 = loadAndParse(PS +"opts"+ PS +"diff"+ PS +"test_diff_2_v1.opt")
+      def diff = new SemanticOperationalTemplateDiffAlgorithm().diff(opt1, opt2)
+
+      def element = '/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.diff_test_admin.v1]/data[at0001]/items[at0006]'
+      assert findNode(diff, element).status == 'added'
+      assert !diff.breakingChanges.find { it.templatePath.startsWith(element) }
+   }
+
+   // A constraint over a value that the old OPT didn't constrain is a potential breaking change (certain = false), it
+   // breaks only the legacy data with values outside of the new constraint. The RM default is the baseline.
+   void testConstraintsOverRmDefaultsArePotentialBreakingChanges()
+   {
+      def opt1 = loadAndParse(PS +"opts"+ PS +"diff"+ PS +"test_diff_2.opt")
+      def opt2 = loadAndParse(PS +"opts"+ PS +"diff"+ PS +"test_diff_2_v1.opt")
+      def diff = new SemanticOperationalTemplateDiffAlgorithm().diff(opt1, opt2)
+
+      def admin = '/content[archetype_id=openEHR-EHR-ADMIN_ENTRY.diff_test_admin.v1]/data[at0001]'
+      def bc = { String path, String category -> diff.breakingChanges.find { it.templatePath == path && it.category == category } }
+
+      // DV_PROPORTION.type: from the RM enumeration 0..4 to 2
+      def type = bc(admin +'/items[at0002]/value/type', 'constraint_added')
+      assert type && !type.certain
+      assert type.oldValue == [0, 1, 2, 3, 4]
+      assert type.newValue == [2]
+      def typeChange = findNode(diff, admin +'/items[at0002]/value/type').fieldChanges.find { it.field == 'list' }
+      assert typeChange.oldValue == [0, 1, 2, 3, 4] && typeChange.newValue == [2]
+
+      // DV_PROPORTION.precision: the range of the value is a new constraint, the occurrences narrowing is certain
+      def precision = bc(admin +'/items[at0002]/value/precision', 'constraint_added')
+      assert precision && !precision.certain
+      assert precision.newValue == '[1..1]'
+      assert bc(admin +'/items[at0002]/value/precision', 'occurrences_narrowed').certain
+
+      // DV_COUNT.magnitude (Integer: any value) to [0..*)
+      def magnitude = bc(admin +'/items[at0004]/value/magnitude', 'constraint_added')
+      assert magnitude && !magnitude.certain
+      assert magnitude.newValue == '[0..*)'
+
+      // DV_DATE_TIME.value to a full date time
+      def pattern = bc(admin +'/items[at0003]/value/value', 'constraint_added')
+      assert pattern && !pattern.certain
+      assert pattern.newValue == 'yyyy-mm-ddThh:mm:ss'
+
+      // DV_QUANTITY cm and mm had no range for the magnitude: potential too
+      def obs = '/content[archetype_id=openEHR-EHR-OBSERVATION.diff_observation_test.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0009]/value'
+      ['cm', 'mm'].each { unit ->
+         def r = bc(obs +"[units=${unit}]", 'range_narrowed')
+         assert r && !r.certain
+      }
+
+      // structural narrowing stays certain: ELEMENT optional to mandatory
+      def element = diff.breakingChanges.find { it.category == 'occurrences_narrowed' && it.templatePath.endsWith('items[at0004]') }
+      assert element.certain
    }
 
    def findNode(SemanticOperationalTemplateDiff diff, String templatePath)
