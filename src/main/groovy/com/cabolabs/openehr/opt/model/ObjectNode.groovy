@@ -102,13 +102,26 @@ class ObjectNode extends Constraint {
     * "context.participations.performer.external_ref". When the ancestor is the template
     * root, its text (the concept) is NOT used as prefix, so the result doesn't change
     * if the template concept is renamed, e.g. "category" instead of "<concept>.category".
+    *
+    * Attributes of a DATA_VALUE (DV_XXX) have no text: they are mostly primitive types, so null
+    * is returned when the owner is a DV_XXX, and for the nodes under those.
     * Requires parent.parent.text to be already set.
     */
    String syntheticText()
    {
       def ancestor = this.parent.parent // parent is an attribute, parent.parent is an object
+      if (ancestor.rmTypeName?.startsWith('DV_')) return null
       if (ancestor.parent == null) return this.parent.rmAttributeName // ancestor is the template root
+      if (ancestor.text == null) return null
       return ancestor.text +'.'+ this.parent.rmAttributeName
+   }
+
+   // Same as syntheticText() for the description.
+   String syntheticDescription()
+   {
+      def ancestor = this.parent.parent
+      if (ancestor.rmTypeName?.startsWith('DV_') || ancestor.description == null) return null
+      return ancestor.description +'.'+ this.parent.rmAttributeName
    }
 
    // returns the constraints for the attribute with name

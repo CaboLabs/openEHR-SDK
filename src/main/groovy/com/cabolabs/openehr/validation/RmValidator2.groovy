@@ -1799,7 +1799,7 @@ class RmValidator2 {
    private RmValidationReport validate_alternatives(Pathable parent, Integer d, List<ObjectNode> os, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
-      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'INTEGER' }
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'Integer' }
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
@@ -1963,7 +1963,7 @@ class RmValidator2 {
    private RmValidationReport validate_alternatives(Pathable parent, String d, List<ObjectNode> os, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
-      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'STRING' }
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'String' }
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)
@@ -2097,7 +2097,7 @@ class RmValidator2 {
    private RmValidationReport validate_alternatives(Pathable parent, Boolean d, List<ObjectNode> os, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
-      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'BOOLEAN' }
+      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'Boolean' }
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)

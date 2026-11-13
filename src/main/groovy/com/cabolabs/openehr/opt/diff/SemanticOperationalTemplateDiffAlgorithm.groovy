@@ -79,7 +79,8 @@ class SemanticOperationalTemplateDiffAlgorithm {
       {
          compareField(fieldChanges, 'name', n1.text, n2.text)
       }
-      compareField(fieldChanges, 'rmTypeName', n1.rmTypeName, n2.rmTypeName)
+      // primitive types can be spelled INTEGER (OPTs) or Integer (RM), that is not a change
+      if (!Model.sameType(n1.rmTypeName, n2.rmTypeName)) compareField(fieldChanges, 'rmTypeName', n1.rmTypeName, n2.rmTypeName)
       compareField(fieldChanges, 'type', n1.type, n2.type)
       compareIntervalField(fieldChanges, path, 'occurrences', n1.occurrences, n2.occurrences)
       compareField(fieldChanges, 'archetypeId', n1.archetypeId, n2.archetypeId)
