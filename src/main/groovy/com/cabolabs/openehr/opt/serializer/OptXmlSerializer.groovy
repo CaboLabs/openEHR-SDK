@@ -415,6 +415,14 @@ class OptXmlSerializer {
       }
    }
 
+   void serialize(CTime cp)
+   {
+      if (cp.pattern)
+      {
+         builder.pattern(cp.pattern)
+      }
+   }
+
    void serialize(CString cp)
    {
       if (cp.pattern)

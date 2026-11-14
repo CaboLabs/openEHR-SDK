@@ -875,6 +875,16 @@ class Model {
       DV_DURATION:   ['value']
    ]
 
+   // The RM types the value of the date/time data types as a String, but in OPTs it's constrained by
+   // a C_PRIMITIVE_OBJECT with a C_DATE_TIME, C_DATE, C_TIME or C_DURATION item, by RM type.
+   // complete() injects these constraints with no pattern, so any valid ISO 8601 value is allowed.
+   public static Map rm_date_time_value_types = [
+      DV_DATE_TIME: 'DATE_TIME',
+      DV_DATE:      'DATE',
+      DV_TIME:      'TIME',
+      DV_DURATION:  'DURATION'
+   ]
+
    // Attributes typed as a primitive that the RM restricts to a fixed set of values (RM enumerations),
    // by RM type and attribute name. DV_PROPORTION.type is a PROPORTION_KIND:
    // pk_ratio=0, pk_unitary=1, pk_percent=2, pk_fraction=3, pk_integer_fraction=4

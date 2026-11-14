@@ -526,6 +526,11 @@ class OperationalTemplateParser {
             obn.item = new CDate()
             obn.item.pattern = primitive.pattern.text().trim()
          }
+         else if (primitive.'@xsi:type'.text().trim() == 'C_TIME')
+         {
+            obn.item = new CTime()
+            obn.item.pattern = primitive.pattern.text().trim()
+         }
          else if (primitive.'@xsi:type'.text().trim() == 'C_BOOLEAN')
          {
             obn.item = new CBoolean(
@@ -545,7 +550,7 @@ class OperationalTemplateParser {
 
             if (!primitive.range.isEmpty())
                obn.item.range = parseIntervalDuration(primitive.range)
-            else
+            else if (primitive.pattern.text().trim()) // with no range and no pattern any duration is allowed
             {
                try
                {

@@ -272,6 +272,14 @@ class JsonSerializer {
 
       return n
    }
+   Map serialize(CTime cp)
+   {
+      def n = [
+         pattern: cp.pattern
+      ]
+
+      return n
+   }
    Map serialize(CString cp)
    {
       def n = [:]

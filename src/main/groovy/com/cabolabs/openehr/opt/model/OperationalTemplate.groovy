@@ -238,7 +238,23 @@ class OperationalTemplate {
    private completeNodeSingle(AttributeNode atnc, String attr, String type, boolean mandatory = false)
    {
       def aom_type, obnc
-      if (Model.primitive_types.contains(type))
+
+      // the value of DV_DATE_TIME, DV_DATE, DV_TIME and DV_DURATION is a String in the RM, but it's
+      // constrained by a date/time primitive, with no pattern any valid ISO 8601 value is allowed
+      String date_time_type = (attr == 'value') ? Model.rm_date_time_value_types[atnc.parent.rmTypeName] : null
+
+      if (date_time_type)
+      {
+         aom_type = 'C_PRIMITIVE_OBJECT'
+         obnc = new PrimitiveObjectNode()
+         obnc.item = [
+            DATE_TIME: { new CDateTime() },
+            DATE:      { new CDate() },
+            TIME:      { new CTime() },
+            DURATION:  { new CDuration() }
+         ][date_time_type]()
+      }
+      else if (Model.primitive_types.contains(type))
       {
          aom_type = 'C_PRIMITIVE_OBJECT'
 
@@ -274,7 +290,7 @@ class OperationalTemplate {
       if (atnc.parent.path == "/") path_sep = ""
 
       obnc.owner            = this // this template
-      obnc.rmTypeName       = (aom_type == 'C_PRIMITIVE_OBJECT') ? Model.normalizePrimitiveType(type) : type // BigDecimal => Real
+      obnc.rmTypeName       = date_time_type ?: ((aom_type == 'C_PRIMITIVE_OBJECT') ? Model.normalizePrimitiveType(type) : type) // BigDecimal => Real
       obnc.type             = aom_type
       obnc.templatePath     = atnc.parent.templatePath     + path_sep + attr // same paths as the attr since this has no nodeId
       obnc.path             = atnc.parent.path             + path_sep + attr
