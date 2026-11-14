@@ -5,6 +5,7 @@ import com.cabolabs.openehr.opt.model.*
 import com.cabolabs.openehr.opt.model.domain.*
 import com.cabolabs.openehr.opt.model.primitive.*
 import com.cabolabs.openehr.opt.model.validation.*
+import com.cabolabs.openehr.rm_1_0_2.Model
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Locatable
 import com.cabolabs.openehr.rm_1_0_2.common.directory.Folder
@@ -1998,7 +1999,11 @@ class RmValidator2 {
    private RmValidationReport validate_alternatives(Pathable parent, String d, List<ObjectNode> os, String dv_path)
    {
       RmValidationReport report = new RmValidationReport()
-      def alternatives_for_same_type = os.findAll{ it.rmTypeName == 'String' }
+      // String values are constrained by C_STRING, but the String value of the date/time data types
+      // is constrained by C_DATE_TIME, C_DATE, C_TIME or C_DURATION, with rm_type_name DATE_TIME, etc.
+      def alternatives_for_same_type = os.findAll{
+         it.rmTypeName == 'String' || Model.rm_date_time_value_types.containsValue(it.rmTypeName)
+      }
       for (ObjectNode o: alternatives_for_same_type)
       {
          report = validate(parent, d, o, dv_path)

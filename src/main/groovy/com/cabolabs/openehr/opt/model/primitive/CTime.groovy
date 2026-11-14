@@ -4,8 +4,6 @@ package com.cabolabs.openehr.opt.model.primitive
 import com.cabolabs.openehr.opt.model.validation.ValidationResult
 import com.cabolabs.openehr.rm_1_0_2.common.archetyped.Pathable
 
-import java.text.ParseException
-import java.text.SimpleDateFormat
 
 class CTime extends CPrimitive {
 
@@ -15,32 +13,10 @@ class CTime extends CPrimitive {
    // OPT time Pattern
    String pattern
 
-   // OPT DateTime Pattern => Java SimpleFormat Patterns
-   static Map validators = [
-      'HH:MM:SS':  ["HH:mm:ss", "HHmmss"],
-      'HH:MM:??':  ["HH:mm:ss", "HHmmss", "HH:mm", "HH:mm"],
-      'HH:??:??':  ["HH:mm:ss", "HHmmss", "HH:mm", "HH:mm", "HH"],
-      'any_allowed': ["HH:mm:ss", "HHmmss", "HH:mm", "HH:mm", "HH"]
-   ]
 
-   ValidationResult isValid(String formattedDate)
+   // ADL time pattern, e.g. hh:mm:?? (see DateTimePatternValidator), null or empty allows any valid time
+   ValidationResult isValid(String value)
    {
-      def formats = validators[pattern]
-
-      for (String format : formats)
-      {
-         try
-         {
-            SimpleDateFormat sdf = new SimpleDateFormat(format)
-            sdf.setLenient(false) // avoids heuristic parsing, enabling just exact parsing
-            sdf.parse(formattedDate) // returns the date but we'll not use it
-
-            return new ValidationResult(isValid: true)
-         }
-         catch (ParseException e) {}
-
-      }
-
-      return new ValidationResult(isValid: false, message:'CDate.validation.error.notAValidDate')
+      return DateTimePatternValidator.validateTime(value, pattern)
    }
 }
