@@ -12,14 +12,14 @@ class DvCount extends DvAmount {
 
    DvAmount plus(DvAmount e)
    {
-      if (!e instanceof DvCount) throw new Exception("Can't add "+ e.getClass() + " to DvCount")
+      if (!(e instanceof DvCount)) throw new Exception("Can't add "+ e.getClass() + " to DvCount")
 
       return new DvCount(magnitude: this.magnitude + e.magnitude)
    }
 
    DvAmount minus(DvAmount e)
    {
-      if (!e instanceof DvCount) throw new Exception("Can't substract "+ e.getClass() + " to DvCount")
+      if (!(e instanceof DvCount)) throw new Exception("Can't substract "+ e.getClass() + " to DvCount")
 
       return new DvCount(magnitude: this.magnitude - e.magnitude)
    }
@@ -31,7 +31,7 @@ class DvCount extends DvAmount {
 
    int compareTo(Object o)
    {
-      if (!(o instanceof DvCount)) throw new Exception("Can't compare "+ e.getClas() +" to DvCount")
+      if (!(o instanceof DvCount)) throw new Exception("Can't compare "+ o.getClass() +" to DvCount")
 
       return this.magnitude <=> o.magnitude
    }

@@ -458,7 +458,7 @@ class OptUiGenerator {
                         }
                      }
                   }
-                  else throw Exception("coded text constraint not supported "+ constraint.rmTypeName)
+                  else throw new Exception("coded text constraint not supported "+ constraint.rmTypeName)
                }
 
 
