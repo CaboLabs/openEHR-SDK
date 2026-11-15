@@ -18,7 +18,7 @@ class DvQuantity extends DvAmount {
 
    DvAmount plus(DvAmount e)
    {
-      if (!e instanceof DvCount) throw new Exception("Can't add "+ e.getClass() + " to DvQuantity")
+      if (!(e instanceof DvQuantity)) throw new Exception("Can't add "+ e.getClass() + " to DvQuantity")
       if (e.units != this.units) throw new Exception("Can't add quantities with different units "+ this.units +" / "+ e.units)
 
       return new DvQuantity(
@@ -29,7 +29,7 @@ class DvQuantity extends DvAmount {
 
    DvAmount minus(DvAmount e)
    {
-      if (!e instanceof DvCount) throw new Exception("Can't substract "+ e.getClass() + " to DvQuantity")
+      if (!(e instanceof DvQuantity)) throw new Exception("Can't substract "+ e.getClass() + " to DvQuantity")
       if (e.units != this.units) throw new Exception("Can't substract quantities with different units "+ this.units +" / "+ e.units)
 
       return new DvQuantity(
@@ -45,7 +45,7 @@ class DvQuantity extends DvAmount {
 
    int compareTo(Object o)
    {
-      if (!(o instanceof DvQuantity)) throw new Exception("Can't compare "+ e.getClass() +" to DvQuantity")
+      if (!(o instanceof DvQuantity)) throw new Exception("Can't compare "+ o.getClass() +" to DvQuantity")
       if (this.units != o.units) throw new Exception("Can't compare quantities with different units")
 
       return this.magnitude <=> o.magnitude
