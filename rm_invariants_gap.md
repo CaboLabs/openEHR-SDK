@@ -12,14 +12,14 @@ An OPT (ADL 1.4) states existence, occurrences, cardinality, types and values. A
 rule inside an RM object, between its attributes or on the domain of one attribute (for example "if
 `type` is percent, then `denominator` is 100"). An OPT cannot express it, so `complete()` does not put
 it in the completed OPT. The SDK only implements the 6 `DV_PROPORTION` invariants of RM 1.0.2 in
-`RmValidator2` (and `Valid_denominator` of RM 1.0.4). The other 218 invariants of the list are not
+`RmValidator2` (and `Valid_denominator` of RM 1.0.4). The other 217 invariants of the list are not
 implemented anywhere: no validation of RM instances, no use in the completed OPT, no use in the diff.
 
 ## 2. Scope and method
 
 - **RM version:** hybrid scope. Demographic classes (`PARTY`, `CONTACT`, `ADDRESS`, `PARTY_IDENTITY`,
   `ROLE`, `ACTOR`, `CAPABILITY`, `AGENT`, `ORGANISATION`, `GROUP`, `PERSON`, `PARTY_RELATIONSHIP`,
-  `VERSIONED_PARTY`) from RM 1.0.4, all other classes from RM 1.0.2 (162 invariants, plus
+  `VERSIONED_PARTY`) from RM 1.0.4, all other classes from RM 1.0.2 (161 invariants, plus
   `DV_PROPORTION.Valid_denominator` of 1.0.4 in its own row).
 - **BASE:** 62 invariants of the BASE classes that the RM uses and that are not inlined in the RM 1.0.2
   BMM (`INTERVAL`, `ISO8601_*`, the `I*` ISO 8601 interfaces, `ACCESS_GROUP_REF`, `Boolean`, `List`),
@@ -31,6 +31,8 @@ implemented anywhere: no validation of RM instances, no use in the completed OPT
   the class tables (`partials/definitions/*.adoc`) of the same release. **The BMMs have all of them:**
   same classes and same invariant names in both sources, in the RM and in BASE. The spec pages have no
   invariant outside the class tables. Not covered: function preconditions and postconditions.
+- **Not in scope: `DV_PARAGRAPH`** (deprecated, not used: narrative text goes in `DV_TEXT`, which allows line
+  breaks from RM 1.0.4). Its invariant is not listed (decided).
 - **Own invariants only.** Each class lists its own. A subclass also has the ones of its ancestors (every
   `DV_AMOUNT` descendant has `Accuracy_is_percent_validity`).
 - **Typos of the spec, fixed on our side:** `ACTIVITY.Action_archteype_id_valid` is written
@@ -40,8 +42,8 @@ implemented anywhere: no validation of RM instances, no use in the completed OPT
 
 ## 3. First check: what the OPT diff may need
 
-Last column of the table: relevance for the diff (high, medium, low, none) and the kind. Counts: 14
-high, 23 medium, 111 low, 77 none. *None* means the class is not in an OPT (versioning, EHR extract,
+Last column of the table: relevance for the diff (high, medium, low, none) and the kind. Counts: 12
+high, 22 medium, 113 low, 77 none. *None* means the class is not in an OPT (versioning, EHR extract,
 identifiers, reference integrity, OPT metadata that is out of scope in rules doc section 8). *Low* means
 lookup-only attributes, formats, aliases and consistency between values.
 
@@ -76,10 +78,10 @@ The groups that matter, in order of impact on the fallback to the RM rules (grou
    data in `value` no explanation is needed. The OPT can constrain `value` and `null_flavour`
    independently, and the diff compares each constraint as is (a `null_flavour` code list is the
    code-set case of group 2, a narrowing of the RM set). Also in this group: `HISTORY` (`events`,
-   `summary`, `period`), `COMPOSITION` (`is_persistent` and `context`), `DV_PROPORTION` (`type` and
+   `summary`, `period`), `COMPOSITION` (`is_persistent` and `context`, removed in 1.0.4), `DV_PROPORTION` (`type` and
    `denominator`), `DV_MULTIMEDIA` (data or uri), `PARTY_IDENTIFIED`, `PARTY.uid`.
 4. **String and numeric domains (high and medium).** The RM fallback of an open string is not "any
-   string": `DV_TEXT.value` is not empty and has no CR or LF; `DV_IDENTIFIER` fields, `DV_URI.value`
+   string": `DV_TEXT.value` is not empty (CR and LF are allowed, decided); `DV_IDENTIFIER` fields, `DV_URI.value`
    and `CODE_PHRASE.code_string` are not empty. `DV_ENCAPSULATED.size >= 0`; `DV_PROPORTION` denominator
    is not 0 and fixed by the type (1 and 100). Matters for `C_STRING` and numeric open expressions in
    the primitives table (not written yet).
@@ -141,7 +143,7 @@ this work).
 ## 5. Invariants
 
 Columns: class, invariant name, rule as in the spec (typos fixed, see section 2), source, implemented in
-code (`RmValidator2`), relevance for the diff and kind of invariant. 225 rows: 162 RM, 1 RM 1.0.4 outside
+code (`RmValidator2`), relevance for the diff and kind of invariant. 224 rows: 161 RM, 1 RM 1.0.4 outside
 the hybrid scope, 62 BASE; 7 implemented.
 
 | Class | Invariant | Rule | Source | Implemented | Relevance for the OPT diff |
@@ -168,7 +170,7 @@ the hybrid scope, 62 BASE; 7 implemented.
 | `COMPOSITION` | `Category_validity` | `terminology (Terminology_id_openehr).has_code_for_group_id (Group_id_composition_category, category.defining_code)` | RM 1.0.2 | no | high: code domain - category codes = openEHR group composition category |
 | `COMPOSITION` | `Content_valid` | `content /= Void implies not content.is_empty` | RM 1.0.2 | no | low: container non-empty - empty list is normalized to null, the RM baseline stays 0..* |
 | `COMPOSITION` | `Is_archetype_root` | `is_archetype_root` | RM 1.0.2 | no | medium: attribute interplay - archetype_details present |
-| `COMPOSITION` | `Is_persistent_validity` | `is_persistent implies context = Void` | RM 1.0.2 | no | medium: attribute interplay - persistent Composition has no `context`: existence of context depends on is_persistent |
+| `COMPOSITION` | `Is_persistent_validity` | `is_persistent implies context = Void` | RM 1.0.2 | no | low: attribute interplay - removed in RM 1.0.4 (SPECRM-52): a persistent Composition may have a `context` |
 | `COMPOSITION` | `Language_valid` | `code_set(Code_set_id_languages).has_code(language)` | RM 1.0.2 | no | high: code domain - language = ISO 639 code set |
 | `COMPOSITION` | `Territory_valid` | `code_set(Code_set_id_countries).has_code(territory)` | RM 1.0.2 | no | high: code domain - territory = ISO 3166 country code set |
 | `CONTACT` | `Purpose_valid` | `purpose = name` | RM 1.0.4 | no | low: alias - purpose = name |
@@ -180,11 +182,11 @@ the hybrid scope, 62 BASE; 7 implemented.
 | `DV_EHR_URI` | `Scheme_valid` | `scheme.is_equal (Ehr_scheme)` | RM 1.0.2 | no | low: value domain - scheme is "ehr" |
 | `DV_ENCAPSULATED` | `Charset_valid` | `charset /= Void implies code_set (Code_set_id_character_sets).has_code (charset)` | RM 1.0.2 | no | low: code domain - lookup-only attribute |
 | `DV_ENCAPSULATED` | `Language_valid` | `language /= Void implies code_set (Code_set_id_languages).has_code (language)` | RM 1.0.2 | no | low: code domain - lookup-only attribute |
-| `DV_ENCAPSULATED` | `Size_valid` | `size >= 0` | RM 1.0.2 | no | medium: numeric bound - size >= 0: RM fallback of an open size is 0..*, not any integer |
-| `DV_IDENTIFIER` | `Assigner_valid` | `not assigner.is_empty` | RM 1.0.2 | no | medium: string non-empty |
+| `DV_ENCAPSULATED` | `Size_valid` | `size >= 0` | RM 1.0.2 | no | medium: numeric bound - in RM 1.0.4 moved to `DV_MULTIMEDIA` and `DV_PARSABLE` (SPECRM-44); size >= 0: RM fallback of an open size is 0..*, not any integer |
+| `DV_IDENTIFIER` | `Assigner_valid` | `not assigner.is_empty` | RM 1.0.2 | no | medium: string non-empty - removed in RM 1.0.4 |
 | `DV_IDENTIFIER` | `Id_valid` | `not id.is_empty` | RM 1.0.2 | no | medium: string non-empty |
-| `DV_IDENTIFIER` | `Issuer_valid` | `not issuer.is_empty` | RM 1.0.2 | no | medium: string non-empty - RM fallback of an open string is non-empty |
-| `DV_IDENTIFIER` | `Type_valid` | `not type.is_empty` | RM 1.0.2 | no | medium: string non-empty |
+| `DV_IDENTIFIER` | `Issuer_valid` | `not issuer.is_empty` | RM 1.0.2 | no | medium: string non-empty - removed in RM 1.0.4 |
+| `DV_IDENTIFIER` | `Type_valid` | `not type.is_empty` | RM 1.0.2 | no | medium: string non-empty - removed in RM 1.0.4 |
 | `DV_INTERVAL` | `Limits_consistent` | `(not upper_unbounded and not lower_unbounded) implies (lower.is_strictly_comparable_to(upper) and lower <= upper)` | RM 1.0.2 | no | low: value consistency - lower <= upper |
 | `DV_MULTIMEDIA` | `Compression_algorithm_validity` | `compression_algorithm /= Void implies code_set (Code_set_id_compression_algorithms).has_code (compression_algorithm)` | RM 1.0.2 | no | low: code domain - lookup-only chain |
 | `DV_MULTIMEDIA` | `Integrity_check_algorithm_validity` | `integrity_check_algorithm /= Void implies code_set (Code_set_id_integrity_check_algorithms).has_code (integrity_check_algorithm)` | RM 1.0.2 | no | low: code domain |
@@ -195,7 +197,6 @@ the hybrid scope, 62 BASE; 7 implemented.
 | `DV_ORDERED` | `Normal_range_and_status_consistency` | `(normal_range /= Void and normal_status /= Void) implies (normal_status.code_string.is_equal (“N”) xor not normal_range.has (self))` | RM 1.0.2 | no | low: attribute interplay - lookup-only attributes |
 | `DV_ORDERED` | `Normal_status_validity` | `normal_status /= Void implies code_set (Code_set_id_normal_statuses).has_code (normal_status)` | RM 1.0.2 | no | low: code domain - lookup-only attribute |
 | `DV_ORDERED` | `Other_reference_ranges_validity` | `other_reference_ranges /= Void implies not other_reference_ranges.is_empty` | RM 1.0.2 | no | low: container non-empty - empty list is normalized to null, the RM baseline stays 0..* |
-| `DV_PARAGRAPH` | `Items_valid` | `not items.is_empty` | RM 1.0.2 | no | low: container non-empty - empty list is normalized to null, the RM baseline stays 0..* |
 | `DV_PARSABLE` | `Formalism_valid` | `not formalism.is_empty` | RM 1.0.2 | no | low: string non-empty - RM-mandatory, non-empty |
 | `DV_PERIODIC_TIME_SPECIFICATION` | `Value_valid` | `value.formalism.is_equal (“HL7:PIVL”) or value.formalism. is_equal (“HL7:EIVL”)` | RM 1.0.2 | no | low: value domain - formalism of `value` is HL7:PIVL or HL7:EIVL |
 | `DV_PROPORTION` | `Fraction_validity` | `(type = pk_fraction or type = pk_integer_fraction) implies is_integral` | RM 1.0.2 | yes | medium: attribute interplay - implemented. type fraction fixes numerator and denominator to integers |
@@ -210,7 +211,7 @@ the hybrid scope, 62 BASE; 7 implemented.
 | `DV_TEXT` | `Formatting_valid` | `formatting /= void implies not formatting.is_empty` | RM 1.0.2 | no | low: string non-empty - lookup-only attribute |
 | `DV_TEXT` | `Language_valid` | `language /= Void implies code_set (Code_set_id_languages).has_code (language)` | RM 1.0.2 | no | low: code domain - lookup-only attribute |
 | `DV_TEXT` | `Mappings_valid` | `mappings /= void implies not mappings.is_empty` | RM 1.0.2 | no | low: container non-empty - empty list is normalized to null, the RM baseline stays 0..* |
-| `DV_TEXT` | `Valid_value` | `not value.is_empty and then not (value.has(CR) or value.has(LF))` | RM 1.0.2 | no | high: string domain - value is non-empty, no CR or LF: RM fallback of an open string on any DV_TEXT is not "any string" |
+| `DV_TEXT` | `Valid_value` | `not value.is_empty` | RM 1.0.4 text | no | low: string domain - decided: only the non-empty part, line breaks are allowed (1.0.2 also forbade CR and LF, removed in 1.0.4 by SPECRM-39; see section 6). The RM fallback of an open string is non-empty, nothing more |
 | `DV_TIME` | `Value_valid` | `valid_iso8601_time (value)` | RM 1.0.2 | no | low: format - valid ISO 8601; see the date pattern table |
 | `DV_URI` | `Value_valid` | `not value.is_empty` | RM 1.0.2 | no | medium: string non-empty - RM fallback of an open string is non-empty |
 | `EHR` | `Compositions_valid` | `compositions.for_all (c \| c.type.is_equal (“VERSIONED_COMPOSITION”))` | RM 1.0.2 | no | none - versioning/EHR object, not constrained by an OPT |
@@ -313,13 +314,13 @@ the hybrid scope, 62 BASE; 7 implemented.
 | `List` | `First_validity` | `not is_empty implies first /= Void` | BASE 1.0.4 | no | none - BASE container behaviour, no OPT meaning |
 | `List` | `Last_validity` | `not is_empty implies last /= Void` | BASE 1.0.4 | no | none - BASE container behaviour, no OPT meaning |
 | `LOCATABLE` | `Archetype_node_id_valid` | `not archetype_node_id.is_empty` | RM 1.0.2 | no | low: string non-empty - node_id is never empty |
-| `LOCATABLE` | `Archetyped_valid` | `is_archetype_root xor archetype_details = Void` | RM 1.0.2 | no | high: attribute interplay - archetype_details exists exactly for archetype roots: tied to node pairing and root removal |
+| `LOCATABLE` | `Archetyped_valid` | `is_archetype_root xor archetype_details = Void` | RM 1.0.2 | no | low: attribute interplay - data rule: `archetype_details` is present exactly for archetype roots. An archetype root is created by including an archetype in the template and removed only by excluding it; it is replaced by a new version or a specialisation of the archetype (`archetype_id` rules, rules doc 6.4); anything else is a removal and, maybe, an unrelated addition. A node does not stop being an archetype root |
 | `LOCATABLE` | `Links_valid` | `links /= Void implies not links.is_empty` | RM 1.0.2 | no | low: container non-empty - empty list is normalized to null, the RM baseline stays 0..* |
 | `ORIGINAL_VERSION` | `Attestations_valid` | `attestations /= Void implies not attestations.is_empty` | RM 1.0.2 | no | none - versioning, not in an OPT |
 | `ORIGINAL_VERSION` | `Is_merged_validity` | `other_input_version_ids = Void xor is_merged` | RM 1.0.2 | no | none - versioning, not in an OPT |
 | `ORIGINAL_VERSION` | `Other_input_version_uids_valid` | `other_input_version_uids /= Void implies not other_input_version_uids.is_empty` | RM 1.0.2 | no | none - versioning, not in an OPT |
 | `PARTICIPATION` | `Function_valid` | `function.generating_type.is_equal (“DV_CODED_TEXT”) implies terminology (Terminology_id_openehr).has_code_for_group_id (Group_id_participation_function, function.defining_code)` | RM 1.0.2 | no | medium: code domain - ENTRY.other_participations; coded function = openEHR group |
-| `PARTICIPATION` | `Mode_valid` | `terminology (Terminology_id_openehr).has_code_for_group_id (Group_id_participation_mode, mode.defining_code)` | RM 1.0.2 | no | medium: code domain - ENTRY.other_participations; mode = openEHR group |
+| `PARTICIPATION` | `Mode_valid` | `terminology (Terminology_id_openehr).has_code_for_group_id (Group_id_participation_mode, mode.defining_code)` | RM 1.0.2 | no | medium: code domain - in RM 1.0.4 `mode` is optional (`mode /= Void implies ...`); ENTRY.other_participations; mode = openEHR group |
 | `PARTY` | `Contacts_valid` | `contacts /= Void implies not contacts.is_empty` | RM 1.0.4 | no | low: container non-empty - empty list is normalized to null, the RM baseline stays 0..* |
 | `PARTY` | `Identities_valid` | `not identities.is_empty` | RM 1.0.4 | no | low: container non-empty - empty list is normalized to null, the RM baseline stays 0..* |
 | `PARTY` | `Is_archetype_root` | `is_archetype_root` | RM 1.0.4 | no | low: attribute interplay - archetype_details present |
@@ -371,3 +372,28 @@ the hybrid scope, 62 BASE; 7 implemented.
 | `VERSION_TREE_ID` | `Is_first_validity` | `not is_first xor trunk_version.is_equal(“1”)` | RM 1.0.2 | no | none - identifier format, instance data |
 | `VERSION_TREE_ID` | `Trunk_version_valid` | `trunk_version /= Void and then trunk_version.is_integer and then trunk_version.as_integer >= 1` | RM 1.0.2 | no | none - identifier format, instance data |
 | `VERSION_TREE_ID` | `Value_valid` | `not value.is_empty` | RM 1.0.2 | no | none - identifier format, instance data |
+
+## 6. Invariants that change between releases
+
+Rule texts compared by name between the BMMs of RM 1.0.2, 1.0.4 and 1.1.0 (the hybrid scope uses 1.0.2
+for everything but the demographic classes, so the rows above show the 1.0.2 rule where the release
+differs). Names that only changed spelling or that moved to the BASE model (`UID`, `UID_BASED_ID`,
+`VERSION_TREE_ID`, `PARTY_REF`, `FOLDER`, `ACTIVITY.Action_archteype_id_valid` typo) are not listed.
+
+| Invariant | 1.0.2 | 1.0.4 | 1.1.0 | Source (spec history) |
+|---|---|---|---|---|
+| `DV_TEXT.Valid_value` | `not value.is_empty and then not (value.has(CR) or value.has(LF))` | `not value.is_empty` | same as 1.0.4 | SPECRM-39 (newlines and formatting in `DV_TEXT`); `DV_PARAGRAPH` is deprecated and not in this list (decided) |
+| `COMPOSITION.Is_persistent_validity` | `is_persistent implies context = Void` | removed | removed | SPECRM-52 |
+| `DV_IDENTIFIER.Issuer_valid`, `Assigner_valid`, `Type_valid` | `not <attribute>.is_empty` | removed (`Id_valid` stays) | removed | commit b412fc9 (SPECRM-23), to confirm |
+| `DV_ENCAPSULATED.Size_valid` | `size >= 0` | moved to `DV_MULTIMEDIA.Size_valid` and `DV_PARSABLE.Size_valid` | same | SPECRM-44 |
+| `PARTICIPATION.Mode_valid` | `terminology (...).has_code_for_group_id (Group_id_participation_mode, mode.defining_code)` | `mode /= Void implies ...` | same | 1.0.4 (optional `mode`) |
+| `DV_PROPORTION.Valid_denominator` | none | `denominator /= 0.0` | same | SPECRM-32 |
+| `PARTY.Uid_mandatory` | none | `uid /= Void` | same | SPECRM-82 |
+| `ACTOR.Legal_identity_exists` | `has_legal_identity` | removed | removed | demographic: the 1.0.4 rule applies |
+| `ELEMENT` null invariants | `Is_null_valid`, `Null_flavour_indicated`, `Null_flavour_valid` | same | renamed `Inv_*`, plus `Inv_null_reason_valid`: `null_reason /= Void implies is_null()` | 1.1.0 adds `ELEMENT.null_reason` |
+| `EHR` | 5 invariants | same | adds `Folders_valid`, `Directory_in_folders` | not in an OPT |
+| `ITEM_TAG` | does not exist | does not exist | `Inv_key_valid`, `Inv_value_valid` | not in an OPT |
+
+Effect on the diff: the line break rule is not part of the RM fallback of a text (the baseline for an
+open `DV_TEXT.value` string is non-empty text with any characters, see section 3, group 4). The other
+rows keep their level; where 1.0.4 removes the invariant, the row says so.

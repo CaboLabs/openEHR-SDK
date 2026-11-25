@@ -451,7 +451,7 @@ Not in this list, on purpose:
   existence, occurrences and the type alternatives. They come from `complete()` and are diff rules in
   section 6.
 - The rest of the RM invariants of the spec. The SDK does not implement them, so nothing checks them
-  yet. The full list (225 with BASE, 7 implemented), with a first check of
+  yet. The full list (224 with BASE, 7 implemented), with a first check of
   which ones the diff may need, is in `rm_invariants_gap.md`. If one is implemented later, that file
   needs the change.
 
