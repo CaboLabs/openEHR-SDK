@@ -29,7 +29,8 @@ its data and queries, and builds the migration plan from the report.
    alternatives of an attribute: an attribute with no constraint on its type has `null` (no
    alternatives) and means "any type the RM allows" (for example `ELEMENT.value`). The diff
    normalizes `null` to open; it never materializes the open alternatives.
-   *Known gap:* RM invariants implemented only in code are not part of the completed OPT.
+   *Known gap:* RM invariants implemented only in code are not part of the completed OPT. They are
+   listed in section 8.1. The diff does not see them, so it neither reports nor compares them.
 3. **Breaking means narrowing.** A change is a breaking change only if the new constraint is
    narrower than the old one on the same node (data valid before can be invalid now). Widening is
    never breaking.
@@ -349,7 +350,7 @@ independent items; see section 6.4 for the explanations.)
   defaults differ and attributes may change. An RM diff is needed. One idea: express RM v1 and RM v2
   as OPTs and use them as the base of the OPT diff. Not part of this work. Single <-> multiple
   attribute changes only appear with a different RM version, so they belong here.
-- Invariants implemented only in RM code are not in the completed OPT.
+- Invariants implemented only in RM code are not in the completed OPT. See section 8.1.
 - ADL2 / AOM2.
 - Archetype and template metadata (the `description` section: author, purpose, keywords, use, misuse,
   copyright, lifecycle state, and its translations). It is not part of the diff for now.
@@ -402,6 +403,44 @@ independent items; see section 6.4 for the explanations.)
   against its supertype alternative only when there is no alternative for the exact subtype).
 - `attribute_removed` is currently reported with the RM defaults as the new state; the new model
   represents it as a removal that falls back to the RM (section 6.2).
+
+### 8.1 RM invariants implemented only in code
+
+An OPT (ADL 1.4) can constrain attributes, existence, occurrences, cardinality and values, so
+`complete()` can put those rules into the completed OPT. An RM invariant is a rule between attributes
+of the same RM object (for example "if `type` is percent, then `denominator` is 100"). An OPT cannot
+express it, so it is not in the completed OPT. The SDK enforces some of them in `RmValidator2` when it
+validates RM instances. For the diff they are invisible: two OPTs that differ only in how these rules
+are used give no diff item, because both are bound by the same RM rule. Nothing in this table can be
+widened or narrowed by an OPT.
+
+Today the SDK implements these invariants in code, and only these (`RmValidator2`, validation of
+`DV_PROPORTION`). Text copied from the RM data types specification, as in the BMM and the class
+definitions:
+
+| Class | Invariant | Rule (as in the spec) | Spec release |
+|---|---|---|---|
+| `DV_PROPORTION` | `Type_validity` | `valid_proportion_kind (type)` | 1.0.2, 1.0.4 |
+| `DV_PROPORTION` | `Precision_validity` | `precision = 0 implies is_integral` | 1.0.2, 1.0.4 |
+| `DV_PROPORTION` | `Is_integral_validity` | `is_integral implies (numerator.floor = numerator and denominator.floor = denominator)` | 1.0.2, 1.0.4 |
+| `DV_PROPORTION` | `Fraction_validity` | `(type = pk_fraction or type = pk_integer_fraction) implies is_integral` | 1.0.2, 1.0.4 |
+| `DV_PROPORTION` | `Unitary_validity` | `type = pk_unitary implies denominator = 1` | 1.0.2, 1.0.4 |
+| `DV_PROPORTION` | `Percent_validity` | `type = pk_percent implies denominator = 100` | 1.0.2, 1.0.4 |
+| `DV_PROPORTION` | `Valid_denominator` | `denominator /= 0.0` | 1.0.4 only (SPECRM-32); not in 1.0.2, the SDK applies it anyway |
+
+Not in this list, on purpose:
+
+- Rules the SDK checks that the completed OPT already holds: RM-mandatory attributes
+  (`DV_MULTIMEDIA` `media_type` and `size`, `DV_PARSABLE` `value` and `formalism`, LOCATABLE `name`),
+  existence, occurrences and the type alternatives. They come from `complete()` and are diff rules in
+  section 6.
+- The rest of the RM invariants of the spec. The SDK does not implement them, so nothing checks them
+  yet. The full list (225 with BASE, 7 implemented), with a first check of
+  which ones the diff may need, is in `rm_invariants_gap.md`. If one is implemented later, that file
+  needs the change.
+
+*To confirm with the spec:* `DV_PROPORTION` `Valid_denominator` and the 1.0.2 vs 1.0.4 difference
+(already in `rm_bmm_version_gap.md`).
 
 ## 9. Test matrix
 
@@ -464,3 +503,11 @@ Gap analysis of the baseline (`complete()`) and the implementation plan:
    note. They are separate work items, not part of the diff implementation.
 7. **`RmValidator2` is closed world** (it reports items not defined in the template). The diff
     follows the open world. Aligning the validator is a separate decision.
+8. **RM invariants as fallback rules (to check later).** The first check of the invariants in
+   `rm_invariants_gap.md` found rules that change the RM fallback and that the BMM does not give:
+   the code sets and terminology groups of coded attributes, the non-empty string and numeric domains,
+   and the dependencies between attributes (`ELEMENT.value` and `null_flavour`, `HISTORY`, `COMPOSITION`).
+   Decide row by row whether each one enters the RM baseline of `complete()`, the generator (D2) or the
+   rules tables. Decided: the "not empty when present" invariants of containers are a rule on the value
+   (null or non-empty), not on the cardinality; the baseline stays `0..*` and `[]` is normalized to null
+   in RM instance handling (details in `rm_invariants_gap.md`, section 3, group 1).
