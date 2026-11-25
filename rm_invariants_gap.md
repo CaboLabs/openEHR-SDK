@@ -40,8 +40,8 @@ implemented anywhere: no validation of RM instances, no use in the completed OPT
 
 ## 3. First check: what the OPT diff may need
 
-Last column of the table: relevance for the diff (high, medium, low, none) and the kind. Counts: 16
-high, 23 medium, 109 low, 77 none. *None* means the class is not in an OPT (versioning, EHR extract,
+Last column of the table: relevance for the diff (high, medium, low, none) and the kind. Counts: 14
+high, 23 medium, 111 low, 77 none. *None* means the class is not in an OPT (versioning, EHR extract,
 identifiers, reference integrity, OPT metadata that is out of scope in rules doc section 8). *Low* means
 lookup-only attributes, formats, aliases and consistency between values.
 
@@ -59,23 +59,25 @@ The groups that matter, in order of impact on the fallback to the RM rules (grou
    the SDK accepts `[]` internally and normalizes it to null to be compliant with the RM. The
    normalization belongs to the RM instance handling (parser, validator), not to the OPT diff.
    (Decided by Pablo; an earlier reading of this check, `1..*` as RM lower bound, was wrong.)
-2. **Code sets and terminology groups (high).** The invariants fix the codes of coded attributes to
-   an openEHR terminology group or to a code set: `COMPOSITION.category`, `.territory`, `.language`,
-   `EVENT_CONTEXT.setting`, `ENTRY.language`, `.encoding`, `ELEMENT.null_flavour`,
-   `INTERVAL_EVENT.math_function`, `ISM_TRANSITION.current_state` and `.transition`,
-   `PARTICIPATION.function` and `.mode`. So the fallback of an attribute with no code constraint is "the
-   codes of that group", not "any code". Removing a code list that equals the whole group is not a
-   widening. The diff needs the group and code set contents. This is the same work as the terminology
-   bindings table (rules doc, section 11, point 4).
-3. **Attribute interplay (high and medium).** The effective existence of one attribute depends on
-   another: `ELEMENT.value` and `null_flavour` (`is_null`, `Null_flavour_indicated`), `HISTORY.events`,
-   `summary`, `period`, `COMPOSITION.is_persistent` and `context`, `LOCATABLE.archetype_details` and the
-   archetype root, `DV_PROPORTION.type` and `denominator`, `DV_MULTIMEDIA` data or uri,
-   `PARTY_IDENTIFIED`, `PARTY.uid`. Today the diff compares each attribute alone. Example: `value`
-   `1..1` makes `null_flavour` impossible, so a `null_flavour` with the open fallback `0..1` is
-   effectively `0..0`. Narrowing `value` from `0..1` to `1..1` is already a narrowing, so no new
-   breaking case is expected; the open question is whether the derived effective existence should be
-   shown. **To decide:** report only the explicit constraint, or also the derived existence.
+2. **Code sets and terminology groups (high, decided).** The invariants fix the codes of coded
+   attributes to an openEHR terminology group or to a code set (section 4). The RM binds the attribute
+   to the set, so without a code constraint in the OPT only the codes of the set are valid, in the same
+   way as if the `DV_CODED_TEXT` or `CODE_PHRASE` constraint were in the OPT. **Decided (Pablo,
+   2026-11-25):** do not materialize it in the completed OPT (every OPT would carry the same constraint,
+   a waste of memory); look it up. `Model` gets metadata only: which class and attribute is bound to
+   which term set id, never the codes (Atomik already loads and caches the terminologies in memory). An
+   OPT constraint that selects a subset of the set narrows the RM constraint, for every coded attribute
+   bound to an openEHR set (rules doc, principle 2 and 6.3). **Checked (2026-11-25):** the openEHR
+   terminology files contain every group and code set the invariants name (section 4).
+3. **Attribute interplay (medium, low).** Some invariants are rules between the values of the
+   attributes of an instance. They are checks against data, not against the OPT, because an OPT
+   constrains each attribute on its own. Example: `ELEMENT.value` and `null_flavour` are exclusive
+   (`is_null xor null_flavour = Void`): `null_flavour` explains why there is no `value`, so when there is
+   data in `value` no explanation is needed. The OPT can constrain `value` and `null_flavour`
+   independently, and the diff compares each constraint as is (a `null_flavour` code list is the
+   code-set case of group 2, a narrowing of the RM set). Also in this group: `HISTORY` (`events`,
+   `summary`, `period`), `COMPOSITION` (`is_persistent` and `context`), `DV_PROPORTION` (`type` and
+   `denominator`), `DV_MULTIMEDIA` (data or uri), `PARTY_IDENTIFIED`, `PARTY.uid`.
 4. **String and numeric domains (high and medium).** The RM fallback of an open string is not "any
    string": `DV_TEXT.value` is not empty and has no CR or LF; `DV_IDENTIFIER` fields, `DV_URI.value`
    and `CODE_PHRASE.code_string` are not empty. `DV_ENCAPSULATED.size >= 0`; `DV_PROPORTION` denominator
@@ -94,7 +96,49 @@ The groups that matter, in order of impact on the fallback to the RM rules (grou
 Also found: the 1.0.2 BMM has no `ELEMENT.null_flavour` property (errata overlay of decision D2), so the
 generator cannot get that invariant's attribute from the BMM alone.
 
-## 4. Invariants
+## 4. Code sets and groups named by the invariants
+
+Sources: SDK `src/main/resources/terminology/` (`openehr_terminology_en.xml`, version 3.1.0, date
+2024-04-11; `openehr_external_terminologies.xml`, same) and `../specifications-TERM`
+`computable/XML/` (`en/openehr_terminology.xml`, version 3.1.0, date 2026-10-09;
+`openehr_external_terminologies.xml`, date 2026-10-10). Compared by code (group concept ids and
+code set values): all 16 groups and 4 code sets of the invariants are in both files. The SDK copies are
+older, with the same version number 3.1.0.
+
+| Invariant reference | Terminology id | In SDK files | In specifications-TERM | Difference |
+|---|---|---|---|---|
+| `Group_id_attestation_reason` | group `attestation_reason` | yes | yes | none |
+| `Group_id_audit_change_type` | group `audit_change_type` | yes | yes | none |
+| `Group_id_composition_category` | group `composition_category` | yes | yes | none |
+| `Group_id_event_math_function` | group `event_math_function` | yes | yes | none |
+| `Group_id_instruction_states` | group `instruction_states` | yes | yes | none |
+| `Group_id_instruction_transitions` | group `instruction_transitions` | yes | yes | none |
+| `Group_id_null_flavour` | group `null_flavours` (plural) | yes | yes | none; the id of the invariant is singular |
+| `Group_id_participation_function` | group `participation_function` | yes | yes | none; the group has 1 concept |
+| `Group_id_participation_mode` | group `participation_mode` | yes | yes | none |
+| `Group_id_setting` | group `setting` | yes | yes | none |
+| `Group_id_subject_relationship` | group `subject_relationship` | yes | yes | none |
+| `Group_id_term_mapping_purpose` | group `term_mapping_purpose` | yes | yes | TERM has `672 interoperability`, SDK does not |
+| `Group_id_version_lifecycle_state` | group `version_lifecycle_state` | yes | yes | none |
+| `Code_set_id_compression_algorithms` | code set `compression_algorithms` | yes | yes | none |
+| `Code_set_id_integrity_check_algorithms` | code set `integrity_check_algorithms` | yes | yes | none |
+| `Code_set_id_normal_statuses` | code set `normal_statuses` | yes | yes | none |
+| `Code_set_id_character_sets` | code set `character_sets` (IANA) | yes | yes | none |
+| `Code_set_id_countries` | code set `countries` (ISO 3166-1) | yes | yes | none |
+| `Code_set_id_languages` | code set `languages` (ISO 639-1) | yes | yes | TERM has `ro-md` and `ru-md`, SDK does not |
+| `Code_set_id_media_types` | code set `media_types` (IANA) | yes | yes | none |
+
+Also different: group `property` has 5 more concepts in TERM (`761` to `765`), no invariant uses it.
+
+Not terminology data, the invariants use functions with literal values: `valid_proportion_kind`
+(`DV_PROPORTION.type` 0 to 4), `valid_magnitude_status` (`=`, `<`, `>`, `<=`, `>=`, `~`),
+`is_valid_match_code` (`TERM_MAPPING.match`: `?`, `=`, `>`, `<`) and `valid_percentage` (between 0 and 100). They are not in
+any terminology file.
+
+Refreshing the SDK terminology files: issue https://github.com/CaboLabs/openEHR-SDK/issues/235 (not part of
+this work).
+
+## 5. Invariants
 
 Columns: class, invariant name, rule as in the spec (typos fixed, see section 2), source, implemented in
 code (`RmValidator2`), relevance for the diff and kind of invariant. 225 rows: 162 RM, 1 RM 1.0.4 outside
@@ -177,9 +221,9 @@ the hybrid scope, 62 BASE; 7 implemented.
 | `EHR_ACCESS` | `Is_archetype_root` | `is_archetype_root` | RM 1.0.2 | no | low: attribute interplay - archetype_details present |
 | `EHR_ACCESS` | `Scheme_valid` | `not scheme.is_empty` | RM 1.0.2 | no | low: string non-empty - not in an OPT today |
 | `EHR_STATUS` | `Is_archetype_root` | `is_archetype_root` | RM 1.0.2 | no | low: attribute interplay - archetype_details present |
-| `ELEMENT` | `Is_null_valid` | `is_null = (value = Void)` | RM 1.0.2 | no | high: attribute interplay - `is_null` = (value = Void): value existence decides null_flavour |
-| `ELEMENT` | `Null_flavour_indicated` | `is_null xor null_flavour = Void` | RM 1.0.2 | no | high: attribute interplay - `null_flavour` exists exactly when `value` does not |
-| `ELEMENT` | `Null_flavour_valid` | `is_null implies terminology (Terminology_id_openehr).has_code_for_group_id (Group_id_null_flavour, null_flavour.defining_code)` | RM 1.0.2 | no | high: code domain - null_flavour codes = openEHR group null_flavour; fallback of an open null_flavour |
+| `ELEMENT` | `Is_null_valid` | `is_null = (value = Void)` | RM 1.0.2 | no | low: attribute interplay - data rule: `is_null` is `value = Void`; the OPT constrains `value` on its own |
+| `ELEMENT` | `Null_flavour_indicated` | `is_null xor null_flavour = Void` | RM 1.0.2 | no | low: attribute interplay - data rule: `value` and `null_flavour` are exclusive, `null_flavour` explains the missing `value`; the OPT constrains each on its own |
+| `ELEMENT` | `Null_flavour_valid` | `is_null implies terminology (Terminology_id_openehr).has_code_for_group_id (Group_id_null_flavour, null_flavour.defining_code)` | RM 1.0.2 | no | high: code domain - null_flavour codes = openEHR group null_flavours; an OPT code list is a subset of the set (narrowing) |
 | `ENTRY` | `Encoding_valid` | `code_set (Code_set_id_character_sets).has_code (encoding)` | RM 1.0.2 | no | high: code domain - encoding = IANA character set code set |
 | `ENTRY` | `Is_archetype_root` | `is_archetype_root` | RM 1.0.2 | no | medium: attribute interplay - archetype_details present |
 | `ENTRY` | `Language_valid` | `code_set (Code_set_id_languages).has_code (language)` | RM 1.0.2 | no | high: code domain - language = ISO 639 code set |

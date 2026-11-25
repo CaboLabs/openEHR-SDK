@@ -29,11 +29,23 @@ its data and queries, and builds the migration plan from the report.
    alternatives of an attribute: an attribute with no constraint on its type has `null` (no
    alternatives) and means "any type the RM allows" (for example `ELEMENT.value`). The diff
    normalizes `null` to open; it never materializes the open alternatives.
+   The same goes for the RM attributes bound to an openEHR terminology group or code set (for example
+   `COMPOSITION.category`, `EVENT_CONTEXT.setting`, `ELEMENT.null_flavour`): without a code constraint in
+   the OPT, they accept only the codes of their set, as if the `DV_CODED_TEXT` or `CODE_PHRASE`
+   constraint were there. It is not materialized (every OPT would carry the same constraint): the diff
+   looks the set up through the term set bound to the class and attribute in `Model`, with the codes
+   taken from the terminologies loaded in memory.
    *Known gap:* RM invariants implemented only in code are not part of the completed OPT. They are
    listed in section 8.1. The diff does not see them, so it neither reports nor compares them.
-3. **Breaking means narrowing.** A change is a breaking change only if the new constraint is
-   narrower than the old one on the same node (data valid before can be invalid now). Widening is
-   never breaking.
+3. **Narrowing can break, widening never does, a change can.** Narrowing can break data, but
+   not every breaking change is a narrowing. A `narrowed` constraint can invalidate data that
+   was valid before. A `widened` constraint never does. A `changed` constraint (direction neither
+   narrower nor wider, section 5) replaces one constraint by another that is not comparable with it, so
+   data valid before can be invalid now and queries can stop matching. Example: the `name` of a
+   LOCATABLE changes from the fallback (a `DV_TEXT` with the fixed text of the node) to a
+   `DV_CODED_TEXT`, or the other way round (6.2): it is a change of constraint, not a narrowing or a
+   widening. The levels of data and query impact (section 5) tell how likely the break is; the
+   direction tells what happened to the constraint.
 4. **Three questions per diff item** (see section 5): what happened to the constraint (a), what is the
    impact on data (b), what is the impact on queries (c).
 5. **"Data loss" is not a property of the diff.** Deleting data is a decision of a migration step.
@@ -50,6 +62,8 @@ its data and queries, and builds the migration plan from the report.
 | Removed constraint node | The topmost `C_OBJECT` or `C_ATTRIBUTE` that is in the old OPT and not in the new one. Everything below it is gone as well, but only the topmost node is reported. |
 | Added constraint node | Same, in the new OPT. Only the topmost node can be mandatory. |
 | Identity of a constraint node | **(path, RM type).** `node_id` is part of the path only when it exists. Many `C_OBJECT`s have an empty `node_id`: leaf value objects such as `ELEMENT.value` (`C_COMPLEX_OBJECT DV_PROPORTION`) and its `C_PRIMITIVE_OBJECT` children. |
+| Modified constraint | A constraint that exists on both sides of the diff at the same position and is replaced by another one that is not simply narrower or wider: direction `changed`, one item. It applies when the position can hold exactly one constraint and cannot be left empty or "any", or when the old and new nodes are paired by identity: the `name` of a LOCATABLE (explicit constraint <-> fallback, `DV_TEXT` <-> `DV_CODED_TEXT`), the RM type of a paired node (6.4), the `archetype_id` of an archetype root, the `property` of a quantity (Q12b). |
+| Removal plus addition | Two independent items (one removed, one added), each judged on its own. It applies when the old and the new constraint are elements of a collection that can lose or gain elements one by one, and each one can be dropped or added leaving a valid constraint: members of a multiple attribute with different `node_id`, nodes that cannot be paired (6.4), items of a list (codes, strings, units: Q5). Test: *can the old one be dropped and the new one added separately, with a valid constraint (maybe absent or `any`) after each step?* Yes: two items. No: one modified constraint. |
 | Addressable | A path is addressable from an OPT if the (completed) OPT defines it. Queries and indexes use the paths an OPT defines, not every path the RM could define. |
 
 ## 4. Semantics of existence, occurrences and cardinality
@@ -165,6 +179,8 @@ with the data (keep, move, delete) is decided by the migration plan, not here.
 | Range, pattern, precision or list narrowed, including from no constraint (the RM default, shown as the most open expression). Examples: `DV_COUNT.magnitude (*..*) -> [0..*)`, `C_DV_QUANTITY_ITEM` magnitude `(*..*) -> [0.0..*)`, `DV_PROPORTION.type [0..4] -> [2]`, `DV_DATE_TIME.value any -> yyyy-mm-ddThh:mm:ss`, `precision [0..2] -> [1..1]` | narrowed | potential | potential (filters built with the old range or value) |
 | Value dropped from a list (codes, strings, units, ordinal items, enumeration). Example: code list `[433, 434] -> [433]` | narrowed | potential | potential (a query may filter on the value) |
 | Range, pattern or list widened, value added to a list. Examples: `magnitude [0..100] -> [0..200]`, code list `[433] -> [433, 434]`, `yyyy-mm-ddThh:mm:ss -> yyyy-mm-dd` | widened | none | none |
+| RM attribute bound to an openEHR term set (principle 2): a code constraint selects a subset of the set, from no constraint (the whole set). Example: `COMPOSITION.category` no constraint -> `[433]`. A subset narrowed further is the code-list row above | narrowed | potential | potential |
+| Same attributes, the other way: the code constraint is removed (back to the whole set), or its list is extended to the whole set. Example: `COMPOSITION.category` `[433]` -> no constraint | widened | none | none |
 
 ### 6.4 Type and identity changes
 
@@ -505,8 +521,10 @@ Gap analysis of the baseline (`complete()`) and the implementation plan:
     follows the open world. Aligning the validator is a separate decision.
 8. **RM invariants as fallback rules (to check later).** The first check of the invariants in
    `rm_invariants_gap.md` found rules that change the RM fallback and that the BMM does not give:
-   the code sets and terminology groups of coded attributes, the non-empty string and numeric domains,
-   and the dependencies between attributes (`ELEMENT.value` and `null_flavour`, `HISTORY`, `COMPOSITION`).
+   the non-empty string and numeric domains,
+   and the rules between attributes of an instance (`HISTORY`, `COMPOSITION`, `DV_PROPORTION`; the `ELEMENT.value`
+   and `null_flavour` exclusion is a data rule, not an OPT rule). Code sets bound by the RM are decided
+   in principle 2 and 6.3.
    Decide row by row whether each one enters the RM baseline of `complete()`, the generator (D2) or the
    rules tables. Decided: the "not empty when present" invariants of containers are a rule on the value
    (null or non-empty), not on the cardinality; the baseline stays `0..*` and `[]` is normalized to null
